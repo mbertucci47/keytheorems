@@ -1,0 +1,128 @@
+\ifthmtools
+\chapter{\pkg{thmtools} for the impatient}
+\else
+\chapter{\pkg{theorem-keys} for the impatient}
+\fi
+
+\section{Some Theorems} \label{mysec}
+
+\begin{theorem}[name=Euclid,restate=firsteuclid]
+\label{thm:euclid}%
+For every prime $p$, there is a prime $p'>p$.
+In particular, the list of primes,
+\begin{equation}\label{eq:1}
+2,3,5,7,\dots
+\end{equation}
+is infinite.
+\end{theorem}
+
+\begin{theorem}
+\label{thm:blub}%
+Blub
+\end{theorem}
+
+\autoref{thm:euclid}
+
+\cref{thm:euclid}
+
+\crefrange{thm:euclid}{thm:blub}
+
+\autoref{eq:1}
+
+\begin{theoremS}[Euclid]
+For every prime $p$, there is a prime $p'>p$.
+In particular, there are infinitely many primes.
+\end{theoremS}
+
+\begin{exercise}
+Prove Euclid’s Theorem.
+\end{exercise}
+
+\begin{lem}[label=gth]
+For every prime $p$, there is a prime $p'>p$.
+In particular, there are infinitely many primes.
+\end{lem}
+
+\autoref{gth}
+
+\cref{gth}
+
+\Cref{gth}
+
+\begin{euclid}
+For every prime $p$, there is a prime $p'>p$.
+In particular, there are infinitely many primes.
+\end{euclid}
+
+\begin{remark}[name=AAA,label=abc]
+This is a remark.
+\end{remark}
+
+\nameref{abc}
+
+\begin{callmeal}[Simon]\label{simon}
+One
+\end{callmeal}
+\begin{callmeal}\label{garfunkel}
+and another, and together,
+\autoref{simon}, \nameref{simon},
+and \cref{garfunkel} are referred
+to as \cref{simon,garfunkel}.
+\Cref{simon,garfunkel}, if you are at
+the beginning of a sentence.
+\end{callmeal}
+
+\nameref{mysec}
+
+\begin{styledtheorem}[Euclid]
+For every prime $p$\dots
+\end{styledtheorem}
+
+\ifthmtools
+\firsteuclid*
+\else
+\firsteuclid
+\fi
+
+\begin{theorem}[name=Keyed theorem,
+label=thm:key]
+This is a
+key-val theorem.
+\end{theorem}
+\begin{theorem}[continues=thm:key]
+And it’s spread out.
+\end{theorem}
+
+\subsection{Theorem with no name}
+
+\begin{noname}
+\kant[2][1]
+\end{noname}
+
+\begin{noname}[heading]
+\kant[2][1]
+\end{noname}
+
+\subsection{Theorem with no number}
+
+\begin{euclid}
+\kant[2][1]
+\end{euclid}
+
+\begin{euclid}[heading]
+\kant[2][1]
+\end{euclid}
+
+\subsection{Theorem with no name and no number}
+
+\begin{nonamenonumber}
+\kant[2][1]
+\end{nonamenonumber}
+
+\begin{nonamenonumber}[heading]
+\kant[2][1]
+\end{nonamenonumber}
+
+\chapter{Test every key}
+
+\PrintTheorems
