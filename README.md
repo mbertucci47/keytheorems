@@ -79,7 +79,7 @@ but a few things are changed:
   I have no idea. Also this is only implemented as a key, no `restatable` environment.
 - `thmtools` allows keys meant for defining theorems to be used when defining theorem styles.
   Is this a good idea? Not currently implemented, but shouldn't be that difficult.
-- The `shaded` and `thmbox`keys are not implemented. Instead there's an interface to [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox)
+- The `shaded` and `thmbox` keys are not implemented. Instead there's an interface to [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox)
   with the `tcolorbox={<options>}` key.
 - You can reuse styles with the `inherit-style` key.
 - With `thmtools`, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like

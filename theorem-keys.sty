@@ -12,7 +12,7 @@
               { \thmkeys_thm_NewThm:nn { #2 } { numbered=no } }
               {
                 \IfNoValueTF { #3 }
-                  { 
+                  {
                     \IfNoValueTF { #5 }
                       { \thmkeys_thm_NewThm:nn { #2 } { } }
                       { \thmkeys_thm_NewThm:nn { #2 } { parent=#5 } }
@@ -35,9 +35,9 @@
 \keys_define:nn { thmkeys }
   {
     restate-counters .code:n =
-        { \clist_put_right:Nn \g__thmkeys_restatecounters_clist { #1 } },
+      { \clist_put_right:Nn \g__thmkeys_restatecounters_clist { #1 } },
     continues-code .code:n =
-        { \cs_set:Nn \thmkeys_thmuse_continues:n { #1 } },
+      { \cs_set:Nn \thmkeys_thmuse_continues:n { #1 } },
   }
 
 \NewDocumentCommand { \ThmKeysSet } { m } { \keys_set:nn { thmkeys } { #1 } }
@@ -67,7 +67,7 @@
     notebraces    .code:n   = \exp_after:wN \thmkeys_thmstyle_setbraces:nn #1,
     headstyle     .choice:,
     headstyle / margin .code =
-      { 
+      {
         \cs_set:Nn \thmkeys_thmstyle_headcmd:nnn { \exp_not:N \makebox[0pt][r]{\NUMBER\ }\NAME\NOTE } % \cs_set_eq:NN doesn't work
       },
     headstyle / swapnumber .code =
@@ -80,7 +80,7 @@
     inherit-style / plain .meta:n = {},
     inherit-style / definition .meta:n = { bodyfont = \normalfont },
     inherit-style / remark .meta:n =
-      { 
+      {
         headfont = \itshape,
         bodyfont = \normalfont,
         spaceabove = 0.5\topsep,
@@ -102,7 +102,7 @@
     \thmkeys_thmstyle_thmname:n { ##1 }
   }
 \NewExpandableDocumentCommand { \NUMBER } { }
-  { 
+  {
     \thmkeys_thmstyle_thmnumber:n { \exp_not:N \textup { ##2 } }
   }
 \NewExpandableDocumentCommand { \NOTE } { }
@@ -174,7 +174,7 @@
 \NewDocumentCommand { \thmkeys_thm_setrefnames:nn } { m >{\SplitArgument{1}{,}} m }
   { \__thmkeys_thm_setrefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
 \cs_new_protected:Npn \__thmkeys_thm_setrefnames_aux:nnn #1#2#3
-  { 
+  {
     \cs_set:cpn { #1 autorefname } { #2 }
     \cs_if_exist:NT \crefname 
       { 
@@ -188,7 +188,7 @@
 \NewDocumentCommand { \thmkeys_thm_setRefnames:nn } { m >{\SplitArgument{1}{,}} m }
   { \__thmkeys_thm_setRefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
 \cs_new_protected:Npn \__thmkeys_thm_setRefnames_aux:nnn #1#2#3
-  { 
+  {
     \cs_set:cpn { #1 Autorefname } { #2 }
     \cs_if_exist:NT \Crefname 
       { 
@@ -323,7 +323,7 @@
     \bool_if:NTF \l__thmkeys_thm_numbered_bool
       {
         \tl_if_empty:NTF \l__thmkeys_thm_parent_tl
-          { 
+          {
             \tl_if_empty:NTF \l__thmkeys_thm_sibling_tl
               { \__thmkeys_thm_new:nV { #1 } \l__thmkeys_thm_name_tl }
               {
@@ -336,7 +336,7 @@
                     \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_envname_tl
                     \exp_args:NV \aliascntresetthe \l__thmkeys_thm_envname_tl
                   %}
-                  %{ \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_sibling_tl } 
+                  %{ \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_sibling_tl }
               }
           }
           {
