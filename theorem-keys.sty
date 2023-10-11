@@ -68,7 +68,8 @@
     headstyle     .choice:,
     headstyle / margin .code =
       {
-        \cs_set:Nn \thmkeys_thmstyle_headcmd:nnn { \exp_not:N \makebox[0pt][r]{\NUMBER\ }\NAME\NOTE } % \cs_set_eq:NN doesn't work
+        \cs_set:Nn \thmkeys_thmstyle_headcmd:nnn
+          { \exp_not:N \makebox[0pt][r]{\NUMBER\ }\NAME\NOTE }
       },
     headstyle / swapnumber .code =
       {
@@ -315,7 +316,8 @@
     % Set name if none given
     \quark_if_no_value:NT \l__thmkeys_thm_name_tl % use quark so name={} is valid
       {
-        \tl_set:Ne \l__thmkeys_thm_name_tl { \text_titlecase_first:n { \l__thmkeys_thm_envname_tl } }
+        \tl_set:Ne \l__thmkeys_thm_name_tl
+          { \text_titlecase_first:n { \l__thmkeys_thm_envname_tl } }
       }
     % associate formatted name with envname in prop list
     \prop_gput:NnV \g__thmkeys_thmnames_prop { #1 } \l__thmkeys_thm_name_tl
@@ -327,16 +329,11 @@
             \tl_if_empty:NTF \l__thmkeys_thm_sibling_tl
               { \__thmkeys_thm_new:nV { #1 } \l__thmkeys_thm_name_tl }
               {
-                %\IfPackageLoadedTF{hyperref}
-                  %{ 
-                    % See hyperref doc
-                    %% NOTE: need this unconditionally for \PrintThms
-                    \RequirePackage{aliascnt}
-                    \exp_args:NVV \newaliascnt \l__thmkeys_thm_envname_tl \l__thmkeys_thm_sibling_tl
-                    \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_envname_tl
-                    \exp_args:NV \aliascntresetthe \l__thmkeys_thm_envname_tl
-                  %}
-                  %{ \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_sibling_tl }
+                %% NOTE: need this unconditionally for \PrintThms
+                \RequirePackage{aliascnt}
+                \exp_args:NVV \newaliascnt \l__thmkeys_thm_envname_tl \l__thmkeys_thm_sibling_tl
+                \__thmkeys_thm_new_sibling:nVV { #1 } \l__thmkeys_thm_name_tl \l__thmkeys_thm_envname_tl
+                \exp_args:NV \aliascntresetthe \l__thmkeys_thm_envname_tl
               }
           }
           {
@@ -394,7 +391,8 @@
 \tl_new:N \g__thmkeys_thmuse_number_tl
 
 % \thmkeys_keyify_theorem:n { <envname> }
-\cs_new_protected:Npn \thmkeys_keyify_theorem:n #1 % should only grab body for restatable... but how? Actually might be ok efficiency-wise
+%% NOTE: should only grab body for restatable... but how? Actually might be ok efficiency-wise
+\cs_new_protected:Npn \thmkeys_keyify_theorem:n #1
   {
     \NewEnvironmentCopy { orig_#1 } { #1 }
     \bool_if:NTF \l__thmkeys_thm_numbered_bool
