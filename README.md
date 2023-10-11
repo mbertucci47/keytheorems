@@ -1,7 +1,7 @@
 # theorem-keys
 
-An very much incomplete and buggy LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
-with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
+A very much incomplete and buggy LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
+with a key-value interface. Do not use it for anything important! Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
 but written in expl3. The goal was just an exercise in using expl3, but if you find a bug
 feel free to open an issue or PR.
 
@@ -32,7 +32,8 @@ feel free to open an issue or PR.
 	name=Strong Bertini over $\mathbb{C}$,
 	label=strongbertini
 	]
-Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive dimensional linear system on $X$. Then the general element of $\mathfrak{D}$ is smooth away from the base locus $B_{\mathfrak{D}}$. That is, the set
+Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive dimensional linear system on $X$.
+Then the general element of $\mathfrak{D}$ is smooth away from the base locus $B_{\mathfrak{D}}$. That is, the set
 	\[\{H\in\mathfrak{D}\mid D_H \text{ is smooth away from } B_{\mathfrak{D}}\}\]
 is a Zariski dense open subset of $\mathfrak{D}$.
 \end{theorem}
@@ -42,7 +43,8 @@ In fact, \autoref{strongbertini} holds over any algebraically closed field of ch
 \end{remark}
 
 \begin{theorem}[Bertini over any field]
-Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$. Then the set of hyperplanes $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
+Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$. Then the set of hyperplanes
+$H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
 \end{theorem}
 
 \end{document}
@@ -63,10 +65,13 @@ but a few things are changed:
   \declaretheoremstyle[spaceabove=20pt]{mythmsty}
   \declaretheorem[style=mythmsty]{mythm}
   ```
+  
   is different from just
+  
   ```
   \declaretheorem{mythm}
   ```
+  
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
 - The `restate=` code uses sequences from l3seq. What does this mean for speed/robustness?
@@ -82,10 +87,13 @@ but a few things are changed:
   only use the new interface or load the package with option `overload`.
 - There are a few global options available with `\ThmKeysSet{<options>}`:
     - `restate-counters={<comma list of counters>}`
+      
       Counters that are stored for use in a restated theorem. Default is `equation`.
     - `continues-code={<code with #1>}`
+      
       Changes the text shown with the `continues=<label>` key, where `#1` is the label.
       Default is
+      
       ```tex
       \cs_if_exist:NTF \hyperref
   	    { \hyperref[#1]{continuing} ~ }
