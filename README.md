@@ -50,6 +50,7 @@ $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open
 \end{document}
 ```
 
+## Difference with `thmtools`
 Most of the code is a direct translation from `thmtools`
 but a few things are changed:
 - The only backend supported is `amsthm`, and it is loaded by the package. As I understand it,
@@ -92,7 +93,7 @@ but a few things are changed:
     - `continues-code={<code with #1>}`
       
       Changes the text shown with the `continues=<label>` key, where `#1` is the label.
-      Default is
+      Default (in expl3 code) is
       
       ```tex
       \cs_if_exist:NTF \hyperref
