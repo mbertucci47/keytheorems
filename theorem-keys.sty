@@ -1,4 +1,4 @@
-\ProvidesExplPackage{theorem-keys}{}{0.0.0beta}{l3 thmtools implementation}
+\ProvidesExplPackage{theorem-keys}{}{0.0.0gamma}{l3 thmtools implementation}
 
 \RequirePackage{amsthm}
 
@@ -75,7 +75,7 @@
       {
         \cs_set:Nn \thmkeys_thmstyle_headcmd:nnn { \NUMBER\ \NAME\NOTE }
       },
-    headstyle / unknown .code = \cs_set:Nn \thmkeys_thmstyle_headcmd:nnn { #1 },
+    headstyle / unknown .cs_set:Np = \thmkeys_thmstyle_headcmd:nnn #1#2#3,
     headformat    .meta:n = { headstyle = #1 },
     inherit-style .choice:,
     inherit-style / plain .meta:n = {},
@@ -277,13 +277,16 @@
   }
 
 \prop_new:N \g__thmkeys_thmnames_prop % for retrieving name from envname
+\seq_new:N \g__thmkeys_thmnames_envnames_seq % to compare for \ListOfThms
+% ^ Want to avoid this extra data struc and just use above prop, but then a global
+% \ThmKeysListSet{ignore=foo} would remove foo from prop which is used elsewhere
 
 % Make generic theorem hooks
 \thmkeys_thm_makethmhooks:n { allthms }
 
 %% Inefficiences: don't need to store and reset style every time.
 %% I do, however, need to set/reset keys each time so that envname is correct.
-\NewDocumentCommand{\NewThm}{ m O{} }
+\NewDocumentCommand { \NewThm } { m O{} }
   {
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \thmkeys_thm_NewThm:nn { ##1 } { #2 } }
@@ -321,6 +324,8 @@
       }
     % associate formatted name with envname in prop list
     \prop_gput:NnV \g__thmkeys_thmnames_prop { #1 } \l__thmkeys_thm_name_tl
+    % add envname to listof clist (see note above)
+    \seq_gput_right:Nn \g__thmkeys_thmnames_envnames_seq { #1 }
     % Call correct \newtheorem variant
     \bool_if:NTF \l__thmkeys_thm_numbered_bool
       {
@@ -357,6 +362,8 @@
       {
         \exp_args:NnV \thmkeys_thm_setRefnames:nn { #1 } \l__thmkeys_thm_Refname_tl
       }
+    % Set default list-of display command (only if undefined)
+    \__thmkeys_listof_show_aux:n { #1 }
     % Set theorem style back to original state
     % Note: if thmtools also loaded, \exp_args:NV hangs, hence the :Ne
     \exp_args:Ne \theoremstyle { \l__thmkeys_currentthmstyle_tl }
@@ -388,7 +395,7 @@
 % allocate the needed variables
 \prop_new:N \g__thmkeys_thmuse_othercounters_prop
 \seq_new:N \g__thmkeys_thmuse_seq
-\tl_new:N \g__thmkeys_thmuse_number_tl
+\tl_new:N \l__thmkeys_thmuse_number_tl
 
 % \thmkeys_keyify_theorem:n { <envname> }
 %% NOTE: should only grab body for restatable... but how? Actually might be ok efficiency-wise
@@ -401,7 +408,7 @@
           {
             \keys_set:nn { thmkeys/thmuse } { ##1 }
             \thmkeys_thmuse_prebody:n { #1 }
-            \tl_gset:Ne \g__thmkeys_thmuse_number_tl { \use:c {@currentlabel} }
+            \tl_gset:Ne \l__thmkeys_thmuse_number_tl { \use:c {@currentlabel} }
             \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
               { \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop { ####1 } { \the\value{####1} } }
             ##2
@@ -409,7 +416,7 @@
             \seq_gput_right:Nx \g__thmkeys_thmuse_seq % Why is variant \seq_gput_right:Ne not defined by default?
               {
                 { #1 } % envname
-                { \g__thmkeys_thmuse_number_tl } % number
+                { \l__thmkeys_thmuse_number_tl } % number
                 { \exp_not:n { ##1 } } % keys
                 { \exp_not:n { ##2 } } % body
                 { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
@@ -480,6 +487,7 @@
     \UseHook{ theorem-keys/allthms/posthead }
     \ignorespaces % space added without this (or not? check)
   }
+
 \cs_new_protected:Npn \thmkeys_thmuse_postbody:n #1
   {
     \UseHook{ theorem-keys/allthms/prefoot }
@@ -539,7 +547,7 @@
 % print the stored theorems
 % NOTE: If you want to print theorems before they're called in the document,
 %       we need to write to file. See code in 0.0.0alpha.
-\NewDocumentCommand{\PrintThms}{}
+\NewDocumentCommand { \PrintThms } { }
   {
     \seq_map_inline:Nn \g__thmkeys_thmuse_seq { \ThmKeysSavedTheorem ##1 }
   }
@@ -549,7 +557,7 @@
 \cs_gset:Npn \theHthmkeys_dummyctr { dummy.\arabic{thmkeys_dummyctr} }
 \cs_gset:Npn \thethmkeys_dummyctr { }
 
-\NewDocumentCommand{\ThmKeysSavedTheorem}{smmmmm}
+\NewDocumentCommand { \ThmKeysSavedTheorem } { smmmmm }
   {
     \prop_set_from_keyval:Nn \g__thmkeys_thmuse_othercounters_prop { #6 }
     \group_begin:
@@ -565,7 +573,7 @@
         \cs_set_eq:cN { c@ #2 } \c@thmkeys_dummyctr
         \cs_set_eq:cN { theH #2 } \theHthmkeys_dummyctr
       }
-    \cs_set_eq:NN \label \use_none:n
+    \cs_set_eq:NN \label \use_none:n % disable \label
     \keys_set:nn { thmkeys/thmuse } { #4 }
     \thmkeys_thmuse_prebody:n { #2 }
     #5
@@ -583,26 +591,199 @@
 
 \keys_define:nn { thmkeys/listofthms }
   {
-    numwidth   .dim_set:N  = \l__thmkeys_listof_numwidth_dim,
-    ignore     .tl_set:N   = \l__thmkeys_listof_ignore_tl,
-    onlynamed  .tl_set:N   = \l__thmkeys_listof_onlynamed_tl,
-    show       .tl_set:N   = \l__thmkeys_listof_show_tl,
-    ignoreall  .bool_set:N = \l__thmkeys_listof_ignoreall_bool,
-    showall    .bool_set:N = \l__thmkeys_listof_showall_bool,
+    numwidth   .dim_set:N = \l__thmkeys_listof_numwidth_dim,
+    ignore     .code:n    =
+      {
+        \AddToHook{ begindocument/before } { \thmkeys_listof_ignore:n { #1 } }
+      },
+    onlynamed  .code:n    = ,
+    show       .code:n    =
+      {
+        \AddToHook{ begindocument/before } { \thmkeys_listof_show:n { #1 } }
+      },
+    ignoreall  .code:n    =
+      {
+        \AddToHook{ begindocument/before } % in case called before theorem defined
+          {
+            \seq_map_inline:Nn \g__thmkeys_thmnames_envnames_seq
+              { \__thmkeys_listof_ignore_aux:n { ##1 } }
+          }
+      },
+    showall    .code:n    =
+      {
+        \AddToHook{ begindocument/before } % in case called before theorem defined
+          {
+            \seq_map_inline:Nn \g__thmkeys_thmnames_envnames_seq
+              { \__thmkeys_listof_show_aux:n { ##1 } }
+          }
+      },
     title      .tl_set:N   = \l__thmkeys_listof_title_tl,
     swapnumber .bool_set:N = \l__thmkeys_listof_swapnumber_bool,
   }
 
-%% Look at acro.sty for inspiration. Template idea is nice.
-%% Basic idea:
-\NewDocumentCommand{\thmkeys_thmitem:}{smmmmm}
+\AddToHook{ begindocument } % redefine these keys after begindocument
   {
-    #3~\prop_item:Nn \g__thmkeys_thmnames_prop {#2}\dots\par
+    \keys_define:nn { thmkeys/listofthms }
+      {
+        ignore    .code:n = \thmkeys_listof_ignore:n { #1 },
+        show      .code:n = \thmkeys_listof_show:n { #1 },
+        ignoreall .code:n =
+          {
+            \seq_map_inline:Nn \g__thmkeys_thmnames_envnames_seq
+              { \__thmkeys_listof_ignore_aux:n { ##1 } }
+          },
+        showall   .code:n =
+          {
+            \seq_map_inline:Nn \g__thmkeys_thmnames_envnames_seq
+              { \__thmkeys_listof_show_aux:n { ##1 } }
+          },
+      }
   }
-\NewDocumentCommand{\ListOfThms}{}
+
+\NewDocumentCommand { \ThmKeysListSet } { m } % find better name...
+  { \keys_set:nn { thmkeys/listofthms } { #1 } }
+
+\cs_new_protected:Npn \thmkeys_listof_ignore:n #1 
   {
-    \seq_map_inline:Nn \g__thmkeys_thmuse_seq { \thmkeys_thmitem: ##1 }
+    \clist_map_inline:nn { #1 } { \__thmkeys_listof_ignore_aux:n { ##1 } }
   }
+\cs_new_protected:Npn \__thmkeys_listof_ignore_aux:n #1 
+  {
+    \exp_args:Nc \DeclareDocumentCommand { __thmkeys_thmitem_#1: } { smmmmm } { }
+  }
+
+\cs_new_protected:Npn \thmkeys_listof_show:n #1 
+  {
+    \clist_map_inline:nn { #1 } { \__thmkeys_listof_show_aux:n { ##1 } }
+  }
+\cs_new_protected:Npn \__thmkeys_listof_show_aux:n #1 
+  {
+    \exp_args:Nc \DeclareDocumentCommand { __thmkeys_thmitem_#1: } { smmmmm }
+      {
+        ##3 ~ \prop_item:Nn \g__thmkeys_thmnames_prop {##2} ~
+        \__thmkeys_listof_printheading:n { ##4 } ~ \dots \par
+      }
+  }
+
+% Seems unnecessary to repeat all this for reading the keyvals from seq
+\keys_define:nn { thmkeys/listofheading }
+  {
+    name .tl_set:N = \l__thmkeys_listof_name_tl,
+    label .code:n = , % do nothing
+    continues .tl_set:N = \l__thmkeys_listof_contlabel_tl,
+    restate .code:n = , % do nothing
+  }
+
+\NewExpandableDocumentCommand { \thmkeys_envname_fromsequence: } { smmmmm } { #2 }
+
+\cs_new:Npn \__thmkeys_listof_printheading:n #1
+  {
+    \group_begin:
+    \keys_set:nn { thmkeys/listofheading } { #1 }
+    \tl_if_empty:NF \l__thmkeys_listof_contlabel_tl
+      {
+        \tl_if_empty:NF \l__thmkeys_listof_name_tl
+          { \tl_put_right:Nn \l__thmkeys_listof_name_tl { , ~ } }
+        \tl_put_right:Nn \l__thmkeys_listof_name_tl
+          { \exp_args:NV \thmkeys_thmuse_continues:n \l__thmkeys_listof_contlabel_tl }
+      }
+    \tl_if_empty:NF \l__thmkeys_listof_name_tl { ( \l__thmkeys_listof_name_tl ) }
+    \group_end:
+  }
+
+\NewDocumentCommand { \ListOfThms } { O{} }
+  {
+    \group_begin:
+    \keys_set:nn { thmkeys/listofthms } { #1 }
+    \seq_map_inline:Nn \g__thmkeys_thmuse_seq
+      {
+        \tl_set:Ne \l_tmpa_tl { \exp_after:wN \thmkeys_envname_fromsequence: ##1 }
+        \use:c { __thmkeys_thmitem_ \l_tmpa_tl : } ##1
+      }
+    \group_end:
+  }
+
+%%%%%% The approach below doesn't work! %%%%%%%%%%%%%%%
+%% logic below with "ignore" and "show" is wrong. For example with
+%%    \ThmKeysListSet{show=foo}
+%%    \ListOfThms[ignore=foo]
+%% you expect the last call to win, i.e. foo ignored, but this fails here
+
+%\clist_new:N \l__thmkeys_listof_ignore_clist
+%\clist_new:N \l__thmkeys_listof_onlynamed_clist
+%\clist_new:N \l__thmkeys_listof_show_clist
+%
+%\keys_define:nn { thmkeys/listofthms }
+%  {
+%    numwidth   .dim_set:N   = \l__thmkeys_listof_numwidth_dim,
+%    ignore     .code:n = \clist_put_right:Nn \l__thmkeys_listof_ignore_clist { #1 }, % cumulative
+%    onlynamed  .code:n = \clist_put_right:Nn \l__thmkeys_listof_onlynamed_clist { #1 },
+%    show       .code:n = \clist_put_right:Nn \l__thmkeys_listof_show_clist { #1 },
+%    ignoreall  .bool_set:N  = \l__thmkeys_listof_ignoreall_bool,
+%    showall    .bool_set_inverse:N  = \l__thmkeys_listof_ignoreall_bool,
+%    title      .tl_set:N    = \l__thmkeys_listof_title_tl,
+%    swapnumber .bool_set:N  = \l__thmkeys_listof_swapnumber_bool,
+%  }
+%
+%\cs_new:Npn \__thmkeys_listof_ignore:N #1
+%  {
+%    \clist_map_inline:Nn #1
+%      { \clist_remove_all:Nn \l__thmkeys_listof_envnames_clist { ##1 } }
+%  }
+%
+%\NewDocumentCommand { \ThmKeysListSet } { m } % find better name...
+%  { \keys_set:nn { thmkeys/listofthms } { #1 } }
+%
+%%% Look at acro.sty for inspiration. Template idea is nice.
+%%% Experimenting:
+%
+%\keys_define:nn { thmkeys/listofheading }
+%  {
+%    name .tl_set:N = \l__thmkeys_listofheading_tl,
+%    label .code:n = , % do nothing
+%    continues .code:n = , % do nothing
+%    restate .code:n = , % do nothing
+%  }
+%
+%\cs_new:Npn \__thmkeys_listof_printheading:n #1
+%  {
+%    \group_begin:
+%    \keys_set:nn { thmkeys/listofheading } { #1 }
+%    \tl_if_empty:NF \l__thmkeys_listofheading_tl { ( \l__thmkeys_listofheading_tl ) }
+%    \group_end:
+%  }
+%
+%\NewDocumentCommand { \thmkeys_thmitem: } { smmmmm }
+%  {
+%    #3 ~ \prop_item:Nn \g__thmkeys_thmnames_prop {#2} ~ \__thmkeys_listof_printheading:n { #4 } ~ \dots \par
+%  }
+%
+%% NOTE: need \New... instead of expl3 for "star" argument. Should really just reformat
+%% the data in \g__thmkeys_thmuse_seq
+%\NewExpandableDocumentCommand { \thmkeys_envname_fromsequence: } { smmmmm } { #2 }
+%
+%\cs_generate_variant:Nn \clist_if_in:NnT {Ne}
+%
+%\NewDocumentCommand { \ListOfThms } { O{} }
+%  {
+%    \group_begin:
+%    \keys_set:nn { thmkeys/listofthms } { #1 }
+%    \bool_if:NTF \l__thmkeys_listof_ignoreall_bool
+%      { \clist_clear_new:N \l__thmkeys_listof_envnames_clist }
+%      { \clist_set_from_seq:NN \l__thmkeys_listof_envnames_clist \g__thmkeys_thmnames_envnames_seq }
+%    \clist_if_empty:NF \l__thmkeys_listof_ignore_clist
+%      { \__thmkeys_listof_ignore:N \l__thmkeys_listof_ignore_clist }
+%    \clist_if_empty:NF \l__thmkeys_listof_show_clist
+%      { \clist_put_right:No \l__thmkeys_listof_envnames_clist { \l__thmkeys_listof_show_clist } }
+%    \seq_map_inline:Nn \g__thmkeys_thmuse_seq
+%      {
+%        \clist_if_in:NeT \l__thmkeys_listof_envnames_clist
+%          { \exp_after:wN \thmkeys_envname_fromsequence: ##1 } { \thmkeys_thmitem: ##1 }
+%      }
+%    \group_end:
+%  }
+
+
 
 %%% Questions
 % 1. Are kernel hooks really better than simple token lists?

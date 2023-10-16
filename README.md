@@ -50,7 +50,7 @@ $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open
 \end{document}
 ```
 
-## Difference with `thmtools`
+## Differences with `thmtools`
 Most of the code is a direct translation from `thmtools`
 but a few things are changed:
 - The only backend supported is `amsthm`, and it is loaded by the package. As I understand it,
