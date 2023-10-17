@@ -42,8 +42,8 @@
         \cs_gset:cpn { #3 }
           { % make \foo and \foo* identical
             \peek_meaning_remove:NTF *
-              { \use:c{ orig_restate_#3 } }
-              { \use:c{ orig_restate_#3 } }
+              { \use:c { orig_restate_#3 } }
+              { \use:c { orig_restate_#3 } }
           }
       }
     \ProvideDocumentCommand { \listoftheorems } { } { \ListOfThms }
@@ -125,8 +125,6 @@
         spaceabove = 0.5\topsep,
         spacebelow = 0.5\topsep,
       },
-    %% Theorem keys that will be passed to \NewThm
-    thm-keys .tl_set:N = \l__thmkeys_thmstyle_newthmkeys_tl,
   }
 
 \cs_new_protected:Nn \thmkeys_thmstyle_thmname:n { \thmname{#1} }
@@ -184,7 +182,6 @@
     notefont      = \fontseries\mddefault\upshape,
     notebraces    = {(}{)},
     headstyle     = \thmkeys_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-    thm-keys      = {},
   }
   \l__thmkeys_thmstyle_defaultkeys_tl
 
@@ -206,6 +203,8 @@
     % ^ broken with headformat?
     %\tl_set:cn { g__thmkeys_newthmkeys_#1_tl }
   }
+
+\@onlypreamble\NewThmStyle
 
 \cs_new_eq:NN \thmkeys_thmstyle_new:nnnnnnnnn \newtheoremstyle
 \cs_generate_variant:Nn \thmkeys_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
@@ -339,6 +338,8 @@
       { \thmkeys_thm_NewThm:nn { ##1 } { #2 } }
   }
 
+\@onlypreamble\NewThm
+
 % \thmkeys_thm_NewThm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \thmkeys_thm_NewThm:nn #1#2
   {
@@ -449,7 +450,6 @@
 % allocate the needed variables
 \prop_new:N \g__thmkeys_thmuse_othercounters_prop
 \seq_new:N \g__thmkeys_thmuse_seq
-\tl_new:N \l__thmkeys_thmuse_number_tl
 
 % \thmkeys_keyify_theorem:n { <envname> }
 %% NOTE: should only grab body for restatable... but how? Actually might be ok efficiency-wise
@@ -462,23 +462,24 @@
           {
             \keys_set:nn { thmkeys/thmuse } { ##1 }
             \thmkeys_thmuse_prebody:n { #1 }
-            \tl_set:Ne \l__thmkeys_thmuse_number_tl { \use:c {@currentlabel} }
             \seq_map_inline:Nn \g__thmkeys_restatecounters_seq
               {
                 \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
                   { ####1 } { \the\value{####1} }
               }
-            ##2
-            \thmkeys_thmuse_postbody:n { #1 }
             \seq_gput_right:Nx \g__thmkeys_thmuse_seq
               {
                 { #1 } % envname
-                { \l__thmkeys_thmuse_number_tl } % number
+                { \@currentlabel } % number
                 { \exp_not:n { ##1 } } % keys
                 { \exp_not:n { ##2 } } % body
                 { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
                 { \thepage } % page number
+                { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
+                % ^ is this necessary? Should always be of form <envname>.\the<envname>
               }
+            ##2
+            \thmkeys_thmuse_postbody:n { #1 }
             \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
               {
                 \seq_get_right:NN \g__thmkeys_thmuse_seq
@@ -499,8 +500,6 @@
            \thmkeys_thmuse_prebody:n { #1 }
            \seq_map_inline:Nn \g__thmkeys_restatecounters_seq
              { \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop { ####1 } { \the\value{####1} } }
-           ##2
-           \thmkeys_thmuse_postbody:n { #1 }
            \seq_gput_right:Nx \g__thmkeys_thmuse_seq
              {
                { #1 } % envname
@@ -509,7 +508,10 @@
                { \exp_not:n { ##2 } } % body
                { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
                { \thepage } % page number
+               { } % FIX: use dummy counter for hyperref
              }
+           ##2
+           \thmkeys_thmuse_postbody:n { #1 }
            \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
              {
                \seq_get_right:NN \g__thmkeys_thmuse_seq
@@ -550,7 +552,7 @@
       { \__thmkeys_orig_begin:nV { #1 } \l__thmkeys_thmuse_name_tl }
     \UseHook{ theorem-keys/#1/posthead }
     \UseHook{ theorem-keys/allthms/posthead }
-    \ignorespaces % space added without this (or not? check)
+    %\ignorespaces % space added without this (or not? check)
   }
 
 \cs_new_protected:Npn \thmkeys_thmuse_postbody:n #1
@@ -624,7 +626,7 @@
 \cs_gset:Npn \theHthmkeys_dummyctr { dummy.\arabic{thmkeys_dummyctr} }
 \cs_gset:Npn \thethmkeys_dummyctr { }
 
-\NewDocumentCommand { \ThmKeysSavedTheorem } { mmmmmm }
+\NewDocumentCommand { \ThmKeysSavedTheorem } { mmmmmmm }
   {
     \prop_set_from_keyval:Nn \g__thmkeys_thmuse_othercounters_prop { #5 }
     \group_begin:
@@ -692,10 +694,8 @@
     title      .tl_set:N   = \l__thmkeys_listof_title_tl,
     title      .initial:n  = { List~of~Theorems },
     swapnumber .bool_set:N = \l__thmkeys_listof_swapnumber_bool,
+    swapnumber .initial:n = false,
   }
-
-
-
 
 \AddToHook{ begindocument } % redefine these keys after begindocument
   {
@@ -727,7 +727,7 @@
   }
 \cs_new_protected:Npn \__thmkeys_listof_ignore_aux:n #1 
   {
-    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnn } ##1##2##3##4##5##6 { }
+    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7 { }
   }
 
 \cs_new_protected:Npn \thmkeys_listof_show:n #1 
@@ -736,12 +736,18 @@
   }
 \cs_new_protected:Npn \__thmkeys_listof_show_aux:n #1 
   {
-    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnn } ##1##2##3##4##5##6
+    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
       {
         \group_begin:
         \keys_set:nn { thmkeys/listofheading } { ##3 }
-        ##2 ~ \prop_item:Nn \g__thmkeys_thmnames_prop {##1} ~
-        \__thmkeys_listof_printheading: ~ \dots \par
+        \tl_if_empty:NF \l__thmkeys_listofheading_contlabel_tl
+          {
+            \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
+              { \tl_put_right:Nn \l__thmkeys_listofheading_name_tl { , ~ } }
+            \tl_put_right:Nn \l__thmkeys_listofheading_name_tl
+              { \thmkeys_thmuse_continues:V \l__thmkeys_listofheading_contlabel_tl }
+          }
+        \thmkeys_listof_default_listcmd:nnnnnnn{##1}{##2}{##3}{##4}{##5}{##6}{##7}
         \group_end:
       }
   }
@@ -760,21 +766,29 @@
   }
 \cs_new_protected:Npn \__thmkeys_listof_onlynamed_aux:n #1 
   {
-    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnn } ##1##2##3##4##5##6
+    \cs_set_protected:cpn { __thmkeys_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
       {
         \group_begin:
         \keys_set:nn { thmkeys/listofheading } { ##3 }
+        \tl_if_empty:NF \l__thmkeys_listofheading_contlabel_tl
+          {
+            \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
+              { \tl_put_right:Nn \l__thmkeys_listofheading_name_tl { , ~ } }
+            \tl_put_right:Nn \l__thmkeys_listofheading_name_tl
+              { \thmkeys_thmuse_continues:V \l__thmkeys_listofheading_contlabel_tl }
+          }
         \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
           {
-            ##2 ~ \prop_item:Nn \g__thmkeys_thmnames_prop {##1} ~
-            \__thmkeys_listof_printheading: ~ \dots \par
+            \thmkeys_listof_default_listcmd:nnnnnnn{##1}{##2}{##3}{##4}{##5}{##6}{##7}
           }
         \group_end:
       }
   }
 
 % Seems unnecessary to repeat all this for reading the keyvals from seq.
-% In thmtools they just hook the "thmitem" definition into the theorem declaration
+% In thmtools they just hook the "thmitem" definition into the theorem declaration.
+%% NOTE ON ABOVE: this gives more flexibility to define different kinds of lists.
+%% See acro.sty for template idea.
 \keys_define:nn { thmkeys/listofheading }
   {
     name .tl_set:N = \l__thmkeys_listofheading_name_tl,
@@ -785,25 +799,44 @@
 
 \cs_new:Npn \__thmkeys_listof_printheading:
   {
-    \tl_if_empty:NF \l__thmkeys_listofheading_contlabel_tl
-      {
-        \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
-          { \tl_put_right:Nn \l__thmkeys_listofheading_name_tl { , ~ } }
-        \tl_put_right:Nn \l__thmkeys_listofheading_name_tl
-          { \thmkeys_thmuse_continues:V \l__thmkeys_listofheading_contlabel_tl }
-      }
     \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
       { ( \l__thmkeys_listofheading_name_tl ) }
   }
 
+\cs_new:Npn \thmkeys_listof_default_listcmd:nnnnnnn #1#2#3#4#5#6#7
+  {
+    \contentsline{ #1 }
+      {
+        \bool_if:NTF \l__thmkeys_listof_swapnumber_bool
+          { \prop_item:Nn \g__thmkeys_thmnames_prop { #1 } ~ #2 }
+          {
+            \numberline{ #2 }
+            \prop_item:Nn \g__thmkeys_thmnames_prop { #1 }
+          } ~
+        \__thmkeys_listof_printheading:
+      }
+      { #6 }{ #7 }
+  }
+
+\AtBeginDocument
+  {
+    \prop_map_inline:Nn \g__thmkeys_thmnames_prop
+      {
+        \cs_set:cpn { l@ #1 }
+          { \@dottedtocline { 1 }{ 1.5em } { \l__thmkeys_listof_numwidth_dim } }
+      }
+  }
 \NewDocumentCommand { \ListOfThms } { O{} }
   {
     \group_begin:
     \keys_set:nn { thmkeys/listofthms } { #1 }
+    \cs_if_exist:NTF \chapter
+      { \chapter*{ \l__thmkeys_listof_title_tl } }
+      { \section*{ \l__thmkeys_listof_title_tl } }
     \seq_map_inline:Nn \g__thmkeys_thmuse_seq
       {
-        \tl_set:Ne \l_tmpa_tl { \exp_after:wN \use_i:nnnnnn ##1 }
-        \use:c { __thmkeys_thmitem_ \l_tmpa_tl :nnnnnn } ##1
+        \tl_set:Ne \l_tmpa_tl { \exp_after:wN \use_i:nnnnnnn ##1 }
+        \use:c { __thmkeys_thmitem_ \l_tmpa_tl :nnnnnnn } ##1
       }
     \group_end:
   }
@@ -813,13 +846,14 @@
 %    In particular, with token lists you have \tl_put_left to avoid all the hook
 %    order issues
 % 2. Should we allow \NewThm keys in \NewThmStyle like thmtools?
+% 3. \ListOfThms does not print restated theorems. Should an option be added
+%    to do this?
 
 %%% Keys not yet implemented
 % qed (in style; and all thm keys in style)
 % numbered=unless unique
 
 %%% Commands/envs not implemented
-% \begin{restatable} (no need?)
 % \Autoref
 
 %%% Notes
