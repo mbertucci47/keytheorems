@@ -13,28 +13,28 @@ feel free to open an issue or PR.
 \usepackage{hyperref}
 
 \NewThmStyle{mystyle}{
-	% <insert options>
-	}
+    % <insert options>
+    }
 \NewThm{theorem}[
-	style=mystyle,
-	parent=section
-	]
+    style=mystyle,
+    parent=section
+    ]
 \NewThm{remark}[
-	style=remark,
-	numbered=no
-	]
+    style=remark,
+    numbered=no
+    ]
 
 \begin{document}
 
 \section{Some theorems}
 
 \begin{theorem}[
-	name=Strong Bertini over $\mathbb{C}$,
-	label=strongbertini
-	]
+    name=Strong Bertini over $\mathbb{C}$,
+    label=strongbertini
+    ]
 Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive dimensional linear system on $X$.
 Then the general element of $\mathfrak{D}$ is smooth away from the base locus $B_{\mathfrak{D}}$. That is, the set
-	\[\{H\in\mathfrak{D}\mid D_H \text{ is smooth away from } B_{\mathfrak{D}}\}\]
+    \[\{H\in\mathfrak{D}\mid D_H \text{ is smooth away from } B_{\mathfrak{D}}\}\]
 is a Zariski dense open subset of $\mathfrak{D}$.
 \end{theorem}
 
@@ -46,6 +46,13 @@ In fact, \autoref{strongbertini} holds over any algebraically closed field of ch
 Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$. Then the set of hyperplanes
 $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
 \end{theorem}
+
+\ListOfThms
+
+%%% compare with
+%\ListOfThms[ignoreall,show=theorem]
+%\ListOfThms[swapnumber]
+%\ListOfThms[title=BLUB]
 
 \end{document}
 ```
@@ -96,21 +103,25 @@ but a few things are changed:
       
       ```tex
       \cs_if_exist:NTF \hyperref
-  	    { \hyperref[#1]{continuing} ~ }
-  	    { continuing ~ }
+        { \hyperref[#1]{continuing} ~ }
+        { continuing ~ }
       from~p.\,\pageref{#1}
       ```
- 
+- The package is not compatible with `thmtools` so produces an error if the
+  latter is loaded. To make converting old documents easier, there is a
+  `thmtools-compat` option which defines the commands `\declaretheoremstyle`,
+  `\declaretheorem`, and `\listoftheorems`, and the `restatable` environment, in terms of `theorem-keys` commands.
+
 ## Things to do
 
 - Clean up the code. Things are out of order, poorly named, l3 naming conventions, etc.
 - Add error messages. Curently there are none...
 - Fix `headstyle`/`headformat` key with `\NAME`, `\NUMBER`, and `\NOTE` commands.
   Currently errors with something like `headstyle={\textit{\NAME}}`, have to protect
-  with `\exp_not:N`. Expansion is hard.
+  with `\exp_not:N` (`\noexpand`). Expansion is hard.
 - `thmtools` features not yet implemented
     - `numbered=unless unique` key
-    - `\listoftheorems` (basic idea in the code)
     - `\Autoref`
     - labels pointing to restated theorem, not original
+    - hyperlinking unnumbered theorems in list of theorems
     - certainly more
