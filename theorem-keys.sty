@@ -11,7 +11,7 @@
   {
     \AddToHook{package/theorem-keys/after}
       {
-        \RenewDocumentCommand{\newtheorem}{smomo}
+        \RenewDocumentCommand { \newtheorem } { smomo }
           {
             \IfBooleanTF { #1 }
               { \thmkeys_thm_NewThm:nn { #2 } { numbered=no } }
@@ -87,8 +87,8 @@
 % \__thmkeys_thmstyle_setbraces:nn { <left brace> } { <right brace> }
 \cs_new_protected:Npn \thmkeys_thmstyle_setbraces:nn #1#2
   {
-    \tl_set:Nn \l__thmkeys_thmstyle_leftbrace_tl {#1}
-    \tl_set:Nn \l__thmkeys_thmstyle_rightbrace_tl {#2}
+    \tl_set:Nn \l__thmkeys_thmstyle_lnotebrace_tl {#1}
+    \tl_set:Nn \l__thmkeys_thmstyle_rnotebrace_tl {#2}
   }
 
 \keys_define:nn { thmkeys/thmstyle }
@@ -150,7 +150,7 @@
     \thmkeys_thmstyle_thmnote:n
       { ~ \group_begin: % group so notefont doesn't affect headpunct
         \exp_not:V \l__thmkeys_thmstyle_notefont_tl
-        \l__thmkeys_thmstyle_leftbrace_tl ##3 \l__thmkeys_thmstyle_rightbrace_tl
+        \l__thmkeys_thmstyle_lnotebrace_tl ##3 \l__thmkeys_thmstyle_rnotebrace_tl
         \group_end:
       }
   }
@@ -164,7 +164,7 @@
     \thmkeys_thmstyle_thmnote:n
       { ~ \group_begin: % group so notefont doesn't affect headpunct
         \exp_not:V \l__thmkeys_thmstyle_notefont_tl
-        \l__thmkeys_thmstyle_leftbrace_tl #3 \l__thmkeys_thmstyle_rightbrace_tl
+        \l__thmkeys_thmstyle_lnotebrace_tl #3 \l__thmkeys_thmstyle_rnotebrace_tl
         \group_end:
       }
   }
@@ -411,7 +411,6 @@
     % Set default list-of display command
     \__thmkeys_listof_show_aux:n { #1 }
     % Set theorem style back to original state
-    % Note: if thmtools also loaded, \exp_args:NV hangs, hence the :Ne
     \__thmkeys_theoremstyle:V \l__thmkeys_currentthmstyle_tl
   }
 
@@ -455,7 +454,7 @@
 %% NOTE: should only grab body for restatable... but how? Actually might be ok efficiency-wise
 \cs_new_protected:Npn \thmkeys_keyify_theorem:n #1
   {
-    \NewEnvironmentCopy { orig_#1 } { #1 }
+    \NewEnvironmentCopy { thmkeys_orig_#1 } { #1 }
     \bool_if:NTF \l__thmkeys_thm_numbered_bool
       { % numbered
         \RenewDocumentEnvironment { #1 } { ={name} O{} +b }
@@ -531,8 +530,8 @@
 
 \cs_new_protected:Npn \thmkeys_thmuse_prebody:n #1
   {
-    %%% EXPERIMENTAL (okay to use same name as outside?)
-    \tl_set:Nn \l__thmkeys_thm_envname_tl { #1 }
+    %%% EXPERIMENTAL
+    \tl_set:Nn \l__thmkeys_thmuse_envname_tl { #1 }
     %%% END EXPERIMENTAL
     \UseHook{ theorem-keys/#1/prehead }
     \UseHook{ theorem-keys/allthms/prehead }
@@ -559,13 +558,13 @@
   {
     \UseHook{ theorem-keys/allthms/prefoot }
     \UseHook{ theorem-keys/#1/prefoot }
-    \end{orig_#1}
+    \end{thmkeys_orig_#1}
     \UseHook{ theorem-keys/allthms/postfoot }
     \UseHook{ theorem-keys/#1/postfoot }
   }
 
-\cs_new_protected:Npn \__thmkeys_orig_begin:n #1 { \begin{orig_#1} }
-\cs_new_protected:Npn \__thmkeys_orig_begin:nn #1#2 { \begin{orig_#1}[#2] }
+\cs_new_protected:Npn \__thmkeys_orig_begin:n #1 { \begin{thmkeys_orig_#1} }
+\cs_new_protected:Npn \__thmkeys_orig_begin:nn #1#2 { \begin{thmkeys_orig_#1}[#2] }
 \cs_generate_variant:Nn \__thmkeys_orig_begin:nn { nV }
 
 % \thmkeys_thmuse_continues:n { <label> }
@@ -820,12 +819,29 @@
 
 \AtBeginDocument
   {
-    \prop_map_inline:Nn \g__thmkeys_thmnames_prop
+    \cs_if_exist:NTF \@tocline
       {
-        \cs_set:cpn { l@ #1 }
-          { \@dottedtocline { 1 }{ 1.5em } { \l__thmkeys_listof_numwidth_dim } }
+        \prop_map_inline:Nn \g__thmkeys_thmnames_prop
+          {
+            \cs_set:cpn { l@ #1 }
+              {
+                \@tocline{ 0 }{ 3pt plus 2pt }{ 0pt }
+                  { \l__thmkeys_listof_numwidth_dim }{ }
+              }
+          }
+      }
+      {
+        \prop_map_inline:Nn \g__thmkeys_thmnames_prop
+          {
+            \cs_set:cpn { l@ #1 }
+              {
+                \@dottedtocline{ 1 }{ 1.5em }
+                  { \l__thmkeys_listof_numwidth_dim }
+              }
+          }
       }
   }
+
 \NewDocumentCommand { \ListOfThms } { O{} }
   {
     \group_begin:
@@ -848,6 +864,8 @@
 % 2. Should we allow \NewThm keys in \NewThmStyle like thmtools?
 % 3. \ListOfThms does not print restated theorems. Should an option be added
 %    to do this?
+% 4. Instead of using aux we store everything in this big sequence and retrieve
+%    data from that. Is that a good idea?
 
 %%% Keys not yet implemented
 % qed (in style; and all thm keys in style)
