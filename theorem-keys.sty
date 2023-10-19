@@ -137,6 +137,7 @@
 \cs_set_eq:NN \ThmNumber \thmkeys_thmstyle_thmnumber:n
 \cs_set_eq:NN \ThmNote \thmkeys_thmstyle_thmnote:n
 
+%% NOTE: if these are use, user is in charge of spacing with \NAME and \NUMBER
 \NewExpandableDocumentCommand { \NAME } { }
   {
     \thmkeys_thmstyle_thmname:n { ##1 }
@@ -197,11 +198,10 @@
       \l__thmkeys_thmstyle_headfont_tl
       \l__thmkeys_thmstyle_headpunct_tl
       \l__thmkeys_thmstyle_postheadspace_tl
-      { \thmkeys_thmstyle_headcmd:nnn{##1}{##2}{##3} }
+      { \text_expand:n { \thmkeys_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define new inherit-style key
     \keys_define:nn { thmkeys/thmstyle } { inherit-style / #1 .meta:n = { #2 } }
     % ^ broken with headformat?
-    %\tl_set:cn { g__thmkeys_newthmkeys_#1_tl }
   }
 
 \@onlypreamble\NewThmStyle
@@ -271,31 +271,37 @@
     Refname        .tl_set:N  = \l__thmkeys_thm_Refname_tl,
     qed            .code:n    = %% Copied from thmtools
       {
-        \AddToTheoremPostHeadHook[\l__thmkeys_thm_envname_tl]{
-          \protected@edef\qedsymbol{#1}
-          \pushQED{\qed}
+        \AddToTheoremPostHeadHook[\l__thmkeys_thm_envname_tl]
+          {
+            \protected@edef\qedsymbol{#1}
+            \pushQED{\qed}
           }
         % Use label to make sure it's last. Might need to adjust to avoid
         % conflict with other chunks added to prefoot hook.
-        \AddToHook{theorem-keys/\l__thmkeys_thm_envname_tl/prefoot}[qed]{
-          \protected@edef\qedsymbol{#1}
-          \popQED
+        \AddToHook{theorem-keys/\l__thmkeys_thm_envname_tl/prefoot}[thmkeys_qed]
+          {
+            \protected@edef\qedsymbol{#1}
+            \popQED
           }
        },
     qed            .default:n = \openbox,
     tcolorbox      .code:n    =
       {
         \RequirePackage{tcolorbox}
-        \AddToTheoremPreHeadHook[\l__thmkeys_thm_envname_tl]
+        \DeclareHookRule{ theorem-keys/\l__thmkeys_thm_envname_tl/prehead }
+          { thmkeys_hook_keys }{ before }{ thmkeys_tcb } % is this what we want?
+        \AddToHook{ theorem-keys/\l__thmkeys_thm_envname_tl/prehead }[thmkeys_tcb]
           {
             \begin{tcolorbox}[
-              savedelimiter={\l__thmkeys_thm_envname_tl},wrap@environment,#1
+              savedelimiter = { \l__thmkeys_thmuse_envname_tl },
+              wrap@environment,
+              #1
               ]
           }
-        \AddToTheoremPostFootHook[\l__thmkeys_thm_envname_tl]
-          {
-            \end{tcolorbox}
-          }
+        \DeclareHookRule{ theorem-keys/\l__thmkeys_thm_envname_tl/postfoot }
+          { thmkeys_hook_keys }{ after }{ thmkeys_tcb } % is this what we want?
+        \AddToHook{ theorem-keys/\l__thmkeys_thm_envname_tl/postfoot }[thmkeys_tcb]
+          { \end{tcolorbox} }
       },
     tcolorbox    .default:n = {},
   }
@@ -358,13 +364,13 @@
     \__thmkeys_thm_makethmhooks:n { #1 }
     % Add to env-specific hooks (use label so code given in keys is outermost)
     \hook_gput_code:nnV { theorem-keys/#1/prehead }
-      { hook-keys } \l__thmkeys_thm_preheadhook_tl
+      { thmkeys_hook_keys } \l__thmkeys_thm_preheadhook_tl
     \hook_gput_code:nnV { theorem-keys/#1/posthead }
-      { hook-keys } \l__thmkeys_thm_postheadhook_tl
+      { thmkeys_hook_keys } \l__thmkeys_thm_postheadhook_tl
     \hook_gput_code:nnV { theorem-keys/#1/prefoot }
-      { hook-keys } \l__thmkeys_thm_prefoothook_tl
+      { thmkeys_hook_keys } \l__thmkeys_thm_prefoothook_tl
     \hook_gput_code:nnV { theorem-keys/#1/postfoot }
-      { hook-keys } \l__thmkeys_thm_postfoothook_tl
+      { thmkeys_hook_keys } \l__thmkeys_thm_postfoothook_tl
     % Set name if none given
     \quark_if_no_value:NT \l__thmkeys_thm_name_tl % use quark so name={} is valid
       {
@@ -440,7 +446,9 @@
     label     .code:n   =
       { \AddToHookNext{ cmd/deferred@thm@head/after }{ \label{ #1 } } },
     % ^ maybe better to add to usual posthead hook and declare a rule
-    name      .tl_set:N = \l__thmkeys_thmuse_name_tl,
+    note      .tl_set:N = \l__thmkeys_thmuse_note_tl,
+    name      .tl_set:N = \l__thmkeys_thmuse_note_tl,
+    % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     continues .tl_set:N = \l__thmkeys_thmuse_contlabel_tl,
     restate   .tl_set:N = \l__thmkeys_thmuse_restate_tl,
   }
@@ -537,18 +545,18 @@
     \UseHook{ theorem-keys/allthms/prehead }
     \tl_if_empty:NF \l__thmkeys_thmuse_contlabel_tl
       {
-        \tl_if_empty:NF \l__thmkeys_thmuse_name_tl
-          { \tl_put_right:Nn \l__thmkeys_thmuse_name_tl { , ~ } }
-        \tl_put_right:Nn \l__thmkeys_thmuse_name_tl
+        \tl_if_empty:NF \l__thmkeys_thmuse_note_tl
+          { \tl_put_right:Nn \l__thmkeys_thmuse_note_tl { , ~ } }
+        \tl_put_right:Nn \l__thmkeys_thmuse_note_tl
           { \thmkeys_thmuse_continues:V \l__thmkeys_thmuse_contlabel_tl }
         \cs_set:cpn { the #1 }
           { \exp_args:Ne \__thmkeys_ref_starred:n { \l__thmkeys_thmuse_contlabel_tl } }
           % ^ apparently V expansion is not enough, error if label= is given too
         \cs_set_eq:cN { c@ #1 } \c@thmkeys_dummyctr
       }
-    \tl_if_empty:NTF \l__thmkeys_thmuse_name_tl
+    \tl_if_empty:NTF \l__thmkeys_thmuse_note_tl
       { \__thmkeys_orig_begin:n { #1 } }
-      { \__thmkeys_orig_begin:nV { #1 } \l__thmkeys_thmuse_name_tl }
+      { \__thmkeys_orig_begin:nV { #1 } \l__thmkeys_thmuse_note_tl }
     \UseHook{ theorem-keys/#1/posthead }
     \UseHook{ theorem-keys/allthms/posthead }
     %\ignorespaces % space added without this (or not? check)
@@ -568,7 +576,7 @@
 \cs_generate_variant:Nn \__thmkeys_orig_begin:nn { nV }
 
 % \thmkeys_thmuse_continues:n { <label> }
-\cs_new:Nn \thmkeys_thmuse_continues:n
+\cs_new:Npn \thmkeys_thmuse_continues:n #1
   {
     \cs_if_exist:NTF \hyperref
       { \hyperref[#1]{continuing} ~ }
@@ -625,7 +633,7 @@
 \cs_gset:Npn \theHthmkeys_dummyctr { dummy.\arabic{thmkeys_dummyctr} }
 \cs_gset:Npn \thethmkeys_dummyctr { }
 
-\NewDocumentCommand { \ThmKeysSavedTheorem } { mmmmmmm }
+\NewDocumentCommand { \ThmKeysSavedTheorem } { m m m +m m m m } % 4th arg is body
   {
     \prop_set_from_keyval:Nn \g__thmkeys_thmuse_othercounters_prop { #5 }
     \group_begin:
@@ -693,7 +701,8 @@
     title      .tl_set:N   = \l__thmkeys_listof_title_tl,
     title      .initial:n  = { List~of~Theorems },
     swapnumber .bool_set:N = \l__thmkeys_listof_swapnumber_bool,
-    swapnumber .initial:n = false,
+    swapnumber .initial:n  = false,
+    title-code .cs_set:Np  = \__thmkeys_listof_titlecmd:n #1,
   }
 
 \AddToHook{ begindocument } % redefine these keys after begindocument
@@ -799,7 +808,7 @@
 \cs_new:Npn \__thmkeys_listof_printheading:
   {
     \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
-      { ( \l__thmkeys_listofheading_name_tl ) }
+      { ~ ( \l__thmkeys_listofheading_name_tl ) }
   }
 
 \cs_new:Npn \thmkeys_listof_default_listcmd:nnnnnnn #1#2#3#4#5#6#7
@@ -811,7 +820,7 @@
           {
             \numberline{ #2 }
             \prop_item:Nn \g__thmkeys_thmnames_prop { #1 }
-          } ~
+          }
         \__thmkeys_listof_printheading:
       }
       { #6 }{ #7 }
@@ -842,17 +851,19 @@
       }
   }
 
+\cs_if_exist:NTF \chapter
+  { \cs_set:Npn \__thmkeys_listof_titlecmd:n #1 { \chapter*{#1} } }
+  { \cs_set:Npn \__thmkeys_listof_titlecmd:n #1 { \section*{#1} } }
+
 \NewDocumentCommand { \ListOfThms } { O{} }
   {
     \group_begin:
     \keys_set:nn { thmkeys/listofthms } { #1 }
-    \cs_if_exist:NTF \chapter
-      { \chapter*{ \l__thmkeys_listof_title_tl } }
-      { \section*{ \l__thmkeys_listof_title_tl } }
+    \__thmkeys_listof_titlecmd:n { \l__thmkeys_listof_title_tl }
     \seq_map_inline:Nn \g__thmkeys_thmuse_seq
       {
-        \tl_set:Ne \l_tmpa_tl { \exp_after:wN \use_i:nnnnnnn ##1 }
-        \use:c { __thmkeys_thmitem_ \l_tmpa_tl :nnnnnnn } ##1
+        \tl_set:Ne \l__thmkeys_tmpa_tl { \exp_after:wN \use_i:nnnnnnn ##1 }
+        \use:c { __thmkeys_thmitem_ \l__thmkeys_tmpa_tl :nnnnnnn } ##1
       }
     \group_end:
   }
