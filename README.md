@@ -53,9 +53,15 @@ $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open
 %\ListOfThms[ignoreall,show=theorem]
 %\ListOfThms[swapnumber]
 %\ListOfThms[title=BLUB]
+%\ListOfThms[print-body]
 
 \end{document}
 ```
+
+## Documentation
+There is a list of commands and keys offered by the package
+[here](https://github.com/mbertucci47/theorem-keys/blob/main/doc/theorem-keys-doc-10-21-2023.pdf).
+More of a reference document than documentation.
 
 ## Differences with `thmtools`
 Most of the code is a direct translation from `thmtools`
