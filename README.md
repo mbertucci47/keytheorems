@@ -82,7 +82,7 @@ but a few things are changed:
   
   is different from just
   
-  ```
+  ```tex
   \declaretheorem{mythm}
   ```
   
