@@ -1,6 +1,13 @@
 *.aux
+*.hd
+*.idx
+*.ilg
+*.ind
+*.listing
 *.loe
 *.log
 *.out
 *.synctex.gz
+*.tcbtemp
+*.thlist
 *.toc

@@ -67,13 +67,13 @@
 %%% Global Keys %%%
 %%%%%%%%%%%%%%%%%%%
 
-\seq_new:N \g__thmkeys_restatecounters_seq
-\seq_put_right:Nn \g__thmkeys_restatecounters_seq { equation }
+\clist_new:N \g__thmkeys_restatecounters_clist
+\clist_set:Nn \g__thmkeys_restatecounters_clist { equation }
 
 \keys_define:nn { thmkeys }
   {
     restate-counters .code:n =
-      { \seq_put_right:Nn \g__thmkeys_restatecounters_seq { #1 } },
+      { \clist_put_right:Nn \g__thmkeys_restatecounters_clist { #1 } },
     continues-code .cs_set:Np = \thmkeys_thmuse_continues:n #1,
     continues-code .initial:n =
       {
@@ -82,6 +82,7 @@
           { continuing ~ }
         from~p.\,\pageref{#1}
       },
+    qed-symbol .cs_set_protected:Np = \qedsymbol,
   }
 
 \NewDocumentCommand { \ThmKeysSet } { m } { \keys_set:nn { thmkeys } { #1 } }
@@ -276,18 +277,19 @@
       {
         \AddToTheoremPostHeadHook[\l__thmkeys_thm_envname_tl]
           {
-            \protected@edef\qedsymbol{#1}
+            \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
             \pushQED{\qed}
           }
         % Use label to make sure it's last. Might need to adjust to avoid
         % conflict with other chunks added to prefoot hook.
         \AddToHook{theorem-keys/\l__thmkeys_thm_envname_tl/prefoot}[thmkeys_qed]
           {
-            \protected@edef\qedsymbol{#1}
+            \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
             \popQED
           }
        },
-    qed            .default:n = \openbox,
+    qed            .default:n = \q_no_value,
+    % ^ distinguish between 'qed' and 'qed={}'
     tcolorbox      .code:n    =
       {
         \RequirePackage{tcolorbox}
@@ -472,7 +474,7 @@
           {
             \keys_set:nn { thmkeys/thmuse } { ##1 }
             \thmkeys_thmuse_prebody:n { #1 }
-            \seq_map_inline:Nn \g__thmkeys_restatecounters_seq
+            \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
               {
                 \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
                   { ####1 } { \the\value{####1} }
@@ -508,7 +510,7 @@
          {
            \keys_set:nn { thmkeys/thmuse } { ##1 }
            \thmkeys_thmuse_prebody:n { #1 }
-           \seq_map_inline:Nn \g__thmkeys_restatecounters_seq
+           \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
              { \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop { ####1 } { \the\value{####1} } }
            \seq_gput_right:Nx \g__thmkeys_thmuse_seq
              {
