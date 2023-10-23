@@ -122,9 +122,6 @@ but a few things are changed:
 
 - Clean up the code. Things are out of order, poorly named, l3 naming conventions, etc.
 - Add error messages. Curently there are none...
-- Fix `headstyle`/`headformat` key with `\NAME`, `\NUMBER`, and `\NOTE` commands.
-  Currently errors with something like `headstyle={\textit{\NAME}}`, have to protect
-  with `\exp_not:N` (`\noexpand`). Expansion is hard.
 - `thmtools` features not yet implemented
     - `numbered=unless unique` key
     - `\Autoref`
