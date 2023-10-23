@@ -1,4 +1,4 @@
-\ProvidesExplPackage{theorem-keys}{}{0.0.0delta}{l3 thmtools implementation}
+\ProvidesExplPackage{theorem-keys}{}{0.0.1alpha}{l3keys interface to amsthm}
 
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
@@ -137,12 +137,6 @@
 \cs_new_protected:Nn \thmkeys_thmstyle_thmname:n { \thmname{#1} }
 \cs_new_protected:Nn \thmkeys_thmstyle_thmnumber:n { \thmnumber{#1} }
 \cs_new_protected:Nn \thmkeys_thmstyle_thmnote:n { \thmnote{#1} }
-
-% these are necessary!
-% e.g. headformat={\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} thinks note is always there
-\cs_set_eq:NN \ThmName \thmkeys_thmstyle_thmname:n
-\cs_set_eq:NN \ThmNumber \thmkeys_thmstyle_thmnumber:n
-\cs_set_eq:NN \ThmNote \thmkeys_thmstyle_thmnote:n
 
 %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
 \NewExpandableDocumentCommand { \NAME } { }
@@ -502,7 +496,7 @@
                   \l__thmkeys_thmuse_savethmargs_tl
                 \exp_args:Nee \cs_new:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
                   {
-                    \exp_not:N \ThmKeysSavedTheorem
+                    \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
                     \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
                   }
               }
@@ -534,7 +528,7 @@
                  \l__thmkeys_thmuse_savethmargs_tl
                \exp_args:Nee \cs_gset:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
                  {
-                   \exp_not:N \ThmKeysSavedTheorem
+                   \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
                    \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
                  }
              }
@@ -620,22 +614,12 @@
 %%% Restating Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% print the stored theorems
-% NOTE: If you want to print theorems before they're called in the document,
-%       we need to write to file. See code in 0.0.0alpha.
-% LATER NOTE: Why would you want to print theorem with body before it's called?
-% LATER LATER NOTE: this functionality has been wrapped into \ListOfThms
-%\NewDocumentCommand { \PrintThms } { }
-%  {
-%    \seq_map_inline:Nn \g__thmkeys_thmuse_seq { \ThmKeysSavedTheorem ##1 }
-%  }
-
 % stealing from thm-restate
 \newcounter{thmkeys_dummyctr}
 \cs_gset:Npn \theHthmkeys_dummyctr { dummy.\arabic{thmkeys_dummyctr} }
 \cs_gset:Npn \thethmkeys_dummyctr { }
 
-\NewDocumentCommand { \ThmKeysSavedTheorem } { m m m +m m m m } % 4th arg is body
+\cs_set:Npn \__thmkeys_listof_printbody_listcmd:nnnnnnn #1#2#3#4#5#6#7
   {
     \prop_set_from_keyval:Nn \g__thmkeys_thmuse_othercounters_prop { #5 }
     \group_begin:
@@ -662,6 +646,9 @@
         \exp_args:Nnc \setcounter { ##1 } { l_thmkeys_restate_current_##1_tl }
       }
   }
+
+\NewDocumentCommand { \ThmKeysSavedTheorem } { m m m +m m m m } % 4th arg is body
+  { \use:c { __thmkeys_thmitem_#1:nnnnnnn } {#1}{#2}{#3}{#4}{#5}{#6}{#7} }
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% List of Theorems %%%
@@ -707,7 +694,7 @@
     title-code .cs_set:Np  = \__thmkeys_listof_titlecmd:n #1,
     no-title   .meta:n     = { title-code = {} },
     print-body .code:n     =
-      { \cs_set_eq:NN \__thmkeys_listof_default_listcmd:nnnnnnn \ThmKeysSavedTheorem },
+      { \cs_set_eq:NN \thmkeys_listof_listcmd:nnnnnnn \__thmkeys_listof_printbody_listcmd:nnnnnnn },
   }
 
 \AddToHook{ begindocument } % redefine these keys after begindocument
@@ -753,7 +740,7 @@
       {
         \__thmkeys_listof_listcmd_setup:nn { ##3 }
           {
-            \__thmkeys_listof_default_listcmd:nnnnnnn
+            \thmkeys_listof_listcmd:nnnnnnn
               {##1}{##2}{##3}{##4}{##5}{##6}{##7}
           }
       }
@@ -779,7 +766,7 @@
           {
             \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
               {
-                \__thmkeys_listof_default_listcmd:nnnnnnn
+                \thmkeys_listof_listcmd:nnnnnnn
                   {##1}{##2}{##3}{##4}{##5}{##6}{##7}
               }
           }
@@ -834,6 +821,9 @@
     \group_end:
   }
 
+% set default listcmd
+\cs_new_eq:NN \thmkeys_listof_listcmd:nnnnnnn \__thmkeys_listof_default_listcmd:nnnnnnn
+
 \AtBeginDocument
   {
     \cs_if_exist:NTF \@tocline
@@ -863,17 +853,42 @@
   { \cs_set:Npn \__thmkeys_listof_titlecmd:n #1 { \chapter*{#1} } }
   { \cs_set:Npn \__thmkeys_listof_titlecmd:n #1 { \section*{#1} } }
 
+\iow_new:N \g__thmkeys_listof_stream
+\bool_new:N \g__thmkeys_listof_writefile_bool
+\bool_set_false:N \g__thmkeys_listof_writefile_bool
+
 \NewDocumentCommand { \ListOfThms } { O{} }
   {
+    % set bool true for writing to file
+    \bool_set_true:N \g__thmkeys_listof_writefile_bool
     \group_begin:
     \keys_set:nn { thmkeys/listof } { #1 }
     \__thmkeys_listof_titlecmd:n { \l__thmkeys_listof_title_tl }
-    \seq_map_inline:Nn \g__thmkeys_thmuse_seq
-      {
-        %\tl_set:Nn \l__thmkeys_tmpa_tl { \use_i:nnnnnnn ##1 }
-        \use:c { __thmkeys_thmitem_ \use_i:nnnnnnn ##1 :nnnnnnn } ##1
-      }
+    \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
+  }
+
+\cs_new_protected:Nn \__thmkeys_listof_save:
+  {
+    \seq_map_function:NN \g__thmkeys_thmuse_seq \__thmkeys_listof_save_aux:n
+  }
+\cs_new_protected:Nn \__thmkeys_listof_save_aux:n
+  {
+    \iow_now:Nn \g__thmkeys_listof_stream
+      {
+        \ThmKeysSavedTheorem #1
+      }
+  }
+
+\AddToHook{enddocument}
+  {
+    % if \ListOfThms called anywhere, write to file
+    \bool_if:NT \g__thmkeys_listof_writefile_bool
+      {
+        \iow_open:Nn \g__thmkeys_listof_stream { \c_sys_jobname_str.thlist }
+        \__thmkeys_listof_save:
+        \iow_close:N \g__thmkeys_listof_stream
+      }
   }
 
 %%% Questions
@@ -892,3 +907,5 @@
 
 %%% Commands/envs not implemented
 % \Autoref
+
+%% Another idea: only print "up-to-now" theorems
