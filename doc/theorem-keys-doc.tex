@@ -8,7 +8,7 @@
 \tcbuselibrary{documentation}
 \usepackage{theorem-keys}
 
-\def\version{0.0.0$\gamma$}
+\def\version{0.0.1$\alpha$}
 
 \title{
 	\pkg{theorem-keys} package \\[1ex]
@@ -23,14 +23,25 @@
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
 \newcommand{\hook}{\texttt}
-\newcommand{\ttbrackets}[1]{\brackets{\texttt{#1}}}
+\NewCommandCopy{\braces}{\brackets}
+\newcommand{\bracks}[1]{\texttt{[#1]}}
+\newcommand{\ttbraces}[1]{\braces{\texttt{#1}}}
 %\tcbset{index gather commands=false}
 \tcbset{
 	color command = BrickRed,
 	color key = Fuchsia,
 	color value = teal,
 	}
-\tcbset{preamble/.style = { before upper = {\tcbusetemplisting\texttt{\dots}}}}
+\tcbset{
+  preamble/.style = {
+    before upper = {%
+      {\ttfamily\itshape \% preamble}%
+      \tcbusetemplisting%
+      \medskip
+      {\ttfamily\itshape \% document}%
+      }
+    }
+  }
 
 \NewTCBListing{thmkeyscode}{ O{} }{
 	colback=red!5!white,
@@ -69,11 +80,11 @@ For compatibility with \pkg{thmtools} syntax. Currently defines the \docAuxComma
 
 \end{docCommand}
 
-\begin{docKey}{restate-counters}{=\marg{comma-list of counters}}{initially \ttbrackets{equation}}
+\begin{docKey}{restate-counters}{=\marg{comma-list of counters}}{initially \ttbraces{equation}}
 The counters whose values are preserved when a theorem is restated.
 \end{docKey}
 
-\begin{docKey}{continues-code}{=\meta{code with \textup{\texttt{\#1}}}}{initially |continuing from p.\cs{,}\cs{pageref}\ttbrackets{\#1}|}
+\begin{docKey}{continues-code}{=\meta{code with \textup{\texttt{\#1}}}}{initially |continuing from p.\cs{,}\cs{pageref}\ttbraces{\#1}|}
 
 \end{docKey}
 
@@ -84,7 +95,7 @@ Redefines \cs{qedsymbol} to be \meta{symbol}.
 \section{Theorem Styles}
 
 \begin{docCommand}{NewThmStyle}{\marg{name}\marg{options}}
-This is \pkg{theorem-keys}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\oarg{options}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
+This is \pkg{theorem-keys}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
 \end{docCommand}
 
 \subsection{Keys inherited from \pkg{thmtools}}
@@ -111,7 +122,7 @@ The following keys have the same meaning and syntax as the corresponding \pkg{th
 
 \end{docKey}
 
-\begin{docKey}{headpunct}{=\meta{code}}{initially \ttbrackets{.}}
+\begin{docKey}{headpunct}{=\meta{code}}{initially \ttbraces{.}}
 
 \end{docKey}
 
@@ -127,7 +138,7 @@ Do not use this with the \refKey{postheadspace} key.
 
 \end{docKey}
 
-\begin{docKey}{notebraces}{=\marg{left brace}\marg{right brace}}{initially \ttbrackets{(}\ttbrackets{)}}
+\begin{docKey}{notebraces}{=\marg{left brace}\marg{right brace}}{initially \ttbraces{(}\ttbraces{)}}
 
 \end{docKey}
 
@@ -144,13 +155,11 @@ Inherit the keys of any style declared with \refCom{NewThmStyle}. Additionally, 
 \section{Declaring Theorems}
 
 \begin{docCommand}{NewThm}{\marg{env name}\oarg{options}}
-Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}).
+Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}). You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g. \cs{NewThm}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}
 \end{docCommand}
 
 \begin{tcbwritetemp}
-\NewThm{mytheorem}[
-    name=Some Name
-    ]
+\NewThm{mytheorem}[name=Some Name]
 \end{tcbwritetemp}
 
 \begin{thmkeyscode}[preamble]
@@ -158,10 +167,7 @@ Defines a theorem environment \meta{env name} which itself takes a few options (
 Some text
 \end{mytheorem}
 
-\begin{mytheorem}[
-  name=a heading,
-  label=foo
-  ]
+\begin{mytheorem}[name=heading,label=foo]
 Some more text
 \end{mytheorem}
 
@@ -285,8 +291,8 @@ Defines a command \texttt{\char`\\}\meta{csname} that can be used to restate the
 
 \subsection{Keys added by \pkg{theorem-keys}}
 
-\begin{docKey}{title-code}{=\meta{code with \textup{\texttt{\#1}}}}{initially \cs{section*}\ttbrackets{\#1}}
-If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbrackets{\#1}.
+\begin{docKey}{title-code}{=\meta{code with \textup{\texttt{\#1}}}}{initially \cs{section*}\ttbraces{\#1}}
+If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbraces{\#1}.
 \end{docKey}
 
 \begin{docKey}{no-title}{}{initially unset}

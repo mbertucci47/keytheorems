@@ -1,5 +1,9 @@
 \ProvidesExplPackage{theorem-keys}{}{0.0.1alpha}{l3keys interface to amsthm}
 
+%%% TESTING
+%\debug_on:n { check-declarations }
+%%% END TESTING
+
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
 
@@ -68,7 +72,7 @@
 %%%%%%%%%%%%%%%%%%%
 
 \clist_new:N \g__thmkeys_restatecounters_clist
-\clist_set:Nn \g__thmkeys_restatecounters_clist { equation }
+\clist_gset:Nn \g__thmkeys_restatecounters_clist { equation }
 
 \keys_define:nn { thmkeys }
   {
@@ -90,6 +94,9 @@
 %%%%%%%%%%%%%%
 %%% Styles %%%
 %%%%%%%%%%%%%%
+
+\tl_new:N \l__thmkeys_thmstyle_lnotebrace_tl
+\tl_new:N \l__thmkeys_thmstyle_rnotebrace_tl
 
 % \__thmkeys_thmstyle_setbraces:nn { <left brace> } { <right brace> }
 \cs_new_protected:Npn \thmkeys_thmstyle_setbraces:nn #1#2
@@ -351,11 +358,14 @@
 
 \@onlypreamble\NewThm
 
+\tl_new:N \l__thmkeys_thm_currentthmstyle_tl
+\tl_new:N \l__thmkeys_thm_envname_tl
+
 % \thmkeys_thm_NewThm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \thmkeys_thm_NewThm:nn #1#2
   {
     % Store theorem style
-    \tl_set:Ne \l__thmkeys_currentthmstyle_tl { \the\thm@style }
+    \tl_set:Ne \l__thmkeys_thm_currentthmstyle_tl { \the\thm@style }
     % Store envname
     \tl_set:Nn \l__thmkeys_thm_envname_tl { #1 }
     % Set default keys
@@ -422,7 +432,7 @@
     % Set default list-of display command
     \__thmkeys_listof_show_aux:n { #1 }
     % Set theorem style back to original state
-    \__thmkeys_theoremstyle:V \l__thmkeys_currentthmstyle_tl
+    \__thmkeys_theoremstyle:V \l__thmkeys_thm_currentthmstyle_tl
   }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
@@ -464,7 +474,9 @@
 \seq_new:N \g__thmkeys_thmuse_seq
 
 % \thmkeys_keyify_theorem:n { <envname> }
-%% NOTE: should only grab body for restatable... but how? Actually might be ok efficiency-wise
+%% NOTE: should only grab body for restatable... but how?
+%%       Actually might be ok efficiency-wise.
+%%       But not good for verbatim material... Try filecontentsdef?
 \cs_new_protected:Npn \thmkeys_keyify_theorem:n #1
   {
     \NewEnvironmentCopy { thmkeys_orig_#1 } { #1 }
@@ -479,7 +491,7 @@
                 \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
                   { ####1 } { \the\value{####1} }
               }
-            \seq_gput_right:Nx \g__thmkeys_thmuse_seq
+            \seq_gput_right:Ne \g__thmkeys_thmuse_seq
               {
                 { #1 } % envname
                 { \@currentlabel } % number
@@ -504,42 +516,48 @@
               }
           }
           {}
-     }
-     { % unnumbered
-       \RenewDocumentEnvironment { #1 } { ={name} O{} +b }
-         {
-           \keys_set:nn { thmkeys/thmuse } { ##1 }
-           \thmkeys_thmuse_prebody:n { #1 }
-           \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
-             { \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop { ####1 } { \the\value{####1} } }
-           \seq_gput_right:Nx \g__thmkeys_thmuse_seq
-             {
-               { #1 } % envname
-               { } % number
-               { \exp_not:n { ##1 } } % keys
-               { \exp_not:n { ##2 } } % body
-               { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
-               { \thepage } % page number
-               { } % FIX: use dummy counter for hyperref
-             }
-           ##2
-           \thmkeys_thmuse_postbody:n { #1 }
-           \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
-             {
-               \seq_get_right:NN \g__thmkeys_thmuse_seq
-                 \l__thmkeys_thmuse_savethmargs_tl
-               \exp_args:Nee \cs_gset:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
-                 {
-                   \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
-                   \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
-                 }
-             }
-         }
-         {}
-     }
+      }
+      { % unnumbered
+        \RenewDocumentEnvironment { #1 } { ={name} O{} +b }
+          {
+            \keys_set:nn { thmkeys/thmuse } { ##1 }
+            \thmkeys_thmuse_prebody:n { #1 }
+            \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
+              {
+                \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
+                  { ####1 } { \the\value{####1} }
+              }
+            \seq_gput_right:Ne \g__thmkeys_thmuse_seq
+              {
+                { #1 } % envname
+                { } % number
+                { \exp_not:n { ##1 } } % keys
+                { \exp_not:n { ##2 } } % body
+                { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
+                { \thepage } % page number
+                { } % FIX: use dummy counter for hyperref
+              }
+            ##2
+            \thmkeys_thmuse_postbody:n { #1 }
+            \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
+              {
+                \seq_get_right:NN \g__thmkeys_thmuse_seq
+                  \l__thmkeys_thmuse_savethmargs_tl
+                \exp_args:Nee \cs_new:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
+                  {
+                    \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
+                    \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
+                  }
+              }
+          }
+          {}
+      }
   }
+%% ^^ Mustn't there be a way to check if numbered with less code duplication?
 
 \cs_new:Npn \__thmkeys_ref_starred:n #1 { \ref*{#1} }
+
+\tl_new:N \l__thmkeys_thmuse_envname_tl
 
 \cs_new_protected:Npn \thmkeys_thmuse_prebody:n #1
   {
@@ -555,8 +573,11 @@
         \tl_put_right:Nn \l__thmkeys_thmuse_note_tl
           { \thmkeys_thmuse_continues:V \l__thmkeys_thmuse_contlabel_tl }
         \cs_set:cpn { the #1 }
-          { \exp_args:Ne \__thmkeys_ref_starred:n { \l__thmkeys_thmuse_contlabel_tl } }
-          % ^ apparently V expansion is not enough, error if label= is given too
+          {
+            \exp_args:Ne \__thmkeys_ref_starred:n
+              { \l__thmkeys_thmuse_contlabel_tl }
+            % ^ apparently V expansion is not enough, error if label= is given too
+          }
         \cs_set_eq:cN { c@ #1 } \c@thmkeys_dummyctr
       }
     \tl_if_empty:NTF \l__thmkeys_thmuse_note_tl
@@ -857,12 +878,12 @@
 
 \iow_new:N \g__thmkeys_listof_stream
 \bool_new:N \g__thmkeys_listof_writefile_bool
-\bool_set_false:N \g__thmkeys_listof_writefile_bool
+\bool_gset_false:N \g__thmkeys_listof_writefile_bool
 
 \NewDocumentCommand { \ListOfThms } { O{} }
   {
     % set bool true for writing to file
-    \bool_set_true:N \g__thmkeys_listof_writefile_bool
+    \bool_gset_true:N \g__thmkeys_listof_writefile_bool
     \group_begin:
     \keys_set:nn { thmkeys/listof } { #1 }
     \__thmkeys_listof_titlecmd:n { \l__thmkeys_listof_title_tl }
@@ -911,3 +932,11 @@
 % \Autoref
 
 %% Another idea: only print "up-to-now" theorems
+
+%% Another: use style key for multiple theorems, like
+%    \ThmKeysSet{style={<keys>}}
+%    \NewThm{thm1}
+%    \NewThm{thm2}...
+% Well maybe not. Because should these style keys also be applied to a called
+% \NewThmStyle? Or only used for that? Question is: should user be able to style theorems
+% without an explicit call to \NewThm{<thm>}[style=<style>]?
