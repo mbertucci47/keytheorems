@@ -74,6 +74,12 @@ Redefines \cs{newtheorem} to internally use the \pkg{theorem-keys} machinery. Th
 For compatibility with \pkg{thmtools} syntax. Currently defines the \docAuxCommand{declaretheoremstyle}, \docAuxCommand{declaretheorem}, and \docAuxCommand{listoftheorems} commands and the \docAuxEnvironment{restatable} environment. 
 \end{docKey}
 
+\begin{docKey}{store-all}{}{initially unset}
+Tells \pkg{theorem-keys} to grab the body of each theorem so it can later be
+printed with |\ListOfThms[print-body]|. Note that this means a theorem body
+\emph{cannot} contain verbatim material.
+\end{docKey}
+    
 \section{Global Options}
 
 \begin{docCommand}{ThmKeysSet}{\marg{options}}
@@ -241,8 +247,8 @@ Alias \docAuxKey[][doc label=thmuse/name]{name}.
 
 \end{docKey}
 
-\begin{docKey}{restate}{=\meta{csname}}{initially unset}
-Defines a command \texttt{\char`\\}\meta{csname} that can be used to restate the theorem, including the body text, later in the document.
+\begin{docKey}{store}{=\meta{csname}}{initially unset}
+Alias \docAuxKey{restate}. Defines a command \texttt{\char`\\}\meta{csname} that can be used to restate the theorem, including the body text, later in the document.
 \end{docKey}
 
 \section{Listing Theorems}

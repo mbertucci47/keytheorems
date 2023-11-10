@@ -53,6 +53,16 @@
     \ProvideDocumentCommand { \listoftheorems } { } { \ListOfThms }
   }
 
+\DeclareOption{store-all}
+  {
+    \AddToHook{package/theorem-keys/after}
+      {
+        \cs_set_eq:NN \__thmkeys_withhooks_begin:nn \__thmkeys_grab_begin:nn
+        \cs_set_eq:NN \__thmkeys_withhooks_begin:nnn \__thmkeys_grab_begin:nnn
+        \cs_set_eq:NN \__thmkeys_withhooks_begin:nnV \__thmkeys_grab_begin:nnV
+        \cs_set_eq:NN \__thmkeys_withhooks_end:n \__thmkeys_grab_end:n
+      }
+  }
 \ProcessOptions*
 
 % error if thmtools loaded
@@ -73,11 +83,16 @@
 
 \clist_new:N \g__thmkeys_restatecounters_clist
 \clist_gset:Nn \g__thmkeys_restatecounters_clist { equation }
+\tl_new:N \l_thmkeys_restate_current_equation_tl
 
 \keys_define:nn { thmkeys }
   {
     restate-counters .code:n =
-      { \clist_put_right:Nn \g__thmkeys_restatecounters_clist { #1 } },
+      {
+        \clist_map_inline:nn { #1 }
+          { \tl_new:c { l_thmkeys_restate_current_##1_tl } }
+        \clist_gput_right:Nn \g__thmkeys_restatecounters_clist { #1 }
+      },
     continues-code .cs_set:Np = \thmkeys_thmuse_continues:n #1,
     continues-code .initial:n =
       {
@@ -422,8 +437,8 @@
     % Store theorem def so we can redefine it with keys
     \thmkeys_keyify_theorem:n { #1 }
     % define \<env>autorefname and \<env>Autorefname, might be redefined next
-    \tl_set:cV { #1 autorefname } \l__thmkeys_thm_name_tl
-    \tl_set:cV { #1 Autorefname } \l__thmkeys_thm_name_tl
+    \exp_args:NnV \cs_set:cpn { #1 autorefname } \l__thmkeys_thm_name_tl
+    \exp_args:NnV \cs_set:cpn { #1 Autorefname } \l__thmkeys_thm_name_tl
     % Set ref names
     \quark_if_no_value:NF \l__thmkeys_thm_refname_tl
       { \thmkeys_thm_setrefnames:nV { #1 } \l__thmkeys_thm_refname_tl }
@@ -462,110 +477,124 @@
       { \AddToHookNext{ cmd/deferred@thm@head/after }{ \label{ #1 } } },
     % ^ maybe better to add to usual posthead hook and declare a rule
     note      .tl_set:N = \l__thmkeys_thmuse_note_tl,
-    name      .tl_set:N = \l__thmkeys_thmuse_note_tl,
+    name      .meta:n   = { note = #1 },
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     continues .tl_set:N = \l__thmkeys_thmuse_contlabel_tl,
-    restate   .tl_set:N = \l__thmkeys_thmuse_restate_tl,
+    store     .tl_set:N = \l__thmkeys_thmuse_store_tl,
+    %store     .default:n = \q_no_value, % ={name} causes issues
+    restate   .meta:n   = { store = #1 },
+    % ^ thmtools compatibility
   }
 
 %% Adapted from https://tex.stackexchange.com/a/481221/208544
 % allocate the needed variables
 \prop_new:N \g__thmkeys_thmuse_othercounters_prop
 \seq_new:N \g__thmkeys_thmuse_seq
+\tl_new:N \l__thmkeys_thmuse_savethmargs_tl
 
-% \thmkeys_keyify_theorem:n { <envname> }
-%% NOTE: should only grab body for restatable... but how?
-%%       Actually might be ok efficiency-wise.
-%%       But not good for verbatim material... Try filecontentsdef?
 \cs_new_protected:Npn \thmkeys_keyify_theorem:n #1
   {
     \NewEnvironmentCopy { thmkeys_orig_#1 } { #1 }
-    \bool_if:NTF \l__thmkeys_thm_numbered_bool
-      { % numbered
-        \RenewDocumentEnvironment { #1 } { ={name} O{} +b }
+    \NewDocumentEnvironment { thmkeys_grab_#1 } { m O{} +b }
+      {
+        \__thmkeys_thm_prehead_continues_code:n { #1 }
+        \__thmkeys_thm_prehead_code:n { #1 }
+        \begin{thmkeys_orig_#1}[##2]
+        \__thmkeys_thm_posthead_code:n { #1 } % is this the right order with below?
+        \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
           {
-            \keys_set:nn { thmkeys/thmuse } { ##1 }
-            \thmkeys_thmuse_prebody:n { #1 }
-            \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
-              {
-                \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
-                  { ####1 } { \the\value{####1} }
-              }
-            \seq_gput_right:Ne \g__thmkeys_thmuse_seq
-              {
-                { #1 } % envname
-                { \@currentlabel } % number
-                { \exp_not:n { ##1 } } % keys
-                { \exp_not:n { ##2 } } % body
-                { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
-                { \thepage } % page number
-                { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
-                % ^ is this necessary? Should always be of form <envname>.\the<envname>
-              }
-            ##2
-            \thmkeys_thmuse_postbody:n { #1 }
-            \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
-              {
-                \seq_get_right:NN \g__thmkeys_thmuse_seq
-                  \l__thmkeys_thmuse_savethmargs_tl
-                \exp_args:Nee \cs_new:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
-                  {
-                    \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
-                    \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
-                  }
-              }
+            \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
+              { ####1 } { \the\value{####1} }
           }
-          {}
+        \__thmkeys_thm_storeseqdata:nnn { #1 } { ##1 } { ##3 }
+        ##3
+        \__thmkeys_thm_prefoot_code:n { #1 }
+        \end{thmkeys_orig_#1}
+        \__thmkeys_thm_postfoot_code:n { #1 }
       }
-      { % unnumbered
-        \RenewDocumentEnvironment { #1 } { ={name} O{} +b }
-          {
-            \keys_set:nn { thmkeys/thmuse } { ##1 }
-            \thmkeys_thmuse_prebody:n { #1 }
-            \clist_map_inline:Nn \g__thmkeys_restatecounters_clist
-              {
-                \prop_gput:Nne \g__thmkeys_thmuse_othercounters_prop
-                  { ####1 } { \the\value{####1} }
-              }
-            \seq_gput_right:Ne \g__thmkeys_thmuse_seq
-              {
-                { #1 } % envname
-                { } % number
-                { \exp_not:n { ##1 } } % keys
-                { \exp_not:n { ##2 } } % body
-                { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
-                { \thepage } % page number
-                { } % FIX: use dummy counter for hyperref
-              }
-            ##2
-            \thmkeys_thmuse_postbody:n { #1 }
-            \tl_if_empty:NF \l__thmkeys_thmuse_restate_tl
-              {
-                \seq_get_right:NN \g__thmkeys_thmuse_seq
-                  \l__thmkeys_thmuse_savethmargs_tl
-                \exp_args:Nee \cs_new:cpn { \l__thmkeys_thmuse_restate_tl } % a better way?
-                  {
-                    \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
-                    \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
-                  }
-              }
-          }
-          {}
-      }
+      {}
+      % NOTE: have to do a lot of shenanigans to make sure the begin/end of grabbed
+      %       theorem env captures only the body and no package code.
+      %       This is the price of on-the-fly redefining the env to grab body
+      \RenewDocumentEnvironment { #1 } { ={name} O{} }
+        {
+          \keys_set:nn { thmkeys/thmuse } { ##1 }
+          \tl_if_empty:NF \l__thmkeys_thmuse_store_tl
+            {
+              \cs_set_eq:NN \__thmkeys_withhooks_begin:nn \__thmkeys_grab_begin:nn
+              \cs_set_eq:NN \__thmkeys_withhooks_begin:nnn \__thmkeys_grab_begin:nnn
+              \cs_set_eq:NN \__thmkeys_withhooks_begin:nnV \__thmkeys_grab_begin:nnV
+              \cs_set_eq:NN \__thmkeys_withhooks_end:n \__thmkeys_grab_end:n
+            }
+          \__thmkeys_thm_prehead_continues_code:n { #1 }
+          \tl_if_empty:NTF \l__thmkeys_thmuse_note_tl
+            { \__thmkeys_withhooks_begin:nn { #1 } { ##1 } }
+            { \__thmkeys_withhooks_begin:nnV { #1 } { ##1 } \l__thmkeys_thmuse_note_tl }
+        }
+        {
+          \__thmkeys_withhooks_end:n { #1 }
+          \tl_if_empty:NF \l__thmkeys_thmuse_store_tl
+            {
+              \seq_get_right:NN \g__thmkeys_thmuse_seq
+                \l__thmkeys_thmuse_savethmargs_tl
+              \exp_args:Nee \cs_new:cpn { \l__thmkeys_thmuse_store_tl } % a better way?
+                {
+                  \exp_not:N \__thmkeys_listof_printbody_listcmd:nnnnnnn
+                  \exp_not:V \l__thmkeys_thmuse_savethmargs_tl
+                }
+            }
+        }
   }
-%% ^^ Mustn't there be a way to check if numbered with less code duplication?
+
+\cs_new_protected:Npn \__thmkeys_withhooks_begin:nn #1#2
+  {
+    \__thmkeys_thm_prehead_code:n { #1 }
+    \begin{thmkeys_orig_#1}
+    \__thmkeys_thm_posthead_code:n { #1 }
+    \__thmkeys_thm_storeseqdata:nnn { #1 } { #2 } { }
+  }
+\cs_new_protected:Npn \__thmkeys_withhooks_begin:nnn #1#2#3
+  {
+    \__thmkeys_thm_prehead_code:n { #1 }
+    \begin{thmkeys_orig_#1}[#3]
+    \__thmkeys_thm_posthead_code:n { #1 }
+    \__thmkeys_thm_storeseqdata:nnn { #1 } { #2 } { }
+  }
+\cs_generate_variant:Nn \__thmkeys_withhooks_begin:nnn { nnV }
+\cs_new_protected:Npn \__thmkeys_withhooks_end:n #1
+  {
+    \__thmkeys_thm_prefoot_code:n { #1 }
+    \end{thmkeys_orig_#1}
+    \__thmkeys_thm_postfoot_code:n { #1 }
+  }
+\cs_new_protected:Npn \__thmkeys_grab_begin:nn #1#2
+  { \begin{thmkeys_grab_#1}{#2} }
+\cs_new_protected:Npn \__thmkeys_grab_begin:nnn #1#2#3
+  { \begin{thmkeys_grab_#1}{#2}[#3] }
+\cs_generate_variant:Nn \__thmkeys_grab_begin:nnn { nnV }
+\cs_new_protected:Npn \__thmkeys_grab_end:n #1 { \end{thmkeys_grab_#1} }
 
 \cs_new:Npn \__thmkeys_ref_starred:n #1 { \ref*{#1} }
 
 \tl_new:N \l__thmkeys_thmuse_envname_tl
 
-\cs_new_protected:Npn \thmkeys_thmuse_prebody:n #1
+\cs_new_protected:Npn \__thmkeys_orig_begin:n #1 { \begin{thmkeys_orig_#1} }
+\cs_new_protected:Npn \__thmkeys_orig_begin:nn #1#2 { \begin{thmkeys_orig_#1}[#2] }
+\cs_generate_variant:Nn \__thmkeys_orig_begin:nn { nV }
+\cs_new_protected:Npn \__thmkeys_orig_end:n #1 { \end{thmkeys_orig_#1} }
+
+\cs_new:Npn \__thmkeys_thm_prehead_code:n #1
   {
     %%% EXPERIMENTAL
     \tl_set:Nn \l__thmkeys_thmuse_envname_tl { #1 }
     %%% END EXPERIMENTAL
     \UseHook{ theorem-keys/#1/prehead }
     \UseHook{ theorem-keys/allthms/prehead }
+  }
+%% this below has to be separate from prehead_code above since we need to add
+%% continues-code to note before retrieving it in \__thmkeys_withhooks_begin:nnV
+\cs_new:Npn \__thmkeys_thm_prehead_continues_code:n #1
+  {
     \tl_if_empty:NF \l__thmkeys_thmuse_contlabel_tl
       {
         \tl_if_empty:NF \l__thmkeys_thmuse_note_tl
@@ -579,27 +608,38 @@
             % ^ apparently V expansion is not enough, error if label= is given too
           }
         \cs_set_eq:cN { c@ #1 } \c@thmkeys_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHthmkeys_dummyctr
       }
-    \tl_if_empty:NTF \l__thmkeys_thmuse_note_tl
-      { \__thmkeys_orig_begin:n { #1 } }
-      { \__thmkeys_orig_begin:nV { #1 } \l__thmkeys_thmuse_note_tl }
+  }
+\cs_new:Npn \__thmkeys_thm_posthead_code:n #1
+  {
     \UseHook{ theorem-keys/#1/posthead }
     \UseHook{ theorem-keys/allthms/posthead }
-    %\ignorespaces % space added without this (or not? check)
   }
-
-\cs_new_protected:Npn \thmkeys_thmuse_postbody:n #1
+\cs_new:Npn \__thmkeys_thm_prefoot_code:n #1
   {
-    \UseHook{ theorem-keys/allthms/prefoot }
     \UseHook{ theorem-keys/#1/prefoot }
-    \end{thmkeys_orig_#1}
-    \UseHook{ theorem-keys/allthms/postfoot }
-    \UseHook{ theorem-keys/#1/postfoot }
+    \UseHook{ theorem-keys/allthms/prefoot }
   }
-
-\cs_new_protected:Npn \__thmkeys_orig_begin:n #1 { \begin{thmkeys_orig_#1} }
-\cs_new_protected:Npn \__thmkeys_orig_begin:nn #1#2 { \begin{thmkeys_orig_#1}[#2] }
-\cs_generate_variant:Nn \__thmkeys_orig_begin:nn { nV }
+\cs_new:Npn \__thmkeys_thm_postfoot_code:n #1
+  {
+    \UseHook{ theorem-keys/#1/postfoot }
+    \UseHook{ theorem-keys/allthms/postfoot }
+  }
+\cs_new:Npn \__thmkeys_thm_storeseqdata:nnn #1#2#3
+  {
+    \seq_gput_right:Ne \g__thmkeys_thmuse_seq
+      {
+        { #1 } % envname
+        { \cs_if_exist:cT { c@ #1 } { \@currentlabel } } % number
+        { \exp_not:n { #2 } } % keys
+        { \exp_not:n { #3 } } % body
+        { \prop_to_keyval:N \g__thmkeys_thmuse_othercounters_prop }
+        { \thepage } % page number
+        { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
+        % ^ is this necessary? Should always be of form <envname>.\the<envname>
+      }
+  }
 
 \cs_generate_variant:Nn \thmkeys_thmuse_continues:n { V }
 
@@ -637,6 +677,8 @@
 %%% Restating Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\prop_new:N \l__thmkeys_restate_counters_prop
+
 % stealing from thm-restate
 \newcounter{thmkeys_dummyctr}
 \cs_gset:Npn \theHthmkeys_dummyctr { dummy.\arabic{thmkeys_dummyctr} }
@@ -644,29 +686,39 @@
 
 \cs_set:Npn \__thmkeys_listof_printbody_listcmd:nnnnnnn #1#2#3#4#5#6#7
   {
-    \prop_set_from_keyval:Nn \g__thmkeys_thmuse_othercounters_prop { #5 }
-    \group_begin:
-    \prop_map_inline:Nn \g__thmkeys_thmuse_othercounters_prop
+    \tl_if_empty:nF { #4 }
       {
-        \tl_gset:ce { l_thmkeys_restate_current_##1_tl } { \the\value{##1} }
-        \setcounter { ##1 } { ##2 } % FIX: what if eq's numbered by section, theorem, etc.?
-        \cs_set_eq:cN { theH ##1 } \theHthmkeys_dummyctr
-      }
-    \tl_if_empty:nF { #2 }
-      {
-        \cs_set:cpn { the #1 } { #2 }
-        \cs_set_eq:cN { c@ #1 } \c@thmkeys_dummyctr
-        \cs_set_eq:cN { theH #1 } \theHthmkeys_dummyctr
-      }
-    \cs_set_eq:NN \label \use_none:n % disable \label
-    \keys_set:nn { thmkeys/thmuse } { #3 }
-    \thmkeys_thmuse_prebody:n { #1 }
-    #4
-    \thmkeys_thmuse_postbody:n { #1 }
-    \group_end:
-    \prop_map_inline:Nn \g__thmkeys_thmuse_othercounters_prop
-      {
-        \exp_args:Nnc \setcounter { ##1 } { l_thmkeys_restate_current_##1_tl }
+        \group_begin:
+        \prop_set_from_keyval:Nn \l__thmkeys_restate_counters_prop { #5 }
+        \prop_map_inline:Nn \l__thmkeys_restate_counters_prop
+          {
+            \tl_set:ce { l_thmkeys_restate_current_##1_tl } { \the\value{##1} }
+            \setcounter { ##1 } { ##2 } % FIX: what if eq's numbered by section, theorem, etc.?
+            \cs_set_eq:cN { theH ##1 } \theHthmkeys_dummyctr
+          }
+        \tl_if_empty:nF { #2 }
+          {
+            \cs_set:cpn { the #1 } { #2 }
+            \cs_set_eq:cN { c@ #1 } \c@thmkeys_dummyctr
+            \cs_set_eq:cN { theH #1 } \theHthmkeys_dummyctr
+          }
+        \cs_set_eq:NN \label \use_none:n % disable \label
+        \keys_set:nn { thmkeys/thmuse } { #3 }
+        \__thmkeys_thm_prehead_continues_code:n { #1 }
+        \__thmkeys_thm_prehead_code:n { #1 }
+        \tl_if_empty:NTF \l__thmkeys_thmuse_note_tl
+          { \__thmkeys_orig_begin:n { #1 } }
+          { \__thmkeys_orig_begin:nV { #1 } \l__thmkeys_thmuse_note_tl }
+        \__thmkeys_thm_posthead_code:n { #1 }
+        #4
+        \__thmkeys_thm_prefoot_code:n { #1 }
+        \__thmkeys_orig_end:n { #1 }
+        \__thmkeys_thm_postfoot_code:n { #1 }
+        \prop_map_inline:Nn \l__thmkeys_restate_counters_prop
+          {
+            \exp_args:Nnc \setcounter { ##1 } { l_thmkeys_restate_current_##1_tl }
+          }
+        \group_end:
       }
   }
 
@@ -787,7 +839,7 @@
       {
         \__thmkeys_listof_listcmd_setup:nn { ##3 }
           {
-            \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
+            \tl_if_empty:NF \l__thmkeys_listofheading_note_tl
               {
                 \thmkeys_listof_listcmd:nnnnnnn
                   {##1}{##2}{##3}{##4}{##5}{##6}{##7}
@@ -802,16 +854,18 @@
 %% See acro.sty for template idea.
 \keys_define:nn { thmkeys/listofheading }
   {
-    name .tl_set:N = \l__thmkeys_listofheading_name_tl,
     label .code:n = , % do nothing
+    note .tl_set:N = \l__thmkeys_listofheading_note_tl,
+    name .meta:n = { note = #1 },
     continues .tl_set:N = \l__thmkeys_listofheading_contlabel_tl,
+    store .code:n = , % do nothing
     restate .code:n = , % do nothing
   }
 
 \cs_new:Npn \__thmkeys_listof_printheading:
   {
-    \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
-      { ~ ( \l__thmkeys_listofheading_name_tl ) }
+    \tl_if_empty:NF \l__thmkeys_listofheading_note_tl
+      { ~ ( \l__thmkeys_listofheading_note_tl ) }
   }
 
 \cs_new:Npn \__thmkeys_listof_default_listcmd:nnnnnnn #1#2#3#4#5#6#7
@@ -835,9 +889,9 @@
     \keys_set:nn { thmkeys/listofheading } { #1 }
     \tl_if_empty:NF \l__thmkeys_listofheading_contlabel_tl
       {
-        \tl_if_empty:NF \l__thmkeys_listofheading_name_tl
-          { \tl_put_right:Nn \l__thmkeys_listofheading_name_tl { , ~ } }
-        \tl_put_right:Nn \l__thmkeys_listofheading_name_tl
+        \tl_if_empty:NF \l__thmkeys_listofheading_note_tl
+          { \tl_put_right:Nn \l__thmkeys_listofheading_note_tl { , ~ } }
+        \tl_put_right:Nn \l__thmkeys_listofheading_note_tl
           { \thmkeys_thmuse_continues:V \l__thmkeys_listofheading_contlabel_tl }
       }
     #2
@@ -847,7 +901,7 @@
 % set default listcmd
 \cs_new_eq:NN \thmkeys_listof_listcmd:nnnnnnn \__thmkeys_listof_default_listcmd:nnnnnnn
 
-\AtBeginDocument
+\AddToHook { begindocument }
   {
     \cs_if_exist:NTF \@tocline
       {
@@ -920,7 +974,7 @@
 %    order issues
 % 2. Should we allow \NewThm keys in \NewThmStyle like thmtools?
 % 3. \ListOfThms does not print restated theorems. Should an option be added
-%    to do this?
+%    to do this? No, right?
 % 4. Instead of using aux we store everything in this big sequence and retrieve
 %    data from that. Is that a good idea?
 

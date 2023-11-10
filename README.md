@@ -122,7 +122,6 @@ but a few things are changed:
 
 - Clean up the code. Things are out of order, poorly named, l3 naming conventions, etc.
 - Add error messages. Curently there are none...
-- Right now the theorem envs grab their body by default. This means they can't contain verbatim material. Not sure how best to fix this currently
 - `thmtools` features not yet implemented
     - `numbered=unless unique` key
     - `\Autoref`
