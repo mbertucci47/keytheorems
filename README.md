@@ -1,4 +1,4 @@
-# theorem-keys
+# key-theorems
 
 A very much incomplete and buggy LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface. Do not use it for anything important! Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
