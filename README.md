@@ -9,17 +9,17 @@ feel free to open an issue or PR.
 ```tex
 \documentclass{article}
 \usepackage{amssymb,amsmath}
-\usepackage{theorem-keys}
+\usepackage{key-theorems}
 \usepackage{hyperref}
 
-\NewThmStyle{mystyle}{
+\newkeytheoremstyle{mystyle}{
     % <insert options>
     }
-\NewThm{theorem}[
+\newkeytheorem{theorem}[
     style=mystyle,
     parent=section
     ]
-\NewThm{remark}[
+\newkeytheorem{remark}[
     style=remark,
     numbered=no
     ]
@@ -29,7 +29,7 @@ feel free to open an issue or PR.
 \section{Some theorems}
 
 \begin{theorem}[
-    name=Strong Bertini over $\mathbb{C}$,
+    note=Strong Bertini over $\mathbb{C}$,
     label=strongbertini
     ]
 Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive dimensional linear system on $X$.
@@ -47,13 +47,13 @@ Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$. Th
 $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
 \end{theorem}
 
-\ListOfThms
+\listofkeytheorems
 
 %%% compare with
-%\ListOfThms[ignoreall,show=theorem]
-%\ListOfThms[swapnumber]
-%\ListOfThms[title=BLUB]
-%\ListOfThms[print-body]
+%\listofkeytheorems[ignoreall,show=theorem]
+%\listofkeytheorems[swapnumber]
+%\listofkeytheorems[title=BLUB]
+%\listofkeytheorems[print-body] % needs 'store-all' package option
 
 \end{document}
 ```
@@ -64,6 +64,8 @@ There is a list of commands and keys offered by the package
 More of a reference document than documentation.
 
 ## Differences with `thmtools`
+*Everything below needs to be updated.*
+
 Most of the code is a direct translation from `thmtools`
 but a few things are changed:
 - The only backend supported is `amsthm`, and it is loaded by the package. As I understand it,

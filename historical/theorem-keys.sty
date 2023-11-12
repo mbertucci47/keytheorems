@@ -1,5 +1,6 @@
-\ProvidesExplPackage{theorem-keys}{}{0.0.1alpha}{l3keys interface to amsthm}
+\ProvidesExplPackage{theorem-keys}{}{0.0.1beta}{l3keys interface to amsthm}
 
+\PackageWarning{theorem-keys}{This~package~has~been~renamed~'key-theorems'.~Please~update.}
 %%% TESTING
 %\debug_on:n { check-declarations }
 %%% END TESTING
@@ -39,7 +40,7 @@
     \ProvideDocumentCommand { \declaretheorem } { O{} m }
       { \NewThm { #2 } [ #1 ] }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
-      { \begin{#2}[#1,restate=#3] }
+      { \begin{#2}[#1,store=#3] }
       {
         \end{#2}
         \cs_gset_eq:cc { orig_restate_#3 } { #3 }
@@ -104,7 +105,9 @@
     qed-symbol .cs_set_protected:Np = \qedsymbol,
   }
 
-\NewDocumentCommand { \ThmKeysSet } { m } { \keys_set:nn { thmkeys } { #1 } }
+% \keytheoremset{<options>}
+\NewDocumentCommand { \keytheoremset } { m } { \keys_set:nn { thmkeys } { #1 } }
+\providecommand{\ThmKeysSet}{\keytheoremset} % historical
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -162,6 +165,7 @@
 \cs_new_protected:Nn \thmkeys_thmstyle_thmnote:n { \thmnote{#1} }
 
 %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
+%% QUESTION: should these be moved into def of \newkeytheoremstyle?
 \NewExpandableDocumentCommand { \NAME } { }
   {
     \thmkeys_thmstyle_thmname:n { ##1 }
@@ -210,7 +214,8 @@
   }
   \l__thmkeys_thmstyle_defaultkeys_tl
 
-\NewDocumentCommand { \NewThmStyle } { m m }
+% \newkeytheoremstyle{<name>}{<keys>}
+\NewDocumentCommand { \newkeytheoremstyle } { m m }
   {
     \tl_use:N \l__thmkeys_thmstyle_defaultkeys_tl
     \keys_set:nn { thmkeys/thmstyle } { #2 }
@@ -227,8 +232,8 @@
     \keys_define:nn { thmkeys/thmstyle } { inherit-style / #1 .meta:n = { #2 } }
     % ^ broken with headformat?
   }
-
-\@onlypreamble\NewThmStyle
+\providecommand{\NewThmStyle}{\newkeytheoremstyle} % historical
+\@onlypreamble\newkeytheoremstyle
 
 \cs_new_eq:NN \thmkeys_thmstyle_new:nnnnnnnnn \newtheoremstyle
 \cs_generate_variant:Nn \thmkeys_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
@@ -238,6 +243,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bool_new:N \l__thmkeys_thm_numbered_bool
+\bool_new:N \l__thmkeys_thm_unlessunique_bool
 
 % \thmkeys_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
 \NewDocumentCommand { \thmkeys_thm_setrefnames:nn } { m >{\SplitArgument{1}{,}} m }
@@ -279,8 +285,11 @@
     numbered / false .code:n  = \bool_set_false:N \l__thmkeys_thm_numbered_bool,
     numbered / yes .meta:n    = { numbered = true },
     numbered / no  .meta:n    = { numbered = false },
-    %numbered / unless-unique .code:n = , % not yet implemented
-    %numbered / unless~unique .meta:n = { numbered = unless-unique },
+    numbered / unless-unique .code:n = 
+      {
+        \bool_set_true:N \l__thmkeys_thm_unlessunique_bool
+      },
+    numbered / unless~unique .meta:n = { numbered = unless-unique },
     numbered       .default:n = true,
     parent         .tl_set:N  = \l__thmkeys_thm_parent_tl,
     numberwithin   .meta:n    = { parent = #1 },
@@ -365,13 +374,14 @@
 
 %% Inefficiences: don't need to store and reset style every time.
 %% I do, however, need to set/reset keys each time so that envname is correct.
-\NewDocumentCommand { \NewThm } { m O{} }
+% \newkeytheorem{<name>}{<keys>}
+\NewDocumentCommand { \newkeytheorem } { m O{} }
   {
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \thmkeys_thm_NewThm:nn { ##1 } { #2 } }
   }
-
-\@onlypreamble\NewThm
+\providecommand{\NewThm}{\newkeytheorem} % historical
+\@onlypreamble\newkeytheorem
 
 \tl_new:N \l__thmkeys_thm_currentthmstyle_tl
 \tl_new:N \l__thmkeys_thm_envname_tl
@@ -383,6 +393,8 @@
     \tl_set:Ne \l__thmkeys_thm_currentthmstyle_tl { \the\thm@style }
     % Store envname
     \tl_set:Nn \l__thmkeys_thm_envname_tl { #1 }
+    % Make unless-unique false by default (can't precompile this)
+    \bool_set_false:N \l__thmkeys_thm_unlessunique_bool
     % Set default keys
     \tl_use:N \l__thmkeys_thm_defaultkeys_tl
     % Set env-specific keys
@@ -404,35 +416,58 @@
     % Set name if none given
     \quark_if_no_value:NT \l__thmkeys_thm_name_tl % use quark so name={} is valid
       {
-        \tl_set:Ne \l__thmkeys_thm_name_tl
-          { \text_titlecase_first:n { \l__thmkeys_thm_envname_tl } }
+        % use e so \text_titlecase called only once per theorem, not each time
+        % the theorem is called
+        \tl_set:Ne \l__thmkeys_thm_name_tl 
+          { \text_titlecase_first:n { #1 } }
       }
     % associate formatted name with envname in prop list
     \prop_gput:NnV \g__thmkeys_thmnames_prop { #1 } \l__thmkeys_thm_name_tl
     % Call correct \newtheorem variant
-    \bool_if:NTF \l__thmkeys_thm_numbered_bool
+    \bool_if:NTF \l__thmkeys_thm_unlessunique_bool
       {
+        \RequirePackage[unq]{unique}
         \tl_if_empty:NTF \l__thmkeys_thm_parent_tl
           {
-            \tl_if_empty:NTF \l__thmkeys_thm_sibling_tl
-              { \__thmkeys_thm_new:nV { #1 } \l__thmkeys_thm_name_tl }
+            \AddToTheoremPreHeadHook [ #1 ] { \setuniqmark { #1 } }
+            \ifuniq { #1 }
+              { \bool_set_false:N \l__thmkeys_thm_numbered_bool }
+              { \bool_set_true:N \l__thmkeys_thm_numbered_bool }
+            \bool_if:NTF \l__thmkeys_thm_numbered_bool
               {
-                %% NOTE: need this unconditionally for \PrintThms
-                \RequirePackage{aliascnt}
-                \exp_args:NVV \newaliascnt
-                  \l__thmkeys_thm_envname_tl \l__thmkeys_thm_sibling_tl
-                \__thmkeys_thm_new_sibling:nVV { #1 }
-                  \l__thmkeys_thm_name_tl \l__thmkeys_thm_envname_tl
-                \exp_args:NV \aliascntresetthe \l__thmkeys_thm_envname_tl
+                \tl_if_empty:NTF \l__thmkeys_thm_sibling_tl
+                  { \__thmkeys_thm_new:nV { #1 } \l__thmkeys_thm_name_tl }
+                  {
+                    \__thmkeys_thm_new_sibling:nVn { #1 }
+                      \l__thmkeys_thm_name_tl { #1 }
+                  }
               }
+              { \__thmkeys_thm_new_nonumber:nV { #1 } \l__thmkeys_thm_name_tl }
           }
           {
-            \__thmkeys_thm_new_parent:nVV { #1 }
-              \l__thmkeys_thm_name_tl \l__thmkeys_thm_parent_tl
+            % \__thmkeys_thm_new_uuwithparent:n { #1 } % FIX
           }
       }
       {
-        \__thmkeys_thm_new_nonumber:nV { #1 } \l__thmkeys_thm_name_tl
+        \bool_if:NTF \l__thmkeys_thm_numbered_bool
+          {
+            \tl_if_empty:NTF \l__thmkeys_thm_parent_tl
+              {
+                \tl_if_empty:NTF \l__thmkeys_thm_sibling_tl
+                  { \__thmkeys_thm_new:nV { #1 } \l__thmkeys_thm_name_tl }
+                  {
+                    \__thmkeys_thm_new_sibling:nVn { #1 }
+                      \l__thmkeys_thm_name_tl { #1 }
+                  }
+              }
+              {
+                \__thmkeys_thm_new_parent:nVV { #1 }
+                  \l__thmkeys_thm_name_tl \l__thmkeys_thm_parent_tl
+              }
+          }
+          {
+            \__thmkeys_thm_new_nonumber:nV { #1 } \l__thmkeys_thm_name_tl
+          }
       }
     % Store theorem def so we can redefine it with keys
     \thmkeys_keyify_theorem:n { #1 }
@@ -468,8 +503,13 @@
 \cs_generate_variant:Nn \__thmkeys_thm_new_parent:nnn { nVV }
 
 \cs_new_protected:Npn \__thmkeys_thm_new_sibling:nnn #1#2#3
-  { \__thmkeys_thm_new:nn{#1}[#3]{#2} }
-\cs_generate_variant:Nn \__thmkeys_thm_new_sibling:nnn { nVV }
+  {
+    \RequirePackage{aliascnt}
+    \exp_args:NnV \newaliascnt { #1 } \l__thmkeys_thm_sibling_tl
+    \__thmkeys_thm_new:nn{#1}[#3]{#2}
+    \aliascntresetthe { #1 }
+  }
+\cs_generate_variant:Nn \__thmkeys_thm_new_sibling:nnn { nV }
 
 \keys_define:nn { thmkeys/thmuse }
   {
@@ -647,26 +687,33 @@
 %%% Theorem Hooks %%%
 %%%%%%%%%%%%%%%%%%%%%
 
-%%% \AddToTheorem<hook>Hook[<envname>]{<code>}
-\NewDocumentCommand { \AddToTheoremPreHeadHook } { o m }
+%%% \addtotheoremhook[<envname>]{<hook>}{<code>}
+\NewDocumentCommand { \addtotheoremhook } { o m m }
+  {
+    \IfNoValueTF { #1 }
+      { \AddToHook{ theorem-keys/allthms/#2 }{ #3 } }
+      { \AddToHook{ theorem-keys/#1/#2 }{ #3 } }
+  }
+
+\ProvideDocumentCommand { \AddToTheoremPreHeadHook } { o m } % historical
   {
     \IfNoValueTF { #1 }
       { \AddToHook{ theorem-keys/allthms/prehead }{ #2 } }
       { \AddToHook{ theorem-keys/#1/prehead }{ #2 } }
   }
-\NewDocumentCommand { \AddToTheoremPostHeadHook } { o m }
+\ProvideDocumentCommand { \AddToTheoremPostHeadHook } { o m } % historical
   {
     \IfNoValueTF { #1 }
       { \AddToHook{ theorem-keys/allthms/posthead }{ #2 } }
       { \AddToHook{ theorem-keys/#1/posthead }{ #2 } }
   }
-\NewDocumentCommand { \AddToTheoremPreFootHook } { o m }
+\ProvideDocumentCommand { \AddToTheoremPreFootHook } { o m } % historical
   {
     \IfNoValueTF { #1 }
       { \AddToHook{ theorem-keys/allthms/prefoot }{ #2 } }
       { \AddToHook{ theorem-keys/#1/prefoot }{ #2 } }
   }
-\NewDocumentCommand { \AddToTheoremPostFootHook } { o m }
+\ProvideDocumentCommand { \AddToTheoremPostFootHook } { o m } % historical
   {
     \IfNoValueTF { #1 }
       { \AddToHook{ theorem-keys/allthms/postfoot }{ #2 } }
@@ -722,8 +769,9 @@
       }
   }
 
-\NewDocumentCommand { \ThmKeysSavedTheorem } { m m m +m m m m } % 4th arg is body
+\NewDocumentCommand { \KeyThmsSavedTheorem } { m m m +m m m m } % 4th arg is body
   { \use:c { __thmkeys_thmitem_#1:nnnnnnn } {#1}{#2}{#3}{#4}{#5}{#6}{#7} }
+\providecommand{\ThmKeysSavedTheorem}{\KeyThmsSavedTheorem} % historical
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% List of Theorems %%%
@@ -793,8 +841,9 @@
       }
   }
 
-\NewDocumentCommand { \ThmKeysListSet } { m } % find better name...
+\NewDocumentCommand { \keytheoremlistset } { m }
   { \keys_set:nn { thmkeys/listof } { #1 } }
+\providecommand{\ThmKeysListSet}{\keytheoremlistset} % historical
 
 \cs_new_protected:Npn \thmkeys_listof_ignore:n #1
   {
@@ -934,7 +983,7 @@
 \bool_new:N \g__thmkeys_listof_writefile_bool
 \bool_gset_false:N \g__thmkeys_listof_writefile_bool
 
-\NewDocumentCommand { \ListOfThms } { O{} }
+\NewDocumentCommand { \listofkeytheorems } { O{} }
   {
     % set bool true for writing to file
     \bool_gset_true:N \g__thmkeys_listof_writefile_bool
@@ -944,6 +993,7 @@
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
   }
+\providecommand{\ListOfThms}{\listofkeytheorems}
 
 \cs_new_protected:Nn \__thmkeys_listof_save:
   {

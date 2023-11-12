@@ -1,0 +1,1017 @@
+\ProvidesExplPackage{key-theorems}{}{0.0.1gamma}{l3keys interface to amsthm}
+
+%%% TESTING
+%\debug_on:n { check-declarations }
+%%% END TESTING
+
+\RequirePackage{amsthm}
+% ^ ams classes have way of ignoring this so don't need to check if they're loaded
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Package Options %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareOption{overload}
+  {
+    \AddToHook{package/key-theorems/after}
+      {
+        \RenewDocumentCommand { \newtheorem } { smomo }
+          {
+            \IfBooleanTF { #1 }
+              { \keythms_thm_newkeythm:nn { #2 } { numbered=no } }
+              {
+                \IfNoValueTF { #3 }
+                  {
+                    \IfNoValueTF { #5 }
+                      { \keythms_thm_newkeythm:nn { #2 } { } }
+                      { \keythms_thm_newkeythm:nn { #2 } { parent=#5 } }
+                  }
+                  { \keythms_thm_newkeythm:nn { #2 } { sibling=#3 } }
+              }
+          }
+      }
+  }
+
+\DeclareOption{thmtools-compat}
+  {
+    \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
+      { \NewThmStyle { #2 } { #1 } }
+    \ProvideDocumentCommand { \declaretheorem } { O{} m }
+      { \NewThm { #2 } [ #1 ] }
+    \ProvideDocumentEnvironment { restatable } { O{} m m }
+      { \begin{#2}[#1,store=#3] }
+      {
+        \end{#2}
+        \cs_gset_eq:cc { orig_restate_#3 } { #3 }
+        \cs_gset:cpn { #3 }
+          { % make \foo and \foo* identical
+            \peek_meaning_remove:NTF *
+              { \use:c { orig_restate_#3 } }
+              { \use:c { orig_restate_#3 } }
+          }
+      }
+    \ProvideDocumentCommand { \listoftheorems } { } { \ListOfThms }
+  }
+
+\DeclareOption{store-all}
+  {
+    \AddToHook{package/key-theorems/after}
+      {
+        \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
+        \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
+        \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
+        \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
+      }
+  }
+\ProcessOptions*
+
+% error if thmtools loaded
+\AddToHook{ package/thmtools/before }
+  {
+    \PackageError{key-theorems}
+      {
+        key-theorems~is~not~compatible~with~thmtools. \MessageBreak
+        Try~replacing~\protect\usepackage{thmtools}~with \MessageBreak
+        \protect\usepackage[thmtools-compat]{key-theorems}
+      }
+      {}
+  }
+
+%%%%%%%%%%%%%%%%%%%
+%%% Global Keys %%%
+%%%%%%%%%%%%%%%%%%%
+
+\clist_new:N \g__keythms_restatecounters_clist
+\clist_gset:Nn \g__keythms_restatecounters_clist { equation }
+\tl_new:N \l_keythms_restate_current_equation_tl
+
+\keys_define:nn { key-theorems }
+  {
+    restate-counters .code:n =
+      {
+        \clist_map_inline:nn { #1 }
+          { \tl_new:c { l_keythms_restate_current_##1_tl } }
+        \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
+      },
+    continues-code .cs_set:Np = \__keythms_thmuse_continues:n #1,
+    continues-code .initial:n =
+      {
+        \cs_if_exist:NTF \hyperref
+          { \hyperref[#1]{continuing} ~ }
+          { continuing ~ }
+        from~p.\,\pageref{#1}
+      },
+    qed-symbol .cs_set_protected:Np = \qedsymbol,
+  }
+
+% \keytheoremset{<options>}
+\NewDocumentCommand { \keytheoremset } { m } { \keys_set:nn { key-theorems } { #1 } }
+
+%%%%%%%%%%%%%%
+%%% Styles %%%
+%%%%%%%%%%%%%%
+
+\tl_new:N \l__keythms_thmstyle_lnotebrace_tl
+\tl_new:N \l__keythms_thmstyle_rnotebrace_tl
+
+% \__keythms_thmstyle_setbraces:nn { <left brace> } { <right brace> }
+\cs_new_protected:Npn \keythms_thmstyle_setbraces:nn #1#2
+  {
+    \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl {#1}
+    \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl {#2}
+  }
+
+\keys_define:nn { key-theorems/thmstyle }
+  {
+    spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
+    spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
+    bodyfont      .tl_set:N = \l__keythms_thmstyle_bodyfont_tl,
+    headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
+    headfont      .tl_set:N = \l__keythms_thmstyle_headfont_tl,
+    headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
+    postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
+    break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
+    break         .value_forbidden:n = true,
+    notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
+    notebraces    .code:n   = \exp_after:wN \keythms_thmstyle_setbraces:nn #1,
+    headstyle     .choice:,
+    headstyle / margin .code:n =
+      {
+        \cs_set:Nn \keythms_thmstyle_headcmd:nnn
+          { \exp_not:N \makebox[0pt][r]{\NUMBER\ }\NAME\NOTE }
+      },
+    headstyle / swapnumber .code:n =
+      {
+        \cs_set:Nn \keythms_thmstyle_headcmd:nnn { \NUMBER\ \NAME\NOTE }
+      },
+    headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
+    headformat    .meta:n = { headstyle = #1 },
+    inherit-style .choice:,
+    inherit-style / plain .meta:n = {},
+    inherit-style / definition .meta:n = { bodyfont = \normalfont },
+    inherit-style / remark .meta:n =
+      {
+        headfont = \itshape,
+        bodyfont = \normalfont,
+        spaceabove = 0.5\topsep,
+        spacebelow = 0.5\topsep,
+      },
+  }
+
+\cs_new_protected:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
+\cs_new_protected:Nn \keythms_thmstyle_thmnumber:n { \thmnumber{#1} }
+\cs_new_protected:Nn \keythms_thmstyle_thmnote:n { \thmnote{#1} }
+
+%% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
+%% QUESTION: should these be moved into def of \newkeytheoremstyle?
+\NewExpandableDocumentCommand { \NAME } { }
+  {
+    \keythms_thmstyle_thmname:n { ##1 }
+  }
+\NewExpandableDocumentCommand { \NUMBER } { }
+  {
+    \keythms_thmstyle_thmnumber:n { \exp_not:N \textup { ##2 } }
+  }
+\NewExpandableDocumentCommand { \NOTE } { }
+  {
+    \keythms_thmstyle_thmnote:n
+      { ~ \group_begin: % group so notefont doesn't affect headpunct
+        \exp_not:V \l__keythms_thmstyle_notefont_tl
+        \l__keythms_thmstyle_lnotebrace_tl ##3 \l__keythms_thmstyle_rnotebrace_tl
+        \group_end:
+      }
+  }
+
+\cs_set:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
+  {
+    \keythms_thmstyle_thmname:n { #1 }
+    \keythms_thmstyle_thmnumber:n
+      { \tl_if_empty:nF{#1}{~} \exp_not:N \textup{#2} }
+      % ^ this \tl_if_empty has no effect...
+    \keythms_thmstyle_thmnote:n
+      { ~ \group_begin: % group so notefont doesn't affect headpunct
+        \exp_not:V \l__keythms_thmstyle_notefont_tl
+        \l__keythms_thmstyle_lnotebrace_tl #3 \l__keythms_thmstyle_rnotebrace_tl
+        \group_end:
+      }
+  }
+
+\tl_new:N \l__keythms_thmstyle_defaultkeys_tl
+\keys_precompile:nnN { key-theorems/thmstyle }
+  {
+    spaceabove    = \topsep,
+    spacebelow    = \topsep,
+    bodyfont      = \itshape,
+    headindent    = 0pt,
+    headfont      = \bfseries,
+    headpunct     = {.},
+    postheadspace = 5pt plus 1pt minus 1pt,
+    notefont      = \fontseries\mddefault\upshape,
+    notebraces    = {(}{)},
+    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+  }
+  \l__keythms_thmstyle_defaultkeys_tl
+
+% \newkeytheoremstyle{<name>}{<keys>}
+\NewDocumentCommand { \newkeytheoremstyle } { m m }
+  {
+    \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
+    \keys_set:nn { key-theorems/thmstyle } { #2 }
+    \keythms_thmstyle_new:nVVVVVVVe { #1 }
+      \l__keythms_thmstyle_spaceabove_tl
+      \l__keythms_thmstyle_spacebelow_tl
+      \l__keythms_thmstyle_bodyfont_tl
+      \l__keythms_thmstyle_headindent_tl
+      \l__keythms_thmstyle_headfont_tl
+      \l__keythms_thmstyle_headpunct_tl
+      \l__keythms_thmstyle_postheadspace_tl
+      { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
+    % Define new inherit-style key
+    \keys_define:nn { key-theorems/thmstyle } { inherit-style / #1 .meta:n = { #2 } }
+    % ^ broken with headformat?
+  }
+
+\@onlypreamble\newkeytheoremstyle
+
+\cs_new_eq:NN \keythms_thmstyle_new:nnnnnnnnn \newtheoremstyle
+\cs_generate_variant:Nn \keythms_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Defining Theorems %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bool_new:N \l__keythms_thm_numbered_bool
+\bool_new:N \l__keythms_thm_unlessunique_bool
+
+% \keythms_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
+\NewDocumentCommand { \keythms_thm_setrefnames:nn } { m >{\SplitArgument{1}{,}} m }
+  { \__keythms_thm_setrefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
+\cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
+  {
+    \cs_set:cpn { #1 autorefname } { #2 }
+    \cs_if_exist:NT \crefname 
+      { 
+        \tl_if_novalue:nTF { #3 }
+          { \crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
+          { \crefname{#1}{#2}{#3} }
+      }
+  }
+\cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
+
+% \keythms_thm_setRefnames:n { <envname> } { <refname> or <sing,plural> }
+\NewDocumentCommand { \keythms_thm_setRefnames:nn } { m >{\SplitArgument{1}{,}} m }
+  { \__keythms_thm_setRefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
+\cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
+  {
+    \cs_set:cpn { #1 Autorefname } { #2 }
+    \cs_if_exist:NT \Crefname 
+      { 
+        \tl_if_novalue:nTF { #3 }
+          { \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
+          { \Crefname{#1}{#2}{#3} }
+      }
+  }
+\cs_generate_variant:Nn \keythms_thm_setRefnames:nn { nV }
+
+\keys_define:nn { key-theorems/thm }
+  {
+    name           .tl_set:N  = \l__keythms_thm_name_tl,
+    title          .meta:n    = { name = #1 },
+    heading        .meta:n    = { name = #1 },
+    numbered       .choice:,
+    numbered / true .code:n   = \bool_set_true:N \l__keythms_thm_numbered_bool,
+    numbered / false .code:n  = \bool_set_false:N \l__keythms_thm_numbered_bool,
+    numbered / yes .meta:n    = { numbered = true },
+    numbered / no  .meta:n    = { numbered = false },
+    numbered / unless-unique .code:n = 
+      {
+        \bool_set_true:N \l__keythms_thm_unlessunique_bool
+      },
+    numbered / unless~unique .meta:n = { numbered = unless-unique },
+    numbered       .default:n = true,
+    parent         .tl_set:N  = \l__keythms_thm_parent_tl,
+    numberwithin   .meta:n    = { parent = #1 },
+    within         .meta:n    = { parent = #1 },
+    sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
+    numberlike     .meta:n    = { sibling = #1 },
+    sharenumber    .meta:n    = { sibling = #1 },
+    style          .tl_set:N  = \l__keythms_thm_style_tl,
+    preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
+    postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
+    prefoothook    .tl_set:N  = \l__keythms_thm_prefoothook_tl,
+    postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
+    refname        .tl_set:N  = \l__keythms_thm_refname_tl,
+    Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    qed            .code:n    = %% Copied from thmtools
+      {
+        \addtotheoremhook[\l__keythms_thm_envname_tl]{posthead}
+          {
+            \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
+            \pushQED{\qed}
+          }
+        % Use label to make sure it's last. Might need to adjust to avoid
+        % conflict with other chunks added to prefoot hook.
+        \AddToHook{key-theorems/\l__keythms_thm_envname_tl/prefoot}[keythms_qed]
+          {
+            \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
+            \popQED
+          }
+       },
+    qed            .default:n = \q_no_value,
+    % ^ distinguish between 'qed' and 'qed={}'
+    tcolorbox      .code:n    =
+      {
+        \RequirePackage{tcolorbox}
+        \DeclareHookRule{ key-theorems/\l__keythms_thm_envname_tl/prehead }
+          { keythms_hook_keys }{ before }{ keythms_tcb } % is this what we want?
+        \AddToHook{ key-theorems/\l__keythms_thm_envname_tl/prehead }[keythms_tcb]
+          {
+            \begin{tcolorbox}[
+              savedelimiter = { \l__keythms_thmuse_envname_tl },
+              wrap@environment,
+              #1
+              ]
+          }
+        \DeclareHookRule{ key-theorems/\l__keythms_thm_envname_tl/postfoot }
+          { keythms_hook_keys }{ after }{ keythms_tcb } % is this what we want?
+        \AddToHook{ key-theorems/\l__keythms_thm_envname_tl/postfoot }[keythms_tcb]
+          { \end{tcolorbox} }
+      },
+    tcolorbox    .default:n = {},
+  }
+
+\tl_new:N \l__keythms_thm_defaultkeys_tl
+\keys_precompile:nnN { key-theorems/thm }
+  {
+    name         = \q_no_value,
+    numbered     = true,
+    parent       = {},
+    sibling      = {},
+    style        = {},
+    preheadhook  = {},
+    postheadhook = {},
+    prefoothook  = {},
+    postfoothook = {},
+    refname      = \q_no_value,
+    Refname      = \q_no_value,
+  }
+  \l__keythms_thm_defaultkeys_tl
+
+\cs_new_protected:Npn \__keythms_thm_makethmhooks:n #1
+  {
+    \NewHook{ key-theorems/#1/prehead}
+    \NewHook{ key-theorems/#1/posthead }
+    \NewReversedHook{ key-theorems/#1/prefoot }
+    \NewReversedHook{ key-theorems/#1/postfoot }
+  }
+
+\prop_new:N \g__keythms_thmnames_prop % for retrieving name from envname
+
+% Make generic theorem hooks
+\__keythms_thm_makethmhooks:n { allthms }
+
+%% Inefficiences: don't need to store and reset style every time.
+%% I do, however, need to set/reset keys each time so that envname is correct.
+% \newkeytheorem{<name>}{<keys>}
+\NewDocumentCommand { \newkeytheorem } { m O{} }
+  {
+    \clist_map_inline:nn { #1 } % define multiple theorems at once
+      { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
+  }
+
+\@onlypreamble\newkeytheorem
+
+\tl_new:N \l__keythms_thm_currentthmstyle_tl
+\tl_new:N \l__keythms_thm_envname_tl
+
+% \keythms_thm_newkeythm:nn { <envname> } { <keys> }
+\cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
+  {
+    % Store theorem style
+    \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \the\thm@style }
+    % Store envname
+    \tl_set:Nn \l__keythms_thm_envname_tl { #1 }
+    % Make unless-unique false by default (can't precompile this)
+    \bool_set_false:N \l__keythms_thm_unlessunique_bool
+    % Set default keys
+    \tl_use:N \l__keythms_thm_defaultkeys_tl
+    % Set env-specific keys
+    \keys_set:nn { key-theorems/thm } { #2 }
+    % Temporarily set style if style key given
+    \tl_if_empty:NF \l__keythms_thm_style_tl
+      { \__keythms_theoremstyle:n { \l__keythms_thm_style_tl } }
+    % Set up env-specific hooks
+    \__keythms_thm_makethmhooks:n { #1 }
+    % Add to env-specific hooks (use label so code given in keys is outermost)
+    \hook_gput_code:nnV { key-theorems/#1/prehead }
+      { keythms_hook_keys } \l__keythms_thm_preheadhook_tl
+    \hook_gput_code:nnV { key-theorems/#1/posthead }
+      { keythms_hook_keys } \l__keythms_thm_postheadhook_tl
+    \hook_gput_code:nnV { key-theorems/#1/prefoot }
+      { keythms_hook_keys } \l__keythms_thm_prefoothook_tl
+    \hook_gput_code:nnV { key-theorems/#1/postfoot }
+      { keythms_hook_keys } \l__keythms_thm_postfoothook_tl
+    % Set name if none given
+    \quark_if_no_value:NT \l__keythms_thm_name_tl % use quark so name={} is valid
+      {
+        % use e so \text_titlecase called only once per theorem, not each time
+        % the theorem is called
+        \tl_set:Ne \l__keythms_thm_name_tl 
+          { \text_titlecase_first:n { #1 } }
+      }
+    % associate formatted name with envname in prop list
+    \prop_gput:NnV \g__keythms_thmnames_prop { #1 } \l__keythms_thm_name_tl
+    % Call correct \newtheorem variant
+    \bool_if:NTF \l__keythms_thm_unlessunique_bool
+      {
+        \RequirePackage[unq]{unique}
+        \tl_if_empty:NTF \l__keythms_thm_parent_tl
+          {
+            \addtotheoremhook [ #1 ] { prehead } { \setuniqmark { #1 } }
+            \ifuniq { #1 }
+              { \bool_set_false:N \l__keythms_thm_numbered_bool }
+              { \bool_set_true:N \l__keythms_thm_numbered_bool }
+            \bool_if:NTF \l__keythms_thm_numbered_bool
+              {
+                \tl_if_empty:NTF \l__keythms_thm_sibling_tl
+                  { \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl }
+                  {
+                    \__keythms_thm_new_sibling:nVn { #1 }
+                      \l__keythms_thm_name_tl { #1 }
+                  }
+              }
+              { \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl }
+          }
+          {
+            % \__keythms_thm_new_uuwithparent:n { #1 } % FIX
+          }
+      }
+      {
+        \bool_if:NTF \l__keythms_thm_numbered_bool
+          {
+            \tl_if_empty:NTF \l__keythms_thm_parent_tl
+              {
+                \tl_if_empty:NTF \l__keythms_thm_sibling_tl
+                  { \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl }
+                  {
+                    \__keythms_thm_new_sibling:nVn { #1 }
+                      \l__keythms_thm_name_tl { #1 }
+                  }
+              }
+              {
+                \__keythms_thm_new_parent:nVV { #1 }
+                  \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+              }
+          }
+          {
+            \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
+          }
+      }
+    % Store theorem def so we can redefine it with keys
+    \keythms_keyify_theorem:n { #1 }
+    % define \<env>autorefname and \<env>Autorefname, might be redefined next
+    \exp_args:NnV \cs_set:cpn { #1 autorefname } \l__keythms_thm_name_tl
+    \exp_args:NnV \cs_set:cpn { #1 Autorefname } \l__keythms_thm_name_tl
+    % Set ref names
+    \quark_if_no_value:NF \l__keythms_thm_refname_tl
+      { \keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
+    \quark_if_no_value:NF \l__keythms_thm_Refname_tl 
+      { \keythms_thm_setRefnames:nV { #1 } \l__keythms_thm_Refname_tl }
+    % Set default list-of display command
+    \__keythms_listof_show_aux:n { #1 }
+    % Set theorem style back to original state
+    \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl
+  }
+
+\cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
+
+\cs_new_eq:NN \__keythms_theoremstyle:n \theoremstyle
+\cs_generate_variant:Nn \__keythms_theoremstyle:n { V }
+
+% \newtheorem variants
+\cs_new_eq:NN \__keythms_thm_new:nn \newtheorem
+\cs_generate_variant:Nn \__keythms_thm_new:nn { nV }
+
+\cs_new_protected:Npn \__keythms_thm_new_nonumber:nn #1#2
+  { \__keythms_thm_new:nn*{#1}{#2} }
+\cs_generate_variant:Nn \__keythms_thm_new_nonumber:nn { nV }
+
+\cs_new_protected:Npn \__keythms_thm_new_parent:nnn #1#2#3
+  { \__keythms_thm_new:nn{#1}{#2}[#3] }
+\cs_generate_variant:Nn \__keythms_thm_new_parent:nnn { nVV }
+
+\cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
+  {
+    \RequirePackage{aliascnt}
+    \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
+    \__keythms_thm_new:nn{#1}[#3]{#2}
+    \aliascntresetthe { #1 }
+  }
+\cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV }
+
+\keys_define:nn { key-theorems/thmuse }
+  {
+    label     .code:n   =
+      { \AddToHookNext{ cmd/deferred@thm@head/after }{ \label{ #1 } } },
+    % ^ maybe better to add to usual posthead hook and declare a rule
+    note      .tl_set:N = \l__keythms_thmuse_note_tl,
+    name      .meta:n   = { note = #1 },
+    % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
+    continues .tl_set:N = \l__keythms_thmuse_contlabel_tl,
+    store     .tl_set:N = \l__keythms_thmuse_store_tl,
+    %store     .default:n = \q_no_value, % ={name} causes issues
+    restate   .meta:n   = { store = #1 },
+    % ^ thmtools compatibility
+  }
+
+%% Adapted from https://tex.stackexchange.com/a/481221/208544
+% allocate the needed variables
+\prop_new:N \g__keythms_thmuse_othercounters_prop
+\seq_new:N \g__keythms_thmuse_seq
+\tl_new:N \l__keythms_thmuse_savethmargs_tl
+
+\cs_new_protected:Npn \keythms_keyify_theorem:n #1
+  {
+    \NewEnvironmentCopy { keythms_orig_#1 } { #1 }
+    \NewDocumentEnvironment { keythms_grab_#1 } { m O{} +b }
+      {
+        \__keythms_thm_prehead_continues_code:n { #1 }
+        \__keythms_thm_prehead_code:n { #1 }
+        \begin{keythms_orig_#1}[##2]
+        \__keythms_thm_posthead_code:n { #1 } % is this the right order with below?
+        \clist_map_inline:Nn \g__keythms_restatecounters_clist
+          {
+            \prop_gput:Nne \g__keythms_thmuse_othercounters_prop
+              { ####1 } { \the\value{####1} }
+          }
+        \__keythms_thm_storeseqdata:nnn { #1 } { ##1 } { ##3 }
+        ##3
+        \__keythms_thm_prefoot_code:n { #1 }
+        \end{keythms_orig_#1}
+        \__keythms_thm_postfoot_code:n { #1 }
+      }
+      {}
+      % NOTE: have to do a lot of shenanigans to make sure the begin/end of grabbed
+      %       theorem env captures only the body and no package code.
+      %       This is the price of on-the-fly redefining the env to grab body
+      \RenewDocumentEnvironment { #1 } { ={name} O{} }
+        {
+          \keys_set:nn { key-theorems/thmuse } { ##1 }
+          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+            {
+              \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
+              \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
+              \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
+              \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
+            }
+          \__keythms_thm_prehead_continues_code:n { #1 }
+          \tl_if_empty:NTF \l__keythms_thmuse_note_tl
+            { \__keythms_withhooks_begin:nn { #1 } { ##1 } }
+            { \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl }
+        }
+        {
+          \__keythms_withhooks_end:n { #1 }
+          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+            {
+              \seq_get_right:NN \g__keythms_thmuse_seq
+                \l__keythms_thmuse_savethmargs_tl
+              \exp_args:Nee \cs_new:cpn { \l__keythms_thmuse_store_tl } % a better way?
+                {
+                  \exp_not:N \__keythms_listof_printbody_listcmd:nnnnnnn
+                  \exp_not:V \l__keythms_thmuse_savethmargs_tl
+                }
+            }
+        }
+  }
+
+\cs_new_protected:Npn \__keythms_withhooks_begin:nn #1#2
+  {
+    \__keythms_thm_prehead_code:n { #1 }
+    \begin{keythms_orig_#1}
+    \__keythms_thm_posthead_code:n { #1 }
+    \__keythms_thm_storeseqdata:nnn { #1 } { #2 } { }
+  }
+\cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
+  {
+    \__keythms_thm_prehead_code:n { #1 }
+    \begin{keythms_orig_#1}[#3]
+    \__keythms_thm_posthead_code:n { #1 }
+    \__keythms_thm_storeseqdata:nnn { #1 } { #2 } { }
+  }
+\cs_generate_variant:Nn \__keythms_withhooks_begin:nnn { nnV }
+\cs_new_protected:Npn \__keythms_withhooks_end:n #1
+  {
+    \__keythms_thm_prefoot_code:n { #1 }
+    \end{keythms_orig_#1}
+    \__keythms_thm_postfoot_code:n { #1 }
+  }
+\cs_new_protected:Npn \__keythms_grab_begin:nn #1#2
+  { \begin{keythms_grab_#1}{#2} }
+\cs_new_protected:Npn \__keythms_grab_begin:nnn #1#2#3
+  { \begin{keythms_grab_#1}{#2}[#3] }
+\cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
+\cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
+
+\cs_new:Npn \__keythms_ref_starred:n #1 { \ref*{#1} }
+
+\tl_new:N \l__keythms_thmuse_envname_tl
+
+\cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
+\cs_new_protected:Npn \__keythms_orig_begin:nn #1#2 { \begin{keythms_orig_#1}[#2] }
+\cs_generate_variant:Nn \__keythms_orig_begin:nn { nV }
+\cs_new_protected:Npn \__keythms_orig_end:n #1 { \end{keythms_orig_#1} }
+
+\cs_new:Npn \__keythms_thm_prehead_code:n #1
+  {
+    %%% EXPERIMENTAL
+    \tl_set:Nn \l__keythms_thmuse_envname_tl { #1 }
+    %%% END EXPERIMENTAL
+    \UseHook{ key-theorems/#1/prehead }
+    \UseHook{ key-theorems/allthms/prehead }
+  }
+%% this below has to be separate from prehead_code above since we need to add
+%% continues-code to note before retrieving it in \__keythms_withhooks_begin:nnV
+\cs_new:Npn \__keythms_thm_prehead_continues_code:n #1
+  {
+    \tl_if_empty:NF \l__keythms_thmuse_contlabel_tl
+      {
+        \tl_if_empty:NF \l__keythms_thmuse_note_tl
+          { \tl_put_right:Nn \l__keythms_thmuse_note_tl { , ~ } }
+        \tl_put_right:Nn \l__keythms_thmuse_note_tl
+          { \__keythms_thmuse_continues:V \l__keythms_thmuse_contlabel_tl }
+        \cs_set:cpn { the #1 }
+          {
+            \exp_args:Ne \__keythms_ref_starred:n
+              { \l__keythms_thmuse_contlabel_tl }
+            % ^ apparently V expansion is not enough, error if label= is given too
+          }
+        \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
+      }
+  }
+\cs_new:Npn \__keythms_thm_posthead_code:n #1
+  {
+    \UseHook{ key-theorems/#1/posthead }
+    \UseHook{ key-theorems/allthms/posthead }
+  }
+\cs_new:Npn \__keythms_thm_prefoot_code:n #1
+  {
+    \UseHook{ key-theorems/#1/prefoot }
+    \UseHook{ key-theorems/allthms/prefoot }
+  }
+\cs_new:Npn \__keythms_thm_postfoot_code:n #1
+  {
+    \UseHook{ key-theorems/#1/postfoot }
+    \UseHook{ key-theorems/allthms/postfoot }
+  }
+\cs_new:Npn \__keythms_thm_storeseqdata:nnn #1#2#3
+  {
+    \seq_gput_right:Ne \g__keythms_thmuse_seq
+      {
+        { #1 } % envname
+        { \cs_if_exist:cT { c@ #1 } { \@currentlabel } } % number
+        { \exp_not:n { #2 } } % keys
+        { \exp_not:n { #3 } } % body
+        { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
+        { \thepage } % page number
+        { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
+        % ^ is this necessary? Should always be of form <envname>.\the<envname>
+      }
+  }
+
+\cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
+
+%%%%%%%%%%%%%%%%%%%%%
+%%% Theorem Hooks %%%
+%%%%%%%%%%%%%%%%%%%%%
+
+%%% \addtotheoremhook[<envname>]{<hook>}{<code>}
+\NewDocumentCommand { \addtotheoremhook } { o m m }
+  {
+    \IfNoValueTF { #1 }
+      { \AddToHook{ key-theorems/allthms/#2 }{ #3 } }
+      { \AddToHook{ key-theorems/#1/#2 }{ #3 } }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Restating Theorems %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\prop_new:N \l__keythms_restate_counters_prop
+
+% stealing from thm-restate
+\newcounter{keythms_dummyctr}
+\cs_gset:Npn \theHkeythms_dummyctr { dummy.\arabic{keythms_dummyctr} }
+\cs_gset:Npn \thekeythms_dummyctr { }
+
+\cs_set:Npn \__keythms_listof_printbody_listcmd:nnnnnnn #1#2#3#4#5#6#7
+  {
+    \tl_if_empty:nF { #4 }
+      {
+        \group_begin:
+        \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #5 }
+        \prop_map_inline:Nn \l__keythms_restate_counters_prop
+          {
+            \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
+            \setcounter { ##1 } { ##2 } % FIX: what if eq's numbered by section, theorem, etc.?
+            \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
+          }
+        \tl_if_empty:nF { #2 }
+          {
+            \cs_set:cpn { the #1 } { #2 }
+            \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
+            \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
+          }
+        \cs_set_eq:NN \label \use_none:n % disable \label
+        \keys_set:nn { key-theorems/thmuse } { #3 }
+        \__keythms_thm_prehead_continues_code:n { #1 }
+        \__keythms_thm_prehead_code:n { #1 }
+        \tl_if_empty:NTF \l__keythms_thmuse_note_tl
+          { \__keythms_orig_begin:n { #1 } }
+          { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
+        \__keythms_thm_posthead_code:n { #1 }
+        #4
+        \__keythms_thm_prefoot_code:n { #1 }
+        \__keythms_orig_end:n { #1 }
+        \__keythms_thm_postfoot_code:n { #1 }
+        \prop_map_inline:Nn \l__keythms_restate_counters_prop
+          {
+            \exp_args:Nnc \setcounter { ##1 } { l_keythms_restate_current_##1_tl }
+          }
+        \group_end:
+      }
+  }
+
+\NewDocumentCommand { \KeyThmsSavedTheorem } { m m m +m m m m } % 4th arg is body
+  { \use:c { __keythms_thmitem_#1:nnnnnnn } {#1}{#2}{#3}{#4}{#5}{#6}{#7} }
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+%%% List of Theorems %%%
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+\keys_define:nn { key-theorems/listof }
+  {
+    numwidth   .dim_set:N = \l__keythms_listof_numwidth_dim,
+    numwidth   .initial:n = 2.3em,
+    ignore     .code:n    =
+      {
+        \AddToHook{ begindocument/before } { \keythms_listof_ignore:n { #1 } }
+      },
+    show       .code:n    =
+      {
+        \AddToHook{ begindocument/before } { \keythms_listof_show:n { #1 } }
+      },
+    onlynamed  .code:n    =
+      {
+        \AddToHook{ begindocument/before } { \keythms_listof_onlynamed:n { #1 } }
+      },
+    onlynamed .default:n  = \q_no_value,
+    ignoreall  .code:n    =
+      {
+        \AddToHook{ begindocument/before } % in case called before theorem defined
+          {
+            \prop_map_inline:Nn \g__keythms_thmnames_prop
+              { \__keythms_listof_ignore_aux:n { ##1 } }
+          }
+      },
+    showall    .code:n    =
+      {
+        \AddToHook{ begindocument/before } % in case called before theorem defined
+          {
+            \prop_map_inline:Nn \g__keythms_thmnames_prop
+              { \__keythms_listof_show_aux:n { ##1 } }
+          }
+      },
+    title      .tl_set:N   = \l__keythms_listof_title_tl,
+    title      .initial:n  = { List~of~Theorems },
+    swapnumber .bool_set:N = \l__keythms_listof_swapnumber_bool,
+    swapnumber .initial:n  = false,
+    title-code .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
+    no-title   .meta:n     = { title-code = {} },
+    print-body .code:n     =
+      { \cs_set_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_printbody_listcmd:nnnnnnn },
+  }
+
+\AddToHook{ begindocument } % redefine these keys after begindocument
+  {
+    \keys_define:nn { key-theorems/listof }
+      {
+        ignore    .code:n    = \keythms_listof_ignore:n { #1 },
+        show      .code:n    = \keythms_listof_show:n { #1 },
+        onlynamed .code:n    = \keythms_listof_onlynamed:n { #1 },
+        onlynamed .default:n = \q_no_value,
+        ignoreall .code:n    =
+          {
+            \prop_map_inline:Nn \g__keythms_thmnames_prop
+              { \__keythms_listof_ignore_aux:n { ##1 } }
+          },
+        showall   .code:n    =
+          {
+            \prop_map_inline:Nn \g__keythms_thmnames_prop
+              { \__keythms_listof_show_aux:n { ##1 } }
+          },
+      }
+  }
+
+\NewDocumentCommand { \keytheoremlistset } { m }
+  { \keys_set:nn { key-theorems/listof } { #1 } }
+
+\cs_new_protected:Npn \keythms_listof_ignore:n #1
+  {
+    \clist_map_inline:nn { #1 } { \__keythms_listof_ignore_aux:n { ##1 } }
+  }
+\cs_new_protected:Npn \__keythms_listof_ignore_aux:n #1
+  {
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7 { }
+  }
+
+\cs_new_protected:Npn \keythms_listof_show:n #1
+  {
+    \clist_map_inline:nn { #1 } { \__keythms_listof_show_aux:n { ##1 } }
+  }
+\cs_new_protected:Npn \__keythms_listof_show_aux:n #1
+  {
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+      {
+        \__keythms_listof_listcmd_setup:nn { ##3 }
+          {
+            \keythms_listof_listcmd:nnnnnnn
+              {##1}{##2}{##3}{##4}{##5}{##6}{##7}
+          }
+      }
+  }
+
+\cs_new_protected:Npn \keythms_listof_onlynamed:n #1 
+  {
+    \quark_if_no_value:nTF { #1 }
+      {
+        \prop_map_inline:Nn \g__keythms_thmnames_prop
+          { \__keythms_listof_onlynamed_aux:n { ##1 } }
+      }
+      {
+        \clist_map_inline:nn { #1 }
+          { \__keythms_listof_onlynamed_aux:n { ##1 } }
+      }
+  }
+\cs_new_protected:Npn \__keythms_listof_onlynamed_aux:n #1 
+  {
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+      {
+        \__keythms_listof_listcmd_setup:nn { ##3 }
+          {
+            \tl_if_empty:NF \l__keythms_listofheading_note_tl
+              {
+                \keythms_listof_listcmd:nnnnnnn
+                  {##1}{##2}{##3}{##4}{##5}{##6}{##7}
+              }
+          }
+      }
+  }
+
+% Seems unnecessary to repeat all this for reading the keyvals from seq.
+% In thmtools they just hook the "thmitem" definition into the theorem declaration.
+%% NOTE ON ABOVE: this gives more flexibility to define different kinds of lists.
+%% See acro.sty for template idea.
+\keys_define:nn { key-theorems/listofheading }
+  {
+    label .code:n = , % do nothing
+    note .tl_set:N = \l__keythms_listofheading_note_tl,
+    name .meta:n = { note = #1 },
+    continues .tl_set:N = \l__keythms_listofheading_contlabel_tl,
+    store .code:n = , % do nothing
+    restate .code:n = , % do nothing
+  }
+
+\cs_new:Npn \__keythms_listof_printheading:
+  {
+    \tl_if_empty:NF \l__keythms_listofheading_note_tl
+      { ~ ( \l__keythms_listofheading_note_tl ) }
+  }
+
+\cs_new:Npn \__keythms_listof_default_listcmd:nnnnnnn #1#2#3#4#5#6#7
+  {
+    \contentsline{ #1 }
+      {
+        \bool_if:NTF \l__keythms_listof_swapnumber_bool
+          { \prop_item:Nn \g__keythms_thmnames_prop { #1 } ~ #2 }
+          {
+            \numberline{ #2 }
+            \prop_item:Nn \g__keythms_thmnames_prop { #1 }
+          }
+        \__keythms_listof_printheading:
+      }
+      { #6 }{ #7 }
+  }
+
+\cs_new:Npn \__keythms_listof_listcmd_setup:nn #1#2
+  {
+    \group_begin:
+    \keys_set:nn { key-theorems/listofheading } { #1 }
+    \tl_if_empty:NF \l__keythms_listofheading_contlabel_tl
+      {
+        \tl_if_empty:NF \l__keythms_listofheading_note_tl
+          { \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ } }
+        \tl_put_right:Nn \l__keythms_listofheading_note_tl
+          { \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl }
+      }
+    #2
+    \group_end:
+  }
+
+% set default listcmd
+\cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_default_listcmd:nnnnnnn
+
+\AddToHook { begindocument }
+  {
+    \cs_if_exist:NTF \@tocline
+      {
+        \prop_map_inline:Nn \g__keythms_thmnames_prop
+          {
+            \cs_set:cpn { l@ #1 }
+              {
+                \@tocline{ 0 }{ 3pt plus 2pt }{ 0pt }
+                  { \l__keythms_listof_numwidth_dim }{ }
+              }
+          }
+      }
+      {
+        \prop_map_inline:Nn \g__keythms_thmnames_prop
+          {
+            \cs_set:cpn { l@ #1 }
+              {
+                \@dottedtocline{ 1 }{ 1.5em }
+                  { \l__keythms_listof_numwidth_dim }
+              }
+          }
+      }
+  }
+
+\cs_if_exist:NTF \chapter
+  { \cs_set:Npn \__keythms_listof_titlecmd:n #1 { \chapter*{#1} } }
+  { \cs_set:Npn \__keythms_listof_titlecmd:n #1 { \section*{#1} } }
+
+\iow_new:N \g__keythms_listof_stream
+\bool_new:N \g__keythms_listof_writefile_bool
+\bool_gset_false:N \g__keythms_listof_writefile_bool
+
+\NewDocumentCommand { \listofkeytheorems } { O{} }
+  {
+    % set bool true for writing to file
+    \bool_gset_true:N \g__keythms_listof_writefile_bool
+    \group_begin:
+    \keys_set:nn { key-theorems/listof } { #1 }
+    \__keythms_listof_titlecmd:n { \l__keythms_listof_title_tl }
+    \file_if_exist_input:n { \c_sys_jobname_str.thlist }
+    \group_end:
+  }
+\providecommand{\ListOfThms}{\listofkeytheorems}
+
+\cs_new_protected:Nn \__keythms_listof_save:
+  {
+    \seq_map_function:NN \g__keythms_thmuse_seq \__keythms_listof_save_aux:n
+  }
+\cs_new_protected:Nn \__keythms_listof_save_aux:n
+  {
+    \iow_now:Nn \g__keythms_listof_stream
+      {
+        \KeyThmsSavedTheorem #1
+      }
+  }
+
+\AddToHook{enddocument}
+  {
+    % if \ListOfThms called anywhere, write to file
+    \bool_if:NT \g__keythms_listof_writefile_bool
+      {
+        \iow_open:Nn \g__keythms_listof_stream { \c_sys_jobname_str.thlist }
+        \__keythms_listof_save:
+        \iow_close:N \g__keythms_listof_stream
+      }
+  }
+
+%%% Questions
+% 1. Are kernel hooks really better than simple token lists?
+%    In particular, with token lists you have \tl_put_left to avoid all the hook
+%    order issues
+% 2. Should we allow \newkeytheorem keys in \newkeytheoremstyle like thmtools?
+% 3. \listofkeytheorems does not print restated theorems. Should an option be added
+%    to do this? No, right?
+% 4. Instead of using aux we store everything in this big sequence and retrieve
+%    data from that. Is that a good idea?
+
+%%% Keys not yet implemented
+% qed (in style; and all thm keys in style)
+% numbered=unless unique
+
+%%% Commands/envs not implemented
+% \Autoref
+
+%% Another idea: only print "up-to-now" theorems
+
+%% Another: use style key for multiple theorems, like
+%    \keytheoremset{style={<keys>}}
+%    \newkeytheorem{thm1}
+%    \newkeytheorem{thm2}...
+% Well maybe not. Because should these style keys also be applied to a called
+% \newkeytheoremstyle? Or only used for that? Question is: should user be able to style theorems
+% without an explicit call to \newkeytheorem{<thm>}[style=<style>]?

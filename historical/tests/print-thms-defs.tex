@@ -1,60 +1,59 @@
 \ifthmtools
 \usepackage{amsthm,thmtools}
-\newcommand{\newkeytheoremstyle}[2]{\declaretheoremstyle[#2]{#1}}
-\NewDocumentCommand{\newkeytheorem}{mO{}}{\declaretheorem[#2]{#1}}
-\newcommand{\listofkeytheorems}{\listoftheorems}
+\newcommand{\NewThmStyle}[2]{\declaretheoremstyle[#2]{#1}}
+\NewDocumentCommand{\NewThm}{mO{}}{\declaretheorem[#2]{#1}}
 \else
-\usepackage{key-theorems}
+\usepackage{theorem-keys}
 \fi
 
 \usepackage{kantlipsum,xcolor}
 \usepackage{hyperref,cleveref}
 
-\newkeytheorem{theorem}
+\NewThm{theorem}
 
-\newkeytheorem{theoremS}[
+\NewThm{theoremS}[
 	numberwithin=section
 	]
-\newkeytheorem{exercise}[
+\NewThm{exercise}[
 	name=\"Ubung
 	]
-\newkeytheorem{lem}[
+\NewThm{lem}[
 	name=Lemma,
 	sibling=theorem,
 	]
-\newkeytheorem{euclid}[
+\NewThm{euclid}[
 	numbered=no,
 	name=Euclid's Prime Theorem
 	]
-%\newkeytheorem{singleton}[
+%\NewThm{singleton}[
 %	numbered=unless unique
 %	]
-%\newkeytheorem{couple}[
+%\NewThm{couple}[
 %	numbered=unless unique
 %	]
-\newkeytheorem{remark}[
+\NewThm{remark}[
 	style=remark
 	]
-\newkeytheoremstyle{mystyle}{
+\NewThmStyle{mystyle}{
 	spaceabove=6pt, spacebelow=6pt,
 	headfont=\normalfont\bfseries,
 	notefont=\mdseries, notebraces={(}{)},
 	bodyfont=\normalfont,
 	postheadspace=1em,
 	}
-\newkeytheorem{styledtheorem}[
+\NewThm{styledtheorem}[
 	style=mystyle,
 	qed=\qedsymbol,
 	]
-\newkeytheorem{callmeal}[
+\NewThm{callmeal}[
 	name=Theorem,
 	refname={theorem,theorems},
     Refname={Theorem,Theorems}
     ]
-\newkeytheorem{noname}[
+\NewThm{noname}[
 	name={}
 	]
-\newkeytheorem{nonamenonumber}[
+\NewThm{nonamenonumber}[
 	name={},
 	numbered=no
 	]
@@ -79,8 +78,8 @@
 	}
 \clist_map_inline:Nn \l_my_clist {
 	\int_incr:N \l_my_int
-	\exp_args:Ne \newkeytheoremstyle { mysty \int_use:N \l_my_int } { #1 }
-	\exp_args:Ne \newkeytheorem { mythm \int_use:N \l_my_int }[style=mysty \int_use:N \l_my_int]
+	\exp_args:Ne \NewThmStyle { mysty \int_use:N \l_my_int } { #1 }
+	\exp_args:Ne \NewThm { mythm \int_use:N \l_my_int }[style=mysty \int_use:N \l_my_int]
 	}
 
 \int_new:N \l_my_thm_int
@@ -97,7 +96,7 @@
 	}
 \clist_map_inline:Nn \l_my_thm_clist {
 	\int_incr:N \l_my_thm_int
-	\exp_args:Ne \newkeytheorem { mytestthm \int_use:N \l_my_thm_int }[#1]
+	\exp_args:Ne \NewThm { mytestthm \int_use:N \l_my_thm_int }[#1]
 	}
 	
 \NewDocumentCommand{\PrintTheorems}{}{
