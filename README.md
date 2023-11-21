@@ -1,7 +1,7 @@
 # key-theorems
 
-A very much incomplete and buggy LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
-with a key-value interface. Do not use it for anything important! Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
+A very much incomplete LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
+with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
 but written in expl3. The goal was just an exercise in using expl3, but if you find a bug
 feel free to open an issue or PR.
 
@@ -64,7 +64,6 @@ There is a list of commands and keys offered by the package
 More of a reference document than documentation.
 
 ## Differences with `thmtools`
-*Everything below needs to be updated.*
 
 Most of the code is a direct translation from `thmtools`
 but a few things are changed:
@@ -100,25 +99,7 @@ but a few things are changed:
 - With `thmtools`, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
   only use the new interface or load the package with option `overload`.
-- There are a few global options available with `\ThmKeysSet{<options>}`:
-    - `restate-counters={<comma list of counters>}`
-      
-      Counters that are stored for use in a restated theorem. Default is `equation`.
-    - `continues-code={<code with #1>}`
-      
-      Changes the text shown with the `continues=<label>` key, where `#1` is the label.
-      Default (in expl3 code) is
-      
-      ```tex
-      \cs_if_exist:NTF \hyperref
-        { \hyperref[#1]{continuing} ~ }
-        { continuing ~ }
-      from~p.\,\pageref{#1}
-      ```
-- The package is not compatible with `thmtools` so produces an error if the
-  latter is loaded. To make converting old documents easier, there is a
-  `thmtools-compat` option which defines the commands `\declaretheoremstyle`,
-  `\declaretheorem`, and `\listoftheorems`, and the `restatable` environment, in terms of `theorem-keys` commands.
+- There are a few global options available with `\keytheoremset{<options>}` (see doc).
 
 ## Things to do
 
