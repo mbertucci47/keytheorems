@@ -1,24 +1,55 @@
-% !TeX program = pdflatex --synctex=1 --interaction=nonstopmode %.tex | makeindex %.idx | pdflatex --synctex=1 --interaction=nonstopmode %.tex | txs:///view-pdf
+% !TeX program = pdflatex --synctex=1 --interaction=nonstopmode --shell-escape %.tex | makeindex %.idx | pdflatex --synctex=1 --interaction=nonstopmode --shell-escape %.tex | txs:///view-pdf
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{tcolorbox}
-\tcbuselibrary{documentation}
+\tcbuselibrary{documentation,minted}
+\tcbset{
+  listing engine=minted,
+  minted language=latex,
+  }
 \usepackage{key-theorems}
+\usepackage{cleveref}
 
 \def\version{0.0.1$\gamma$}
 
 \title{
-	\pkg{key-theorems} package \\[1ex]
-	\large version \version \\[1ex]
-	\href{https://github.com/mbertucci47/key-theorems}
-	  {\texttt{github.com/mbertucci47/key-theorems}}
-	}
+  \pkg{key-theorems} package \\[1ex]
+  \large version \version \\[1ex]
+  \href{https://github.com/mbertucci47/key-theorems}
+    {\texttt{github.com/mbertucci47/key-theorems}}
+  }
 \author{Matthew Bertucci}
 
-\newkeytheorem{mytheorem}[name=Some Name]
+\newkeytheorem{theorem}
+\newkeytheorem{mythm}[name=Some Name]
+\newkeytheorem{theorem*}[name=Theorem,numbered=false]
+\newkeytheorem{conjecture}[parent=section]
+\newkeytheorem{lemma}[sibling=theorem]
+\newkeytheorem{test}[
+  preheadhook=PREHEAD,
+  postheadhook=POSTHEAD,
+  prefoothook=PREFOOT,
+  postfoothook=POSTFOOT
+]
+\newkeytheorem{prop}[
+  name=Proposition,
+  refname={proposition,propositions},
+  Refname={Proposition,Propositions}
+  ]
+\newkeytheorem{example}[qed]
+\newkeytheorem{solution}[qed=$\clubsuit$]
+\newkeytheorem{remark}[style=remark]
+\tcbset{
+  defstyle/.style={arc=0mm, colback=blue!5!white,colframe=blue!75!black},
+  }
+\newkeytheorem{corollary}[tcolorbox]
+\newkeytheorem{definition}[
+  style=definition,
+  tcolorbox={defstyle}
+  ]
 
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
@@ -28,28 +59,37 @@
 \newcommand{\ttbraces}[1]{\braces{\texttt{#1}}}
 %\tcbset{index gather commands=false}
 \tcbset{
-	color command = BrickRed,
-	color key = Fuchsia,
-	color value = teal,
-	}
+  color command = BrickRed,
+  color key = Fuchsia,
+  color value = teal,
+  }
 \tcbset{
-  preamble/.style = {
+  withpreamble/.style = {
     before upper = {%
       {\ttfamily\itshape \% preamble}%
+      \vspace{-0.7\baselineskip}%
       \tcbusetemplisting%
-      \medskip
       {\ttfamily\itshape \% document}%
+      \vspace{-0.7\baselineskip}%
       }
     }
   }
 
 \NewTCBListing{keythmscode}{ O{} }{
-	colback=red!5!white,
-	colframe=red!75!black,
-	listing side text,
-	#1
-	}
+  colback=yellow!10!white,
+  colframe=blue!50!black,
+  boxrule=0.4pt,
+  listing side text,
+  #1
+  }
 
+\NewTCBListing{keycode}{ }{
+  colback=yellow!10!white,
+  colframe=blue!50!black,
+  boxrule=0.4pt,
+  listing side text,
+  }
+  
 \makeindex
 
 \begin{document}
@@ -87,15 +127,251 @@ printed with |\listofkeytheorems[print-body]|. Note that this means a theorem bo
 \end{docCommand}
 
 \begin{docKey}{restate-counters}{=\marg{comma-list of counters}}{initially \ttbraces{equation}}
-The counters whose values are preserved when a theorem is restated.
+Additional counters whose values are preserved when a theorem is restated. This key does not reset the list, so you don't need to include |equation| in \meta{comma-list}.
 \end{docKey}
 
 \begin{docKey}{continues-code}{=\meta{code with \textup{\texttt{\#1}}}}{initially |continuing from p.\cs{,}\cs{pageref}\ttbraces{\#1}|}
-
+The code used to typeset the note produced by the \refKey{continues} key.
 \end{docKey}
 
 \begin{docKey}{qed-symbol}{=\meta{symbol}}{initially \cs{openbox}}
 Redefines \cs{qedsymbol} to be \meta{symbol}.
+\end{docKey}
+
+\section{Declaring Theorems}
+
+\begin{docCommand}{newkeytheorem}{\marg{env name}\oarg{options}}
+Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}). You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g. \cs{newkeytheorem}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}.
+
+By default, the theorem's printed name is a title-cased \meta{env name}. This can be changed with the \refKey{thm/name} key. All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref{thm-added-keys}.
+\end{docCommand}
+
+\begin{tcbwritetemp}
+\newkeytheorem{theorem}
+\end{tcbwritetemp}
+
+\begin{keythmscode}[withpreamble]
+\begin{theorem}
+Some text
+\end{theorem}
+\end{keythmscode}
+
+\subsection{Keys available to theorem environments} \label{in-doc-keys}
+
+As in \pkg{amsthm}, theorems can take an optional argument that contains a note or heading.
+
+\begin{keythmscode}[]
+\begin{theorem}[some heading]
+Some text
+\end{theorem}
+\end{keythmscode}
+
+Alternatively, the optional argument may contain any of the following keys.
+
+\begin{docKey}{note}{=\meta{text}}{initially unset}
+Alias \docAuxKey[][doc label=thmuse/name]{name}. This is the key-value equivalent of the optional argument described above. This syntax, however, allows the argument to contain other keys.
+
+\begin{keythmscode}[]
+\begin{theorem}[some heading]
+Some text
+\end{theorem}
+\begin{theorem}[note=another heading]
+Some more text
+\end{theorem}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{label}{=\meta{label name}}{initially unset}
+This is the key-value equivalent of |\begin{theorem}| \cs{label}\marg{label name}.
+\begin{keythmscode}[]
+\begin{theorem}[label=foo]
+Some text
+\end{theorem}
+\ref{foo}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{continues}{=\meta{label name}}{initially unset}
+Pick up a theorem where you left off. The theorem number remains the same. The printed text can be customized with the \refKey{continues-code} option.
+\begin{keythmscode}[]
+\begin{theorem}[continues=foo]
+\dots and some more text.
+\end{theorem}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{store}{=\meta{csname}}{initially unset}
+Alias \docAuxKey{restate}. Defines a command \texttt{\char`\\}\meta{csname} that can be used to restate the theorem, including the body text, later in the document. This is the local version of the \refKey{store-all} load-time option. A theorem given this key \emph{cannot} contain verbatim material.
+\begin{keythmscode}[]
+\begin{theorem}[store=blub]
+A theorem worth restating.
+\end{theorem}
+More brilliant mathematics.
+\blub
+\end{keythmscode}
+\end{docKey}
+
+\subsection{Keys inherited from \pkg{thmtools}} \label{thm-thmtools-keys}
+
+These are the \oarg{options} passed to \cs{newkeytheorem}. For more description, see the \href{https://ctan.org/pkg/thmtools}{\pkg{thmtools}} package.
+
+\begin{docKey}[][doc label=thm/name]{name}{=\meta{display name}}{initially title-cased \meta{env name}}
+Aliases \docAuxKey{title} and \docAuxKey{heading}.
+\begin{tcbwritetemp}
+\newkeytheorem{mythm}[name=Some Name]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{mythm}
+Some text
+\end{mythm}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{numbered}{\colOpt{=true\textbar false}}{default |true|, initially |true|}
+For compatibility with \pkg{thmtools}, also accepts the values \colOpt{|yes|} and \colOpt{|no|}.
+\begin{tcbwritetemp}
+\newkeytheorem{theorem*}[
+  name=Theorem, numbered=false
+  ]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{theorem*}
+An unnumbered theorem.
+\end{theorem*}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{parent}{=\meta{counter}}{initially unset}
+Aliases \docAuxKey{numberwithin} and \docAuxKey{within}.
+\begin{tcbwritetemp}
+\newkeytheorem{conjecture}[parent=section]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{conjecture}
+The first number is the section.
+\end{conjecture}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{sibling}{=\meta{counter}}{initially unset}
+Aliases \docAuxKey{numberlike} and \docAuxKey{sharenumber}.
+\begin{tcbwritetemp}
+\newkeytheorem{lemma}[sibling=theorem]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{lemma}
+This shares its counter with
+\texttt{theorem}.
+\end{lemma}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{style}{=\meta{style name}}{initially unset}
+Accepts any \meta{style name} defined by \refCom{newkeytheoremstyle}, as well as any of the predefined \pkg{amsthm} styles: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
+\begin{tcbwritetemp}
+\newkeytheorem{remark}[style=remark]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{remark}
+Some text
+\end{remark}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKeys}[
+  doc parameter = {=\meta{code}},
+  doc description = initially unset,
+  ]
+  {
+    { doc name = preheadhook },
+    { doc name = postheadhook },
+    { doc name = prefoothook },
+    { doc name = postfoothook },
+  }
+Details in \autoref{keythms-hooks}.
+\begin{tcbwritetemp}
+\newkeytheorem{test}[
+  preheadhook=PREHEAD,
+  postheadhook=POSTHEAD,
+  prefoothook=PREFOOT,
+  postfoothook=POSTFOOT
+]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{test}
+Some text
+\end{test}
+\end{keythmscode}
+\end{docKeys}
+
+\begin{docKey}{refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
+If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg{cleveref}'s \cs{cref}. If two strings separated by a comma, then the second string is the plural form used by \cs{cref}.
+\end{docKey}
+
+\begin{docKey}{Refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
+Same as \refKey{refname} but for \cs{Autoref} (not yet implemented!) and \cs{Cref}.
+\begin{tcbwritetemp}
+\newkeytheorem{prop}[
+  name=Proposition,
+  refname={proposition,propositions},
+  Refname={Proposition,Propositions}
+  ]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{prop}[label=abc]
+Some text
+\end{prop}
+\begin{prop}[label=def]
+Some more text
+\end{prop}
+\begin{theorem}
+Consider \cref{abc,def}.
+\end{theorem}
+\end{keythmscode}
+\end{docKey}
+
+\begin{docKey}{qed}{\colOpt{=\meta{symbol}}}{default \cs{openbox}, initially unset}
+Adds \colOpt{\meta{symbol}} to the end of the theorem body. If no value is given, the symbol \openbox\ is used.
+\begin{tcbwritetemp}
+\newkeytheorem{example}[qed]
+\newkeytheorem{solution}[qed=$\clubsuit$]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{example}
+Some text
+\end{example}
+\begin{solution}
+Some more text
+\end{solution}
+\end{keythmscode}
+\end{docKey}
+
+\subsection{Keys added by \pkg{key-theorems}} \label{thm-added-keys}
+
+\begin{docKey}{tcolorbox}{\colOpt{=\marg{tcolorbox options}}}{initially unset}
+This key specifies that the theorem be placed inside a tcolorbox environment with \colOpt{\meta{options}}.
+\begin{tcbwritetemp}
+\tcbset{
+  defstyle/.style={
+    arc=0mm,
+    colback=blue!5!white,
+    colframe=blue!75!black
+    },
+  }
+\newkeytheorem{corollary}[tcolorbox]
+\newkeytheorem{definition}[
+  style=definition,
+  tcolorbox={defstyle}
+  ]
+\end{tcbwritetemp}
+\begin{keythmscode}[withpreamble]
+\begin{corollary}
+Some text
+\end{corollary}
+\begin{definition}
+Some more text
+\end{definition}
+\end{keythmscode}
 \end{docKey}
 
 \section{Theorem Styles}
@@ -158,99 +434,6 @@ Alias \docAuxKey{headstyle}. Within \meta{code}, the commands \docAuxCommand{NAM
 Inherit the keys of any style declared with \refCom{newkeytheoremstyle}. Additionally, the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
 \end{docKey}
 
-\section{Declaring Theorems}
-
-\begin{docCommand}{newkeytheorem}{\marg{env name}\oarg{options}}
-Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}). You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g. \cs{newkeytheorem}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}
-\end{docCommand}
-
-\begin{tcbwritetemp}
-\newkeytheorem{mytheorem}[name=Some Name]
-\end{tcbwritetemp}
-
-\begin{keythmscode}[preamble]
-\begin{mytheorem}[a note]
-Some text
-\end{mytheorem}
-
-\begin{mytheorem}[name=heading,label=foo]
-Some more text
-\end{mytheorem}
-
-\ref{foo}
-\end{keythmscode}
-
-\subsection{Keys inherited from \pkg{thmtools}}
-
-\begin{docKey}[][doc label=thm/name]{name}{=\meta{display name}}{initially title-cased \meta{env name}}
-Aliases \docAuxKey{title} and \docAuxKey{heading}.
-\end{docKey}
-
-\begin{docKey}{numbered}{\colOpt{=true\textbar false}}{default |true|, initially |true|}
-For compatibility with \pkg{thmtools}, also accepts the values \colOpt{|yes|} and \colOpt{|no|}.
-\end{docKey}
-
-\begin{docKey}{parent}{=\meta{counter}}{initially unset}
-Aliases \docAuxKey{numberwithin} and \docAuxKey{within}.
-\end{docKey}
-
-\begin{docKey}{sibling}{=\meta{counter}}{initially unset}
-Aliases \docAuxKey{numberlike} and \docAuxKey{sharenumber}.
-\end{docKey}
-
-\begin{docKey}{style}{=\meta{style name}}{initially unset}
-
-\end{docKey}
-
-\begin{docKeys}[
-  doc parameter = {=\meta{code}},
-  doc description = initially unset,
-  ]
-  {
-	{ doc name = preheadhook },
-	{ doc name = postheadhook },
-	{ doc name = prefoothook },
-	{ doc name = postfoothook },
-  }
-Details in \autoref{keythms-hooks}.
-\end{docKeys}
-
-\begin{docKey}{refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
-If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg{cleveref}'s \cs{cref}. If two strings separated by a comma, then the second string is the plural form used by \cs{cref}.
-\end{docKey}
-
-\begin{docKey}{Refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
-Same as \refKey{refname} but for \cs{Autoref} (not yet implemented!) and \cs{Cref}.
-\end{docKey}
-
-\begin{docKey}{qed}{\colOpt{=\meta{symbol}}}{default \cs{openbox}, initially unset}
-
-\end{docKey}
-
-\subsection{Keys added by \pkg{key-theorems}}
-
-\begin{docKey}{tcolorbox}{\colOpt{=\marg{tcolorbox options}}}{initially unset}
-
-\end{docKey}
-
-\section{Keys available to theorem environments} \label{in-doc-keys}
-
-\begin{docKey}{label}{=\meta{label name}}{initially unset}
-
-\end{docKey}
-
-\begin{docKey}{note}{=\meta{text}}{initially unset}
-Alias \docAuxKey[][doc label=thmuse/name]{name}.
-\end{docKey}
-
-\begin{docKey}{continues}{=\meta{label name}}{initially unset}
-
-\end{docKey}
-
-\begin{docKey}{store}{=\meta{csname}}{initially unset}
-Alias \docAuxKey{restate}. Defines a command \texttt{\char`\\}\meta{csname} that can be used to restate the theorem, including the body text, later in the document.
-\end{docKey}
-
 \section{Listing Theorems}
 
 \begin{docCommand}{listofkeytheorems}{\oarg{options}}
@@ -260,6 +443,9 @@ Alias \docAuxKey{restate}. Defines a command \texttt{\char`\\}\meta{csname} that
 \begin{docCommand}{keytheoremlistset}{\marg{options}}
 
 \end{docCommand}
+\begin{keythmscode}[]
+\listofkeytheorems
+\end{keythmscode}
 
 \subsection{Keys inherited from \pkg{thmtools}}
 
@@ -280,7 +466,13 @@ Alias \docAuxKey{restate}. Defines a command \texttt{\char`\\}\meta{csname} that
 \end{docKey}
 
 \begin{docKey}{ignoreall}{}{initially unset}
-
+\begin{keythmscode}[]
+\listofkeytheorems[ignoreall,show=theorem]
+\listofkeytheorems[
+  ignoreall, show=conjecture,
+  title=List of Conjectures
+  ]
+\end{keythmscode}
 \end{docKey}
 
 \begin{docKey}{showall}{}{initially set}
@@ -302,17 +494,22 @@ If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbrace
 \end{docKey}
 
 \begin{docKey}{no-title}{}{initially unset}
-
+Suppresses the title of the list of theorems. Useful for custom ordering of the list.
+\begin{keythmscode}[]
+\keytheoremlistset{ignoreall}
+\listofkeytheorems[show=example]
+\listofkeytheorems[show=solution,no-title]
+\end{keythmscode}
 \end{docKey}
 
 \begin{docKey}{print-body}{}{initially unset}
-Instead of listing the theorem headings, the theorems are restated with their body text.
+Instead of listing the theorem headings, the theorems are restated with their body text. Requires the \refKey{store-all} load-time option to be useful.
 \end{docKey}
 
 \section{Theorem Hooks} \label{keythms-hooks}
 
 \begin{docCommand}{addtotheoremhook}{\oarg{env name}\marg{hook name}\marg{code}}
-\meta{hook name} can be |prehead|, |posthead|, |prefoot|, or |postfoot|. As in \pkg{thmtools}, the order of hooks is as follows:
+\meta{hook name} can be |prehead|, |posthead|, |prefoot|, or |postfoot|. If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e. applied to all theorems. As in \pkg{thmtools}, the order of hooks is as follows:
 \begin{center}
   \tcbset{
     nobeforeafter,
@@ -321,7 +518,7 @@ Instead of listing the theorem headings, the theorems are restated with their bo
     width=2cm,
     tcbox raise=-0.4cm,
     size=fbox,
-    after=\;$\Rightarrow$
+    after=\;$\rightarrow$
     }
   \tcbox{\meta{env name}\\ \hook{prehead}}
   \tcbox{generic\\ \hook{prehead}}
@@ -329,7 +526,7 @@ Instead of listing the theorem headings, the theorems are restated with their bo
   \tcbox{\meta{env name}\\ \hook{posthead}}
   \tcbox[after={}]{generic\\ \hook{posthead}}
   \\[2ex]
-  \tcbset{before=$\Rightarrow$\;}
+  \tcbset{before=$\rightarrow$\;}
   \tcbox[width=2.5cm,tcbox raise=-0.2cm]{\meta{theorem body}}
   \\[2ex]
   \tcbset{after={}}

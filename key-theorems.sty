@@ -1,7 +1,7 @@
 \ProvidesExplPackage{key-theorems}{}{0.0.1gamma}{l3keys interface to amsthm}
 
 %%% TESTING
-%\debug_on:n { check-declarations }
+%\debug_on:n { all }
 %%% END TESTING
 
 \RequirePackage{amsthm}
@@ -13,20 +13,20 @@
 
 \DeclareOption{overload}
   {
-    \AddToHook{package/key-theorems/after}
+    \AddToHook{ package/key-theorems/after }
       {
         \RenewDocumentCommand { \newtheorem } { smomo }
           {
             \IfBooleanTF { #1 }
-              { \keythms_thm_newkeythm:nn { #2 } { numbered=no } }
+              { \keythms_thm_newkeythm:nn { #2 } { name=#4, numbered=no } }
               {
                 \IfNoValueTF { #3 }
                   {
                     \IfNoValueTF { #5 }
-                      { \keythms_thm_newkeythm:nn { #2 } { } }
-                      { \keythms_thm_newkeythm:nn { #2 } { parent=#5 } }
+                      { \keythms_thm_newkeythm:nn { #2 } { name=#4 } }
+                      { \keythms_thm_newkeythm:nn { #2 } { name=#4, parent=#5 } }
                   }
-                  { \keythms_thm_newkeythm:nn { #2 } { sibling=#3 } }
+                  { \keythms_thm_newkeythm:nn { #2 } { name=#4, sibling=#3 } }
               }
           }
       }
@@ -55,7 +55,7 @@
 
 \DeclareOption{store-all}
   {
-    \AddToHook{package/key-theorems/after}
+    \AddToHook{ package/key-theorems/after }
       {
         \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
         \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
@@ -304,14 +304,14 @@
     Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
     qed            .code:n    = %% Copied from thmtools
       {
-        \addtotheoremhook[\l__keythms_thm_envname_tl]{posthead}
+        \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/posthead }
+          { keythms_qed }
           {
             \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
             \pushQED{\qed}
           }
-        % Use label to make sure it's last. Might need to adjust to avoid
-        % conflict with other chunks added to prefoot hook.
-        \AddToHook{key-theorems/\l__keythms_thm_envname_tl/prefoot}[keythms_qed]
+        \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
+          { keythms_qed }
           {
             \quark_if_no_value:nF { #1 } { \protected@edef\qedsymbol{#1} }
             \popQED
@@ -322,23 +322,36 @@
     tcolorbox      .code:n    =
       {
         \RequirePackage{tcolorbox}
-        \DeclareHookRule{ key-theorems/\l__keythms_thm_envname_tl/prehead }
-          { keythms_hook_keys }{ before }{ keythms_tcb } % is this what we want?
-        \AddToHook{ key-theorems/\l__keythms_thm_envname_tl/prehead }[keythms_tcb]
+        \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
+          { keythms_tcbox }
+          { \let\deferred@thm@head\suppresshead@deferred@thm@head }
+        \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/posthead }
+          { keythms_tcbox }{ before }{ keythms_hook_keys }
+        \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
+          { keythms_tcbox }{ after }{ keythms_hook_keys }
+        \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
+          { keythms_tcbox }{ after }{ keythms_qed }
+        \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/posthead }
+          { keythms_tcbox }
           {
             \begin{tcolorbox}[
-              savedelimiter = { \l__keythms_thmuse_envname_tl },
-              wrap@environment,
-              #1
-              ]
-          }
-        \DeclareHookRule{ key-theorems/\l__keythms_thm_envname_tl/postfoot }
-          { keythms_hook_keys }{ after }{ keythms_tcb } % is this what we want?
-        \AddToHook{ key-theorems/\l__keythms_thm_envname_tl/postfoot }[keythms_tcb]
-          { \end{tcolorbox} }
-      },
-    tcolorbox    .default:n = {},
+              savedelimiter=\l__keythms_thmuse_envname_tl,
+              title={\normalfont\keythms@tmpheadcode},
+              #1]
+          } % FIX: savelowerto doesn't work
+        \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
+          { keythms_tcbox } { \end{tcolorbox} }
+          },
+        tcolorbox    .default:n = {},
   }
+
+\def\suppresshead@deferred@thm@head#1{%
+  \addpenalty\@beginparpenalty
+  \addvspace\@topsep
+  \addvspace{-\parskip}
+  \def\keythms@tmpheadcode{\normalfont#1}%
+  \ignorespaces
+}
 
 \tl_new:N \l__keythms_thm_defaultkeys_tl
 \keys_precompile:nnN { key-theorems/thm }
@@ -359,10 +372,10 @@
 
 \cs_new_protected:Npn \__keythms_thm_makethmhooks:n #1
   {
-    \NewHook{ key-theorems/#1/prehead}
-    \NewHook{ key-theorems/#1/posthead }
-    \NewReversedHook{ key-theorems/#1/prefoot }
-    \NewReversedHook{ key-theorems/#1/postfoot }
+    \hook_new:n { key-theorems/#1/prehead}
+    \hook_new:n { key-theorems/#1/posthead }
+    \hook_new_reversed:n { key-theorems/#1/prefoot }
+    \hook_new_reversed:n { key-theorems/#1/postfoot }
   }
 
 \prop_new:N \g__keythms_thmnames_prop % for retrieving name from envname
@@ -626,8 +639,8 @@
     %%% EXPERIMENTAL
     \tl_set:Nn \l__keythms_thmuse_envname_tl { #1 }
     %%% END EXPERIMENTAL
-    \UseHook{ key-theorems/#1/prehead }
-    \UseHook{ key-theorems/allthms/prehead }
+    \hook_use:n { key-theorems/#1/prehead }
+    \hook_use:n { key-theorems/allthms/prehead }
   }
 %% this below has to be separate from prehead_code above since we need to add
 %% continues-code to note before retrieving it in \__keythms_withhooks_begin:nnV
@@ -651,18 +664,18 @@
   }
 \cs_new:Npn \__keythms_thm_posthead_code:n #1
   {
-    \UseHook{ key-theorems/#1/posthead }
-    \UseHook{ key-theorems/allthms/posthead }
+    \hook_use:n { key-theorems/#1/posthead }
+    \hook_use:n { key-theorems/allthms/posthead }
   }
 \cs_new:Npn \__keythms_thm_prefoot_code:n #1
   {
-    \UseHook{ key-theorems/#1/prefoot }
-    \UseHook{ key-theorems/allthms/prefoot }
+    \hook_use:n { key-theorems/allthms/prefoot }
+    \hook_use:n { key-theorems/#1/prefoot }
   }
 \cs_new:Npn \__keythms_thm_postfoot_code:n #1
   {
-    \UseHook{ key-theorems/#1/postfoot }
-    \UseHook{ key-theorems/allthms/postfoot }
+    \hook_use:n { key-theorems/allthms/postfoot }
+    \hook_use:n { key-theorems/#1/postfoot }
   }
 \cs_new:Npn \__keythms_thm_storeseqdata:nnn #1#2#3
   {
@@ -921,7 +934,7 @@
 % set default listcmd
 \cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_default_listcmd:nnnnnnn
 
-\AddToHook { begindocument }
+\AddToHook{ begindocument }
   {
     \cs_if_exist:NTF \@tocline
       {
@@ -964,7 +977,6 @@
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
   }
-\providecommand{\ListOfThms}{\listofkeytheorems}
 
 \cs_new_protected:Nn \__keythms_listof_save:
   {
@@ -978,7 +990,7 @@
       }
   }
 
-\AddToHook{enddocument}
+\AddToHook{ enddocument }
   {
     % if \ListOfThms called anywhere, write to file
     \bool_if:NT \g__keythms_listof_writefile_bool
