@@ -35,9 +35,9 @@
 \DeclareOption{thmtools-compat}
   {
     \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
-      { \NewThmStyle { #2 } { #1 } }
+      { \newkeytheoremstyle { #2 } { #1 } }
     \ProvideDocumentCommand { \declaretheorem } { O{} m }
-      { \NewThm { #2 } [ #1 ] }
+      { \newkeytheorem { #2 } [ #1 ] }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
       { \begin{#2}[#1,store=#3] }
       {
@@ -50,7 +50,7 @@
               { \use:c { orig_restate_#3 } }
           }
       }
-    \ProvideDocumentCommand { \listoftheorems } { } { \ListOfThms }
+    \ProvideDocumentCommand { \listoftheorems } { } { \listofkeytheorems }
   }
 
 \DeclareOption{store-all}
