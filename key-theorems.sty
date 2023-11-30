@@ -13,7 +13,7 @@
 
 \DeclareOption{overload}
   {
-    \AddToHook{ package/key-theorems/after }
+    \AtEndOfPackage
       {
         \RenewDocumentCommand { \newtheorem } { smomo }
           {
@@ -55,7 +55,7 @@
 
 \DeclareOption{store-all}
   {
-    \AddToHook{ package/key-theorems/after }
+    \AtEndOfPackage
       {
         \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
         \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
@@ -66,7 +66,7 @@
 \ProcessOptions*
 
 % error if thmtools loaded
-\AddToHook{ package/thmtools/before }
+\hook_gput_code:nnn { package/thmtools/before } { . }
   {
     \PackageError{key-theorems}
       {
@@ -77,13 +77,35 @@
       {}
   }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Declare Variables %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bool_new:N \g__keythms_listof_writefile_bool
+\bool_gset_false:N \g__keythms_listof_writefile_bool
+\bool_new:N \l__keythms_thm_numbered_bool
+\bool_new:N \l__keythms_thm_unlessunique_bool
+\clist_new:N \g__keythms_restatecounters_clist
+\iow_new:N \g__keythms_listof_stream
+\prop_new:N \g__keythms_thmnames_prop
+\prop_new:N \g__keythms_thmuse_othercounters_prop
+\prop_new:N \l__keythms_restate_counters_prop
+\property_new:nnnn { key-theorems/labelednote } { now } { }
+  { \l__keythms_thmuse_note_tl }
+\seq_new:N \g__keythms_thmuse_seq
+\tl_new:N \l__keythms_thm_currentthmstyle_tl
+\tl_new:N \l__keythms_thm_defaultkeys_tl
+\tl_new:N \l__keythms_thm_envname_tl
+\tl_new:N \l__keythms_thmstyle_defaultkeys_tl
+\tl_new:N \l__keythms_thmstyle_lnotebrace_tl
+\tl_new:N \l__keythms_thmstyle_rnotebrace_tl
+\tl_new:N \l__keythms_thmuse_savethmargs_tl
+
+\cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
+
 %%%%%%%%%%%%%%%%%%%
 %%% Global Keys %%%
 %%%%%%%%%%%%%%%%%%%
-
-\clist_new:N \g__keythms_restatecounters_clist
-\clist_gset:Nn \g__keythms_restatecounters_clist { equation }
-\tl_new:N \l_keythms_restate_current_equation_tl
 
 \keys_define:nn { key-theorems }
   {
@@ -93,6 +115,7 @@
           { \tl_new:c { l_keythms_restate_current_##1_tl } }
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
+    restate-counters .initial:n = equation,
     continues-code .cs_set:Np = \__keythms_thmuse_continues:n #1,
     continues-code .initial:n = { continuing~from~p.\,\pageref{#1} },
     qed-symbol .cs_set_protected:Np = \qedsymbol,
@@ -104,9 +127,6 @@
 %%%%%%%%%%%%%%
 %%% Styles %%%
 %%%%%%%%%%%%%%
-
-\tl_new:N \l__keythms_thmstyle_lnotebrace_tl
-\tl_new:N \l__keythms_thmstyle_rnotebrace_tl
 
 % \__keythms_thmstyle_setbraces:nn { <left brace> } { <right brace> }
 \cs_new_protected:Npn \keythms_thmstyle_setbraces:nn #1#2
@@ -184,7 +204,6 @@
       }
   }
 
-\tl_new:N \l__keythms_thmstyle_defaultkeys_tl
 \keys_precompile:nnN { key-theorems/thmstyle }
   {
     spaceabove    = \topsep,
@@ -226,9 +245,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Defining Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
-
-\bool_new:N \l__keythms_thm_numbered_bool
-\bool_new:N \l__keythms_thm_unlessunique_bool
 
 % \keythms_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
 \NewDocumentCommand { \keythms_thm_setrefnames:nn } { m >{\SplitArgument{1}{,}} m }
@@ -340,7 +356,6 @@
   \ignorespaces
 }
 
-\tl_new:N \l__keythms_thm_defaultkeys_tl
 \keys_precompile:nnN { key-theorems/thm }
   {
     name         = \q_no_value,
@@ -365,8 +380,6 @@
     \hook_new_reversed:n { key-theorems/#1/postfoot }
   }
 
-\prop_new:N \g__keythms_thmnames_prop % for retrieving name from envname
-
 % Make generic theorem hooks
 \__keythms_thm_makethmhooks:n { allthms }
 
@@ -380,9 +393,6 @@
   }
 
 \@onlypreamble\newkeytheorem
-
-\tl_new:N \l__keythms_thm_currentthmstyle_tl
-\tl_new:N \l__keythms_thm_envname_tl
 
 % \keythms_thm_newkeythm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
@@ -483,8 +493,6 @@
     \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl
   }
 
-\cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
-
 \cs_new_eq:NN \__keythms_theoremstyle:n \theoremstyle
 \cs_generate_variant:Nn \__keythms_theoremstyle:n { V }
 
@@ -509,8 +517,6 @@
   }
 \cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV }
 
-\NewProperty { key-theorems/labelednote } { now } { } { \l__keythms_thmuse_note_tl }
-
 \keys_define:nn { key-theorems/thmuse }
   {
     label     .tl_set:N   = \l__keythms_thmuse_label_tl,
@@ -521,12 +527,18 @@
     continues* .code:n  =
       {
         \keys_set:nn { key-theorems/thmuse } { continues = #1 }
-        \IfPropertyRecordedTF { keythms_labelednote_#1 } { key-theorems/labelednote }
+        \property_if_recorded:nnT { keythms_labelednote_#1 }
+          { key-theorems/labelednote }
           {
             \keys_set:nn { key-theorems/thmuse }
-              { note = \RefProperty { keythms_labelednote_#1 } { key-theorems/labelednote } }
+              {
+                note =
+                  {
+                    \property_ref:nn { keythms_labelednote_#1 }
+                      { key-theorems/labelednote }
+                  }
+              }
           }
-          {}
       },
     store     .tl_set:N = \l__keythms_thmuse_store_tl,
     %store     .default:n = \q_no_value, % ={name} causes issues
@@ -535,10 +547,6 @@
   }
 
 %% Adapted from https://tex.stackexchange.com/a/481221/208544
-% allocate the needed variables
-\prop_new:N \g__keythms_thmuse_othercounters_prop
-\seq_new:N \g__keythms_thmuse_seq
-\tl_new:N \l__keythms_thmuse_savethmargs_tl
 
 \cs_new_protected:Npn \keythms_keyify_theorem:n #1
   {
@@ -667,7 +675,7 @@
       {
         \label{ \l__keythms_thmuse_label_tl }
         \tl_if_empty:NF \l__keythms_thmuse_note_tl
-          {
+          { % use \RecordProperties instead of \property_record:ee; see ltproperties code
             \RecordProperties { keythms_labelednote_\l__keythms_thmuse_label_tl }
               { key-theorems/labelednote }
           }
@@ -710,15 +718,13 @@
 \NewDocumentCommand { \addtotheoremhook } { o m m }
   {
     \IfNoValueTF { #1 }
-      { \AddToHook{ key-theorems/allthms/#2 }{ #3 } }
-      { \AddToHook{ key-theorems/#1/#2 }{ #3 } }
+      { \hook_gput_code:nnn { key-theorems/allthms/#2 } { . } { #3 } }
+      { \hook_gput_code:nnn { key-theorems/#1/#2 } { . } { #3 } }
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Restating Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\prop_new:N \l__keythms_restate_counters_prop
 
 % stealing from thm-restate
 \newcounter{keythms_dummyctr}
@@ -744,6 +750,7 @@
             \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
           }
         \cs_set_eq:NN \label \use_none:n % disable \label
+        \cs_set_eq:NN \RecordProperties \use_none:nn % disable \RecordProperties
         \keys_set:nn { key-theorems/thmuse } { #3 }
         \__keythms_thm_prehead_continues_code:n { #1 }
         \__keythms_thm_prehead_code:n { #1 }
@@ -776,20 +783,23 @@
     numwidth   .initial:n = 2.3em,
     ignore     .code:n    =
       {
-        \AddToHook{ begindocument/before } { \keythms_listof_ignore:n { #1 } }
+        \hook_gput_code:nnn { begindocument/before } { . }
+          { \keythms_listof_ignore:n { #1 } }
       },
     show       .code:n    =
       {
-        \AddToHook{ begindocument/before } { \keythms_listof_show:n { #1 } }
+        \hook_gput_code:nnn { begindocument/before } { . }
+          { \keythms_listof_show:n { #1 } }
       },
     onlynamed  .code:n    =
       {
-        \AddToHook{ begindocument/before } { \keythms_listof_onlynamed:n { #1 } }
+        \hook_gput_code:nnn { begindocument/before } { . }
+          { \keythms_listof_onlynamed:n { #1 } }
       },
     onlynamed .default:n  = \q_no_value,
     ignoreall  .code:n    =
       {
-        \AddToHook{ begindocument/before } % in case called before theorem defined
+        \hook_gput_code:nnn { begindocument/before } { . } % in case called before theorem defined
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_ignore_aux:n { ##1 } }
@@ -797,7 +807,7 @@
       },
     showall    .code:n    =
       {
-        \AddToHook{ begindocument/before } % in case called before theorem defined
+        \hook_gput_code:nnn { begindocument/before } { . } % in case called before theorem defined
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_show_aux:n { ##1 } }
@@ -813,7 +823,7 @@
       { \cs_set_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_printbody_listcmd:nnnnnnn },
   }
 
-\AddToHook{ begindocument } % redefine these keys after begindocument
+\hook_gput_code:nnn { begindocument } { . } % redefine these keys after begindocument
   {
     \keys_define:nn { key-theorems/listof }
       {
@@ -902,12 +912,18 @@
     continues* .code:n   =
       {
         \keys_set:nn { key-theorems/listofheading } { continues = #1 }
-        \IfPropertyRecordedTF { keythms_labelednote_#1 } { key-theorems/labelednote }
+        \property_if_recorded:nnT { keythms_labelednote_#1 }
+          { key-theorems/labelednote }
           {
             \keys_set:nn { key-theorems/listofheading }
-              { note = \RefProperty { keythms_labelednote_#1 } { key-theorems/labelednote } }
+              {
+                note =
+                  {
+                    \property_ref:nn { keythms_labelednote_#1 }
+                      { key-theorems/labelednote }
+                  }
+              }
           }
-          {}
       },
     store   .code:n = , % do nothing
     restate .code:n = , % do nothing
@@ -952,7 +968,7 @@
 % set default listcmd
 \cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_default_listcmd:nnnnnnn
 
-\AddToHook{ begindocument }
+\hook_gput_code:nnn { begindocument } { . }
   {
     \cs_if_exist:NTF \@tocline
       {
@@ -981,10 +997,6 @@
   { \cs_set:Npn \__keythms_listof_titlecmd:n #1 { \chapter*{#1} } }
   { \cs_set:Npn \__keythms_listof_titlecmd:n #1 { \section*{#1} } }
 
-\iow_new:N \g__keythms_listof_stream
-\bool_new:N \g__keythms_listof_writefile_bool
-\bool_gset_false:N \g__keythms_listof_writefile_bool
-
 \NewDocumentCommand { \listofkeytheorems } { O{} }
   {
     % set bool true for writing to file
@@ -1008,7 +1020,7 @@
       }
   }
 
-\AddToHook{ enddocument }
+\hook_gput_code:nnn { enddocument } { . }
   {
     % if \ListOfThms called anywhere, write to file
     \bool_if:NT \g__keythms_listof_writefile_bool
