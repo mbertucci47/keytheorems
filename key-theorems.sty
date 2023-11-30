@@ -1,4 +1,4 @@
-\ProvidesExplPackage{key-theorems}{}{0.0.1gamma}{l3keys interface to amsthm}
+\ProvidesExplPackage{key-theorems}{}{0.0.2alpha}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -94,13 +94,7 @@
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
     continues-code .cs_set:Np = \__keythms_thmuse_continues:n #1,
-    continues-code .initial:n =
-      {
-        \cs_if_exist:NTF \hyperref
-          { \hyperref[#1]{continuing} ~ }
-          { continuing ~ }
-        from~p.\,\pageref{#1}
-      },
+    continues-code .initial:n = { continuing~from~p.\,\pageref{#1} },
     qed-symbol .cs_set_protected:Np = \qedsymbol,
   }
 
@@ -164,15 +158,9 @@
 
 %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
 %% QUESTION: should these be moved into def of \newkeytheoremstyle?
-\NewExpandableDocumentCommand { \NAME } { }
-  {
-    \keythms_thmstyle_thmname:n { ##1 }
-  }
-\NewExpandableDocumentCommand { \NUMBER } { }
-  {
-    \keythms_thmstyle_thmnumber:n { \exp_not:N \textup { ##2 } }
-  }
-\NewExpandableDocumentCommand { \NOTE } { }
+\cs_new:Npn \NAME { \keythms_thmstyle_thmname:n { ##1 } }
+\cs_new:Npn \NUMBER { \keythms_thmstyle_thmnumber:n { \exp_not:N \textup { ##2 } } }
+\cs_new:Npn \NOTE
   {
     \keythms_thmstyle_thmnote:n
       { ~ \group_begin: % group so notefont doesn't affect headpunct
@@ -228,7 +216,6 @@
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define new inherit-style key
     \keys_define:nn { key-theorems/thmstyle } { inherit-style / #1 .meta:n = { #2 } }
-    % ^ broken with headformat?
   }
 
 \@onlypreamble\newkeytheoremstyle
@@ -522,15 +509,25 @@
   }
 \cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV }
 
+\NewProperty { key-theorems/labelednote } { now } { } { \l__keythms_thmuse_note_tl }
+
 \keys_define:nn { key-theorems/thmuse }
   {
-    label     .code:n   =
-      { \AddToHookNext{ cmd/deferred@thm@head/after }{ \label{ #1 } } },
-    % ^ maybe better to add to usual posthead hook and declare a rule
+    label     .tl_set:N   = \l__keythms_thmuse_label_tl,
     note      .tl_set:N = \l__keythms_thmuse_note_tl,
     name      .meta:n   = { note = #1 },
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     continues .tl_set:N = \l__keythms_thmuse_contlabel_tl,
+    continues* .code:n  =
+      {
+        \keys_set:nn { key-theorems/thmuse } { continues = #1 }
+        \IfPropertyRecordedTF { keythms_labelednote_#1 } { key-theorems/labelednote }
+          {
+            \keys_set:nn { key-theorems/thmuse }
+              { note = \RefProperty { keythms_labelednote_#1 } { key-theorems/labelednote } }
+          }
+          {}
+      },
     store     .tl_set:N = \l__keythms_thmuse_store_tl,
     %store     .default:n = \q_no_value, % ={name} causes issues
     restate   .meta:n   = { store = #1 },
@@ -603,6 +600,7 @@
     \begin{keythms_orig_#1}
     \__keythms_thm_posthead_code:n { #1 }
     \__keythms_thm_storeseqdata:nnn { #1 } { #2 } { }
+    \ignorespaces % I hope this is alright
   }
 \cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
   {
@@ -610,6 +608,7 @@
     \begin{keythms_orig_#1}[#3]
     \__keythms_thm_posthead_code:n { #1 }
     \__keythms_thm_storeseqdata:nnn { #1 } { #2 } { }
+    \ignorespaces % I hope this is alright
   }
 \cs_generate_variant:Nn \__keythms_withhooks_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_withhooks_end:n #1
@@ -664,6 +663,15 @@
   }
 \cs_new:Npn \__keythms_thm_posthead_code:n #1
   {
+    \tl_if_empty:NF \l__keythms_thmuse_label_tl
+      {
+        \label{ \l__keythms_thmuse_label_tl }
+        \tl_if_empty:NF \l__keythms_thmuse_note_tl
+          {
+            \RecordProperties { keythms_labelednote_\l__keythms_thmuse_label_tl }
+              { key-theorems/labelednote }
+          }
+      }
     \hook_use:n { key-theorems/#1/posthead }
     \hook_use:n { key-theorems/allthms/posthead }
   }
@@ -887,11 +895,21 @@
 %% See acro.sty for template idea.
 \keys_define:nn { key-theorems/listofheading }
   {
-    label .code:n = , % do nothing
-    note .tl_set:N = \l__keythms_listofheading_note_tl,
-    name .meta:n = { note = #1 },
-    continues .tl_set:N = \l__keythms_listofheading_contlabel_tl,
-    store .code:n = , % do nothing
+    label      .code:n   = , % do nothing
+    note       .tl_set:N = \l__keythms_listofheading_note_tl,
+    name       .meta:n   = { note = #1 },
+    continues  .tl_set:N = \l__keythms_listofheading_contlabel_tl,
+    continues* .code:n   =
+      {
+        \keys_set:nn { key-theorems/listofheading } { continues = #1 }
+        \IfPropertyRecordedTF { keythms_labelednote_#1 } { key-theorems/labelednote }
+          {
+            \keys_set:nn { key-theorems/listofheading }
+              { note = \RefProperty { keythms_labelednote_#1 } { key-theorems/labelednote } }
+          }
+          {}
+      },
+    store   .code:n = , % do nothing
     restate .code:n = , % do nothing
   }
 
@@ -1013,7 +1031,7 @@
 
 %%% Keys not yet implemented
 % qed (in style; and all thm keys in style)
-% numbered=unless unique
+% numbered=unless unique (partially implemented)
 
 %%% Commands/envs not implemented
 % \Autoref

@@ -13,7 +13,7 @@
 \usepackage{key-theorems}
 \usepackage{cleveref}
 
-\def\version{0.0.1$\gamma$}
+\def\version{0.0.2$\alpha$}
 
 \title{
   \pkg{key-theorems} package \\[1ex]
@@ -97,12 +97,8 @@
 \maketitle
 
 \begin{abstract}
-An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Full of bugs and incomplete. Don't use it for anything important!
+An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Very much not a finished product. Don't use it for anything important!
 \end{abstract}
-
-\begin{tcolorbox}[colframe=red,colback=red!10!white]
-\textbf{Warning!} In addition to being a completely unreliable package, the documentation is just a skeleton! For full details look at the package code.
-\end{tcolorbox}
 
 \section{Load-time Options}
 
@@ -191,8 +187,8 @@ Some text
 \end{keythmscode}
 \end{docKey}
 
-\begin{docKey}{continues}{=\meta{label name}}{initially unset}
-Pick up a theorem where you left off. The theorem number remains the same. The printed text can be customized with the \refKey{continues-code} option.
+\begin{docKey}{continues}{\sarg=\meta{label name}}{initially unset}
+Pick up a theorem where you left off. The theorem number remains the same. The printed text can be customized with the \refKey{continues-code} option. The starred version also copies the theorem note, if it exists.
 \begin{keythmscode}[]
 \begin{theorem}[continues=foo]
 \dots and some more text.
