@@ -1,4 +1,4 @@
-\ProvidesExplPackage{key-theorems}{}{0.0.2alpha}{l3keys interface to amsthm}
+\ProvidesExplPackage{key-theorems}{}{0.0.2beta}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -6,6 +6,11 @@
 
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
+\RequirePackage{aliascnt} % for sibling theorems
+% \RequirePackage{refcount} % for \getrefnumber and \getrefbykeydefault
+% Actually we need nameref to use \getrefbykeydefault{<label>}{name}{}
+% I don't like this.
+\RequirePackage{nameref}
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %%% Package Options %%%
@@ -90,8 +95,6 @@
 \prop_new:N \g__keythms_thmnames_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
 \prop_new:N \l__keythms_restate_counters_prop
-\property_new:nnnn { key-theorems/labelednote } { now } { }
-  { \l__keythms_thmuse_note_tl }
 \seq_new:N \g__keythms_thmuse_seq
 \tl_new:N \l__keythms_thm_currentthmstyle_tl
 \tl_new:N \l__keythms_thm_defaultkeys_tl
@@ -129,7 +132,7 @@
 %%%%%%%%%%%%%%
 
 % \__keythms_thmstyle_setbraces:nn { <left brace> } { <right brace> }
-\cs_new_protected:Npn \keythms_thmstyle_setbraces:nn #1#2
+\cs_new_protected:Npn \__keythms_thmstyle_setbraces:nn #1#2
   {
     \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl {#1}
     \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl {#2}
@@ -147,7 +150,7 @@
     break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
     break         .value_forbidden:n = true,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
-    notebraces    .code:n   = \exp_after:wN \keythms_thmstyle_setbraces:nn #1,
+    notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
     headstyle     .choice:,
     headstyle / margin .code:n =
       {
@@ -329,11 +332,11 @@
           { keythms_tcbox }
           { \let\deferred@thm@head\suppresshead@deferred@thm@head }
         \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/posthead }
-          { keythms_tcbox }{ before }{ keythms_hook_keys }
+          { keythms_tcbox } { before } { keythms_hook_keys }
         \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
-          { keythms_tcbox }{ after }{ keythms_hook_keys }
+          { keythms_tcbox } { after } { keythms_hook_keys }
         \hook_gset_rule:nnnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
-          { keythms_tcbox }{ after }{ keythms_qed }
+          { keythms_tcbox } { after } { keythms_qed }
         \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/posthead }
           { keythms_tcbox }
           {
@@ -510,7 +513,6 @@
 
 \cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
   {
-    \RequirePackage{aliascnt}
     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
     \__keythms_thm_new:nn{#1}[#3]{#2}
     \aliascntresetthe { #1 }
@@ -527,17 +529,10 @@
     continues* .code:n  =
       {
         \keys_set:nn { key-theorems/thmuse } { continues = #1 }
-        \property_if_recorded:nnT { keythms_labelednote_#1 }
-          { key-theorems/labelednote }
+        \tl_if_empty:eF { \getrefbykeydefault{#1}{name}{} }
           {
             \keys_set:nn { key-theorems/thmuse }
-              {
-                note =
-                  {
-                    \property_ref:nn { keythms_labelednote_#1 }
-                      { key-theorems/labelednote }
-                  }
-              }
+              { note = { \getrefbykeydefault{#1}{name}{} } }
           }
       },
     store     .tl_set:N = \l__keythms_thmuse_store_tl,
@@ -657,13 +652,11 @@
       {
         \tl_if_empty:NF \l__keythms_thmuse_note_tl
           { \tl_put_right:Nn \l__keythms_thmuse_note_tl { , ~ } }
-        \tl_put_right:Nn \l__keythms_thmuse_note_tl
+        \tl_put_right:Ne \l__keythms_thmuse_note_tl
           { \__keythms_thmuse_continues:V \l__keythms_thmuse_contlabel_tl }
         \cs_set:cpn { the #1 }
           {
-            \exp_args:Ne \__keythms_ref_starred:n
-              { \l__keythms_thmuse_contlabel_tl }
-            % ^ apparently V expansion is not enough, error if label= is given too
+            \getrefnumber { \l__keythms_thmuse_contlabel_tl }
           }
         \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
         \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
@@ -672,14 +665,7 @@
 \cs_new:Npn \__keythms_thm_posthead_code:n #1
   {
     \tl_if_empty:NF \l__keythms_thmuse_label_tl
-      {
-        \label{ \l__keythms_thmuse_label_tl }
-        \tl_if_empty:NF \l__keythms_thmuse_note_tl
-          { % use \RecordProperties instead of \property_record:ee; see ltproperties code
-            \RecordProperties { keythms_labelednote_\l__keythms_thmuse_label_tl }
-              { key-theorems/labelednote }
-          }
-      }
+      { \label{ \l__keythms_thmuse_label_tl } }
     \hook_use:n { key-theorems/#1/posthead }
     \hook_use:n { key-theorems/allthms/posthead }
   }
@@ -820,7 +806,10 @@
     title-code .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
     no-title   .meta:n     = { title-code = {} },
     print-body .code:n     =
-      { \cs_set_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_printbody_listcmd:nnnnnnn },
+      {
+        \cs_set_eq:NN \keythms_listof_listcmd:nnnnnnn
+          \__keythms_listof_printbody_listcmd:nnnnnnn
+      },
   }
 
 \hook_gput_code:nnn { begindocument } { . } % redefine these keys after begindocument
@@ -912,17 +901,10 @@
     continues* .code:n   =
       {
         \keys_set:nn { key-theorems/listofheading } { continues = #1 }
-        \property_if_recorded:nnT { keythms_labelednote_#1 }
-          { key-theorems/labelednote }
+        \tl_if_empty:eF { \getrefbykeydefault{#1}{name}{} }
           {
-            \keys_set:nn { key-theorems/listofheading }
-              {
-                note =
-                  {
-                    \property_ref:nn { keythms_labelednote_#1 }
-                      { key-theorems/labelednote }
-                  }
-              }
+            % \keys_set:nn { key-theorems/listofheading }
+              % { note = { \getrefbykeydefault{#1}{name}{} } }
           }
       },
     store   .code:n = , % do nothing
@@ -1031,6 +1013,30 @@
       }
   }
 
+%%%%%%%%%%%%%%%%
+%%% \Autoref %%%
+%%%%%%%%%%%%%%%%
+
+\NewDocumentCommand { \Autoref } { s m }
+  {
+    \group_begin:
+    \cs_set_eq:NN \HyRef@testreftype \keythms@HyRef@testreftype
+    \IfBooleanTF { #1 } { \autoref*{#2} } { \autoref{#2} }
+    \group_end:
+  }
+
+\def\keythms@HyRef@testreftype#1.#2\\{%
+  \@ifundefined{#1Autorefname}{%
+    \PackageWarning{key-theorems}{No~Autoref~name~for~`#1'}%
+    }{%
+    \edef\HyRef@currentHtag{%
+      \expandafter\noexpand\csname#1Autorefname\endcsname
+      %\noexpand~% REPLACED WITH BELOW
+      \space
+    }%
+  }%
+}
+
 %%% Questions
 % 1. Are kernel hooks really better than simple token lists?
 %    In particular, with token lists you have \tl_put_left to avoid all the hook
@@ -1045,9 +1051,6 @@
 % qed (in style; and all thm keys in style)
 % numbered=unless unique (partially implemented)
 
-%%% Commands/envs not implemented
-% \Autoref
-
 %% Another idea: only print "up-to-now" theorems
 
 %% Another: use style key for multiple theorems, like
@@ -1057,3 +1060,5 @@
 % Well maybe not. Because should these style keys also be applied to a called
 % \newkeytheoremstyle? Or only used for that? Question is: should user be able to style theorems
 % without an explicit call to \newkeytheorem{<thm>}[style=<style>]?
+
+%% Issues: - Currently 'continues*' is broken with \listofkeytheorems
