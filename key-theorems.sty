@@ -1,4 +1,4 @@
-\ProvidesExplPackage{key-theorems}{}{0.0.2beta}{l3keys interface to amsthm}
+\ProvidesExplPackage{key-theorems}{}{0.0.2gamma}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -6,10 +6,9 @@
 
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
-\RequirePackage{aliascnt} % for sibling theorems
 % \RequirePackage{refcount} % for \getrefnumber and \getrefbykeydefault
-% Actually we need nameref to use \getrefbykeydefault{<label>}{name}{}
-% I don't like this.
+% Actually we need nameref to use \getrefbykeydefault{<label>}{name}{}.
+% I don't like this. In the future might be better to use ltproperties.
 \RequirePackage{nameref}
 
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -86,6 +85,8 @@
 %%% Declare Variables %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\tl_new:N \l__keythms_tmpa_tl
+
 \bool_new:N \g__keythms_listof_writefile_bool
 \bool_gset_false:N \g__keythms_listof_writefile_bool
 \bool_new:N \l__keythms_thm_numbered_bool
@@ -125,7 +126,8 @@
   }
 
 % \keytheoremset{<options>}
-\NewDocumentCommand { \keytheoremset } { m } { \keys_set:nn { key-theorems } { #1 } }
+\NewDocumentCommand { \keytheoremset } { m }
+  { \keys_set:nn { key-theorems } { #1 } }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -237,10 +239,11 @@
       \l__keythms_thmstyle_postheadspace_tl
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define new inherit-style key
-    \keys_define:nn { key-theorems/thmstyle } { inherit-style / #1 .meta:n = { #2 } }
+    \keys_define:nn { key-theorems/thmstyle }
+      { inherit-style / #1 .meta:n = { #2 } }
   }
 
-\@onlypreamble\newkeytheoremstyle
+\@onlypreamble \newkeytheoremstyle
 
 \cs_new_eq:NN \keythms_thmstyle_new:nnnnnnnnn \newtheoremstyle
 \cs_generate_variant:Nn \keythms_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
@@ -250,32 +253,36 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 % \keythms_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
-\NewDocumentCommand { \keythms_thm_setrefnames:nn } { m >{\SplitArgument{1}{,}} m }
-  { \__keythms_thm_setrefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
+\NewDocumentCommand { \keythms_thm_setrefnames:nn }
+  { m >{\SplitArgument{1}{,}} m }
+  { \__keythms_thm_setrefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
   {
     \cs_set:cpn { #1 autorefname } { #2 }
-    \cs_if_exist:NT \crefname 
+    \IfPackageLoadedTF { cleveref }
       { 
         \tl_if_novalue:nTF { #3 }
           { \crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \crefname{#1}{#2}{#3} }
       }
+      { }
   }
 \cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
 
 % \keythms_thm_setRefnames:n { <envname> } { <refname> or <sing,plural> }
-\NewDocumentCommand { \keythms_thm_setRefnames:nn } { m >{\SplitArgument{1}{,}} m }
-  { \__keythms_thm_setRefnames_aux:nnn{#1}#2 } % not sure why brace around #1 needed
+\NewDocumentCommand { \keythms_thm_setRefnames:nn }
+  { m >{\SplitArgument{1}{,}} m }
+  { \__keythms_thm_setRefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
-    \cs_if_exist:NT \Crefname 
+    \IfPackageLoadedTF { cleveref }
       { 
         \tl_if_novalue:nTF { #3 }
           { \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \Crefname{#1}{#2}{#3} }
       }
+      { }
   }
 \cs_generate_variant:Nn \keythms_thm_setRefnames:nn { nV }
 
@@ -342,7 +349,7 @@
           {
             \begin{tcolorbox}[
               savedelimiter=\l__keythms_thmuse_envname_tl,
-              title={\normalfont\keythms@tmpheadcode},
+              title={\keythms@tmpheadcode},
               #1]
           } % FIX: savelowerto doesn't work
         \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prefoot }
@@ -395,7 +402,7 @@
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
   }
 
-\@onlypreamble\newkeytheorem
+\@onlypreamble \newkeytheorem
 
 % \keythms_thm_newkeythm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
@@ -513,6 +520,7 @@
 
 \cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
   {
+    \RequirePackage{aliascnt}
     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
     \__keythms_thm_new:nn{#1}[#3]{#2}
     \aliascntresetthe { #1 }
@@ -529,7 +537,8 @@
     continues* .code:n  =
       {
         \keys_set:nn { key-theorems/thmuse } { continues = #1 }
-        \tl_if_empty:eF { \getrefbykeydefault{#1}{name}{} }
+        \protected@edef \l__keythms_tmpa_tl { \getrefbykeydefault{#1}{name}{} }
+        \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { key-theorems/thmuse }
               { note = { \getrefbykeydefault{#1}{name}{} } }
@@ -554,8 +563,8 @@
         \__keythms_thm_posthead_code:n { #1 } % is this the right order with below?
         \clist_map_inline:Nn \g__keythms_restatecounters_clist
           {
-            \prop_gput:Nne \g__keythms_thmuse_othercounters_prop
-              { ####1 } { \the\value{####1} }
+            \prop_gput:Nne \g__keythms_thmuse_othercounters_prop { ####1 }
+              { \the\value{####1} }
           }
         \__keythms_thm_storeseqdata:nnn { #1 } { ##1 } { ##3 }
         ##3
@@ -580,7 +589,10 @@
           \__keythms_thm_prehead_continues_code:n { #1 }
           \tl_if_empty:NTF \l__keythms_thmuse_note_tl
             { \__keythms_withhooks_begin:nn { #1 } { ##1 } }
-            { \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl }
+            {
+              \__keythms_withhooks_begin:nnV { #1 } { ##1 }
+                \l__keythms_thmuse_note_tl
+            }
         }
         {
           \__keythms_withhooks_end:n { #1 }
@@ -591,7 +603,7 @@
               \exp_args:Nee \cs_new:cpn { \l__keythms_thmuse_store_tl } % a better way?
                 {
                   \exp_not:N \__keythms_listof_printbody_listcmd:nnnnnnn
-                  \exp_not:V \l__keythms_thmuse_savethmargs_tl
+                  \exp_not:o { \l__keythms_thmuse_savethmargs_tl }
                 }
             }
         }
@@ -632,7 +644,8 @@
 \tl_new:N \l__keythms_thmuse_envname_tl
 
 \cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
-\cs_new_protected:Npn \__keythms_orig_begin:nn #1#2 { \begin{keythms_orig_#1}[#2] }
+\cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
+  { \begin{keythms_orig_#1}[#2] }
 \cs_generate_variant:Nn \__keythms_orig_begin:nn { nV }
 \cs_new_protected:Npn \__keythms_orig_end:n #1 { \end{keythms_orig_#1} }
 
@@ -726,7 +739,9 @@
         \prop_map_inline:Nn \l__keythms_restate_counters_prop
           {
             \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
-            \setcounter { ##1 } { ##2 } % FIX: what if eq's numbered by section, theorem, etc.?
+            \setcounter { ##1 } { ##2 }
+            % ^ FIX: what if eq's numbered by section, theorem, etc.? The
+            %        thmtools code is opaque....
             \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
           }
         \tl_if_empty:nF { #2 }
@@ -736,7 +751,7 @@
             \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
           }
         \cs_set_eq:NN \label \use_none:n % disable \label
-        \cs_set_eq:NN \RecordProperties \use_none:nn % disable \RecordProperties
+        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
         \keys_set:nn { key-theorems/thmuse } { #3 }
         \__keythms_thm_prehead_continues_code:n { #1 }
         \__keythms_thm_prehead_code:n { #1 }
@@ -750,7 +765,8 @@
         \__keythms_thm_postfoot_code:n { #1 }
         \prop_map_inline:Nn \l__keythms_restate_counters_prop
           {
-            \exp_args:Nnc \setcounter { ##1 } { l_keythms_restate_current_##1_tl }
+            \exp_args:Nnc \setcounter { ##1 }
+              { l_keythms_restate_current_##1_tl }
           }
         \group_end:
       }
@@ -812,7 +828,7 @@
       },
   }
 
-\hook_gput_code:nnn { begindocument } { . } % redefine these keys after begindocument
+\hook_gput_code:nnn { begindocument } { . } % redefine these keys at begindocument
   {
     \keys_define:nn { key-theorems/listof }
       {
@@ -842,7 +858,8 @@
   }
 \cs_new_protected:Npn \__keythms_listof_ignore_aux:n #1
   {
-    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7 { }
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+      { }
   }
 
 \cs_new_protected:Npn \keythms_listof_show:n #1
@@ -901,10 +918,11 @@
     continues* .code:n   =
       {
         \keys_set:nn { key-theorems/listofheading } { continues = #1 }
-        \tl_if_empty:eF { \getrefbykeydefault{#1}{name}{} }
+        \protected@edef \l__keythms_tmpa_tl { \getrefbykeydefault{#1}{name}{} }
+        \tl_if_empty:NF \l__keythms_tmpa_tl
           {
-            % \keys_set:nn { key-theorems/listofheading }
-              % { note = { \getrefbykeydefault{#1}{name}{} } }
+            \keys_set:nn { key-theorems/listofheading }
+              { note = { \getrefbykeydefault{#1}{name}{} } }
           }
       },
     store   .code:n = , % do nothing
@@ -941,14 +959,18 @@
         \tl_if_empty:NF \l__keythms_listofheading_note_tl
           { \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ } }
         \tl_put_right:Nn \l__keythms_listofheading_note_tl
-          { \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl }
+          {
+            \__keythms_thmuse_continues:V
+              \l__keythms_listofheading_contlabel_tl
+          }
       }
     #2
     \group_end:
   }
 
 % set default listcmd
-\cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn \__keythms_listof_default_listcmd:nnnnnnn
+\cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn
+  \__keythms_listof_default_listcmd:nnnnnnn
 
 \hook_gput_code:nnn { begindocument } { . }
   {
@@ -1020,22 +1042,23 @@
 \NewDocumentCommand { \Autoref } { s m }
   {
     \group_begin:
-    \cs_set_eq:NN \HyRef@testreftype \keythms@HyRef@testreftype
+    \cs_set_eq:NN \HyRef@testreftype \__keythms_Autoref_testreftype:w
     \IfBooleanTF { #1 } { \autoref*{#2} } { \autoref{#2} }
     \group_end:
   }
 
-\def\keythms@HyRef@testreftype#1.#2\\{%
-  \@ifundefined{#1Autorefname}{%
-    \PackageWarning{key-theorems}{No~Autoref~name~for~`#1'}%
-    }{%
-    \edef\HyRef@currentHtag{%
-      \expandafter\noexpand\csname#1Autorefname\endcsname
-      %\noexpand~% REPLACED WITH BELOW
-      \space
-    }%
-  }%
-}
+\cs_set:Npn \__keythms_Autoref_testreftype:w #1.#2\\
+  {
+    \cs_if_exist:cTF { #1 Autorefname }
+      {
+        \cs_set:Npe \HyRef@currentHtag
+          {
+            \exp_not:N \use:c { #1 Autorefname }
+            \exp_not:N \c_space_token
+          }
+      }
+      { \PackageWarning { key-theorems } { No~Autoref~name~for~`#1' } }
+  }
 
 %%% Questions
 % 1. Are kernel hooks really better than simple token lists?
@@ -1046,6 +1069,7 @@
 %    to do this? No, right?
 % 4. Instead of using aux we store everything in this big sequence and retrieve
 %    data from that. Is that a good idea?
+%  Answer: no, I'd like to be able to restate before stating.
 
 %%% Keys not yet implemented
 % qed (in style; and all thm keys in style)
@@ -1061,4 +1085,8 @@
 % \newkeytheoremstyle? Or only used for that? Question is: should user be able to style theorems
 % without an explicit call to \newkeytheorem{<thm>}[style=<style>]?
 
-%% Issues: - Currently 'continues*' is broken with \listofkeytheorems
+%% Another: link theorem to restated (see TeX.sx)
+
+%% Issues: 1. Fix equation, etc. numbering in restated theorems when numbered by
+%             chapter, section, etc.
+% 2. listhack
