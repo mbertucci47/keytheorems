@@ -13,7 +13,7 @@
 \usepackage{key-theorems}
 \usepackage{cleveref}
 
-\def\version{0.0.2$\alpha$}
+\def\version{0.0.2$\gamma$}
 
 \title{
   \pkg{key-theorems} package \\[1ex]
@@ -300,12 +300,12 @@ Some text
 \end{keythmscode}
 \end{docKeys}
 
-\begin{docKey}{refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
+\begin{docKey}{refname}{=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
 If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg{cleveref}'s \cs{cref}. If two strings separated by a comma, then the second string is the plural form used by \cs{cref}.
 \end{docKey}
 
-\begin{docKey}{Refname}{=\meta{ref name} or \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
-Same as \refKey{refname} but for \cs{Autoref} (not yet implemented!) and \cs{Cref}.
+\begin{docKey}{Refname}{=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}{initially \meta{display name}}
+Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}.
 \begin{tcbwritetemp}
 \newkeytheorem{prop}[
   name=Proposition,
@@ -322,6 +322,7 @@ Some more text
 \end{prop}
 \begin{theorem}
 Consider \cref{abc,def}.
+\Autoref{abc} \dots
 \end{theorem}
 \end{keythmscode}
 \end{docKey}

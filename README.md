@@ -103,11 +103,10 @@ but a few things are changed:
 
 ## Things to do
 
-- Clean up the code. Things are out of order, poorly named, l3 naming conventions, etc.
+- Clean up the code. Things are out of order, poorly named, etc.
 - Add error messages. Curently there are none...
 - `thmtools` features not yet implemented
-    - `numbered=unless unique` key
-    - `\Autoref`
+    - `numbered=unless unique` key (partially implemented)
     - labels pointing to restated theorem, not original
     - hyperlinking unnumbered theorems in list of theorems
     - certainly more

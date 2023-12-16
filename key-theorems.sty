@@ -1,4 +1,4 @@
-\ProvidesExplPackage{key-theorems}{}{0.0.2gamma}{l3keys interface to amsthm}
+\ProvidesExplPackage{key-theorems}{}{0.0.2delta}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -553,11 +553,10 @@
 %% Adapted from https://tex.stackexchange.com/a/481221/208544
 
 \cs_new_protected:Npn \keythms_keyify_theorem:n #1
-  {
+  { % #1 = theorem name
     \NewEnvironmentCopy { keythms_orig_#1 } { #1 }
     \NewDocumentEnvironment { keythms_grab_#1 } { m O{} +b }
-      {
-        \__keythms_thm_prehead_continues_code:n { #1 }
+      { % ##1 = keys, ##2 = note, ##3 = theorem body
         \__keythms_thm_prehead_code:n { #1 }
         \begin{keythms_orig_#1}[##2]
         \__keythms_thm_posthead_code:n { #1 } % is this the right order with below?
@@ -581,6 +580,7 @@
           \keys_set:nn { key-theorems/thmuse } { ##1 }
           \tl_if_empty:NF \l__keythms_thmuse_store_tl
             {
+              \bool_gset_true:N \g__keythms_listof_writefile_bool
               \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
@@ -596,21 +596,11 @@
         }
         {
           \__keythms_withhooks_end:n { #1 }
-          \tl_if_empty:NF \l__keythms_thmuse_store_tl
-            {
-              \seq_get_right:NN \g__keythms_thmuse_seq
-                \l__keythms_thmuse_savethmargs_tl
-              \exp_args:Nee \cs_new:cpn { \l__keythms_thmuse_store_tl } % a better way?
-                {
-                  \exp_not:N \__keythms_listof_printbody_listcmd:nnnnnnn
-                  \exp_not:o { \l__keythms_thmuse_savethmargs_tl }
-                }
-            }
         }
   }
 
 \cs_new_protected:Npn \__keythms_withhooks_begin:nn #1#2
-  {
+  { % #1 = theorem name, #2 = keys
     \__keythms_thm_prehead_code:n { #1 }
     \begin{keythms_orig_#1}
     \__keythms_thm_posthead_code:n { #1 }
@@ -618,7 +608,7 @@
     \ignorespaces % I hope this is alright
   }
 \cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
-  {
+  { % #1 = theorem name, #2 = keys, #3 = note
     \__keythms_thm_prehead_code:n { #1 }
     \begin{keythms_orig_#1}[#3]
     \__keythms_thm_posthead_code:n { #1 }
@@ -633,9 +623,13 @@
     \__keythms_thm_postfoot_code:n { #1 }
   }
 \cs_new_protected:Npn \__keythms_grab_begin:nn #1#2
-  { \begin{keythms_grab_#1}{#2} }
+  { % #1 = theorem name, #2 = keys
+    \begin{keythms_grab_#1}{#2}
+  }
 \cs_new_protected:Npn \__keythms_grab_begin:nnn #1#2#3
-  { \begin{keythms_grab_#1}{#2}[#3] }
+  { % #1 = theorem name, #2 = keys, #3 = note
+    \begin{keythms_grab_#1}{#2}[#3]
+  }
 \cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
 
@@ -650,7 +644,7 @@
 \cs_new_protected:Npn \__keythms_orig_end:n #1 { \end{keythms_orig_#1} }
 
 \cs_new:Npn \__keythms_thm_prehead_code:n #1
-  {
+  { % #1 = theorem name
     %%% EXPERIMENTAL
     \tl_set:Nn \l__keythms_thmuse_envname_tl { #1 }
     %%% END EXPERIMENTAL
@@ -660,7 +654,7 @@
 %% this below has to be separate from prehead_code above since we need to add
 %% continues-code to note before retrieving it in \__keythms_withhooks_begin:nnV
 \cs_new:Npn \__keythms_thm_prehead_continues_code:n #1
-  {
+  { % #1 = theorem name
     \tl_if_empty:NF \l__keythms_thmuse_contlabel_tl
       {
         \tl_if_empty:NF \l__keythms_thmuse_note_tl
@@ -676,34 +670,33 @@
       }
   }
 \cs_new:Npn \__keythms_thm_posthead_code:n #1
-  {
+  { % #1 = theorem name
     \tl_if_empty:NF \l__keythms_thmuse_label_tl
       { \label{ \l__keythms_thmuse_label_tl } }
     \hook_use:n { key-theorems/#1/posthead }
     \hook_use:n { key-theorems/allthms/posthead }
   }
 \cs_new:Npn \__keythms_thm_prefoot_code:n #1
-  {
+  { % #1 = theorem name
     \hook_use:n { key-theorems/allthms/prefoot }
     \hook_use:n { key-theorems/#1/prefoot }
   }
 \cs_new:Npn \__keythms_thm_postfoot_code:n #1
-  {
+  { % #1 = theorem name
     \hook_use:n { key-theorems/allthms/postfoot }
     \hook_use:n { key-theorems/#1/postfoot }
   }
 \cs_new:Npn \__keythms_thm_storeseqdata:nnn #1#2#3
-  {
+  { % #1 = theorem name, #2 = keys, #3 = theorem body
     \seq_gput_right:Ne \g__keythms_thmuse_seq
       {
         { #1 } % envname
         { \cs_if_exist:cT { c@ #1 } { \@currentlabel } } % number
+        { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
+        { \thepage } % page number
+        { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop } % stored counters
         { \exp_not:n { #2 } } % keys
         { \exp_not:n { #3 } } % body
-        { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
-        { \thepage } % page number
-        { \cs_if_exist:NT \@currentHref { \@currentHref } } % for hyperref
-        % ^ is this necessary? Should always be of form <envname>.\the<envname>
       }
   }
 
@@ -720,60 +713,6 @@
       { \hook_gput_code:nnn { key-theorems/allthms/#2 } { . } { #3 } }
       { \hook_gput_code:nnn { key-theorems/#1/#2 } { . } { #3 } }
   }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Restating Theorems %%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% stealing from thm-restate
-\newcounter{keythms_dummyctr}
-\cs_gset:Npn \theHkeythms_dummyctr { dummy.\arabic{keythms_dummyctr} }
-\cs_gset:Npn \thekeythms_dummyctr { }
-
-\cs_set:Npn \__keythms_listof_printbody_listcmd:nnnnnnn #1#2#3#4#5#6#7
-  {
-    \tl_if_empty:nF { #4 }
-      {
-        \group_begin:
-        \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #5 }
-        \prop_map_inline:Nn \l__keythms_restate_counters_prop
-          {
-            \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
-            \setcounter { ##1 } { ##2 }
-            % ^ FIX: what if eq's numbered by section, theorem, etc.? The
-            %        thmtools code is opaque....
-            \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
-          }
-        \tl_if_empty:nF { #2 }
-          {
-            \cs_set:cpn { the #1 } { #2 }
-            \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
-            \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
-          }
-        \cs_set_eq:NN \label \use_none:n % disable \label
-        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
-        \keys_set:nn { key-theorems/thmuse } { #3 }
-        \__keythms_thm_prehead_continues_code:n { #1 }
-        \__keythms_thm_prehead_code:n { #1 }
-        \tl_if_empty:NTF \l__keythms_thmuse_note_tl
-          { \__keythms_orig_begin:n { #1 } }
-          { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
-        \__keythms_thm_posthead_code:n { #1 }
-        #4
-        \__keythms_thm_prefoot_code:n { #1 }
-        \__keythms_orig_end:n { #1 }
-        \__keythms_thm_postfoot_code:n { #1 }
-        \prop_map_inline:Nn \l__keythms_restate_counters_prop
-          {
-            \exp_args:Nnc \setcounter { ##1 }
-              { l_keythms_restate_current_##1_tl }
-          }
-        \group_end:
-      }
-  }
-
-\NewDocumentCommand { \KeyThmsSavedTheorem } { m m m +m m m m } % 4th arg is body
-  { \use:c { __keythms_thmitem_#1:nnnnnnn } {#1}{#2}{#3}{#4}{#5}{#6}{#7} }
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% List of Theorems %%%
@@ -823,8 +762,14 @@
     no-title   .meta:n     = { title-code = {} },
     print-body .code:n     =
       {
-        \cs_set_eq:NN \keythms_listof_listcmd:nnnnnnn
-          \__keythms_listof_printbody_listcmd:nnnnnnn
+        \cs_set:Nn \keythms_listof_listcmd:nnnnnnn
+          {
+            \tl_if_empty:nF { ##7 }
+              {
+                \__keythms_getthm_theorem:nnnnn
+                  {##1}{##2}{##5}{##6}{##7}
+              }
+          }
       },
   }
 
@@ -858,7 +803,7 @@
   }
 \cs_new_protected:Npn \__keythms_listof_ignore_aux:n #1
   {
-    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6
       { }
   }
 
@@ -868,12 +813,12 @@
   }
 \cs_new_protected:Npn \__keythms_listof_show_aux:n #1
   {
-    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6
       {
-        \__keythms_listof_listcmd_setup:nn { ##3 }
+        \__keythms_listof_listcmd_setup:nn { ##5 }
           {
             \keythms_listof_listcmd:nnnnnnn
-              {##1}{##2}{##3}{##4}{##5}{##6}{##7}
+              {#1}{##1}{##2}{##3}{##4}{##5}{##6}
           }
       }
   }
@@ -892,14 +837,14 @@
   }
 \cs_new_protected:Npn \__keythms_listof_onlynamed_aux:n #1 
   {
-    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6##7
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnnn } ##1##2##3##4##5##6
       {
-        \__keythms_listof_listcmd_setup:nn { ##3 }
+        \__keythms_listof_listcmd_setup:nn { ##5 }
           {
             \tl_if_empty:NF \l__keythms_listofheading_note_tl
               {
                 \keythms_listof_listcmd:nnnnnnn
-                  {##1}{##2}{##3}{##4}{##5}{##6}{##7}
+                  {#1}{##1}{##2}{##3}{##4}{##5}{##6}
               }
           }
       }
@@ -911,7 +856,6 @@
 %% See acro.sty for template idea.
 \keys_define:nn { key-theorems/listofheading }
   {
-    label      .code:n   = , % do nothing
     note       .tl_set:N = \l__keythms_listofheading_note_tl,
     name       .meta:n   = { note = #1 },
     continues  .tl_set:N = \l__keythms_listofheading_contlabel_tl,
@@ -925,8 +869,9 @@
               { note = { \getrefbykeydefault{#1}{name}{} } }
           }
       },
-    store   .code:n = , % do nothing
-    restate .code:n = , % do nothing
+    unknown .code:n = { } % do nothing with unknown keys
+    % ^ this is OK because we have total control over possible keys; if invalid
+    %   key is given to theorem then an error will be raised there
   }
 
 \cs_new:Npn \__keythms_listof_printheading:
@@ -947,11 +892,12 @@
           }
         \__keythms_listof_printheading:
       }
-      { #6 }{ #7 }
+      { #4 }{ #3 }
   }
 
+% NOTE: We still need to do this setup for [print-body] so that onlynamed works
 \cs_new:Npn \__keythms_listof_listcmd_setup:nn #1#2
-  {
+  { % #1 = keys, #2 = list command
     \group_begin:
     \keys_set:nn { key-theorems/listofheading } { #1 }
     \tl_if_empty:NF \l__keythms_listofheading_contlabel_tl
@@ -1033,6 +979,129 @@
         \__keythms_listof_save:
         \iow_close:N \g__keythms_listof_stream
       }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Retrieving Theorem Data %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcounter{keythms_dummyctr}
+\cs_gset:Npn \theHkeythms_dummyctr { dummy.\arabic{keythms_dummyctr} }
+\cs_gset:Npn \thekeythms_dummyctr { }
+
+\NewDocumentCommand { \KeyThmsSavedTheorem } { m m m m m m +m } % 7th arg is body
+  { \use:c { __keythms_thmitem_#1:nnnnnnn } {#2}{#3}{#4}{#5}{#6}{#7} }
+
+\keys_define:nn { key-theorems/storeatbegin }
+  {
+    store .tl_set:N = \l__keythms_storeatbegin_store_tl,
+    restate .meta:n = { store=#1 },
+    unknown .code:n = { } % do nothing with unknown keys
+  }
+
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \group_begin:
+    \RenewDocumentCommand { \KeyThmsSavedTheorem } { m m m m m m +m }
+      {
+        \group_begin:
+        \keys_set:nn { key-theorems/storeatbegin } { #6 }
+        \tl_if_empty:NF \l__keythms_storeatbegin_store_tl
+          {
+            \cs_new:cpn
+              { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _theorem }
+              {
+                \__keythms_getthm_theorem:nnnnn
+                  {#1}{#2}{#5}{#6}{#7}
+              }
+            \cs_gset_eq:cc { \l__keythms_storeatbegin_store_tl }
+              { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _theorem }
+            % ^ for compatibility; eventually remove
+            \cs_new:cpn
+              { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _body }
+              {
+                \__keythms_getthm_body:nn {#5}{#7}
+              }
+          }
+        \group_end:
+      }
+    \file_if_exist_input:n { \c_sys_jobname_str.thlist }
+    \group_end:
+  }
+%%% ^ FIX! If old .thlist file lying around but no "store", don't want to input
+
+\cs_new_protected:Npn \__keythms_getthm_theorem:nnnnn #1#2#3#4#5
+  { % #1 = name, #2 = number, #3 = restate counters, #4 = keys, #5 = theorem body
+    \group_begin:
+    \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #3 }
+    \prop_map_inline:Nn \l__keythms_restate_counters_prop
+      {
+        \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
+        \setcounter { ##1 } { ##2 }
+        % ^ FIX: what if eq's numbered by section, theorem, etc.? The
+        %        thmtools code is opaque.... Or maybe should be up to the
+        %        user to say "restate-counters={section,chapter,...}".
+        \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
+      }
+    \tl_if_empty:nF { #2 }
+      {
+        \cs_set:cpn { the #1 } { #2 }
+        \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
+        % ^ why are the last two line here? We shouldn't be referencing
+        %   restated theorems.
+      }
+    \cs_set_eq:NN \label \use_none:n % disable \label
+    \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
+    \keys_set:nn { key-theorems/thmuse } { #4 }
+    \__keythms_thm_prehead_continues_code:n { #1 }
+    \__keythms_thm_prehead_code:n { #1 }
+    \tl_if_empty:NTF \l__keythms_thmuse_note_tl
+      { \__keythms_orig_begin:n { #1 } }
+      { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
+    \__keythms_thm_posthead_code:n { #1 }
+    #5
+    \__keythms_thm_prefoot_code:n { #1 }
+    \__keythms_orig_end:n { #1 }
+    \__keythms_thm_postfoot_code:n { #1 }
+    \prop_map_inline:Nn \l__keythms_restate_counters_prop
+      {
+        \exp_args:Nnc \setcounter { ##1 }
+          { l_keythms_restate_current_##1_tl }
+      }
+    \group_end:
+  }
+
+\cs_new_protected:Npn \__keythms_getthm_body:nn #1#2
+  { % #1 = restate counters, #2 = theorem body
+    \group_begin:
+    \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #1 }
+    \prop_map_inline:Nn \l__keythms_restate_counters_prop
+      {
+        \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
+        \setcounter { ##1 } { ##2 }
+        % ^ FIX: what if eq's numbered by section, theorem, etc.? The
+        %        thmtools code is opaque.... Or maybe should be up to the
+        %        user to say "restate-counters={section,chapter,...}".
+        \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
+      }
+    \cs_set_eq:NN \label \use_none:n % disable \label
+    \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
+    #2
+    \prop_map_inline:Nn \l__keythms_restate_counters_prop
+      {
+        \exp_args:Nnc \setcounter { ##1 }
+          { l_keythms_restate_current_##1_tl }
+      }
+    \group_end:
+  }
+
+% \getkeytheorem[<property>]{<tag>}
+\NewDocumentCommand { \getkeytheorem } { o m }
+  {
+    \IfNoValueTF { #1 }
+      { \use:c { __keythms_getthm_#2_theorem } }
+      { \use:c { __keythms_getthm_#2_#1 } }
   }
 
 %%%%%%%%%%%%%%%%
