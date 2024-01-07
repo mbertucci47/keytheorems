@@ -91,10 +91,9 @@ but a few things are changed:
   This package keeps the defaults unless a key is specifically given.
 - The `restate=` code uses sequences from l3seq. What does this mean for speed/robustness?
   I have no idea. Also this is only implemented as a key, no `restatable` environment.
-- `thmtools` allows keys meant for defining theorems to be used when defining theorem styles.
-  Is this a good idea? Not currently implemented, but shouldn't be that difficult.
-- The `shaded` and `thmbox` keys are not implemented. Instead there's an interface to [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox)
-  with the `tcolorbox={<options>}` key.
+- The `shaded` and `thmbox` keys are only available with the package option `thmtools-compat`,
+  and they are emulated with [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox). Instead there's
+  an interface to `tcolorbox` with the `tcolorbox={<options>}` and `tcolorbox-no-titlebar={<options>}` key.
 - You can reuse styles with the `inherit-style` key.
 - With `thmtools`, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
@@ -104,9 +103,8 @@ but a few things are changed:
 ## Things to do
 
 - Clean up the code. Things are out of order, poorly named, etc.
-- Add error messages. Curently there are none...
+- Add more error messages.
 - `thmtools` features not yet implemented
-    - `numbered=unless unique` key (partially implemented)
     - labels pointing to restated theorem, not original
-    - hyperlinking unnumbered theorems in list of theorems
     - certainly more
+- For a complete list, see the bottom of [`key-theorems.sty`](https://github.com/mbertucci47/key-theorems/blob/main/key-theorems.sty)
