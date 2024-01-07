@@ -106,5 +106,6 @@ but a few things are changed:
 - Add more error messages.
 - `thmtools` features not yet implemented
     - labels pointing to restated theorem, not original
+    - [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
 - For a complete list, see the bottom of [`key-theorems.sty`](https://github.com/mbertucci47/key-theorems/blob/main/key-theorems.sty)
