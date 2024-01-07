@@ -1,6 +1,6 @@
 # key-theorems
 
-A very much incomplete LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
+An experimental LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
 but written in expl3. The goal was just an exercise in using expl3, but if you find a bug
 feel free to open an issue or PR.
