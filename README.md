@@ -393,6 +393,47 @@ Fixed in key-theorems.
 
 \end{document}
 ```
+### [[Help Wanted] Print all Theorems? #43](https://github.com/muzimuzhi/thmtools/issues/43)
+Use the `store-all` load-time option with `\listofkeytheorems[print-body]`.
+```tex
+\documentclass{article}
+\usepackage[store-all]{key-theorems}
+
+\newkeytheorem{theorem}
+\newkeytheorem{lemma}
+
+\begin{document}
+
+\begin{theorem}
+some theorem
+\end{theorem}
+
+\begin{lemma}
+some lemma
+\end{lemma}
+
+\listofkeytheorems[print-body]
+
+\end{document}
+```
+
+### [qed option without value fails in \declaretheoremstyle #47](https://github.com/muzimuzhi/thmtools/issues/47)
+Fixed in key-theorems.
+```tex
+\documentclass{article}
+\usepackage{key-theorems}
+
+\newkeytheoremstyle{mythmsty}{qed}
+\newkeytheorem{theorem}[style=mythmsty]
+
+\begin{document}
+
+\begin{theorem}
+Text
+\end{theorem}
+
+\end{document}
+```
 
 ### [prefoot and postfoot hooks called twice with restate key #54](https://github.com/muzimuzhi/thmtools/issues/54)
 Fixed in key-theorems.
