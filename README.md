@@ -491,3 +491,48 @@ text
     - [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
 - For a complete list, see the bottom of [`key-theorems.sty`](https://github.com/mbertucci47/key-theorems/blob/main/key-theorems.sty)
+ 
+## Notes/issues on thmtools, not on Github
+
+#### continues with unless unique
+Should this be numbered or not?
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
+
+\declaretheorem[numbered=unless unique]{theorem}
+
+\begin{document}
+
+\begin{theorem}[label=foo]
+bla
+\end{theorem}
+
+\begin{theorem}[continues=foo]
+bla
+\end{theorem}
+
+\end{document}
+```
+It does the correct thing when a parent counter is given and is split across that counter.
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
+
+\declaretheorem[numbered=unless unique,parent=section]{theorem}
+
+\begin{document}
+
+\begin{theorem}[label=foo]
+bla
+\end{theorem}
+
+\section{bla}
+
+\begin{theorem}[continues=foo]
+bla
+\end{theorem}
+
+\end{document}
+```
+
