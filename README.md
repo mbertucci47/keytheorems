@@ -116,7 +116,6 @@ with corresponding key-theorems code that shows the issue resolved.
 key-theorems does not list restated theorems in the `\listofkeytheorems`.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheorem{theorem}
@@ -138,7 +137,6 @@ text
 key-theorems provides the `no-title` key.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheorem{axiom}
@@ -172,7 +170,6 @@ another theorem
 key-theorems provides the `tcolorbox` and `tcolorbox-no-titlebar` keys.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheorem{theorem}[
@@ -203,7 +200,6 @@ key-theorems provides the `note-code` key for `\listofkeytheorems` and
 `\keytheoremlistset`.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheorem{theorem}
@@ -223,7 +219,6 @@ some theorem
 key-theorems provides the `inherit-style` key.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheoremstyle{mysty1}{notefont=\itshape}
@@ -249,7 +244,6 @@ This is a tcolorbox issue with lists (amsthm theorems are internally lists).
 Avoided with the `tcolorbox` and `tcolorbox-no-titlebar` keys.
 ```tex
 \documentclass{article}
-
 \usepackage{key-theorems}
 
 \newkeytheorem{theorem}[tcolorbox-no-titlebar]
@@ -291,7 +285,6 @@ Hello!
 Fixed with key-theorem's implementation of the `thmbox` key with `thmtools-compat`.
 ```tex
 \documentclass{article}
-
 \usepackage[thmtools-compat]{key-theorems}
 
 \declaretheorem[numbered=no, name=TheoremA,         ]{mytheo1}
@@ -494,7 +487,7 @@ text
  
 ## Notes/issues on thmtools, not on Github
 
-#### continues with unless unique
+#### continues with unless unique and restate
 Should this be numbered or not?
 ```tex
 \documentclass{article}
@@ -535,4 +528,20 @@ bla
 
 \end{document}
 ```
+Also adds a number if restated, which seems wrong.
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
 
+\declaretheorem[numbered=unless unique]{theorem}
+
+\begin{document}
+
+\begin{restatable}{theorem}{foo}
+bla
+\end{restatable}
+
+\foo*
+
+\end{document}
+```
