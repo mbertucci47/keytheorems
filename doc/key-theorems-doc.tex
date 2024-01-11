@@ -108,6 +108,10 @@
 An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Very much not a finished product. Don't use it for anything important!
 \end{abstract}
 
+\section{Dependencies}
+
+Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, and \pkg{translations} packages.
+
 \section{Load-time Options}
 
 \begin{docKey}{overload}
@@ -145,8 +149,8 @@ Additional counters whose values are preserved when a theorem is restated. This 
 
 \begin{docKey}{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially |continuing from p.\cs{,}\cs{pageref}\ttbraces{\#1}|}
-The code used to typeset the note produced by the \refKey{continues} key.
+  {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
+The code used to typeset the note produced by the \refKey{continues} key. If English is used or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}. Currently (bad!) translations exist for French, German, and Spanish.
 \end{docKey}
 
 \begin{docKey}{qed-symbol}
@@ -155,7 +159,7 @@ The code used to typeset the note produced by the \refKey{continues} key.
 Redefines \cs{qedsymbol} to be \meta{symbol}.
 \end{docKey}
 
-\section{Declaring Theorems}
+\section{Defining Theorems}
 
 \begin{docCommand}{newkeytheorem}
   {\marg{env name}\oarg{options}}
@@ -668,8 +672,8 @@ Fascinating example.
 
 \begin{docKey}{title}
   {=\meta{text}}
-  {initially |List of Theorems|}
-
+  {initially \cs{GetTranslation}\ttbraces{keythms\string_listof\string_title}}
+Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (probably bad!) translations. A translation can be added with a Github PR or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
 \end{docKey}
 
 \begin{docKey}{swapnumber}

@@ -4,14 +4,11 @@
 %\debug_on:n { all }
 %%% END TESTING
 
+\RequirePackage{aliascnt} % for sibling theorems
+\RequirePackage{refcount} % for \getrefnumber
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
-% \RequirePackage{refcount} % for \getrefnumber and \getrefbykeydefault
-% Actually we need nameref to use \getrefbykeydefault{<label>}{name}{}.
-% I don't like this. In the future might be better to use ltproperties.
-% Alternatively: default to ltproperties, but use nameref/refcount if loaded to
-%                avoid writing all the info twice
-\RequirePackage{nameref}
+\RequirePackage{translations} % for translating "List of Theorems"
 
 %%%%%%%%%%%%%%%%%%%%%%
 %%% Error Messages %%%
@@ -92,6 +89,13 @@
 %%% Global Keys %%%
 %%%%%%%%%%%%%%%%%%%
 
+% from DeepL; I don't know these languages!
+\NewTranslationFallback {keythms_continues}{continuing~from~p.\,}
+\NewTranslation{English}{keythms_continues}{continuing~from~p.\,}
+\NewTranslation{French} {keythms_continues}{suite~de~la~p.\,}
+\NewTranslation{German} {keythms_continues}{weiter~von~Seite~}
+\NewTranslation{Spanish}{keythms_continues}{continúa~de~la~p.\,}
+
 \keys_define:nn { key-theorems }
   {
     restate-counters .code:n =
@@ -102,7 +106,10 @@
       },
     restate-counters .initial:n = equation,
     continues-code   .cs_set:Np = \__keythms_thmuse_continues:n #1,
-    continues-code   .initial:n = { continuing~from~p.\,\pageref{#1} },
+    continues-code   .initial:n =
+      { % not sure how best to handle this translation
+        \GetTranslation{keythms_continues}\pageref{#1}
+      },
     qed-symbol       .cs_set_protected:Np = \qedsymbol,
   }
 
@@ -121,12 +128,21 @@
     \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl {#2}
   }
 \cs_new:Npn \keythms_thmstyle_savethmkey_reqval:n #1
-  { \clist_put_right:No \l__thmstyle_savedthmkeys_clist { \l_keys_key_str = { #1 } } }
+  {
+    \clist_put_right:No \l__thmstyle_savedthmkeys_clist
+      { \l_keys_key_str = { #1 } }
+  }
 \cs_new:Npn \keythms_thmstyle_savethmkey_optval:n #1
   {
     \tl_if_empty:NTF \l_keys_value_tl
-      { \clist_put_right:No \l__thmstyle_savedthmkeys_clist { \l_keys_key_str } }
-      { \clist_put_right:No \l__thmstyle_savedthmkeys_clist { \l_keys_key_str = { #1 } } }
+      {
+        \clist_put_right:No \l__thmstyle_savedthmkeys_clist
+          { \l_keys_key_str }
+      }
+      {
+        \clist_put_right:No \l__thmstyle_savedthmkeys_clist
+          { \l_keys_key_str = { #1 } }
+      }
   }
 
 \keys_define:nn { key-theorems/thmstyle }
@@ -509,7 +525,6 @@
                     \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \RequirePackage{aliascnt}
                     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
                     \__keythms_thm_new_sibling:nVn { #1 }
                       \l__keythms_thm_name_tl { #1 }
@@ -537,7 +552,6 @@
                     \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \RequirePackage{aliascnt}
                     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
                     \__keythms_thm_new_sibling:nVn { #1 }
                       \l__keythms_thm_name_tl { #1 }
@@ -596,12 +610,6 @@
     \__keythms_thm_new_nonumber:nn { orig_nonumber_#1 } { #2 }
     \__keythms_thm_new_parent:nnn { #1 } { #2 } { #3 }
     \NewEnvironmentCopy { orig_withparent_#1 } { #1 }
-    % make sure \the<env> is defined
-    % \RequirePackage{aliascnt}
-    % \newaliascnt { #1 } { orig_withparent_#1 }
-    % set autorefname that changes if user changes \<env>autorefname
-    % \cs_set:cpn { orig_withparent_#1 autorefname } { \use:c { #1 autorefname } }
-    % \cs_set:cpn { orig_withparent_#1 Autorefname } { \use:c { #1 Autorefname } }
     \renewenvironment { #1 } % opt arg is implicit
       {
         \setuniqmark { #1. \use:c {the #3} }
@@ -622,6 +630,37 @@
   }
 \cs_generate_variant:Nn \__keythms_thm_new_uuwithparent:nnn { nVV }
 
+% for getting notes with continues*, use nameref if available, otherwise ltproperties
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \IfPackageLoadedTF{ nameref }
+      {
+        \cs_new:Npn \__keythms_thmuse_recordnote: { } % nameref takes care of this
+        \cs_new:Npn \__keythms_getrecordednote:n #1
+          {
+            \getrefbykeydefault{ #1 }{ name }{ }
+          }
+      }
+      { % needs https://github.com/latex3/latex2e/issues/1200 fixed
+        \property_new:nnnn { key-theorems/recordednote } { now } { }
+          { \l__keythms_thmuse_note_tl }
+        \cs_new:Npn \__keythms_getrecordednote:n #1
+          {
+            \property_ref:nn { keythms_recordednote_#1 }
+              { key-theorems/recordednote }
+          }
+        \cs_new:Npn \__keythms_thmuse_recordnote:
+          {
+            \tl_if_empty:NF \l__keythms_thmuse_note_tl
+              {
+                \RecordProperties
+                  { keythms_recordednote_\l__keythms_thmuse_label_tl }
+                  { key-theorems/recordednote }
+              }
+          }
+      }
+  }
+
 \keys_define:nn { key-theorems/thmuse }
   {
     label      .tl_set:N   = \l__keythms_thmuse_label_tl,
@@ -634,11 +673,11 @@
     continues* .code:n  =
       {
         \keys_set:nn { key-theorems/thmuse } { continues = #1 }
-        \protected@edef \l__keythms_tmpa_tl { \getrefbykeydefault{#1}{name}{} }
+        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n{#1} }
         \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { key-theorems/thmuse }
-              { note = { \getrefbykeydefault{#1}{name}{} } }
+              { note = \l__keythms_tmpa_tl }
           }
       },
     store      .tl_set:N = \l__keythms_thmuse_store_tl,
@@ -751,8 +790,6 @@
 \cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
 
-\cs_new:Npn \__keythms_ref_starred:n #1 { \ref*{#1} }
-
 \cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
 \cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
   { \begin{keythms_orig_#1}[#2] }
@@ -777,6 +814,8 @@
           { \__keythms_thmuse_continues:V \l__keythms_thmuse_contlabel_tl }
         \cs_set:cpn { the #1 }
           {
+            % Expandability seems good here, otherwise end up with
+            % \ref*{foo} in .thlist file (which is okay but better to expand it)
             \getrefnumber { \l__keythms_thmuse_contlabel_tl }
           }
         \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
@@ -786,7 +825,10 @@
 \cs_new:Npn \__keythms_thm_posthead_code:n #1
   { % #1 = theorem name
     \tl_if_empty:NF \l__keythms_thmuse_label_tl
-      { \label{ \l__keythms_thmuse_label_tl } }
+      {
+        \label{ \l__keythms_thmuse_label_tl }
+        \__keythms_thmuse_recordnote:
+      }
     \hook_use:n { key-theorems/#1/posthead }
     \hook_use:n { key-theorems/allthms/posthead }
   }
@@ -955,6 +997,12 @@
 %%% List of Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
+\NewTranslationFallback {keythms_listof_title}{List~of~Theorems}
+\NewTranslation{English}{keythms_listof_title}{List~of~Theorems}
+\NewTranslation{French} {keythms_listof_title}{Liste~des~théorèmes}
+\NewTranslation{German} {keythms_listof_title}{Liste~der~Theoreme}
+\NewTranslation{Spanish}{keythms_listof_title}{Lista~de~teoremas}
+
 \keys_define:nn { key-theorems/listof }
   {
     numwidth   .dim_set:N = \l__keythms_listof_numwidth_dim,
@@ -992,7 +1040,7 @@
           }
       },
     title      .tl_set:N   = \l__keythms_listof_title_tl,
-    title      .initial:n  = { List~of~Theorems },
+    title      .initial:n  = \GetTranslation{keythms_listof_title},
     swapnumber .bool_set:N = \l__keythms_listof_swapnumber_bool,
     swapnumber .initial:n  = false,
     title-code .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
@@ -1103,11 +1151,11 @@
     continues* .code:n   =
       {
         \keys_set:nn { key-theorems/listofheading } { continues = #1 }
-        \protected@edef \l__keythms_tmpa_tl { \getrefbykeydefault{#1}{name}{} }
+        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n{#1} }
         \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { key-theorems/listofheading }
-              { note = { \getrefbykeydefault{#1}{name}{} } }
+              { note = \l__keythms_tmpa_tl }
           }
       },
     unknown .code:n = { } % do nothing with unknown keys
@@ -1153,8 +1201,7 @@
           { \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ } }
         \tl_put_right:Nn \l__keythms_listofheading_note_tl
           {
-            \__keythms_thmuse_continues:V
-              \l__keythms_listofheading_contlabel_tl
+            \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl
           }
       }
     #2
@@ -1368,45 +1415,52 @@
         cut .choice:,
         cut / true .code:n = {},
         cut / false .code:n =
-          \clist_put_right:Nn \l__keythms_tcbthmbox_keys_clist { unbreakable },
+          {
+            \clist_put_right:Nn \l__keythms_tcbthmbox_keys_clist { unbreakable }
+          },
         cut .default:n = true,
         nocut .meta:n = { cut=false },
         thickness .code:n = % could also add keys to clist with changed dimens; which is better?
           {
             \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \c_keythms_tcbthmbox_thickness_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { #1 } }
           },
         leftmargin .code:n =
           {
             \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \c_keythms_tcbthmbox_leftmargin_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { #1 } }
           },
         rightmargin .code:n =
           {
             \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \c_keythms_tcbthmbox_rightmargin_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { #1 } }
           },
         hskip .code:n =
           {
             \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \c_keythms_tcbthmbox_hskip_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { #1 } }
           },
         vskip .code:n =
           {
             \hook_gput_code:nnn { key-theorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \c_keythms_tcbthmbox_vskip_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { #1 } }
           },
       }
-    \dim_const:Nn \c_keythms_tcbthmbox_thickness_dim { 0.6pt } % these shouldn't be constants since they can locally change
-    \dim_const:Nn \c_keythms_tcbthmbox_leftmargin_dim { 0.7\parindent } % use \parindent? thmbox does
-    \dim_const:Nn \c_keythms_tcbthmbox_rightmargin_dim { 0pt }
-    \dim_const:Nn \c_keythms_tcbthmbox_hskip_dim { 0.2em }
-    \dim_const:Nn \c_keythms_tcbthmbox_vskip_dim { 0.2em }
+    \dim_new:N \l_keythms_tcbthmbox_thickness_dim
+    \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { 0.6pt }
+    \dim_new:N \l_keythms_tcbthmbox_leftmargin_dim
+    \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { 0.7\parindent } % use \parindent? thmbox does
+    \dim_new:N \l_keythms_tcbthmbox_rightmargin_dim
+    \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { 0pt }
+    \dim_new:N \l_keythms_tcbthmbox_hskip_dim
+    \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { 0.2em }
+    \dim_new:N \l_keythms_tcbthmbox_vskip_dim
+    \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { 0.2em }
     \keys_define:nn { key-theorems/thm }
       {
         shaded .code:n =
@@ -1457,30 +1511,30 @@
                     sharp~corners=all,
                     top=0mm,
                     bottom=0mm,
-                    right=\c_keythms_tcbthmbox_hskip_dim,
-                    left=\c_keythms_tcbthmbox_hskip_dim,
-                    top=\c_keythms_tcbthmbox_vskip_dim,
-                    bottom=\c_keythms_tcbthmbox_vskip_dim,
+                    right=\l_keythms_tcbthmbox_hskip_dim,
+                    left=\l_keythms_tcbthmbox_hskip_dim,
+                    top=\l_keythms_tcbthmbox_vskip_dim,
+                    bottom=\l_keythms_tcbthmbox_vskip_dim,
                     colback=white,
                     colframe=black,
                     coltitle=black,
                     parbox=false,
                     attach~boxed~title~to~top~left={
-                      xshift=-\c_keythms_tcbthmbox_leftmargin_dim,
+                      xshift=-\l_keythms_tcbthmbox_leftmargin_dim,
                       },
                     boxed~title~style={
                       size=minimal,
                       bottom=0.7ex,
-                      bottomrule=\c_keythms_tcbthmbox_thickness_dim,
+                      bottomrule=\l_keythms_tcbthmbox_thickness_dim,
                       colframe=black,
                       colback=white,
                       },
                     boxrule=0pt,
-                    leftrule=\c_keythms_tcbthmbox_thickness_dim,
-                    left~skip=\c_keythms_tcbthmbox_leftmargin_dim,
-                    right~skip=\c_keythms_tcbthmbox_rightmargin_dim,
+                    leftrule=\l_keythms_tcbthmbox_thickness_dim,
+                    left~skip=\l_keythms_tcbthmbox_leftmargin_dim,
+                    right~skip=\l_keythms_tcbthmbox_rightmargin_dim,
                     overlay~unbroken~and~last={ % not enough boxsep when thickness >> 0. Worth fixing?
-                      \draw[line~width=\c_keythms_tcbthmbox_thickness_dim]
+                      \draw[line~width=\l_keythms_tcbthmbox_thickness_dim]
                         (frame.south~west)
                         --
                         ([xshift=10mm]frame.south~west);
@@ -1488,8 +1542,8 @@
                     },
                   keythms_tcbthmbox_L/.style={
                     overlay~unbroken~and~last={},
-                    bottomrule=\c_keythms_tcbthmbox_thickness_dim,
-                    rightrule=\c_keythms_tcbthmbox_thickness_dim
+                    bottomrule=\l_keythms_tcbthmbox_thickness_dim,
+                    rightrule=\l_keythms_tcbthmbox_thickness_dim
                     },
                   keythms_tcbthmbox_M/.style={},
                   keythms_tcbthmbox_S/.style={ overlay~unbroken~and~last={} },
@@ -1535,7 +1589,7 @@
 %    chapter, section, etc. Or leave it up to user to add these counters
 %    with restate-counters?
 % 2. listhack
-% 3. Proof hooks? Other proof customization?
+% 3. Proof hooks? Other proof customization? New proof-like envs? feature creep...
 % 4. \newtheoremstyle overwrites existing styles. Should \newkeytheoremstyle check
 %    if style exists? Relevant for plain, remark, definition. Could provide
 %    \renewkeytheoremstyle. Further, if there is use for (re)defining theorems
@@ -1550,7 +1604,7 @@
 % 9. Rename "preheadhook" etc. to "prehead"?
 % 10. \listofkeytheorems does not print restated theorems. Should an option be added
 %     to do this? No, right?
-% 11. Language support?
+% 11. Language support? At least for list of theorems title
 % 12. Interface for adding entries to list of theorems. In fact, should
 %     benchmark the "add to seq then write at end of file" approach vs.
 %     traditional \addcontentsline approach
