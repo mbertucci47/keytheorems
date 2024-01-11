@@ -545,3 +545,22 @@ bla
 
 \end{document}
 ```
+
+#### qed in both `\declaretheoremstyle` and `\declaretheorem`
+One would expect the one in `\declaretheorem` to overwrite, but because the code just adds to the hooks without checking,
+it's additive.
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
+
+\declaretheoremstyle[qed=$\clubsuit$]{mysty}
+\declaretheorem[style=mysty,qed]{theorem}
+
+\begin{document}
+
+\begin{theorem}
+bla
+\end{theorem}
+
+\end{document}
+```
