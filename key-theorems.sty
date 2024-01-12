@@ -1,13 +1,13 @@
-\ProvidesExplPackage{key-theorems}{2024-01-06}{0.0.4}{l3keys interface to amsthm}
+\ProvidesExplPackage{key-theorems}{2024-01-12}{0.0.4}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
 %%% END TESTING
 
 \RequirePackage{aliascnt} % for sibling theorems
-\RequirePackage{refcount} % for \getrefnumber
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
+\RequirePackage{refcount} % for \getrefnumber
 \RequirePackage{translations} % for translating "List of Theorems"
 
 %%%%%%%%%%%%%%%%%%%%%%
@@ -124,8 +124,8 @@
 % \__keythms_thmstyle_setbraces:nn { <left brace> } { <right brace> }
 \cs_new_protected:Npn \__keythms_thmstyle_setbraces:nn #1#2
   {
-    \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl {#1}
-    \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl {#2}
+    \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl { #1 }
+    \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl { #2 }
   }
 \cs_new:Npn \keythms_thmstyle_savethmkey_reqval:n #1
   {
@@ -515,7 +515,7 @@
         \tl_if_empty:NTF \l__keythms_thm_parent_tl
           {
             \addtotheoremhook [ #1 ] { prehead } { \setuniqmark { #1 } }
-            \ifuniq { #1 }
+            \ifuniq{ #1 }
               { \bool_set_false:N \l__keythms_thm_numbered_bool }
               { \bool_set_true:N \l__keythms_thm_numbered_bool }
             \bool_if:NTF \l__keythms_thm_numbered_bool
@@ -612,8 +612,8 @@
     \NewEnvironmentCopy { orig_withparent_#1 } { #1 }
     \renewenvironment { #1 } % opt arg is implicit
       {
-        \setuniqmark { #1. \use:c {the #3} }
-        \ifuniq { #1. \use:c {the #3} }
+        \setuniqmark{ #1. \use:c {the #3} }
+        \ifuniq{ #1. \use:c {the #3} }
           {
             \refstepcounter{ keythms_dummyctr }
             \begin{orig_nonumber_#1}
@@ -623,7 +623,7 @@
           }
       }
       {
-        \ifuniq { #1. \use:c {the #3} }
+        \ifuniq{ #1. \use:c {the #3} }
           { \end{orig_nonumber_#1} }
           { \end{orig_withparent_#1} }
       }
@@ -633,7 +633,7 @@
 % for getting notes with continues*, use nameref if available, otherwise ltproperties
 \hook_gput_code:nnn { begindocument } { . }
   {
-    \IfPackageLoadedTF{ nameref }
+    \IfPackageLoadedTF { nameref }
       {
         \cs_new:Npn \__keythms_thmuse_recordnote: { } % nameref takes care of this
         \cs_new:Npn \__keythms_getrecordednote:n #1
@@ -928,7 +928,7 @@
     \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
     \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
     \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
-    \cs_set_eq:NN \setuniqmark \use_none:n % work properly with numbered=unless-unique
+    \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
     \keys_set:nn { key-theorems/thmuse } { #4 }
     \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
@@ -1180,7 +1180,9 @@
     \contentsline{ #1 }
       {
         \bool_if:NTF \l__keythms_listof_swapnumber_bool
-          { \prop_item:Nn \g__keythms_thmnames_prop { #1 } ~ #2 }
+          {
+            \prop_item:Nn \g__keythms_thmnames_prop { #1 } ~ #2
+          }
           {
             \numberline{ #2 }
             \prop_item:Nn \g__keythms_thmnames_prop { #1 }
@@ -1198,7 +1200,9 @@
     \tl_if_empty:NF \l__keythms_listofheading_contlabel_tl
       {
         \tl_if_empty:NF \l__keythms_listofheading_note_tl
-          { \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ } }
+          {
+            \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ }
+          }
         \tl_put_right:Nn \l__keythms_listofheading_note_tl
           {
             \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl
@@ -1347,9 +1351,13 @@
 \DeclareOption{thmtools-compat}
   {
     \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
-      { \newkeytheoremstyle { #2 } { #1 } }
+      {
+        \newkeytheoremstyle { #2 } { #1 }
+      }
     \ProvideDocumentCommand { \declaretheorem } { O{} m }
-      { \newkeytheorem { #2 } [ #1 ] }
+      {
+        \newkeytheorem { #2 } [ #1 ]
+      }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
       {
         \begin{#2}[#1,store=#3]
@@ -1610,7 +1618,7 @@
 %     traditional \addcontentsline approach
 % 13. "short name" key for theorems to replace thmtools'
 %     "name={[short name]name}". Should we also support this syntax?
-%     Progress: nearly implemented but not yet compat. with continues
+%     Progress: nearly implemented but not yet compat with continues
 % 14. And what about "restate={[options]foo}" syntax?
 % 15. Should "continues(*)" theorems appear in list of theorems? Decide and add option to
 %     change default.
