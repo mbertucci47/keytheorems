@@ -1,7 +1,7 @@
 \ifthmtools
 \chapter{\pkg{thmtools} test}
 \else
-\chapter{\pkg{key-theorems} test}
+\chapter{\pkg{keytheorems} test}
 \fi
 
 \section{Some Theorems} \label{mysec}
@@ -81,7 +81,7 @@ For every prime $p$\dots
 \ifthmtools
 \firsteuclid*
 \else
-\firsteuclid
+\getkeytheorem{firsteuclid}
 \fi
 
 \begin{theorem}[name=Keyed theorem,

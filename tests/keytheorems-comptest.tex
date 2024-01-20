@@ -1,3 +1,8 @@
+\RequirePackage{l3benchmark}
+\ExplSyntaxOn
+\AtEndDocument { \benchmark_toc: }
+\benchmark_tic:
+\ExplSyntaxOff
 \documentclass{report}
 
 \newif\ifthmtools

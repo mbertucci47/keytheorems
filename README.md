@@ -1,4 +1,4 @@
-# key-theorems
+# keytheorems
 
 An experimental LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
@@ -9,7 +9,7 @@ feel free to open an issue or PR.
 ```tex
 \documentclass{article}
 \usepackage{amssymb,amsmath}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 \usepackage{hyperref}
 
 \newkeytheoremstyle{mystyle}{
@@ -60,7 +60,7 @@ $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open
 
 ## Documentation
 There is a list of commands and keys offered by the package
-[here](https://github.com/mbertucci47/key-theorems/blob/main/doc/key-theorems-doc.pdf).
+[here](https://github.com/mbertucci47/keytheorems/blob/main/doc/keytheorems-doc.pdf).
 More of a reference document than documentation.
 
 ## Differences with `thmtools`
@@ -89,8 +89,8 @@ but a few things are changed:
   
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
-- The `restate=` code uses sequences from l3seq. What does this mean for speed/robustness?
-  I have no idea. Also this is only implemented as a key, no `restatable` environment except with `thmtools-compat`.
+- There is no `restatable` environment except with `thmtools-compat`. Use the
+  `store` (alias `restate`) key.
 - Rather than `restate=foo` defining a command `\foo*`, theorems are retrieved with `\getkeytheorem{foo}`.
   For just the theorem body, use `\getkeytheorem[body]{foo}`.
 - The `shaded` and `thmbox` keys are only available with the package option `thmtools-compat`,
@@ -107,16 +107,16 @@ but a few things are changed:
   - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`)
   - declaring theorems (in `\newkeytheorem`): `tcolorbox`, `tcolorbox-no-titlebar`
   - declaring styles (in `\newkeytheoremstyle`): `inherit-style`
-  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `title-code`, `no-title`, `note-code`, `print-body`
+  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`
 
-## thmtools issues resolved by key-theorems
+## thmtools issues resolved by keytheorems
 Issues from the thmtools [github page](https://github.com/muzimuzhi/thmtools),
-with corresponding key-theorems code that shows the issue resolved.
+with corresponding keytheorems code that shows the issue resolved.
 ### [\listoftheorems: filter out restated ones #7](https://github.com/muzimuzhi/thmtools/issues/7)
-key-theorems does not list restated theorems in the `\listofkeytheorems`.
+keytheorems does not list restated theorems in the `\listofkeytheorems`.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}
 
@@ -134,10 +134,10 @@ text
 ```
 
 ### [\listoftheorems: hide title #8](https://github.com/muzimuzhi/thmtools/issues/8)
-key-theorems provides the `no-title` key.
+keytheorems provides the `no-title` key.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{axiom}
 \newkeytheorem{theorem}
@@ -167,10 +167,10 @@ another theorem
 ```
 
 ### [Case in point: the tcolorbox key #9](https://github.com/muzimuzhi/thmtools/issues/9)
-key-theorems provides the `tcolorbox` and `tcolorbox-no-titlebar` keys.
+keytheorems provides the `tcolorbox` and `tcolorbox-no-titlebar` keys.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}[
   tcolorbox={
@@ -196,11 +196,11 @@ some corollary
 ```
 
 ### [thm-listof: document \thmtformatoptarg, new list option? #14](https://github.com/muzimuzhi/thmtools/issues/14)
-key-theorems provides the `note-code` key for `\listofkeytheorems` and
+keytheorems provides the `note-code` key for `\listofkeytheorems` and
 `\keytheoremlistset`.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}
 
@@ -216,10 +216,10 @@ some theorem
 ```
 
 ### [Style inheritance in thmtools #15](https://github.com/muzimuzhi/thmtools/issues/15)
-key-theorems provides the `inherit-style` key.
+keytheorems provides the `inherit-style` key.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheoremstyle{mysty1}{notefont=\itshape}
 \newkeytheoremstyle{mysty2}{inherit-style=mysty1,bodyfont=\normalfont}
@@ -244,7 +244,7 @@ This is a tcolorbox issue with lists (amsthm theorems are internally lists).
 Avoided with the `tcolorbox` and `tcolorbox-no-titlebar` keys.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}[tcolorbox-no-titlebar]
 
@@ -264,7 +264,7 @@ some theorem
 Use `\getkeytheorem[body]{foo}`.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}
 
@@ -285,7 +285,7 @@ Hello!
 Fixed with key-theorem's implementation of the `thmbox` key with `thmtools-compat`.
 ```tex
 \documentclass{article}
-\usepackage[thmtools-compat]{key-theorems}
+\usepackage[thmtools-compat]{keytheorems}
 
 \declaretheorem[numbered=no, name=TheoremA,         ]{mytheo1}
 \declaretheorem[             name=TheoremB, thmbox=M]{mytheo2}
@@ -309,10 +309,10 @@ Fixed with key-theorem's implementation of the `thmbox` key with `thmtools-compa
 ```
 
 ### [Skip the title of the theorem but leave the []. #30](https://github.com/muzimuzhi/thmtools/issues/30)
-Fixed in key-theorems.
+Fixed in keytheorems.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{Teorema}[name=Theorem]
 
@@ -334,10 +334,10 @@ Fixed in key-theorems.
 ```
 
 ### [too much space with restatable #40](https://github.com/muzimuzhi/thmtools/issues/40)
-Fixed in key-theorems.
+Fixed in keytheorems.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 \usepackage{kantlipsum}
 
 \newkeytheorem{theorem}
@@ -362,10 +362,10 @@ Fixed in key-theorems.
 ```
 
 ### [restate key with no name leads to (,) in restated title #41](https://github.com/muzimuzhi/thmtools/issues/41)
-Fixed in key-theorems.
+Fixed in keytheorems.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 \usepackage{kantlipsum}
 
 \newkeytheorem{theorem}
@@ -390,7 +390,7 @@ Fixed in key-theorems.
 Use the `store-all` load-time option with `\listofkeytheorems[print-body]`.
 ```tex
 \documentclass{article}
-\usepackage[store-all]{key-theorems}
+\usepackage[store-all]{keytheorems}
 
 \newkeytheorem{theorem}
 \newkeytheorem{lemma}
@@ -411,10 +411,10 @@ some lemma
 ```
 
 ### [qed option without value fails in \declaretheoremstyle #47](https://github.com/muzimuzhi/thmtools/issues/47)
-Fixed in key-theorems.
+Fixed in keytheorems.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheoremstyle{mythmsty}{qed}
 \newkeytheorem{theorem}[style=mythmsty]
@@ -429,10 +429,10 @@ Text
 ```
 
 ### [prefoot and postfoot hooks called twice with restate key #54](https://github.com/muzimuzhi/thmtools/issues/54)
-Fixed in key-theorems.
+Fixed in keytheorems.
 ```tex
 \documentclass{article}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{theorem}
 
@@ -458,7 +458,7 @@ body text
 ```tex
 \documentclass{beamer}
 \setbeamertemplate{theorems}[numbered]
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 
 \newkeytheorem{MyTheorem}
 
@@ -483,7 +483,7 @@ text
     - labels pointing to restated theorem, not original
     - [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
-- For a complete list, see the bottom of [`key-theorems.sty`](https://github.com/mbertucci47/key-theorems/blob/main/key-theorems.sty)
+- For a complete list, see the bottom of [`keytheorems.sty`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems.sty)
  
 ## Notes/issues on thmtools, not on Github
 
@@ -561,6 +561,48 @@ it's additive.
 \begin{theorem}
 bla
 \end{theorem}
+
+\end{document}
+```
+
+#### restate incompatible with thmbox
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
+
+\declaretheorem[thmbox]{theorem}
+
+\begin{document}
+
+\begin{theorem}[restate=foo]
+bla
+\end{theorem}
+
+\foo*
+
+\end{document}
+```
+
+#### adding to listoftheorems doesn't work as expected
+```tex
+\documentclass{article}
+\usepackage{amsthm,thmtools}
+
+\declaretheorem{theorem}
+
+\begin{document}
+
+\begin{theorem}
+bla
+\end{theorem}
+
+\addcontentsline{loe}{section}{some text}
+
+\begin{theorem}
+bla
+\end{theorem}
+
+\listoftheorems
 
 \end{document}
 ```

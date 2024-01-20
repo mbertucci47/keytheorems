@@ -11,16 +11,16 @@
   minted language=latex,
   }
 \usetikzlibrary{cd}
-\usepackage{key-theorems}
+\usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.0.4}
+\def\version{0.0.6}
 
 \title{%
-  \pkg{key-theorems} package \\[1ex]
+  \pkg{keytheorems} package \\[1ex]
   \large version \version \\[1ex]
-  \href{https://github.com/mbertucci47/key-theorems}
-    {\texttt{github.com/mbertucci47/key-theorems}}
+  \href{https://github.com/mbertucci47/keytheorems}
+    {\texttt{github.com/mbertucci47/keytheorems}}
   }
 \author{Matthew Bertucci}
 
@@ -68,6 +68,10 @@
   color command=BrickRed,
   color key=Fuchsia,
   color value=teal,
+  before doc body={%
+    \setlength{\parindent}{15pt}
+    \noindent
+    },
   }
 \tcbset{
   withpreamble/.style = {
@@ -97,7 +101,18 @@
     boxrule=0.4pt,
     listing side text,
   }
-  
+\newtcolorbox{notebox}[1][]{enhanced,
+  before skip balanced=2mm,after skip balanced=3mm,
+  boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
+  colback=red!20,
+  colframe=red!40!black,
+  sharp corners,rounded corners=southeast,arc is angular,arc=3mm,
+  underlay={%
+    \path[fill=tcbcolback!80!black] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[draw=tcbcolframe,shorten <=-0.05mm,shorten >=-0.05mm] ([yshift=3mm]interior.south east)--++(-0.4,-0.1)--++(0.1,-0.2);
+    \path[fill=red!40!black,draw=none] (interior.south west) rectangle node[white]{\LARGE\bfseries !} ([xshift=4mm]interior.north west);
+    },
+  drop fuzzy shadow,#1}
 \makeindex
 
 \begin{document}
@@ -117,7 +132,7 @@ Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, 
 \begin{docKey}{overload}
   {}
   {initially unset}
-Redefines \cs{newtheorem} to internally use the \pkg{key-theorems} machinery. The syntax remains the same.
+Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery. The syntax remains the same.
 \end{docKey}
 
 \begin{docKey}{thmtools-compat}
@@ -129,7 +144,7 @@ For compatibility with \pkg{thmtools} syntax. Currently defines the \docAuxComma
 \begin{docKey}{store-all}
   {}
   {initially unset}
-Tells \pkg{key-theorems} to grab the body of each theorem so it can later be
+Tells \pkg{keytheorems} to grab the body of each theorem so it can later be
 printed with the \refKey{print-body} option of \refCom{listofkeytheorems}. Note that this means a theorem body
 \emph{cannot} contain verbatim material.
 \end{docKey}
@@ -447,7 +462,7 @@ Some more text
 
 \end{docKey}
 
-\subsection{Keys added by \pkg{key-theorems}} \label{thm-added-keys}
+\subsection{Keys added by \pkg{keytheorems}} \label{thm-added-keys}
 
 \begin{docKey}{tcolorbox}
   {\colOpt{=\marg{tcolorbox options}}}
@@ -507,8 +522,12 @@ Some text
 
 \begin{docCommand}{newkeytheoremstyle}
   {\marg{name}\marg{options}}
-This is \pkg{key-theorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
+This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
 \end{docCommand}
+
+\begin{notebox}
+For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, the initial key values are slightly different than what's below in order to match those class's defaults.
+\end{notebox}
 
 \subsection{Keys inherited from \pkg{thmtools}}
 
@@ -580,7 +599,7 @@ Do not use this with the \refKey{postheadspace} key.
 Alias \docAuxKey{headstyle}. Within \meta{code}, the commands \docAuxCommand{NAME}, \docAuxCommand{NUMBER}, and \docAuxCommand{NOTE} correspond to the formatted parts of the theorem head.
 \end{docKey}
 
-\subsection{Keys added by \pkg{key-theorems}}
+\subsection{Keys added by \pkg{keytheorems}}
 
 \begin{docKey}{inherit-style}
   {=\meta{style name}}
@@ -673,7 +692,7 @@ Fascinating example.
 \begin{docKey}{title}
   {=\meta{text}}
   {initially \cs{GetTranslation}\ttbraces{keythms\string_listof\string_title}}
-Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (probably bad!) translations. A translation can be added with a Github PR or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
+Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (probably bad!) translations. A translation can be added with a Github pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
 \end{docKey}
 
 \begin{docKey}{swapnumber}
@@ -682,7 +701,13 @@ Defaults to ``List of Theorems'' if English or an unknown language is used. Curr
 
 \end{docKey}
 
-\subsection{Keys added by \pkg{key-theorems}}
+\subsection{Keys added by \pkg{keytheorems}}
+
+\begin{docKey}{onlynumbered}
+  {\colOpt{=\marg{comma-list of env names}}}
+  {initially unset}
+Similar to \refKey{onlynamed}, but lists only those theorems which are numbered. This is useful if you'd like to exclude things like unnumbered definitions and remarks from the list of theorems.
+\end{docKey}
 
 \begin{docKey}{title-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
@@ -715,11 +740,38 @@ Formats the optional note in the list of theorems.
 Instead of listing the theorem headings, the theorems are restated with their body text. Not very useful without the \refKey{store-all} load-time option.
 \end{docKey}
 
+\begin{docKey}{no-continues}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
+Suppresses the printing of theorems given the \refKey{continues} key in the list of theorems.
+\end{docKey}
+
+\subsection{Adding code to list of theorems}
+
+There are analogous commands to \cs{addcontentsline} and \cs{addtocontents} for
+adding entries or arbitrary code to the list of theorems.
+
+\begin{notebox}
+You \emph{must} use these commands rather than the aforementioned because the
+|.thlist| file is also used to define restated theorems and cannot contain
+unexpected code.
+\end{notebox}
+
+\begin{docCommand}{addtheoremcontentsline}
+  {\marg{level}\marg{text}}
+
+\end{docCommand}
+
+\begin{docCommand}{addtotheoremcontents}
+  {\marg{code}}
+
+\end{docCommand}
+
 \section{Theorem Hooks} \label{keythms-hooks}
 
 \begin{docCommand}{addtotheoremhook}
   {\oarg{env name}\marg{hook name}\marg{code}}
-\meta{hook name} can be |prehead|, |posthead|, |prefoot|, or |postfoot|. If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e. applied to all theorems. As in \pkg{thmtools}, the order of hooks is as follows:
+\meta{hook name} can be \hook{prehead}, \hook{posthead}, \hook{prefoot}, \hook{postfoot}, or \hook{restated}. If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e. applied to all theorems. As in \pkg{thmtools}, the order of hooks is as follows:
 
 \begin{center}
   \tcbset{
@@ -747,22 +799,25 @@ Instead of listing the theorem headings, the theorems are restated with their bo
   \tcbox{generic\\ \hook{postfoot}}
   \tcbox{\meta{env name}\\ \hook{postfoot}}
 \end{center}
+The \hook{restated} hook is applied at the start of theorems retrieved with \cs{getkeytheorem}, before the \hook{prehead} hook. This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.
+\begin{dispListing}
+\addtotheoremhook{restated}{%
+  \renewcommand\footnote[2][]{}%
+  }
+\end{dispListing}
+By default, \pkg{keytheorems} disables the \cs{label} and \cs{RecordProperties} commands in restated theorems.
 
 In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e. the code
-
 \begin{dispListing}
 \addtotheorempostfoothook{A}
 \addtotheorempostfoothook{B}
 \end{dispListing}
-
-results in |BA| after the theorem. With \pkg{key-theorems}, code is added in the order declared, meaning
-
+results in |BA| after the theorem. With \pkg{keytheorems}, code is added in the order declared, meaning
 \begin{dispListing}
 \addtotheoremhook{postfoot}{A}
 \addtotheoremhook{postfoot}{B}
 \end{dispListing}
-
-results in |AB| after the theorem. This is the behavior of the \LaTeX{} kernel hooks that \pkg{key-theorems} uses under the hood.
+results in |AB| after the theorem. This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses under the hood.
 
 Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. This may change if I think of good reasons to do so\dots
 \end{docCommand}
