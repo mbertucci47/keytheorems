@@ -11,10 +11,11 @@
   minted language=latex,
   }
 \usetikzlibrary{cd}
+\usepackage{booktabs}
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.0.6}
+\def\version{0.0.6$\beta$}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -138,7 +139,24 @@ Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery. The
 \begin{docKey}{thmtools-compat}
   {}
   {initially unset}
-For compatibility with \pkg{thmtools} syntax. Currently defines the \docAuxCommand{declaretheoremstyle}, \docAuxCommand{declaretheorem}, \docAuxCommand{listoftheorems}, \docAuxCommand{addtotheorempreheadhook}, \docAuxCommand{addtotheorempostheadhook}, \docAuxCommand{addtotheoremprefoothook}, and \docAuxCommand{addtotheorempostfoothook} commands and the \docAuxEnvironment{restatable} environment. Also defined are the \docAuxKey{shaded} and \docAuxKey{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
+For compatibility with \pkg{thmtools} syntax. Currently defines the following commands:
+\begin{center}
+\begin{tabular}{cc}
+\pkg{thmtools} command & \pkg{keytheorems} replacement \\
+\toprule
+\docAuxCommand{declaretheorem} & \refCom{newkeytheorem} \\
+\docAuxCommand{declaretheoremstyle} & \refCom{newkeytheoremstyle} \\
+\docAuxCommand{listoftheorems} & \refCom{listofkeytheorems} \\
+\begin{tabular}{c}
+\docAuxCommand{addtotheorempreheadhook}\\
+\docAuxCommand{addtotheorempostheadhook}\\
+\docAuxCommand{addtotheoremprefoothook}\\
+\docAuxCommand{addtotheorempostfoothook}\\
+\end{tabular} & \refCom{addtotheoremhook} \\
+\docAuxEnvironment{restatable} environment & \refKey{store} key
+\end{tabular}
+\end{center}
+Also defined are the \docAuxKey{shaded} and \docAuxKey{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
 \end{docKey}
 
 \begin{docKey}{store-all}

@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-01-19}{0.0.6}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-01-22}{0.0.6beta}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -67,7 +67,7 @@
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
 \clist_new:N \g__keythms_restatecounters_clist
-\clist_new:N \l__keythms_thmstyle_savedthmkeys_clist
+\clist_new:N \l__keythms_thmstyle_savedkeys_clist
 \iow_new:N \g__keythms_listof_stream
 \prop_new:N \g__keythms_thmnames_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
@@ -79,7 +79,7 @@
 \tl_new:N \l__keythms_thmstyle_lnotebrace_tl
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
 \tl_new:N \l__keythms_thmuse_envname_tl
-\tl_new:N \l__keythms_thmuse_savethmargs_tl
+\tl_new:N \g__keythms_thmuse_temprestatedata_tl
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, noc }
@@ -102,11 +102,11 @@
 %%%%%%%%%%%%%%%%%%%
 
 % from DeepL; I don't know these languages!
-\NewTranslationFallback {keythms_continues}{continuing~from~p.\,}
-\NewTranslation{English}{keythms_continues}{continuing~from~p.\,}
-\NewTranslation{French} {keythms_continues}{suite~de~la~p.\,}
-\NewTranslation{German} {keythms_continues}{weiter~von~Seite~}
-\NewTranslation{Spanish}{keythms_continues}{continúa~de~la~p.\,}
+\NewTranslationFallback { keythms_continues }{ continuing~from~p.\, }
+\NewTranslation { English } { keythms_continues } { continuing~from~p.\, }
+\NewTranslation { French } { keythms_continues } { suite~de~la~p.\, }
+\NewTranslation { German } { keythms_continues } { weiter~von~Seite~ }
+\NewTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
 
 \keys_define:nn { keytheorems }
   {
@@ -127,7 +127,9 @@
 
 % \keytheoremset{<options>}
 \NewDocumentCommand { \keytheoremset } { m }
-  { \keys_set:nn { keytheorems } { #1 } }
+  {
+    \keys_set:nn { keytheorems } { #1 }
+  }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -141,18 +143,18 @@
   }
 \cs_new:Npn \keythms_thmstyle_savethmkey_reqval:n #1
   {
-    \clist_put_right:No \l__keythms_thmstyle_savedthmkeys_clist
+    \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
       { \l_keys_key_str = { #1 } }
   }
 \cs_new:Npn \keythms_thmstyle_savethmkey_optval:n #1
   {
     \tl_if_empty:NTF \l_keys_value_tl
       {
-        \clist_put_right:No \l__keythms_thmstyle_savedthmkeys_clist
+        \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
           { \l_keys_key_str }
       }
       {
-        \clist_put_right:No \l__keythms_thmstyle_savedthmkeys_clist
+        \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
           { \l_keys_key_str = { #1 } }
       }
   }
@@ -354,7 +356,7 @@
 % \newkeytheoremstyle{<name>}{<keys>}
 \NewDocumentCommand { \newkeytheoremstyle } { m m }
   {
-    \clist_clear:N \l__keythms_thmstyle_savedthmkeys_clist
+    \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
     \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
     \keys_set:nn { keytheorems/thmstyle } { #2 }
     \keythms_thmstyle_new:nVVVVVVVe { #1 }
@@ -369,9 +371,10 @@
     % Define new inherit-style key
     \keys_define:nn { keytheorems/thmstyle }
       { inherit-style / #1 .meta:n = { #2 } }
+    \tl_new:c { g__keythms_thmstyle_ #1 _savedkeys_tl }
     \keys_precompile:noc { keytheorems/thm }
-      { \l__keythms_thmstyle_savedthmkeys_clist }
-      { g__keythms_thmstyle_ #1 _savedthmkeys_tl }
+      { \l__keythms_thmstyle_savedkeys_clist }
+      { g__keythms_thmstyle_ #1 _savedkeys_tl }
   }
 
 \@onlypreamble \newkeytheoremstyle
@@ -515,9 +518,9 @@
 \@onlypreamble \newkeytheorem
 
 % to prevent error when plain, remark, or definition style used
-\tl_new:N \g__keythms_thmstyle_plain_savedthmkeys_tl
-\tl_new:N \g__keythms_thmstyle_remark_savedthmkeys_tl
-\tl_new:N \g__keythms_thmstyle_definition_savedthmkeys_tl
+\tl_new:N \g__keythms_thmstyle_plain_savedkeys_tl
+\tl_new:N \g__keythms_thmstyle_remark_savedkeys_tl
+\tl_new:N \g__keythms_thmstyle_definition_savedkeys_tl
 
 %% Inefficiences: don't need to store and reset style every time.
 %% I do, however, need to set/reset keys each time so that envname is correct.
@@ -540,7 +543,7 @@
         % Temporarily set theorem style
         \__keythms_theoremstyle:n { \l__keythms_thm_style_tl }
         % If thm keys given in style, call now (possibly overwritten in next step)
-        \tl_use:c { g__keythms_thmstyle_ \l__keythms_thm_style_tl _savedthmkeys_tl }
+        \tl_use:c { g__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl }
       }
     % Set env-specific keys
     \keys_set:nn { keytheorems/thm } { #2 }
@@ -605,7 +608,7 @@
               }
               {
                 \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
-                \hook_gput_code:nnn { keytheorems/#1/prehead } { . }
+                \hook_gput_code:nnn { keytheorems/#1/prehead } { keytheorems }
                   { \refstepcounter{ keythms_dummyctr } }
               }
           }
@@ -637,7 +640,7 @@
           }
           {
             \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
-            \hook_gput_code:nnn { keytheorems/#1/prehead } { . }
+            \hook_gput_code:nnn { keytheorems/#1/prehead } { keytheorems }
               { \refstepcounter{ keythms_dummyctr } }
           }
       }
@@ -841,6 +844,7 @@
         \__keythms_thm_addcontentsdata:nnnn { #1 }
           { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
           { ##1 } { ##3 }
+        \__keythms_thm_tempstorerestatedata:nnn { #1 } { ##1 } { ##3 }
         ##3
         \__keythms_thm_prefoot_code:n { #1 }
         \end{keythms_orig_#1}
@@ -871,32 +875,32 @@
         }
         {
           \__keythms_withhooks_end:n { #1 }
-          % FIX: how to do this with new setup?
-          % now define restated version if not already defined; only needed for immediate run, after that
-          % the definition will come from the aux file.
-          % \tl_if_empty:NF \l__keythms_thmuse_store_tl
-            % {
-              % \cs_if_exist:cF
-                % { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
-                % {
-                  % \seq_get_right:NN \g__keythms_thmuse_seq
-                    % \l__keythms_thmuse_savethmargs_tl
-                  % \cs_new:cpe
-                    % { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
-                    % {
-                      % \exp_not:N \__keythms_getthm_theoremextraargs:nnnnnnn
-                      % \exp_not:o { \l__keythms_thmuse_savethmargs_tl }
-                    % }
-                  % \cs_new:cpe
-                    % { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
-                    % {
-                      % \exp_not:N \__keythms_getthm_bodyextraargs:nnnnnnn
-                      % \exp_not:o { \l__keythms_thmuse_savethmargs_tl }
-                    % }
-                % }
-            % }
+          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+            {
+              \cs_if_exist:cF
+                { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
+                {
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
+                    {
+                      \exp_not:N \__keythms_getthm_theorem:nnnnn
+                      \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
+                    }
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
+                    {
+                      \exp_not:N \__keythms_getthm_body:nn
+                      \exp_args:No \exp_not:o
+                        {
+                          \exp_after:wN \__keythms_use_iii_v_braced:nnnnn
+                            \g__keythms_thmuse_temprestatedata_tl
+                        }
+                    }
+                }
+            }
         }
   }
+\cs_new:Npn \__keythms_use_iii_v_braced:nnnnn #1#2#3#4#5 { {#3}{#5} }
 
 \cs_new_protected:Npn \__keythms_withhooks_begin:nn #1#2
   { % #1 = theorem name, #2 = keys
@@ -987,7 +991,6 @@
   }
 \cs_new:Npn \__keythms_thm_addcontentsdata:nnnn #1#2#3#4
   { % #1 = theorem name, #2 = stored counters, #3 = keys, #4 = body
-    % \tl_set:Nn \l_tmpa_tl {  }
     \iow_shipout:Ne \@auxout
       {
         \exp_not:N \@writefile { thlist }
@@ -1000,6 +1003,17 @@
               { \exp_not:n { #3 } } % do we want any expansion here, perhaps
               { \exp_not:n { #4 } } % with \text_expand:n ?
           }
+      }
+  }
+\cs_new:Npn \__keythms_thm_tempstorerestatedata:nnn #1#2#3
+  { % #1 = theorem name, #2 = keys, #3 = body
+    \tl_gset:Ne \g__keythms_thmuse_temprestatedata_tl % needs to be global to get out of env
+      {
+        { #1 }
+        { \@currentlabel }
+        { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
+        { \exp_not:n { #2 } } % do we want any expansion here, perhaps
+        { \exp_not:n { #3 } } % with \text_expand:n ?
       }
   }
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
@@ -1097,6 +1111,7 @@
     \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
     \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
     \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
+    % QUESTION: also disable \hyper@@anchor ?
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }
@@ -1117,8 +1132,6 @@
       }
     \group_end:
   }
-% \cs_new_protected:Npn \__keythms_getthm_theoremextraargs:nnnnnnn #1#2#3#4#5#6#7
-  % { \__keythms_getthm_theorem:nnnnn {#1}{#2}{#5}{#6}{#7} }
 
 \cs_new_protected:Npn \__keythms_getthm_body:nn #1#2
   { % #1 = restate counters, #2 = theorem body
@@ -1146,8 +1159,6 @@
       }
     \group_end:
   }
-% \cs_new_protected:Npn \__keythms_getthm_bodyextraargs:nnnnnnn #1#2#3#4#5#6#7
-  % { \__keythms_getthm_body:nn {#5}{#7} }
 
 % \getkeytheorem[<property>]{<tag>}
 \NewDocumentCommand { \getkeytheorem } { o m }
@@ -1173,7 +1184,7 @@
   {
     \__hook_if_declared:nTF { keytheorems/allthms/#2 }
       {
-        \IfNoValueTF { #1 }
+        \IfNoValueTF { #1 } % I think this really should use ".", not "keytheorems"
           { \hook_gput_code:nnn { keytheorems/allthms/#2 } { . } { #3 } }
           { \hook_gput_code:nnn { keytheorems/#1/#2 } { . } { #3 } }
       }
@@ -1190,11 +1201,11 @@
 %%% List of Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-\NewTranslationFallback {keythms_listof_title}{List~of~Theorems}
-\NewTranslation{English}{keythms_listof_title}{List~of~Theorems}
-\NewTranslation{French} {keythms_listof_title}{Liste~des~théorèmes}
-\NewTranslation{German} {keythms_listof_title}{Liste~der~Theoreme}
-\NewTranslation{Spanish}{keythms_listof_title}{Lista~de~teoremas}
+\NewTranslationFallback { keythms_listof_title } { List~of~Theorems }
+\NewTranslation { English } { keythms_listof_title } { List~of~Theorems }
+\NewTranslation { French } { keythms_listof_title } { Liste~des~théorèmes }
+\NewTranslation { German } { keythms_listof_title } { Liste~der~Theoreme }
+\NewTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
 
 \keys_define:nn { keytheorems/listof }
   {
@@ -1202,29 +1213,29 @@
     numwidth   .initial:n = 2.3em,
     ignore     .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . }
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_ignore:n { #1 } }
       },
     show       .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . }
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_show:n { #1 } }
       },
     onlynamed  .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . }
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_onlynamed:n { #1 } }
       },
     onlynamed  .default:n = \q_no_value,
     onlynumbered  .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . }
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_onlynumbered:n { #1 } }
       },
     onlynumbered  .default:n = \q_no_value,
     ignoreall  .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . } % in case called before theorem defined
+        \hook_gput_code:nnn { begindocument/before } { keytheorems } % in case called before theorem defined
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_ignore_aux:n { ##1 } }
@@ -1232,7 +1243,7 @@
       },
     showall    .code:n    =
       {
-        \hook_gput_code:nnn { begindocument/before } { . } % in case called before theorem defined
+        \hook_gput_code:nnn { begindocument/before } { keytheorems } % in case called before theorem defined
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_show_aux:n { ##1 } }
@@ -1288,7 +1299,9 @@
   }
 
 \NewDocumentCommand { \keytheoremlistset } { m }
-  { \keys_set:nn { keytheorems/listof } { #1 } }
+  {
+    \keys_set:nn { keytheorems/listof } { #1 }
+  }
 
 \cs_new_protected:Npn \keythms_listof_ignore:n #1
   {
@@ -1484,6 +1497,10 @@
 
 \keythms_if_amsclass:TF
   {
+    \keys_define:nn { keytheorems/listof } % adjust to class
+      {
+        numwidth .initial:n = 1.5pc,
+      }
     \NewDocumentCommand { \listofkeytheorems } { O{} }
       { % title command not customizable here
         \bool_gset_true:N \g__keythms_listof_writefile_bool
@@ -1928,14 +1945,14 @@
 % -- \listofkeytheorems does not print restated theorems. Should an option be added
 %      to do this? No, right?
 % ✓✓ (done) Language support? At least for list of theorems title
-% -- Interface for adding entries to list of theorems. In fact, should
+% ✓✓ (done) Interface for adding entries to list of theorems. In fact, should
 %      benchmark the "add to seq then write at end of file" approach vs.
 %      traditional \addcontentsline approach
-% -- "short name" key for theorems to replace thmtools'
+% -✓ (partial) "short name" key for theorems to replace thmtools'
 %      "name={[short name]name}". Should we also support this syntax?
 %      Progress: key implemented but not yet compat with continues
-% -- And what about "restate={[options]foo}" syntax?
-% -- Should "continues(*)" theorems appear in list of theorems? Decide and add option to
+% -- And what about "restate={[options]foo}" syntax? How useful is this?
+% ✓✓ (done) Should "continues(*)" theorems appear in list of theorems? Decide and add option to
 %      change default.
 % ✓✓ (done) Add "shaded" and "thmbox" keys that use tcolorbox under the hood.
 %      In thmtools-compat or available always? Or as "library"?
@@ -1957,3 +1974,4 @@
 % -- use \MakeLinkTarget instead of dummy counter?
 % ✓✓ (done) should default theorem style be changed if ams class is loaded? Yes,
 %      and need general mechanism for setting up class defaults
+% -- need to clear .thlist file if no restate or list of
