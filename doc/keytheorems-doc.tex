@@ -15,7 +15,7 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.0.6$\beta$}
+\def\version{0.0.6$\gamma$}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -24,6 +24,8 @@
     {\texttt{github.com/mbertucci47/keytheorems}}
   }
 \author{Matthew Bertucci}
+
+\newkeytheoremstyle{breaksty}{break}
 
 \newkeytheorem{theorem}
 \newkeytheorem{mythm}[name=Some Name]
@@ -57,6 +59,7 @@
   name=Corollary,
   sibling=corollary,
   ]
+\newkeytheorem{observation}[style=breaksty]
 
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
@@ -306,6 +309,33 @@ Y \ar[r] \& S
 
 \end{docKey}
 
+\begin{docKey}{listhack}
+  {=\docValue*{true}\textbar\docValue*{false}}
+  {initially false}
+Meant only to be used with the \refKey{break} style key for a theorem starting with a list. Compare:
+
+\begin{tcbwritetemp}
+\newkeytheoremstyle{breaksty}{break}
+\newkeytheorem{observation}[style=breaksty]
+\end{tcbwritetemp}
+
+\begin{keythmscode}[withpreamble]
+\begin{observation}
+\begin{enumerate}
+\item First item
+\end{enumerate}
+\end{observation}
+
+\begin{observation}[listhack=true]
+\begin{enumerate}
+\item First item
+\end{enumerate}
+\end{observation}
+\end{keythmscode}
+
+Note that the value |true| must be explicitly set so that |listhack| is not interpreted as the note text.
+\end{docKey}
+
 \subsection{Keys inherited from \pkg{thmtools}} \label{thm-thmtools-keys}
 
 These are the \oarg{options} available to \cs{newkeytheorem}. Except for \refKey{thm/name} and \refKey{style}, each key below can also be used in \refCom{newkeytheoremstyle}. For more description, see the \href{https://ctan.org/pkg/thmtools}{\pkg{thmtools}} package.
@@ -540,11 +570,11 @@ Some text
 
 \begin{docCommand}{newkeytheoremstyle}
   {\marg{name}\marg{options}}
-This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
+This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}. Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory. Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if a style has already been defined. To overwrite an existing style, there is the analogous \docAuxCommand{renewkeytheoremstyle}. For completeness, there is also \docAuxCommand{declarekeytheoremstyle} and \docAuxCommand{providekeytheoremstyle}.
 \end{docCommand}
 
 \begin{notebox}
-For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, the initial key values are slightly different than what's below in order to match those class's defaults.
+For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart}, the initial key values are slightly different than what's below in order to match those class's defaults.
 \end{notebox}
 
 \subsection{Keys inherited from \pkg{thmtools}}
@@ -762,6 +792,18 @@ Instead of listing the theorem headings, the theorems are restated with their bo
   {\colOpt{=true\textbar false}}
   {initially |false|}
 Suppresses the printing of theorems given the \refKey{continues} key in the list of theorems.
+\end{docKey}
+
+\begin{docKey}{no-chapter-skip}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
+By default a small vertical space is inserted between each chapter's chunk of theorems. Setting this key to |true| removes this space.
+\end{docKey}
+
+\begin{docKey}{chapter-skip-length}
+  {=\meta{dimension}}
+  {initially |10pt|}
+Controls the amount of space inserted between chunks.
 \end{docKey}
 
 \subsection{Adding code to list of theorems}

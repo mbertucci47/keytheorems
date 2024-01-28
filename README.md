@@ -92,7 +92,9 @@ but a few things are changed:
 - There is no `restatable` environment except with `thmtools-compat`. Use the
   `store` (alias `restate`) key.
 - Rather than `restate=foo` defining a command `\foo*`, theorems are retrieved with `\getkeytheorem{foo}`.
-  For just the theorem body, use `\getkeytheorem[body]{foo}`.
+  For just the theorem body, use `\getkeytheorem[body]{foo}`. Also, this retrieval
+  can happen even before the theorem is stated since `keytheorems` writes the contents
+  to a file.
 - The `shaded` and `thmbox` keys are only available with the package option `thmtools-compat`,
   and they are emulated with [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox). Instead there's
   an interface to `tcolorbox` with the `tcolorbox={<options>}` and `tcolorbox-no-titlebar={<options>}` key.
@@ -107,7 +109,7 @@ but a few things are changed:
   - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`)
   - declaring theorems (in `\newkeytheorem`): `tcolorbox`, `tcolorbox-no-titlebar`
   - declaring styles (in `\newkeytheoremstyle`): `inherit-style`
-  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`
+  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`, `no-chapter-skip`, `chapter-skip-length`
 
 ## thmtools issues resolved by keytheorems
 Issues from the thmtools [github page](https://github.com/muzimuzhi/thmtools),
@@ -603,6 +605,29 @@ bla
 \end{theorem}
 
 \listoftheorems
+
+\end{document}
+```
+
+#### new theorem styles do not preserve "plain" keys
+With keytheorems, this is handled only for the AMS classes and acmart.
+```tex
+\documentclass{amsbook}
+\usepackage{thmtools}
+
+\declaretheoremstyle[bodyfont=\upshape]{upsty}
+\declaretheorem{theorem}
+\declaretheorem[style=upsty]{lemma}
+
+\begin{document}
+
+\begin{theorem}
+blub
+\end{theorem}
+
+\begin{lemma}
+blub
+\end{lemma}
 
 \end{document}
 ```
