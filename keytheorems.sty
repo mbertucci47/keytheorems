@@ -93,7 +93,7 @@
 \tl_new:N \g__keythms_thmuse_temprestatedata_tl
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
-\cs_generate_variant:Nn \keys_precompile:nnN { nv, noc }
+\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc }
 
 % for detecting ams classes
 \prg_new_conditional:Npnn \keythms_if_amsclass: { T, TF }
@@ -113,7 +113,7 @@
 %%%%%%%%%%%%%%%%%%%
 
 % from DeepL; I don't know these languages!
-\NewTranslationFallback { keythms_continues }{ continuing~from~p.\, }
+\NewTranslationFallback { keythms_continues } { continuing~from~p.\, }
 \NewTranslation { English } { keythms_continues } { continuing~from~p.\, }
 \NewTranslation { French } { keythms_continues } { suite~de~la~p.\, }
 \NewTranslation { German } { keythms_continues } { weiter~von~Seite~ }
@@ -243,7 +243,7 @@
       }
   }
 
-\cs_set:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
+\cs_new:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
   {
     \keythms_thmstyle_thmname:n { #1 }
     \keythms_thmstyle_thmnumber:n
@@ -432,8 +432,8 @@
       { inherit-style / #1 .meta:n = { #2 } }
     \tl_if_exist:cF { l__keythms_thmstyle_ #1 _savedkeys_tl }
       { \tl_new:c { l__keythms_thmstyle_ #1 _savedkeys_tl } }
-    \keys_precompile:noc { keytheorems/thm }
-      { \l__keythms_thmstyle_savedkeys_clist }
+    \keys_precompile:nVc { keytheorems/thm }
+      \l__keythms_thmstyle_savedkeys_clist
       { l__keythms_thmstyle_ #1 _savedkeys_tl }
   }
 
@@ -516,7 +516,11 @@
       {
         tcolorbox={
           notitle,
-          before~upper={ \group_begin: \keythms@tmpheadcode \group_end: },
+          before~upper={
+            \group_begin:
+            \__keythms_thm_tcboxtemphead:
+            \group_end:
+            },
           #1
           }
       },
@@ -525,20 +529,21 @@
 
 % what below is unnecessary? Commenting everything but \def causes spaceabove,
 % etc. to not work
-\def\suppressandstore@deferred@thm@head#1{%
-  % \if@inlabel \indent \par \fi % eject a section head if one is pending
-  % \if@nobreak
-    % \adjust@parskip@nobreak
-  % \else
-  \addpenalty\@beginparpenalty
-  \addvspace\@topsep
-  \addvspace{-\parskip}
-  % \fi
-  % \global\@inlabeltrue
-  % \everypar\dth@everypar
-  \def\keythms@tmpheadcode{\normalfont#1}%
-  \ignorespaces
-}
+\cs_new:Npn \__keythms_thm_storedeferredthmhead:n #1
+  {
+    % \if@inlabel \indent \par \fi % eject a section head if one is pending
+    % \if@nobreak
+      % \adjust@parskip@nobreak
+    % \else
+    % \addpenalty\@beginparpenalty
+    \addvspace\@topsep
+    \addvspace{-\parskip}
+    % \fi
+    % \global\@inlabeltrue
+    % \everypar\dth@everypar
+    \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
+    \ignorespaces
+  }
 
 \keys_precompile:nnN { keytheorems/thm }
   {
@@ -602,7 +607,9 @@
         % Temporarily set theorem style
         \__keythms_theoremstyle:n { \l__keythms_thm_style_tl }
         % If thm keys given in style, call now (possibly overwritten in next step)
-        \tl_use:c { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl }
+        % but don't error if user uses a style defined with just \newtheoremstyle
+        \tl_if_exist:cT { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl }
+          { \tl_use:c { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl } }
       }
     % Set env-specific keys
     \keys_set:nn { keytheorems/thm } { #2 }
@@ -633,8 +640,8 @@
     % Set name if none given
     \quark_if_no_value:NT \l__keythms_thm_name_tl % use quark so name={} is valid
       {
-        % use e so \text_titlecase called only once per theorem, not each time
-        % the theorem is called
+        % use e so \text_titlecase called only once per theorem definition,
+        %  not each time the theorem is used
         \tl_set:Ne \l__keythms_thm_name_tl 
           { \text_titlecase_first:n { #1 } }
       }
@@ -740,7 +747,7 @@
     \hook_gput_code:nnn { keytheorems/#1/prehead }
       { keythms_tcbox }
       {
-        \cs_set_eq:NN \deferred@thm@head \suppressandstore@deferred@thm@head
+        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferredthmhead:n
         \cs_set_eq:NN \Hy@theorem@makelinktarget \use_none:n
         % ^ don't like playing with hyperref internals... but don't see around
         %   it because hyperref tries to add to para hook which doesn't work
@@ -763,7 +770,7 @@
                   {
                     \begin{tcolorbox}[
                       savedelimiter=#1,
-                      title={\keythms@tmpheadcode},
+                      title={ \__keythms_thm_tcboxtemphead: },
                       #2]
                   }
               }
@@ -773,8 +780,8 @@
                   {
                     \begin{tcolorbox}[
                       savedelimiter=#1,
-                      title={\keythms@tmpheadcode},
-                      phantom={\MakeLinkTarget*{\@currentHref}}, % fix hyperlinking
+                      title={ \__keythms_thm_tcboxtemphead: },
+                      phantom={ \MakeLinkTarget*{\@currentHref} }, % fix hyperlinking
                       #2]
                   }
               }
@@ -786,7 +793,7 @@
           {
             \begin{tcolorbox}[
               savedelimiter=#1,
-              title={\keythms@tmpheadcode},
+              title={ \__keythms_thm_tcboxtemphead: },
               #2]
           }
       }
@@ -1646,7 +1653,7 @@
         \group_end:
       }
   }
-% ^ unlike thmtools we don't get use the class's style of \listoffigures because
+% ^ unlike thmtools we don't use the class's style of \listoffigures because
 %   we want control over title-code, no-title, etc. But this means we have to guess
 %   things like marks, sectioning command, etc.
 
@@ -1671,11 +1678,11 @@
 
 % chaptervspacehack (code translated from thmtools)
 \cs_new_eq:NN \KeyThmsAddvspace \addvspace
-\cs_set:Npn \keythms@listof@oldchapter { 1 }
+\cs_new:Npn \keythms@listof@oldchapter { 1 }
 % ^ if this is zero, bad things happen if title-code is changed; anyways don't
 %   need addvspace at top
-\cs_new:Npn \keythms@listof@chaptervspacehack { }
 % ^ for some reason can't have underscores in this csname
+\cs_new:Npn \keythms@listof@chaptervspacehack { }
 \cs_if_exist:cT { c@chapter }
   {
     \cs_if_eq:NNF \c@chapter \relax
@@ -1707,7 +1714,7 @@
     \group_end:
   }
 
-\cs_set:Npn \__keythms_Autoref_testreftype:w #1.#2\\
+\cs_new:Npn \__keythms_Autoref_testreftype:w #1.#2\\
   {
     \cs_if_exist:cTF { #1 Autorefname }
       {
@@ -2132,10 +2139,12 @@
 %    Answer: no, I don't think so. \addtotheoremhook is for simple things.
 %    Programmers can use the usual hook interface with more verbose labels
 % ✓✓ (done) Document how to disable things like footnotes in restated theorems.
-% -- Should indent be suppressed after tcolorbox theorems? It is for thmtools' shaded and thmbox theorems.
+% ✓✓ (done) Should indent be suppressed after tcolorbox theorems? It is for thmtools' shaded and thmbox theorems.
 %      Just setting \tcbset{after=\par\@endpetrue} doesn't work since there is code in between but
 %      \AddToHook{keytheorems/<env>/postfoot}[keythms_hook_keys]{\par\@endpetrue} seems to work
-% -- break + tcolorbox-no-titlebar adds too much space if theorem starts with list
+%    Answer: I say no, since it's not suppressed after regular theorems.
+% -✓ (partial) break + tcolorbox-no-titlebar adds too much space if theorem starts with list
+%      listhack fixes this.
 % ✓✓ (done) rename package to "keytheorems"?
 % ✓✓ (done) should all code added to hooks have the "keytheorems" label as opposed to "."?
 % ✓✓ (fixed) seq approach doesn't work well with \includeonly
