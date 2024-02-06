@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-01-27}{0.0.6gamma}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -77,6 +77,7 @@
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
 \bool_new:N \l__keythms_thmuse_listhack_bool
+\bool_new:N \l__keythms_thmuse_restating_bool
 \clist_new:N \g__keythms_restatecounters_clist
 \clist_new:N \l__keythms_thmstyle_savedkeys_clist
 \iow_new:N \g__keythms_listof_stream
@@ -91,6 +92,19 @@
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
 \tl_new:N \l__keythms_thmuse_envname_tl
 \tl_new:N \g__keythms_thmuse_temprestatedata_tl
+
+\newcounter{keythms_restate_dummyctr}
+\cs_gset:Npn \theHkeythms_restate_dummyctr
+  { restate.\arabic{keythms_restate_dummyctr} }
+\cs_gset:Npn \thekeythms_restate_dummyctr { }
+\newcounter{keythms_continues_dummyctr}
+\cs_gset:Npn \theHkeythms_continues_dummyctr
+  { continues.\arabic{keythms_continues_dummyctr} }
+\cs_gset:Npn \thekeythms_continues_dummyctr { }
+\newcounter{keythms_unnumbered_dummyctr}
+\cs_gset:Npn \theHkeythms_unnumbered_dummyctr
+  { unnumbered.\arabic{keythms_unnumbered_dummyctr} }
+\cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc }
@@ -137,7 +151,7 @@
   }
 
 % \keytheoremset{<options>}
-\NewDocumentCommand { \keytheoremset } { m }
+\NewDocumentCommand \keytheoremset { m }
   {
     \keys_set:nn { keytheorems } { #1 }
   }
@@ -383,24 +397,24 @@
   }
 %%% </SURELY A BETTER WAY>
 
-\NewDocumentCommand { \newkeytheoremstyle } { m m }
+\NewDocumentCommand \newkeytheoremstyle { m m }
   {
     \cs_if_free:cTF { th@ #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
       { \msg_error:nnn { keytheorems } { thmstyle-defined } { #1 } }
   }
-\NewDocumentCommand { \renewkeytheoremstyle } { m m }
+\NewDocumentCommand \renewkeytheoremstyle { m m }
   {
     \cs_if_free:cTF { th@ #1 }
       { \msg_error:nnn { keytheorems } { thmstyle-undefined } { #1 } }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
-\NewDocumentCommand { \providekeytheoremstyle } { m m }
+\NewDocumentCommand \providekeytheoremstyle { m m }
   {
     \cs_if_free:cT { th@ #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
-\NewDocumentCommand { \declarekeytheoremstyle } { m m }
+\NewDocumentCommand \declarekeytheoremstyle { m m }
   {
     \keythms_thmstyle_declarestyle:nn { #1 } { #2 }
   }
@@ -444,7 +458,7 @@
 % FIX: reimplement these without \NewDocumentCommand and \SplitArgument
 
 % \keythms_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
-\NewDocumentCommand { \keythms_thm_setrefnames:nn }
+\NewDocumentCommand \keythms_thm_setrefnames:nn
   { m >{\SplitArgument{1}{,}} m }
   { \__keythms_thm_setrefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
@@ -461,7 +475,7 @@
 \cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
 
 % \keythms_thm_setRefnames:n { <envname> } { <refname> or <sing,plural> }
-\NewDocumentCommand { \keythms_thm_setRefnames:nn }
+\NewDocumentCommand \keythms_thm_setRefnames:nn
   { m >{\SplitArgument{1}{,}} m }
   { \__keythms_thm_setRefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
@@ -576,7 +590,7 @@
 \__keythms_thm_makethmhooks:n { allthms }
 
 % \newkeytheorem{<name>}{<keys>}
-\NewDocumentCommand { \newkeytheorem } { m O{} }
+\NewDocumentCommand \newkeytheorem { m O{} }
   {
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
@@ -676,7 +690,10 @@
               {
                 \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
                 \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
-                  { \refstepcounter{ keythms_dummyctr } }
+                  {
+                    \keythms_if_restating:F
+                      { \refstepcounter{ keythms_unnumbered_dummyctr } }
+                  }
               }
           }
           {
@@ -708,7 +725,10 @@
           {
             \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
             \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
-              { \refstepcounter{ keythms_dummyctr } }
+              {
+                \keythms_if_restating:F
+                  { \refstepcounter{ keythms_unnumbered_dummyctr } }
+              }
           }
       }
     % Store theorem def and redefine it with keys
@@ -846,7 +866,8 @@
         \setuniqmark{ #1. \use:c {the #3} }
         \ifuniq{ #1. \use:c {the #3} }
           {
-            \refstepcounter{ keythms_dummyctr }
+            \keythms_if_restating:F
+              { \refstepcounter{ keythms_unnumbered_dummyctr } }
             \begin{keythms_orig_nonumber_#1}
           }
           {
@@ -919,6 +940,7 @@
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
     listhack   .initial:n = false,
+    seq        .code:n = {},
   }
 
 \cs_new_protected:Npn \keythms_keyify_theorem:n #1
@@ -1059,8 +1081,8 @@
             % \ref*{foo} in .thlist file (which is okay but better to expand it)
             \getrefnumber { \l__keythms_thmuse_contlabel_tl }
           }
-        \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
-        \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
+        \cs_set_eq:cN { c@ #1 } \c@keythms_continues_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHkeythms_continues_dummyctr
         %\cs_set_eq:NN \setuniqmark \use_none:n % not the right fix
       }
   }
@@ -1093,7 +1115,7 @@
   }
 \cs_new:Npn \__keythms_thm_addcontentsdata:nnnn #1#2#3#4
   { % #1 = theorem name, #2 = stored counters, #3 = keys, #4 = body
-    \keythms@listof@chaptervspacehack
+    \keythms_listof_chaptervspacehack:
     \iow_shipout:Ne \@auxout
       {
         \exp_not:N \@writefile { thlist }
@@ -1125,10 +1147,6 @@
 %%% Retrieving Theorem Data %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\newcounter{keythms_dummyctr}
-\cs_gset:Npn \theHkeythms_dummyctr { dummy.\arabic{keythms_dummyctr} }
-\cs_gset:Npn \thekeythms_dummyctr { }
-
 \cs_new_protected:Npn \KeyThmsSavedTheorem #1#2#3#4#5#6#7 % 7th arg is body
   { \use:c { __keythms_thmitem_#1:nnnnnn } {#2}{#3}{#4}{#5}{#6}{#7} }
 
@@ -1140,7 +1158,7 @@
   }
 
 \cs_new_protected:Npn \KeyThmsContentsLine #1 { #1 }
-\NewDocumentCommand { \addtheoremcontentsline } { m m }
+\NewDocumentCommand \addtheoremcontentsline { m m }
   {
     \addtocontents { thlist }
       {
@@ -1151,7 +1169,7 @@
           }
       }
   }
-\NewDocumentCommand { \addtotheoremcontents } { m }
+\NewDocumentCommand \addtotheoremcontents { m }
   {
     \addtocontents { thlist }
       {
@@ -1188,9 +1206,18 @@
     \group_end:
   }
 
+\prg_new_conditional:Npnn \keythms_if_restating: { T, F, TF }
+  {
+    \bool_if:NTF \l__keythms_thmuse_restating_bool
+      { \prg_return_true: }
+      { \prg_return_false: }
+  }
+\NewDocumentCommand \IfRestatingTF { } { \keythms_if_restating:TF }
+
 \cs_new_protected:Npn \__keythms_getthm_theorem:nnnnn #1#2#3#4#5
   { % #1 = name, #2 = number, #3 = restate counters, #4 = keys, #5 = theorem body
     \group_begin:
+    \bool_set_true:N \l__keythms_thmuse_restating_bool
     \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #3 }
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
@@ -1199,17 +1226,18 @@
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
         %        user to say "restate-counters={section,chapter,...}".
-        \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
+        \cs_set:cpn { theH ##1 } { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
-    \tl_if_empty:nF { #2 }
+    \tl_if_empty:nTF { #2 }
+      { \refstepcounter{keythms_restate_dummyctr} } % for unnumbered theorems
       {
         \cs_set:cpn { the #1 } { #2 }
-        \cs_set_eq:cN { c@ #1 } \c@keythms_dummyctr
-        \cs_set_eq:cN { theH #1 } \theHkeythms_dummyctr
+        \cs_set_eq:cN { c@ #1 } \c@keythms_restate_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHkeythms_restate_dummyctr
         % ^ why are the last two line here? We shouldn't be referencing
         %   restated theorems. Think it's a remnant of thmtools
         % WRONG: needed to make numbering correct after restated theorem.
-        % not sure about theH
+        % not sure about theH. <- this is needed to prevent duplicate anchors
       }
     \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
     \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
@@ -1240,6 +1268,7 @@
 \cs_new_protected:Npn \__keythms_getthm_body:nn #1#2
   { % #1 = restate counters, #2 = theorem body
     \group_begin:
+    \bool_set_true:N \l__keythms_thmuse_restating_bool
     \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #1 }
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
@@ -1248,8 +1277,9 @@
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
         %        user to say "restate-counters={section,chapter,...}".
-        \cs_set_eq:cN { theH ##1 } \theHkeythms_dummyctr
+        \cs_set:cpn { theH ##1 } { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
+    \refstepcounter{keythms_restate_dummyctr}
     \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
     \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
     \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
@@ -1265,7 +1295,7 @@
   }
 
 % \getkeytheorem[<property>]{<tag>}
-\NewDocumentCommand { \getkeytheorem } { o m }
+\NewDocumentCommand \getkeytheorem { o m }
   {
     \cs_if_exist:cTF { __keythms_getthm_#2_theorem }
       {
@@ -1284,7 +1314,7 @@
 %%%%%%%%%%%%%%%%%%%%%
 
 %%% \addtotheoremhook[<envname>]{<hook>}{<code>}
-\NewDocumentCommand { \addtotheoremhook } { o m +m }
+\NewDocumentCommand \addtotheoremhook { o m +m }
   {
     \__hook_if_declared:nTF { keytheorems/allthms/#2 }
       {
@@ -1404,10 +1434,11 @@
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_show_aux:n { ##1 } }
           },
+        seq       .code:n = \keythms_listof_showseq:n { #1 },
       }
   }
 
-\NewDocumentCommand { \keytheoremlistset } { m }
+\NewDocumentCommand \keytheoremlistset { m }
   {
     \keys_set:nn { keytheorems/listof } { #1 }
   }
@@ -1491,7 +1522,26 @@
           }
       }
   }
-
+\cs_new_protected:Npn \keythms_listof_showseq:n #1
+  {
+    \prop_map_inline:Nn \g__keythms_thmnames_prop
+      { \__keythms_listof_showseq_aux:nn { #1 } { ##1 } }
+  }
+\cs_new_protected:Npn \__keythms_listof_showseq_aux:nn #1#2
+  { % #1 = seq name, #2 = theorem name
+    \cs_set_protected:cpn { __keythms_thmitem_#2:nnnnnn } ##1##2##3##4##5##6
+      {
+        \__keythms_listof_listcmd_setup:nn { ##5 }
+          {
+            \tl_if_eq:NnT \l__keythms_listofheading_seq_tl { #1 }
+              {
+                \keythms_listof_listcmd:nnnnnnn
+                  {#2}{##1}{##2}{##3}{##4}{##5}{##6}
+              }
+          }
+      }
+  }
+  
 % Seems unnecessary to repeat all this for reading the keyvals from seq.
 % In thmtools they just hook the "thmitem" definition into the theorem declaration.
 %% NOTE ON ABOVE: this gives more flexibility to define different kinds of lists.
@@ -1513,6 +1563,7 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
+    seq     .tl_set:N = \l__keythms_listofheading_seq_tl,
     unknown .code:n = { } % do nothing with unknown keys
     % ^ this is OK because we have total control over possible keys; if invalid
     %   key is given to theorem then an error will be raised there
@@ -1610,7 +1661,7 @@
       {
         numwidth .initial:n = 1.5pc,
       }
-    \NewDocumentCommand { \listofkeytheorems } { O{} }
+    \NewDocumentCommand \listofkeytheorems { O{} }
       { % title command not customizable here
         \bool_gset_true:N \g__keythms_listof_writefile_bool
         \group_begin:
@@ -1632,7 +1683,7 @@
       }
   }
   {
-    \NewDocumentCommand { \listofkeytheorems } { O{} }
+    \NewDocumentCommand \listofkeytheorems { O{} }
       {
         \bool_gset_true:N \g__keythms_listof_writefile_bool
         \group_begin:
@@ -1678,25 +1729,25 @@
 
 % chaptervspacehack (code translated from thmtools)
 \cs_new_eq:NN \KeyThmsAddvspace \addvspace
-\cs_new:Npn \keythms@listof@oldchapter { 1 }
+\int_new:N \g_keythms_listof_prevchapter_int
+\int_gset:Nn \g_keythms_listof_prevchapter_int { 1 }
 % ^ if this is zero, bad things happen if title-code is changed; anyways don't
 %   need addvspace at top
-% ^ for some reason can't have underscores in this csname
-\cs_new:Npn \keythms@listof@chaptervspacehack { }
+\cs_new:Npn \keythms_listof_chaptervspacehack: { }
 \cs_if_exist:cT { c@chapter }
   {
     \cs_if_eq:NNF \c@chapter \relax
       {
-        \cs_set:Npn \keythms@listof@chaptervspacehack
+        \cs_set:Npn \keythms_listof_chaptervspacehack:
           {
-            \int_compare:nNnF { \value{chapter} } = { \keythms@listof@oldchapter }
+            \int_compare:nNnF { \value{chapter} } = { \g_keythms_listof_prevchapter_int }
               {
                 \addtocontents{ thlist }
                   {
                     \protect\KeyThmsAddvspace
                       { \keythms@listof@chaptervspace@dim }
                   }
-                \cs_gset:Npe \keythms@listof@oldchapter { \the\value{chapter} }
+                \int_gset:Nn \g_keythms_listof_prevchapter_int { \value{chapter} }
               }
           }
       }
@@ -2161,3 +2212,6 @@
 %    - cannot give action spec to theorems
 % -- Idea: delay making hooks until begindocument to avoid using internal cmd
 % ✓✓ (done) fix acmart defaults
+% ✓✓ (done) use different dummy counters for unnumbered, continues, and restate
+% ✓✓ (done) seq for custom lists of theorems
+% -- make code more modular

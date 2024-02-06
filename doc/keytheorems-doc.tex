@@ -15,7 +15,7 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.0.6$\gamma$}
+\def\version{0.0.7}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -334,6 +334,12 @@ Meant only to be used with the \refKey{break} style key for a theorem starting w
 \end{keythmscode}
 
 Note that the value |true| must be explicitly set so that |listhack| is not interpreted as the note text.
+\end{docKey}
+
+\begin{docKey}[][doc label=thm/seq]{seq}
+  {=\meta{name}}
+  {initially unset}
+Adds the theorem to a custom sequence \meta{name} that can then be listed with \cs{listofkeytheorems}\bracks{seq=\meta{name}}. See \refKey{listof/seq} for more details.
 \end{docKey}
 
 \subsection{Keys inherited from \pkg{thmtools}} \label{thm-thmtools-keys}
@@ -675,6 +681,22 @@ Fascinating example.
 
 \end{docCommand}
 
+\begin{docCommand}{IfRestatingTF}
+  {\marg{true code}\marg{false code}}
+Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem.
+
+\begin{keythmscode}[]
+\begin{example}[store=hmm]
+I am the
+\IfRestatingTF{restated}{original}
+example!
+\end{example}
+
+\getkeytheorem{hmm}
+\end{keythmscode}
+
+\end{docCommand}
+
 \section{Listing Theorems}
 
 \begin{docCommand}{listofkeytheorems}
@@ -755,6 +777,12 @@ Defaults to ``List of Theorems'' if English or an unknown language is used. Curr
   {\colOpt{=\marg{comma-list of env names}}}
   {initially unset}
 Similar to \refKey{onlynamed}, but lists only those theorems which are numbered. This is useful if you'd like to exclude things like unnumbered definitions and remarks from the list of theorems.
+\end{docKey}
+
+\begin{docKey}[][doc label=listof/seq]{seq}
+  {=\meta{name}}
+  {initially unset}
+Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key. This is the only way to fully customize which theorems appear in the list of theorems.
 \end{docKey}
 
 \begin{docKey}{title-code}

@@ -106,10 +106,10 @@ but a few things are changed:
 - All new keys (see doc for descriptions):
   - load time: `overload`, `thmtools-compat`, `store-all`
   - global (in `\keytheoremset`): `restate-counters`, `continues-code`, `qed-symbol`
-  - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`)
+  - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`), `seq`
   - declaring theorems (in `\newkeytheorem`): `tcolorbox`, `tcolorbox-no-titlebar`
   - declaring styles (in `\newkeytheoremstyle`): `inherit-style`
-  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`, `no-chapter-skip`, `chapter-skip-length`
+  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `seq`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`, `no-chapter-skip`, `chapter-skip-length`
 
 ## thmtools issues resolved by keytheorems
 Issues from the thmtools [github page](https://github.com/muzimuzhi/thmtools),
