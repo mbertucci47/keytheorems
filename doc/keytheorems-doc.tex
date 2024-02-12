@@ -15,7 +15,7 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.0.7}
+\def\version{0.0.7$\beta$}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -130,8 +130,13 @@ An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implemen
 \section{Dependencies}
 
 Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, and \pkg{translations} packages.
+    
+\section{Global Options}
 
-\section{Load-time Options}
+\begin{docCommand}{keytheoremset}
+  {\marg{options}}
+Every key in this section can be given as a package option with \cs{usepackage}\bracks{\meta{options}}\ttbraces{keytheorems} or in \cs{keytheoremset}\marg{options}, with the exception that \refKey{continues-code} can only be used in the latter.
+\end{docCommand}
 
 \begin{docKey}{overload}
   {}
@@ -169,13 +174,6 @@ Tells \pkg{keytheorems} to grab the body of each theorem so it can later be
 printed with the \refKey{print-body} option of \refCom{listofkeytheorems}. Note that this means a theorem body
 \emph{cannot} contain verbatim material.
 \end{docKey}
-    
-\section{Global Options}
-
-\begin{docCommand}{keytheoremset}
-  {\marg{options}}
-
-\end{docCommand}
 
 \begin{docKey}{restate-counters}
   {=\marg{comma-list of counters}}

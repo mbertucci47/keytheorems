@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7beta}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -120,40 +120,6 @@
               { \prg_return_false: }
           }
       }
-  }
-
-%%%%%%%%%%%%%%%%%%%
-%%% Global Keys %%%
-%%%%%%%%%%%%%%%%%%%
-
-% from DeepL; I don't know these languages!
-\NewTranslationFallback { keythms_continues } { continuing~from~p.\, }
-\NewTranslation { English } { keythms_continues } { continuing~from~p.\, }
-\NewTranslation { French } { keythms_continues } { suite~de~la~p.\, }
-\NewTranslation { German } { keythms_continues } { weiter~von~Seite~ }
-\NewTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
-
-\keys_define:nn { keytheorems }
-  {
-    restate-counters .code:n =
-      {
-        \clist_map_inline:nn { #1 }
-          { \tl_new:c { l_keythms_restate_current_##1_tl } }
-        \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
-      },
-    restate-counters .initial:n = equation,
-    continues-code   .cs_set:Np = \__keythms_thmuse_continues:n #1,
-    continues-code   .initial:n =
-      { % not sure how best to handle this translation
-        \GetTranslation{keythms_continues}\pageref{#1}
-      },
-    qed-symbol       .cs_set_protected:Np = \qedsymbol,
-  }
-
-% \keytheoremset{<options>}
-\NewDocumentCommand \keytheoremset { m }
-  {
-    \keys_set:nn { keytheorems } { #1 }
   }
 
 %%%%%%%%%%%%%%
@@ -1778,88 +1744,127 @@
       { \msg_warning:nnn { keytheorems } { no-Autorefname } { #1 } }
   }
 
-%%%%%%%%%%%%%%%%%%%%%%%
-%%% Package Options %%%
-%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%
+%%% Global Keys %%%
+%%%%%%%%%%%%%%%%%%%
 
-\DeclareOption{overload}
+% from DeepL; I don't know these languages!
+\NewTranslationFallback { keythms_continues } { continuing~from~p.\, }
+\NewTranslation { English } { keythms_continues } { continuing~from~p.\, }
+\NewTranslation { French } { keythms_continues } { suite~de~la~p.\, }
+\NewTranslation { German } { keythms_continues } { weiter~von~Seite~ }
+\NewTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
+
+\keys_define:nn { keytheorems }
+  {
+    restate-counters .code:n =
+      {
+        \clist_map_inline:nn { #1 }
+          { \tl_new:c { l_keythms_restate_current_##1_tl } }
+        \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
+      },
+    restate-counters .initial:n = equation,
+    continues-code   .cs_set:Np = \__keythms_thmuse_continues:n #1,
+    continues-code   .initial:n =
+      { % not sure how best to handle this translation
+        \GetTranslation{keythms_continues}\pageref{#1}
+      },
+    qed-symbol       .cs_set_protected:Np = \qedsymbol,
+    overload         .code:n = \__keythms_overload_code:,
+    overload         .value_forbidden:n = true,
+    overload         .usage:n = preamble,
+    thmtools-compat  .code:n = \__keythms_thmtoolscompat_code:,
+    thmtools-compat  .value_forbidden:n = true,
+    thmtools-compat  .usage:n = preamble,
+    store-all        .code:n = \__keythms_storeall_code:,
+    store-all        .value_forbidden:n = true,
+    store-all        .usage:n = preamble,
+  }
+
+% \keytheoremset{<options>}
+\NewDocumentCommand \keytheoremset { m }
+  {
+    \keys_set:nn { keytheorems } { #1 }
+  }
+
+\cs_new_protected:Npn \__keythms_overload_code:
   {
     \RenewDocumentCommand { \newtheorem } { smomo }
       {
-        \IfBooleanTF { #1 }
-          { \keythms_thm_newkeythm:nn { #2 } { name=#4, numbered=no } }
+        \IfBooleanTF { ##1 }
+          { \keythms_thm_newkeythm:nn { ##2 } { name=##4, numbered=no } }
           {
-            \IfNoValueTF { #3 }
+            \IfNoValueTF { ##3 }
               {
-                \IfNoValueTF { #5 }
-                  { \keythms_thm_newkeythm:nn { #2 } { name=#4 } }
-                  { \keythms_thm_newkeythm:nn { #2 } { name=#4, parent=#5 } }
+                \IfNoValueTF { ##5 }
+                  { \keythms_thm_newkeythm:nn { ##2 } { name=##4 } }
+                  { \keythms_thm_newkeythm:nn { ##2 } { name=##4, parent=##5 } }
               }
-              { \keythms_thm_newkeythm:nn { #2 } { name=#4, sibling=#3 } }
+              { \keythms_thm_newkeythm:nn { ##2 } { name=##4, sibling=##3 } }
           }
       }
   }
 
-\DeclareOption{thmtools-compat}
+\cs_new_protected:Npn \__keythms_thmtoolscompat_code:
   {
     \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
       {
-        \declarekeytheoremstyle { #2 } { #1 }
+        \declarekeytheoremstyle { ##2 } { ##1 }
       }
     \ProvideDocumentCommand { \declaretheorem } { O{} m }
       {
-        \newkeytheorem { #2 } [ #1 ]
+        \newkeytheorem { ##2 } [ ##1 ]
       }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
       {
-        \begin{#2}[#1,store=#3]
+        \begin{##2}[##1,store=##3]
       }
       {
-        \end{#2}
-        \cs_new:cpn { #3 }
+        \end{##2}
+        \cs_new:cpn { ##3 }
           { % make \foo and \foo* identical
             \peek_meaning_remove:NTF *
-              { \use:c { __keythms_getthm_ #3 _theorem } }
-              { \use:c { __keythms_getthm_ #3 _theorem } }
+              { \use:c { __keythms_getthm_ ##3 _theorem } }
+              { \use:c { __keythms_getthm_ ##3 _theorem } }
           }
       }
     \ProvideDocumentCommand { \listoftheorems } { } { \listofkeytheorems }
     \ProvideDocumentCommand { \addtotheorempreheadhook } { o m }
       {
-        \IfNoValueTF { #1 }
-          { \addtotheoremhook { prehead } { #2 } }
-          { \addtotheoremhook [ #1 ] { prehead } { #2 } }
+        \IfNoValueTF { ##1 }
+          { \addtotheoremhook { prehead } { ##2 } }
+          { \addtotheoremhook [ ##1 ] { prehead } { ##2 } }
       }
     \ProvideDocumentCommand { \addtotheorempostheadhook } { o m }
       {
-        \IfNoValueTF { #1 }
-          { \addtotheoremhook { posthead } { #2 } }
-          { \addtotheoremhook [ #1 ] { posthead } { #2 } }
+        \IfNoValueTF { ##1 }
+          { \addtotheoremhook { posthead } { ##2 } }
+          { \addtotheoremhook [ ##1 ] { posthead } { ##2 } }
       }
     \ProvideDocumentCommand { \addtotheoremprefoothook } { o m }
       {
-        \IfNoValueTF { #1 }
-          { \addtotheoremhook { prefoot } { #2 } }
-          { \addtotheoremhook [ #1 ] { prefoot } { #2 } }
+        \IfNoValueTF { ##1 }
+          { \addtotheoremhook { prefoot } { ##2 } }
+          { \addtotheoremhook [ ##1 ] { prefoot } { ##2 } }
       }
     \ProvideDocumentCommand { \addtotheorempostfoothook } { o m }
       {
-        \IfNoValueTF { #1 }
-          { \addtotheoremhook { postfoot } { #2 } }
-          { \addtotheoremhook [ #1 ] { postfoot } { #2 } }
+        \IfNoValueTF { ##1 }
+          { \addtotheoremhook { postfoot } { ##2 } }
+          { \addtotheoremhook [ ##1 ] { postfoot } { ##2 } }
       }
     \clist_new:N \l__keythms_tcbshaded_keys_clist
     \clist_new:N \l__keythms_tcbthmbox_keys_clist
     \keys_define:nn { keytheorems/thm/shaded }
       {
-        textwidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { width=#1 },
-        bgcolor     .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colback=#1 },
-        rulewidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxrule=#1 },
-        rulecolor   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colframe=#1 },
-        margin      .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxsep=#1 },
-        padding     .meta:n = { margin=#1 },
-        leftmargin  .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { left~skip=#1 },
-        rightmargin .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { right~skip=#1 },
+        textwidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { width=##1 },
+        bgcolor     .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colback=##1 },
+        rulewidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxrule=##1 },
+        rulecolor   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colframe=##1 },
+        margin      .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxsep=##1 },
+        padding     .meta:n = { margin=##1 },
+        leftmargin  .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { left~skip=##1 },
+        rightmargin .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { right~skip=##1 },
       }
     \keys_define:nn { keytheorems/thm/thmbox }
       {
@@ -1899,31 +1904,31 @@
           {
             \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { ##1 } }
           },
         leftmargin .code:n =
           {
             \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { ##1 } }
           },
         rightmargin .code:n =
           {
             \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { ##1 } }
           },
         hskip .code:n =
           {
             \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { ##1 } }
           },
         vskip .code:n =
           {
             \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
               { keythms_tcbox }
-              { \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { #1 } }
+              { \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { ##1 } }
           },
       }
     \dim_new:N \l_keythms_tcbthmbox_thickness_dim
@@ -1941,7 +1946,7 @@
         shaded .code:n =
           {
             \clist_clear:N \l__keythms_tcbshaded_keys_clist
-            \keys_set:nn { keytheorems/thm/shaded } { #1 }
+            \keys_set:nn { keytheorems/thm/shaded } { ##1 }
             % FIX: surely a better way to do this
             \RequirePackage{tcolorbox}
             \pgfkeysifdefined{/tcb/keythms_tcbshaded_default/.@cmd} % even worth it?
@@ -1972,7 +1977,7 @@
           {
             \clist_clear:N \l__keythms_tcbthmbox_keys_clist
             % \bool_set_true:N \l__keythms_tcbthmbox_underline_bool
-            \keys_set:nn { keytheorems/thm/thmbox } { #1 }
+            \keys_set:nn { keytheorems/thm/thmbox } { ##1 }
             % FIX: surely a better way to do this
             \RequirePackage{tcolorbox}
             \tcbuselibrary{skins,breakable}
@@ -2126,7 +2131,7 @@
       }
   }
 
-\DeclareOption{store-all}
+\cs_new_protected:Npn \__keythms_storeall_code:
   {
     \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
     \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
@@ -2134,7 +2139,7 @@
     \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
   }
 
-\ProcessOptions*
+\ProcessKeyOptions[keytheorems]
 
 \file_input_stop:
 
@@ -2215,3 +2220,4 @@
 % ✓✓ (done) use different dummy counters for unnumbered, continues, and restate
 % ✓✓ (done) seq for custom lists of theorems
 % -- make code more modular
+% -- option to restate without writing to file

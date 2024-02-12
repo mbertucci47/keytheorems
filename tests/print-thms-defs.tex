@@ -5,9 +5,11 @@
 \newcommand{\listofkeytheorems}{\listoftheorems}
 \else
 \usepackage{keytheorems}
+\keytheoremset{thmtools-compat}
 \fi
 
-\usepackage{kantlipsum,xcolor}
+\usepackage{kantlipsum}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{hyperref,cleveref}
 
 \newkeytheorem{theorem}
@@ -26,15 +28,30 @@
 	numbered=no,
 	name=Euclid's Prime Theorem
 	]
-%\newkeytheorem{singleton}[
-%	numbered=unless unique
-%	]
-%\newkeytheorem{couple}[
-%	numbered=unless unique
-%	]
+\newkeytheorem{singleton}[
+	numbered=unless unique
+	]
+\newkeytheorem{couple}[
+	numbered=unless unique
+	]
 \newkeytheorem{remark}[
 	style=remark
 	]
+\newkeytheorem{BoxI}[
+    shaded={bgcolor=Lavender,textwidth=12em}
+    ]
+\newkeytheorem{BoxII}[
+    shaded={rulecolor=Lavender,rulewidth=2pt,bgcolor=white}
+    ]
+\newkeytheorem{boxtheorem L}[
+    thmbox=L
+    ]
+\newkeytheorem{boxtheorem M}[
+    thmbox=M
+    ]
+\newkeytheorem{boxtheorem S}[
+    thmbox=S
+    ]
 \newkeytheoremstyle{mystyle}{
 	spaceabove=6pt, spacebelow=6pt,
 	headfont=\normalfont\bfseries,
@@ -60,9 +77,9 @@
 	]
 
 \ExplSyntaxOn
-\int_new:N \l_my_int
-\clist_new:N \l_my_clist
-\clist_set:Nn \l_my_clist {
+\int_new:N \l_my_style_int
+\clist_new:N \l_my_style_clist
+\clist_set:Nn \l_my_style_clist {
 	spaceabove=20pt,
 	spacebelow=20pt,
 	bodyfont=\tiny,
@@ -77,10 +94,10 @@
 	headstyle=swapnumber,
 	headstyle={\NAME\NOTE\ \NUMBER},
 	}
-\clist_map_inline:Nn \l_my_clist {
-	\int_incr:N \l_my_int
-	\exp_args:Ne \newkeytheoremstyle { mysty \int_use:N \l_my_int } { #1 }
-	\exp_args:Ne \newkeytheorem { mythm \int_use:N \l_my_int }[style=mysty \int_use:N \l_my_int]
+\clist_map_inline:Nn \l_my_style_clist {
+	\int_incr:N \l_my_style_int
+	\exp_args:Ne \newkeytheoremstyle { mysty \int_use:N \l_my_style_int } { #1 }
+	\exp_args:Ne \newkeytheorem { mythm \int_use:N \l_my_style_int }[style=mysty \int_use:N \l_my_style_int]
 	}
 
 \int_new:N \l_my_thm_int
@@ -94,6 +111,8 @@
 	postheadhook={\color{green}POSTHEAD},
 	prefoothook={\color{red}PREFOOT},
 	postfoothook={\color{yellow}POSTFOOT},
+    shaded,
+    thmbox,
 	}
 \clist_map_inline:Nn \l_my_thm_clist {
 	\int_incr:N \l_my_thm_int
@@ -101,7 +120,7 @@
 	}
 	
 \NewDocumentCommand{\PrintTheorems}{}{
-	\int_step_inline:nnn { 1 } { \int_use:N \l_my_int }
+	\int_step_inline:nnn { 1 } { \int_use:N \l_my_style_int }
 		{ \begin{mythm##1}[heading] \kant[2][1] \end{mythm##1} }
 	\int_step_inline:nnn { 1 } { \int_use:N \l_my_thm_int }
 			{ \begin{mytestthm##1}[heading] \kant[2][1] \end{mytestthm##1} }
