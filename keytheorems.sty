@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7beta}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7gamma}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -915,7 +915,7 @@
     \DeclareDocumentEnvironment { keythms_grab_#1 } { m O{} +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
         \__keythms_thm_prehead_code:n { #1 }
-        \begin{keythms_orig_#1}[##2]
+        \begin{keythms_orig_#1}[{##2}]
         \clist_map_inline:Nn \g__keythms_restatecounters_clist
           {
             \prop_gput:Nne \g__keythms_thmuse_othercounters_prop { ####1 }
@@ -996,7 +996,7 @@
 \cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
     \__keythms_thm_prehead_code:n { #1 }
-    \begin{keythms_orig_#1}[#3]
+    \begin{keythms_orig_#1}[{#3}]
     \__keythms_thm_posthead_code:n { #1 }
     \__keythms_thm_addcontentsdata:nnnn { #1 } { } { #2 } { }
     \ignorespaces % I hope this is alright
@@ -1014,14 +1014,14 @@
   }
 \cs_new_protected:Npn \__keythms_grab_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
-    \begin{keythms_grab_#1}{#2}[#3]
+    \begin{keythms_grab_#1}{#2}[{#3}]
   }
 \cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
 
 \cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
 \cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
-  { \begin{keythms_orig_#1}[#2] }
+  { \begin{keythms_orig_#1}[{#2}] }
 \cs_generate_variant:Nn \__keythms_orig_begin:nn { nV }
 \cs_new_protected:Npn \__keythms_orig_end:n #1 { \end{keythms_orig_#1} }
 
@@ -1107,7 +1107,6 @@
         { \exp_not:n { #3 } } % with \text_expand:n ?
       }
   }
-\cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Retrieving Theorem Data %%%
@@ -1781,6 +1780,8 @@
     store-all        .usage:n = preamble,
   }
 
+\cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
+
 % \keytheoremset{<options>}
 \NewDocumentCommand \keytheoremset { m }
   {
@@ -2219,5 +2220,6 @@
 % ✓✓ (done) fix acmart defaults
 % ✓✓ (done) use different dummy counters for unnumbered, continues, and restate
 % ✓✓ (done) seq for custom lists of theorems
-% -- make code more modular
+% ✓✓ make code more modular
 % -- option to restate without writing to file
+% ✓✓ code with brackets fail in note key, e.g. \cite[bla]{ref}
