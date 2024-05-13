@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7gamma}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7delta}{l3keys interface to amsthm}
 
 %%% TESTING
 %\debug_on:n { all }
@@ -738,6 +738,8 @@
         % ^ don't like playing with hyperref internals... but don't see around
         %   it because hyperref tries to add to para hook which doesn't work
         %   when title set up the way we do it
+        \cs_set:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
+        % ^ to match tcolorbox defaults; shouldn't interfere with user styles
       }
     \hook_gset_rule:nnnn { keytheorems/#1/posthead }
       { keythms_tcbox } { before } { keythms_hook_keys }
@@ -1043,8 +1045,6 @@
           { \__keythms_thmuse_continues:V \l__keythms_thmuse_contlabel_tl }
         \cs_set:cpn { the #1 }
           {
-            % expansion seems good here, otherwise end up with
-            % \ref*{foo} in .thlist file (which is okay but better to expand it)
             \getrefnumber { \l__keythms_thmuse_contlabel_tl }
           }
         \cs_set_eq:cN { c@ #1 } \c@keythms_continues_dummyctr
@@ -2013,7 +2013,7 @@
                       empty,
                       size=minimal,
                       bottom=0.7ex,
-                      top=0.7ex,
+                      top=0ex,
                       % ditto
                       bottomrule=0.5\l_keythms_tcbthmbox_thickness_dim,
                       },
@@ -2222,4 +2222,6 @@
 % ✓✓ (done) seq for custom lists of theorems
 % ✓✓ make code more modular
 % -- option to restate without writing to file
-% ✓✓ code with brackets fail in note key, e.g. \cite[bla]{ref}
+% ✓✓ (done) code with brackets fail in note key, e.g. \cite[bla]{ref}
+% ✓✓ (done) with tcolorbox theorems, spaceabove and spacebelow should always be set to 0pt
+% -- no-auto-translate or something like that
