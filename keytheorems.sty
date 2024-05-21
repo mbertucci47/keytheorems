@@ -1,7 +1,7 @@
 \ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7delta}{l3keys interface to amsthm}
 
 %%% TESTING
-%\debug_on:n { all }
+% \debug_on:n { all }
 %%% END TESTING
 
 \RequirePackage{aliascnt} % for sibling theorems
@@ -1208,7 +1208,7 @@
     \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
     \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
     \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
-    % QUESTION: also disable \hyper@@anchor ? \MakeLinkTarget?
+    % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }

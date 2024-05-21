@@ -2,6 +2,7 @@
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
+\usepackage[T1]{fontenc}
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{tcolorbox}
@@ -10,10 +11,12 @@
   listing engine=minted,
   minted language=latex,
   }
+\setminted{fontfamily=lmtt}
 \usetikzlibrary{cd}
 \usepackage{booktabs}
 \usepackage{keytheorems}
 \usepackage{cleveref}
+\usepackage{amssymb}
 
 \def\version{0.0.7$\delta$}
 
@@ -62,6 +65,7 @@
 \newkeytheorem{observation}[style=breaksty]
 
 \MakeShortVerb{\|}
+\DeclareUnicodeCharacter{2713}{\checkmark}
 \newcommand{\env}{\texttt}
 \newcommand{\hook}{\texttt}
 \NewCommandCopy{\braces}{\brackets}
@@ -126,6 +130,8 @@
 \begin{abstract}
 An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Very much not a finished product. Don't use it for anything important!
 \end{abstract}
+
+\tableofcontents
 
 \section{Dependencies}
 
@@ -907,6 +913,10 @@ results in |AB| after the theorem. This is the behavior of the \LaTeX{} kernel h
 
 Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. This may change if I think of good reasons to do so\dots
 \end{docCommand}
+
+\section{Implementation}
+
+\inputminted[linenos]{latex}{../keytheorems.sty}
 
 \printindex
 
