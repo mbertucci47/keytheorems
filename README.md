@@ -104,8 +104,7 @@ but a few things are changed:
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
   only use the new interface or load the package with option `overload`.
 - All new keys (see doc for descriptions):
-  - load time: `overload`, `thmtools-compat`, `store-all`
-  - global (in `\keytheoremset`): `restate-counters`, `continues-code`, `qed-symbol`
+  - global (load-time or in `\keytheoremset`): `overload`, `thmtools-compat`, `store-all`, `restate-counters`, `continues-code`, `qed-symbol`, `auto-translate`
   - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`), `seq`
   - declaring theorems (in `\newkeytheorem`): `tcolorbox`, `tcolorbox-no-titlebar`
   - declaring styles (in `\newkeytheoremstyle`): `inherit-style`
@@ -284,7 +283,7 @@ Hello!
 ```
 
 ### [Option clash: numbered=no and thmbox #25](https://github.com/muzimuzhi/thmtools/issues/25)
-Fixed with key-theorem's implementation of the `thmbox` key with `thmtools-compat`.
+Fixed with keytheorem's implementation of the `thmbox` key with `thmtools-compat`.
 ```tex
 \documentclass{article}
 \usepackage[thmtools-compat]{keytheorems}

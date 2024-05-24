@@ -18,7 +18,7 @@
 \usepackage{cleveref}
 \usepackage{amssymb}
 
-\def\version{0.0.7$\delta$}
+\def\version{0.0.8}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -128,7 +128,7 @@
 \maketitle
 
 \begin{abstract}
-An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Very much not a finished product. Don't use it for anything important!
+An experimental \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implementing most of the functionality provided by \pkg{thmtools}. Likely contains many bugs; use at your own risk!
 \end{abstract}
 
 \tableofcontents
@@ -190,13 +190,19 @@ Additional counters whose values are preserved when a theorem is restated. This 
 \begin{docKey}{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
   {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
-The code used to typeset the note produced by the \refKey{continues} key. If English is used or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}. Currently (bad!) translations exist for French, German, and Spanish.
+The code used to typeset the note produced by the \refKey{continues} key. If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}. Currently (likely inaccurate!) translations exist for French, German, and Spanish.
 \end{docKey}
 
 \begin{docKey}{qed-symbol}
   {=\meta{symbol}}
   {initially \cs{openbox}}
 Redefines \cs{qedsymbol} to be \meta{symbol}.
+\end{docKey}
+
+\begin{docKey}{auto-translate}
+  {\colOpt{=true\textbar false}}
+  {default |true|, initially |true|}
+If |false|, \pkg{keytheorems} does not automatically translate the title text for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key. These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
 \section{Defining Theorems}
@@ -315,7 +321,7 @@ Y \ar[r] \& S
 
 \begin{docKey}{listhack}
   {=\docValue*{true}\textbar\docValue*{false}}
-  {initially false}
+  {initially |false|}
 Meant only to be used with the \refKey{break} style key for a theorem starting with a list. Compare:
 
 \begin{tcbwritetemp}
@@ -474,7 +480,7 @@ If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg
 \begin{docKey}{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \meta{display name}}
-Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}.
+Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}. Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
 
 \begin{tcbwritetemp}
 \newkeytheorem{prop}[
@@ -766,7 +772,7 @@ example!
 \begin{docKey}{title}
   {=\meta{text}}
   {initially \cs{GetTranslation}\ttbraces{keythms\string_listof\string_title}}
-Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (probably bad!) translations. A translation can be added with a Github pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
+Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (likely inaccurate!) translations. A translation can be added with a GitHub pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
 \end{docKey}
 
 \begin{docKey}{swapnumber}

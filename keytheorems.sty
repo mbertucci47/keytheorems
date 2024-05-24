@@ -1,4 +1,4 @@
-\ProvidesExplPackage{keytheorems}{2024-02-05}{0.0.7delta}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-05-24}{0.0.8}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
@@ -54,7 +54,7 @@
   }
 
 % Error if thmtools loaded since compilation hangs.
-% If loaded thmtools loaded after, produce warning.
+% If thmtools loaded after, produce warning.
 \IfPackageLoadedTF { thmtools }
   {
     \msg_fatal:nn { keytheorems } { thmtools-before }
@@ -109,7 +109,7 @@
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc }
 
-% for detecting ams classes
+% for detecting AMS classes
 \prg_new_conditional:Npnn \keythms_if_amsclass: { T, TF }
   {
     \IfClassLoadedTF { amsart } { \prg_return_true: }
@@ -1283,7 +1283,7 @@
   {
     \__hook_if_declared:nTF { keytheorems/allthms/#2 }
       {
-        \IfNoValueTF { #1 } % I think this really should use ".", not "keytheorems"
+        \IfNoValueTF { #1 }
           { \hook_gput_code:nnn { keytheorems/allthms/#2 } { . } { #3 } }
           { \hook_gput_code:nnn { keytheorems/#1/#2 } { . } { #3 } }
       }
@@ -1299,12 +1299,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%
 %%% List of Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%
-
-\NewTranslationFallback { keythms_listof_title } { List~of~Theorems }
-\NewTranslation { English } { keythms_listof_title } { List~of~Theorems }
-\NewTranslation { French } { keythms_listof_title } { Liste~des~théorèmes }
-\NewTranslation { German } { keythms_listof_title } { Liste~der~Theoreme }
-\NewTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
 
 \keys_define:nn { keytheorems/listof }
   {
@@ -1487,6 +1481,7 @@
           }
       }
   }
+
 \cs_new_protected:Npn \keythms_listof_showseq:n #1
   {
     \prop_map_inline:Nn \g__keythms_thmnames_prop
@@ -1747,13 +1742,6 @@
 %%% Global Keys %%%
 %%%%%%%%%%%%%%%%%%%
 
-% from DeepL; I don't know these languages!
-\NewTranslationFallback { keythms_continues } { continuing~from~p.\, }
-\NewTranslation { English } { keythms_continues } { continuing~from~p.\, }
-\NewTranslation { French } { keythms_continues } { suite~de~la~p.\, }
-\NewTranslation { German } { keythms_continues } { weiter~von~Seite~ }
-\NewTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
-
 \keys_define:nn { keytheorems }
   {
     restate-counters .code:n =
@@ -1778,6 +1766,8 @@
     store-all        .code:n = \__keythms_storeall_code:,
     store-all        .value_forbidden:n = true,
     store-all        .usage:n = preamble,
+    auto-translate   .bool_gset:N = \g__keythms_autotranslate_bool,
+    auto-translate   .initial:n = true,
   }
 
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
@@ -2140,6 +2130,24 @@
     \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
   }
 
+\hook_gput_code:nnn { begindocument/before } { . }
+  { % use 'provide' in case user defines their own translation in preamble
+    \ProvideTranslationFallback { keythms_listof_title } { List~of~Theorems }
+    \ProvideTranslationFallback { keythms_continues } { continuing~from~p.\, }
+    \bool_if:NT \g__keythms_autotranslate_bool
+      {
+        \ProvideTranslation { English } { keythms_listof_title } { List~of~Theorems }
+        \ProvideTranslation { English } { keythms_continues } { continuing~from~p.\, }
+        % from DeepL; I don't know these languages!
+        \ProvideTranslation { French } { keythms_listof_title } { Liste~des~théorèmes }
+        \ProvideTranslation { French } { keythms_continues } { suite~de~la~p.\, }
+        \ProvideTranslation { German } { keythms_listof_title } { Liste~der~Theoreme }
+        \ProvideTranslation { German } { keythms_continues } { weiter~von~Seite~ }
+        \ProvideTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
+        \ProvideTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
+      }
+  }
+
 \ProcessKeyOptions[keytheorems]
 
 \file_input_stop:
@@ -2224,4 +2232,4 @@
 % -- option to restate without writing to file
 % ✓✓ (done) code with brackets fail in note key, e.g. \cite[bla]{ref}
 % ✓✓ (done) with tcolorbox theorems, spaceabove and spacebelow should always be set to 0pt
-% -- no-auto-translate or something like that
+% ✓✓ no-auto-translate or something like that
