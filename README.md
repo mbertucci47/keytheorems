@@ -484,7 +484,7 @@ text
     - labels pointing to restated theorem, not original
     - [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
-- For a complete list, see the bottom of [`keytheorems.sty`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems.sty)
+- For a complete list, see [`keytheorems-ideas.txt`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems-ideas.txt)
  
 ## Notes/issues on thmtools, not on Github
 
