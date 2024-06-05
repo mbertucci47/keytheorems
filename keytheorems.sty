@@ -1932,6 +1932,11 @@
     \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { 0.2em }
     \dim_new:N \l_keythms_tcbthmbox_vskip_dim
     \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { 0.2em }
+    \msg_new:nnn { keytheorems } { mdframed-undefined }
+      {
+        keytheorems~does~not~define~the~'mdframed'~key.~
+        Consider~using~the~'tcolorbox'~key~instead.
+      }
     \keys_define:nn { keytheorems/thm }
       {
         shaded .code:n =
@@ -2118,6 +2123,7 @@
               }
           },
         thmbox .default:n = M,
+        mdframed .code:n = \msg_error:nn { keytheorems } { mdframed-undefined },
       }
   }
 

@@ -78,4 +78,4 @@
  -- option to restate without writing to file
  ✓✓ (done) code with brackets fail in note key, e.g. \cite[bla]{ref}
  ✓✓ (done) with tcolorbox theorems, spaceabove and spacebelow should always be set to 0pt
- ✓✓ no-auto-translate or something like that
+ ✓✓ (done) no-auto-translate or something like that
