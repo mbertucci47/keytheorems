@@ -1,4 +1,5 @@
-\ProvidesExplPackage{keytheorems}{2024-05-24}{0.0.8beta}{l3keys interface to amsthm}
+\NeedsTeXFormat{LaTeX2e}[2024/06/01]
+\ProvidesExplPackage{keytheorems}{2024-05-24}{0.0.8gamma}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
@@ -430,13 +431,12 @@
 \cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
   {
     \cs_set:cpn { #1 autorefname } { #2 }
-    \IfPackageLoadedTF { cleveref }
+    \IfPackageLoadedT { cleveref }
       { 
         \tl_if_novalue:nTF { #3 }
           { \crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \crefname{#1}{#2}{#3} }
       }
-      { }
   }
 \cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
 
@@ -447,13 +447,12 @@
 \cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
-    \IfPackageLoadedTF { cleveref }
+    \IfPackageLoadedT { cleveref }
       { 
         \tl_if_novalue:nTF { #3 }
           { \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \Crefname{#1}{#2}{#3} }
       }
-      { }
   }
 \cs_generate_variant:Nn \keythms_thm_setRefnames:nn { nV }
 
