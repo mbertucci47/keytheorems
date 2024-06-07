@@ -79,3 +79,6 @@
  ✓✓ (done) code with brackets fail in note key, e.g. \cite[bla]{ref}
  ✓✓ (done) with tcolorbox theorems, spaceabove and spacebelow should always be set to 0pt
  ✓✓ (done) no-auto-translate or something like that
+ ✓✓ tcolorbox theorem spacing after sections is not good when titlesec loaded
+ ✓✓ also differenting behavior for tcb theorems and not, namely spaceabove adds space
+    after section for former but not latter

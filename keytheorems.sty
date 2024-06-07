@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}[2024/06/01]
-\ProvidesExplPackage{keytheorems}{2024-05-24}{0.0.8gamma}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-06-07}{0.0.8delta}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
@@ -506,20 +506,19 @@
     tcolorbox-no-titlebar .default:n = {},
   }
 
-% what below is unnecessary? Commenting everything but \def causes spaceabove,
-% etc. to not work
+% what below is unnecessary? I really don't understand this code.
 \cs_new:Npn \__keythms_thm_storedeferredthmhead:n #1
   {
-    % \if@inlabel \indent \par \fi % eject a section head if one is pending
-    % \if@nobreak
-      % \adjust@parskip@nobreak
-    % \else
-    % \addpenalty\@beginparpenalty
+    \if@inlabel \indent \par \fi % eject a section head if one is pending
+    \if@nobreak
+      \adjust@parskip@nobreak
+    \else
+    \addpenalty\@beginparpenalty
     \addvspace\@topsep
     \addvspace{-\parskip}
-    % \fi
-    % \global\@inlabeltrue
-    % \everypar\dth@everypar
+    \fi
+    % \global\@inlabeltrue % MY COMMENT: if this is uncommented then spacing after sections is wrong
+    \everypar\dth@everypar
     \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
     \ignorespaces
   }
