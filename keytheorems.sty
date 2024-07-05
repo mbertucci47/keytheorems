@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}[2024/06/01]
-\ProvidesExplPackage{keytheorems}{2024-06-07}{0.0.8delta}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-07-03}{0.0.9}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
@@ -642,7 +642,7 @@
               {
                 \tl_if_empty:NTF \l__keythms_thm_sibling_tl
                   {
-                    \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl
+                    \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
                     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
@@ -652,7 +652,7 @@
                   }
               }
               {
-                \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
+                \__keythms_thm_new_unnumbered:nV { #1 } \l__keythms_thm_name_tl
                 \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
                   {
                     \keythms_if_restating:F
@@ -672,7 +672,7 @@
               {
                 \tl_if_empty:NTF \l__keythms_thm_sibling_tl
                   {
-                    \__keythms_thm_new:nV { #1 } \l__keythms_thm_name_tl
+                    \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
                     \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
@@ -687,7 +687,7 @@
               }
           }
           {
-            \__keythms_thm_new_nonumber:nV { #1 } \l__keythms_thm_name_tl
+            \__keythms_thm_new_unnumbered:nV { #1 } \l__keythms_thm_name_tl
             \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
               {
                 \keythms_if_restating:F
@@ -806,25 +806,28 @@
 \cs_generate_variant:Nn \__keythms_theoremstyle:n { V }
 
 % \newtheorem variants
-\cs_new_eq:NN \__keythms_thm_new:nn \newtheorem
-\cs_generate_variant:Nn \__keythms_thm_new:nn { nV }
+\cs_new_eq:NN \__keythms_thm_new:w \newtheorem
 
-\cs_new_protected:Npn \__keythms_thm_new_nonumber:nn #1#2
-  { \__keythms_thm_new:nn*{#1}{#2} }
-\cs_generate_variant:Nn \__keythms_thm_new_nonumber:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_new_numbered:nn #1#2
+  { \__keythms_thm_new:w { #1 } { #2 } }
+\cs_generate_variant:Nn \__keythms_thm_new_numbered:nn { nV }
+
+\cs_new_protected:Npn \__keythms_thm_new_unnumbered:nn #1#2
+  { \__keythms_thm_new:w* { #1 } { #2 } }
+\cs_generate_variant:Nn \__keythms_thm_new_unnumbered:nn { nV }
 
 \cs_new_protected:Npn \__keythms_thm_new_parent:nnn #1#2#3
-  { \__keythms_thm_new:nn{#1}{#2}[#3] }
+  { \__keythms_thm_new:w { #1 } { #2 } [ #3 ] }
 \cs_generate_variant:Nn \__keythms_thm_new_parent:nnn { nVV }
 
 \cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
-  { \__keythms_thm_new:nn{#1}[#3]{#2} }
+  { \__keythms_thm_new:w { #1 } [ #3 ] { #2 } }
 \cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV }
 
 \cs_new_protected:Npn \__keythms_thm_new_uuwithparent:nnn #1#2#3
   {
     \cs_undefine:c { keythms_orig_nonumber_#1 } % for renew, declare
-    \__keythms_thm_new_nonumber:nn { keythms_orig_nonumber_#1 } { #2 }
+    \__keythms_thm_new_unnumbered:nn { keythms_orig_nonumber_#1 } { #2 }
     \__keythms_thm_new_parent:nnn { #1 } { #2 } { #3 }
     \DeclareEnvironmentCopy { keythms_orig_withparent_#1 } { #1 }
     \renewenvironment { #1 } % opt arg is implicit
