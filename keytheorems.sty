@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}[2024/06/01]
-\ProvidesExplPackage{keytheorems}{2024-07-03}{0.0.9}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-07-17}{0.0.9beta}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
@@ -1808,8 +1808,9 @@
         \newkeytheorem { ##2 } [ ##1 ]
       }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
-      {
-        \begin{##2}[##1,store=##3]
+      { % set store outside [] so keyless note is recognized
+        \keys_set:nn { keytheorems/thmuse } { store=##3 }
+        \begin{##2}[##1]
       }
       {
         \end{##2}
