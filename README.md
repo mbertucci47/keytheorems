@@ -63,9 +63,9 @@ There is a list of commands and keys offered by the package
 [here](https://github.com/mbertucci47/keytheorems/blob/main/doc/keytheorems-doc.pdf).
 More of a reference document than documentation.
 
-## Differences with `thmtools`
+## Differences with thmtools
 
-Most of the code is a direct translation from `thmtools`
+Most of the code is a direct translation from thmtools
 but a few things are changed:
 - The only backend supported is amsthm, and it is loaded by the package. As I understand it,
   [`ntheorem`](https://www.ctan.org/pkg/ntheorem) has quite a few bugs and no active development, and
