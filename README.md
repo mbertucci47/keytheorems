@@ -67,14 +67,14 @@ More of a reference document than documentation.
 
 Most of the code is a direct translation from `thmtools`
 but a few things are changed:
-- The only backend supported is `amsthm`, and it is loaded by the package. As I understand it,
+- The only backend supported is amsthm, and it is loaded by the package. As I understand it,
   [`ntheorem`](https://www.ctan.org/pkg/ntheorem) has quite a few bugs and no active development, and
   if you're just using the kernel `\newtheorem` then you don't need a package like this.
 - Theorem hooks use the kernel hooks. Thus unlike the `prefoot` and `postfoot` hooks of
-  `thmtools`, all code chunks are added to hooks in the order declared (unless given a
+  thmtools, all code chunks are added to hooks in the order declared (unless given a
   distinct label; then the chunks are reversed). The order of generic/specific hooks
   remains the same. Furthermore, the command for adding to theorem hooks is `\addtotheoremhook{<hook name>}{<theorem name>}`.
-- `thmtools` changes some style settings to be default that are different from
+- thmtools changes some style settings to be default that are different from
   amsthm defaults, but only if a custom style is called. Example:
   ```tex
   \declaretheoremstyle[spaceabove=20pt]{mythmsty}
@@ -89,18 +89,18 @@ but a few things are changed:
   
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
-- There is no `restatable` environment except with `thmtools-compat`. Use the
+- There is no `restatable` environment except with package option `thmtools-compat`. Use the
   `store` (alias `restate`) key.
 - Rather than `restate=foo` defining a command `\foo*`, theorems are retrieved with `\getkeytheorem{foo}`.
   For just the theorem body, use `\getkeytheorem[body]{foo}`. Also, this retrieval
-  can happen even before the theorem is stated since `keytheorems` writes the contents
+  can happen even before the theorem is stated since keytheorems writes the contents
   to a file.
 - The `shaded` and `thmbox` keys are only available with the package option `thmtools-compat`,
   and they are emulated with [`tcolorbox`](https://www.ctan.org/pkg/tcolorbox). Instead there's
-  an interface to `tcolorbox` with the `tcolorbox={<options>}` and `tcolorbox-no-titlebar={<options>}` key.
+  an interface to tcolorbox with the `tcolorbox={<options>}` and `tcolorbox-no-titlebar={<options>}` key.
   The `mdframed` key is not implemented.
 - You can reuse styles with the `inherit-style` key.
-- With `thmtools`, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
+- With thmtools, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
   only use the new interface or load the package with option `overload`.
 - All new keys (see doc for descriptions):
@@ -236,27 +236,6 @@ some theorem
 \begin{corollary}[my heading]
 some corollary
 \end{corollary}
-
-\end{document}
-```
-
-### [If wrapped in tcolorbox, beginning \parskip is always inserted #16](https://github.com/muzimuzhi/thmtools/issues/16)
-This is a tcolorbox issue with lists (amsthm theorems are internally lists).
-Avoided with the `tcolorbox` and `tcolorbox-no-titlebar` keys.
-```tex
-\documentclass{article}
-\usepackage{keytheorems}
-
-\newkeytheorem{theorem}[tcolorbox-no-titlebar]
-
-\parskip=10pt
-
-\begin{document}
-\tcbset{parbox=false}
-
-\begin{theorem}
-some theorem
-\end{theorem}
 
 \end{document}
 ```
@@ -480,15 +459,15 @@ text
 
 - Clean up the code. Things are out of order, poorly named, etc.
 - Add more error messages.
-- `thmtools` features not yet implemented
+- thmtools features not yet implemented
     - labels pointing to restated theorem, not original
-    - [`beamer`](https://ctan.org/pkg/beamer) support
+    - real [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
 - For a complete list, see [`keytheorems-ideas.txt`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems-ideas.txt)
  
 ## Notes/issues on thmtools, not on Github
 
-#### continues with unless unique and restate
+### continues with unless unique and restate
 Should this be numbered or not?
 ```tex
 \documentclass{article}
@@ -547,7 +526,7 @@ bla
 \end{document}
 ```
 
-#### qed in both `\declaretheoremstyle` and `\declaretheorem`
+### qed in both `\declaretheoremstyle` and `\declaretheorem`
 One would expect the one in `\declaretheorem` to overwrite, but because the code just adds to the hooks without checking,
 it's additive.
 ```tex
@@ -566,7 +545,7 @@ bla
 \end{document}
 ```
 
-#### restate incompatible with thmbox
+### restate incompatible with thmbox
 ```tex
 \documentclass{article}
 \usepackage{amsthm,thmtools}
@@ -584,7 +563,7 @@ bla
 \end{document}
 ```
 
-#### adding to listoftheorems doesn't work as expected
+### adding to listoftheorems doesn't work as expected
 ```tex
 \documentclass{article}
 \usepackage{amsthm,thmtools}
@@ -608,7 +587,7 @@ bla
 \end{document}
 ```
 
-#### new theorem styles do not preserve "plain" keys
+### new theorem styles do not preserve "plain" keys
 With keytheorems, this is handled only for the AMS classes and acmart.
 ```tex
 \documentclass{amsbook}
