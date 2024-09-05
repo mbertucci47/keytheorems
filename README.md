@@ -1,6 +1,6 @@
 # keytheorems
 
-An experimental LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
+A LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
 but written in expl3. The goal was just an exercise in using expl3, but if you find a bug
 feel free to open an issue or PR.
@@ -65,8 +65,7 @@ More of a reference document than documentation.
 
 ## Differences with thmtools
 
-Most of the code is a direct translation from thmtools
-but a few things are changed:
+Some of the code is a direct translation from thmtools but a few things are changed:
 - The only backend supported is amsthm, and it is loaded by the package. As I understand it,
   [`ntheorem`](https://www.ctan.org/pkg/ntheorem) has quite a few bugs and no active development, and
   if you're just using the kernel `\newtheorem` then you don't need a package like this.
