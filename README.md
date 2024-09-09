@@ -1,9 +1,9 @@
 # keytheorems
 
 A LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
-with a key-value interface. Meant to emulate most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools)
-but written in expl3. The goal was just an exercise in using expl3, but if you find a bug
-feel free to open an issue or PR.
+with a key-value interface. Meant to emulate most of the functionality of
+[`thmtools`](https://www.ctan.org/pkg/thmtools) but written in expl3. If you
+find a bug please open an issue or pull request.
 
 ## Sample document
 ```tex
@@ -32,19 +32,22 @@ feel free to open an issue or PR.
     note=Strong Bertini over $\mathbb{C}$,
     label=strongbertini
     ]
-Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive dimensional linear system on $X$.
-Then the general element of $\mathfrak{D}$ is smooth away from the base locus $B_{\mathfrak{D}}$. That is, the set
+Let $X$ be a smooth complex variety and let $\mathfrak{D}$ be a positive
+dimensional linear system on $X$. Then the general element of $\mathfrak{D}$ is
+smooth away from the base locus $B_{\mathfrak{D}}$. That is, the set
     \[\{H\in\mathfrak{D}\mid D_H \text{ is smooth away from } B_{\mathfrak{D}}\}\]
 is a Zariski dense open subset of $\mathfrak{D}$.
 \end{theorem}
 
 \begin{remark}
-In fact, \autoref{strongbertini} holds over any algebraically closed field of characteristic zero.
+In fact, \autoref{strongbertini} holds over any algebraically closed field of
+characteristic zero.
 \end{remark}
 
 \begin{theorem}[Bertini over any field]
-Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$. Then the set of hyperplanes
-$H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
+Let $X\subset\mathbb{P}_k^n$ be a smooth projective variety over a field $k$.
+Then the set of hyperplanes $H\subseteq\mathbb{P}_k^n$ such that $X\cap H$ is
+smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
 \end{theorem}
 
 \listofkeytheorems
