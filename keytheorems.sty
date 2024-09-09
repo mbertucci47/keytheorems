@@ -879,7 +879,7 @@
             \getrefbykeydefault{ #1 }{ name }{ }
           }
       }
-      { % needs https://github.com/latex3/latex2e/issues/1200 fixed
+      {
         \property_new:nnnn { keytheorems/recordednote } { now } { }
           { \l__keythms_thmuse_note_tl }
         \cs_new:Npn \__keythms_getrecordednote:n #1
@@ -1217,7 +1217,7 @@
         \cs_set:cpn { the #1 } { #2 }
         \cs_set_eq:cN { c@ #1 } \c@keythms_restate_dummyctr
         \cs_set_eq:cN { theH #1 } \theHkeythms_restate_dummyctr
-        % ^ why are the last two line here? We shouldn't be referencing
+        % ^ why are the last two lines here? We shouldn't be referencing
         %   restated theorems. Think it's a remnant of thmtools
         % WRONG: needed to make numbering correct after restated theorem.
         % not sure about theH. <- this is needed to prevent duplicate anchors
@@ -2035,7 +2035,7 @@
                     boxed~title~style={
                       empty,
                       size=minimal,
-                      bottom=0.7ex,
+                      bottom=0.3ex,
                       top=0ex,
                       % ditto
                       bottomrule=0.5\l_keythms_tcbthmbox_thickness_dim,

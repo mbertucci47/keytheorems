@@ -111,7 +111,7 @@
     listing side text,
   }
 \newtcolorbox{notebox}[1][]{enhanced,
-  before skip balanced=2mm,after skip balanced=3mm,
+  before skip balanced=2mm,after skip balanced=4mm,
   boxrule=0.4pt,left=5mm,right=2mm,top=1mm,bottom=1mm,
   colback=red!20,
   colframe=red!40!black,
@@ -159,19 +159,19 @@ For compatibility with \pkg{thmtools} syntax. Currently defines the commands in 
 \begin{tabular}{cc}
 \pkg{thmtools} command & \pkg{keytheorems} replacement \\
 \toprule
-\docAuxCommand{declaretheorem} & \refCom{newkeytheorem} \\
-\docAuxCommand{declaretheoremstyle} & \refCom{newkeytheoremstyle} \\
-\docAuxCommand{listoftheorems} & \refCom{listofkeytheorems} \\
+\docAuxCommand*{declaretheorem} & \refCom{newkeytheorem} \\
+\docAuxCommand*{declaretheoremstyle} & \refCom{newkeytheoremstyle} \\
+\docAuxCommand*{listoftheorems} & \refCom{listofkeytheorems} \\
 \begin{tabular}{c}
-\docAuxCommand{addtotheorempreheadhook}\\
-\docAuxCommand{addtotheorempostheadhook}\\
-\docAuxCommand{addtotheoremprefoothook}\\
-\docAuxCommand{addtotheorempostfoothook}\\
+\docAuxCommand*{addtotheorempreheadhook}\\
+\docAuxCommand*{addtotheorempostheadhook}\\
+\docAuxCommand*{addtotheoremprefoothook}\\
+\docAuxCommand*{addtotheorempostfoothook}\\
 \end{tabular} & \refCom{addtotheoremhook} \\
-\docAuxEnvironment{restatable} environment & \refKey{store} key
+\docAuxEnvironment*{restatable} environment & \refKey{store} key
 \end{tabular}
 \end{center}
-Also defined are the \docAuxKey{shaded} and \docAuxKey{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
+Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
 \end{docKey}
 
 \begin{docKey}{store-all}
@@ -793,7 +793,7 @@ Similar to \refKey{onlynamed}, but lists only those theorems which are numbered.
 \begin{docKey}[][doc label=listof/seq]{seq}
   {=\meta{name}}
   {initially unset}
-Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key. This is the only way to fully customize which theorems appear in the list of theorems.
+Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key. This is the only way to fully customize which theorems appear in the list of theorems. Unlike with \refKey{show}, you do not need to use \refKey{ignoreall} to prevent theorems not in \meta{name} from being printed.
 \end{docKey}
 
 \begin{docKey}{title-code}
@@ -921,9 +921,8 @@ results in |AB| after the theorem. This is the behavior of the \LaTeX{} kernel h
 Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. This may change if I think of good reasons to do so\dots
 \end{docCommand}
 
-\section{Implementation}
-
-\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}
+%\section{Implementation}
+%\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}
 
 \printindex
 
