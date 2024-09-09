@@ -2,7 +2,6 @@
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
-\usepackage[T1]{fontenc}
 \usepackage{geometry}
 \geometry{margin=1in}
 \usepackage{tcolorbox}
@@ -11,7 +10,10 @@
   listing engine=minted,
   minted language=latex,
   }
-\setminted{fontfamily=lmtt}
+\ifTUTeX\else
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\fi
 \usetikzlibrary{cd}
 \usepackage{booktabs}
 \usepackage{keytheorems}
@@ -65,7 +67,6 @@
 \newkeytheorem{observation}[style=breaksty]
 
 \MakeShortVerb{\|}
-\DeclareUnicodeCharacter{2713}{\checkmark}
 \newcommand{\env}{\texttt}
 \newcommand{\hook}{\texttt}
 \NewCommandCopy{\braces}{\brackets}
@@ -147,13 +148,13 @@ Every key in this section can be given as a package option with \cs{usepackage}\
 \begin{docKey}{overload}
   {}
   {initially unset}
-Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery. The syntax remains the same.
+Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery. The syntax remains the same. This is automatically set by \refKey{thmtools-compat}.
 \end{docKey}
 
 \begin{docKey}{thmtools-compat}
   {}
   {initially unset}
-For compatibility with \pkg{thmtools} syntax. Currently defines the following commands:
+For compatibility with \pkg{thmtools} syntax. Currently defines the commands in the left column below. The right column lists the corresponding \pkg{keytheorems} replacement.
 \begin{center}
 \begin{tabular}{cc}
 \pkg{thmtools} command & \pkg{keytheorems} replacement \\
@@ -922,7 +923,7 @@ Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermos
 
 \section{Implementation}
 
-\inputminted[linenos]{latex}{../keytheorems.sty}
+\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}
 
 \printindex
 

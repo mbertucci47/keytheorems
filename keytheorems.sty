@@ -1,10 +1,19 @@
-\NeedsTeXFormat{LaTeX2e}[2024/06/01]
-\ProvidesExplPackage{keytheorems}{2024-09-04}{0.1.0}{l3keys interface to amsthm}
+\NeedsTeXFormat{LaTeX2e}[2023/06/01]
+\ProvidesExplPackage{keytheorems}{2024-09-09}{0.1.0}{l3keys interface to amsthm}
 
 %%% TESTING
 % \debug_on:n { all }
 %%% END TESTING
 
+\IfFormatAtLeastTF { 2024-06-01 } { }
+  {
+    \RequirePackage{nameref} % to avoid ltproperties in code below
+    \cs_generate_variant:Nn \iow_shipout:Nn { Ne }
+    \cs_generate_variant:Nn \cs_set:Npn { Npe }
+    \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
+    \ProvideDocumentCommand \IfPackageLoadedT { m m }
+      { \IfPackageLoadedTF{#1}{#2}{ } }
+  }
 \RequirePackage{aliascnt} % for sibling theorems
 \RequirePackage{amsthm}
 % ^ ams classes have way of ignoring this so don't need to check if they're loaded
@@ -39,9 +48,15 @@
     No~theorem~hook~'#1'.~Check~the~spelling.~
     Should~be~one~of~'prehead',~'posthead',~'prefoot',~'postfoot',~or'restated'.
   }
+\msg_new:nnn { keytheorems } { hyperref-Autoref }
+  {
+    You~have~not~loaded~hyperref.~The~\protect\Autoref\space command~needs~
+    hyperref~to~work.
+  }
 \msg_new:nnn { keytheorems } { no-Autorefname }
   {
-    No~Autoref~name~for~'#1'.
+    No~Autoref~name~for~'#1'.~
+    Please~define~\c_backslash_str #1Autorefname.
   }
 \msg_new:nnn { keytheorems } { thmstyle-undefined }
   {
@@ -75,6 +90,8 @@
 
 \bool_new:N \g__keythms_listof_writefile_bool
 \bool_gset_false:N \g__keythms_listof_writefile_bool
+\bool_new:N \g__keythms_thmtoolscompat_bool
+\bool_gset_false:N \g__keythms_thmtoolscompat_bool
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
 \bool_new:N \l__keythms_thmuse_listhack_bool
@@ -1720,10 +1737,14 @@
 
 \ProvideDocumentCommand { \Autoref } { s m }
   {
-    \group_begin:
-    \cs_set_eq:NN \HyRef@testreftype \__keythms_Autoref_testreftype:w
-    \IfBooleanTF { #1 } { \autoref*{#2} } { \autoref{#2} }
-    \group_end:
+    \IfPackageLoadedTF { hyperref }
+      {
+        \group_begin:
+        \cs_set_eq:NN \HyRef@testreftype \__keythms_Autoref_testreftype:w
+        \IfBooleanTF { #1 } { \autoref*{#2} } { \autoref{#2} }
+        \group_end:
+      }
+      { \msg_error:nn { keytheorems } { hyperref-Autoref } }
   }
 
 \cs_new_protected:Npn \__keythms_Autoref_testreftype:w #1.#2\\
@@ -1761,7 +1782,11 @@
     overload         .code:n = \__keythms_overload_code:,
     overload         .value_forbidden:n = true,
     overload         .usage:n = preamble,
-    thmtools-compat  .code:n = \__keythms_thmtoolscompat_code:,
+    thmtools-compat  .code:n =
+      { % prevent loading the code again if key called twice
+        \bool_if:NF \g__keythms_thmtoolscompat_bool
+          { \__keythms_thmtoolscompat_code: }
+      },
     thmtools-compat  .value_forbidden:n = true,
     thmtools-compat  .usage:n = preamble,
     store-all        .code:n = \__keythms_storeall_code:,
@@ -1799,6 +1824,8 @@
 
 \cs_new_protected:Npn \__keythms_thmtoolscompat_code:
   {
+    \bool_gset_true:N \g__keythms_thmtoolscompat_bool
+    \__keythms_overload_code: % since thmtools overwrites \newtheorem
     \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
       {
         \declarekeytheoremstyle { ##2 } { ##1 }
