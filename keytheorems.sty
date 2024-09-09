@@ -1,15 +1,12 @@
-\NeedsTeXFormat{LaTeX2e}[2023/06/01]
+\NeedsTeXFormat{LaTeX2e}[2023-06-01]
 \ProvidesExplPackage{keytheorems}{2024-09-09}{0.1.0}{l3keys interface to amsthm}
-
-%%% TESTING
-% \debug_on:n { all }
-%%% END TESTING
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
     \RequirePackage{nameref} % to avoid ltproperties in code below
-    \cs_generate_variant:Nn \iow_shipout:Nn { Ne }
     \cs_generate_variant:Nn \cs_set:Npn { Npe }
+    \cs_generate_variant:Nn \iow_shipout:Nn { Ne }
+    \cs_generate_variant:Nn \keys_set:nn { ne }
     \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
     \ProvideDocumentCommand \IfPackageLoadedT { m m }
       { \IfPackageLoadedTF{#1}{#2}{ } }
