@@ -1,4 +1,4 @@
-% !TeX program = pdflatex --synctex=1 --interaction=nonstopmode --shell-escape %.tex | makeindex %.idx | pdflatex --synctex=1 --interaction=nonstopmode --shell-escape %.tex | txs:///view-pdf
+% !TeX program = txs:///pdflatex/[--shell-escape] | txs:///makeindex | txs:///pdflatex/[--shell-escape] | txs:///view-pdf
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
@@ -20,7 +20,7 @@
 \usepackage{cleveref}
 \usepackage{amssymb}
 
-\def\version{0.1.0}
+\def\version{0.1.1}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
