@@ -20,7 +20,7 @@
 \usepackage{cleveref}
 \usepackage{amssymb}
 
-\def\version{0.1.1}
+\def\version{0.1.2-dev}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -920,6 +920,10 @@ results in |AB| after the theorem. This is the behavior of the \LaTeX{} kernel h
 
 Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. This may change if I think of good reasons to do so\dots
 \end{docCommand}
+
+\section{Further examples}
+
+More examples will be added soon -- rather, eventually\dots{} For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic file \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in our Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/main/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}.
 
 %\section{Implementation}
 %\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}

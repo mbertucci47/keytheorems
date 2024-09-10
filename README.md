@@ -5,6 +5,8 @@ with a key-value interface. Meant to emulate most of the functionality of
 [`thmtools`](https://www.ctan.org/pkg/thmtools) but written in expl3. If you
 find a bug please open an issue or pull request.
 
+The package is maintained by Matthew Bertucci.
+
 ## Sample document
 ```tex
 \documentclass{article}
