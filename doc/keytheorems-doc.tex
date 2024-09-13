@@ -191,7 +191,7 @@ Additional counters whose values are preserved when a theorem is restated. This 
 \begin{docKey}{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
   {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
-The code used to typeset the note produced by the \refKey{continues} key. If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}. Currently (likely inaccurate!) translations exist for French, German, and Spanish.
+The code used to typeset the note produced by the \refKey{continues} key. If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}. Currently (likely inaccurate!) translations exist for French, German, Italian, and Spanish.
 \end{docKey}
 
 \begin{docKey}{qed-symbol}
@@ -481,7 +481,7 @@ If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg
 \begin{docKey}{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \meta{display name}}
-Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}. Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
+Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}. Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work. As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} that suppresses the hyperlink.
 
 \begin{tcbwritetemp}
 \newkeytheorem{prop}[
@@ -773,7 +773,7 @@ example!
 \begin{docKey}{title}
   {=\meta{text}}
   {initially \cs{GetTranslation}\ttbraces{keythms\string_listof\string_title}}
-Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, and Spanish have (likely inaccurate!) translations. A translation can be added with a GitHub pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
+Defaults to ``List of Theorems'' if English or an unknown language is used. Currently French, German, Italian, and Spanish have (likely inaccurate!) translations. A translation can be added with a GitHub pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
 \end{docKey}
 
 \begin{docKey}{swapnumber}
