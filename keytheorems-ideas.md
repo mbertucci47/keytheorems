@@ -85,3 +85,10 @@
 - [ ] option to add list of theorems to TOC
 - [ ] vertical spacing not right with no-title in ams classes
 - [ ] list appearance does not match list of figures in memoir
+- [ ] make indent configurable in general
+- [ ] With amsart etc. no-title vert spacing is bad; currently uses empty title
+- [ ] chaptervspacehack adds extra vert space above no-title (maybe this is okay)
+- [ ] With memoir, list of theorems always on new page (list of figures is not)
+      Should I just use memoir's list commands when it's loaded?
+- [ ] Idea: just define everything for the default classes, then have support files
+            for the other classes that redefine things
