@@ -70,6 +70,10 @@
     Theorem~style~'#1'~already~defined.~
     Use~\protect\renewkeytheoremstyle\space instead.
   }
+\msg_new:nnn { keytheorems } { title-code-with-AMS }
+  {
+    The~'title-code'~key~has~no~effect~with~an~AMS~class.
+  }
 
 % Error if thmtools loaded since compilation hangs.
 % If thmtools loaded after, produce warning.
@@ -1642,8 +1646,13 @@
   {
     \keys_define:nn { keytheorems/listof } % adjust to AMS classes
       {
-        numwidth .initial:n = 1.5pc,
-        indent   .initial:n = 0pt,
+        numwidth   .initial:n = 1.5pc,
+        indent     .initial:n = 0pt,
+        title-code .code:n    =
+          { % warn but set titlecmd just in case
+            \msg_warning:nn { keytheorems } { title-code-with-AMS }
+            \cs_set_protected:Npn \__keythms_listof_titlecmd:n ##1 { #1 }
+          },
       }
     \NewDocumentCommand \listofkeytheorems { O{} }
       { % title command not customizable here
@@ -1667,8 +1676,26 @@
       }
   }
   {
-    \IfClassLoadedT { memoir } % adjust indent for memoir class
-      { \keys_define:nn { keytheorems/listof } { indent .initial:n = 0pt} }
+    \IfClassLoadedT { memoir } % adjust for memoir class
+      {
+        \keys_define:nn { keytheorems/listof }
+          {
+            indent .initial:n = 0pt,
+            title-code .initial:n = % should really use memoir's list mechanism
+              { % copied from memoir.cls
+                 \chapterheadstart
+                {\parindent\z@
+                 \parskip\z@
+                 \interlinepenalty\@M
+                 \printchapternonum
+                 \printchaptertitle{#1}
+                 \thispagestyle{chapter}
+                 \afterchaptertitle
+                }
+                 \@afterheading
+              },
+          }
+      }
     \NewDocumentCommand \listofkeytheorems { O{} }
       {
         \bool_gset_true:N \g__keythms_listof_writefile_bool
