@@ -13,6 +13,8 @@
     \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
     \ProvideDocumentCommand \IfPackageLoadedT { m m }
       { \IfPackageLoadedTF{#1}{#2}{ } }
+    \ProvideDocumentCommand \IfClassLoadedT { m m }
+      { \IfClassLoadedTF{#1}{#2}{ } }
   }
 \RequirePackage{aliascnt} % for sibling theorems
 \RequirePackage{amsthm}
@@ -1322,6 +1324,8 @@
   {
     numwidth   .dim_set:N = \l__keythms_listof_numwidth_dim,
     numwidth   .initial:n = 2.3em,
+    indent     .dim_set:N = \l__keythms_listof_indent_dim,
+    indent     .initial:n = 1.5em,
     ignore     .code:n    =
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1609,14 +1613,15 @@
   { \cs_set_protected:Npn \__keythms_listof_titlecmd:n #1 { \section*{#1} } }
 
 \hook_gput_code:nnn { begindocument } { . }
-  { % try to detect ams classes
+  {
+    % try to detect ams classes
     \keythms_if_amsclass:TF
       {
         \prop_map_inline:Nn \g__keythms_thmnames_prop
           {
             \cs_set:cpn { l@ #1 }
               {
-                \@tocline{ 0 }{ 3pt plus 2pt }{ 0pt }
+                \@tocline{ 0 }{ 3pt plus 2pt }{ \l__keythms_listof_indent_dim }
                   { \l__keythms_listof_numwidth_dim }{ }
               }
           }
@@ -1626,7 +1631,7 @@
           {
             \cs_set:cpn { l@ #1 }
               {
-                \@dottedtocline{ 1 }{ 1.5em }
+                \@dottedtocline{ 1 }{ \l__keythms_listof_indent_dim }
                   { \l__keythms_listof_numwidth_dim }
               }
           }
@@ -1635,9 +1640,10 @@
 
 \keythms_if_amsclass:TF
   {
-    \keys_define:nn { keytheorems/listof } % adjust to class
+    \keys_define:nn { keytheorems/listof } % adjust to AMS classes
       {
         numwidth .initial:n = 1.5pc,
+        indent   .initial:n = 0pt,
       }
     \NewDocumentCommand \listofkeytheorems { O{} }
       { % title command not customizable here
@@ -1661,6 +1667,8 @@
       }
   }
   {
+    \IfClassLoadedT { memoir } % adjust indent for memoir class
+      { \keys_define:nn { keytheorems/listof } { indent .initial:n = 0pt} }
     \NewDocumentCommand \listofkeytheorems { O{} }
       {
         \bool_gset_true:N \g__keythms_listof_writefile_bool
