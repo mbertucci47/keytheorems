@@ -749,7 +749,7 @@ example!
 \begin{docCommand}{listofkeytheorems}
   {\oarg{options}}
 Similar to \cs{listoffigures} or \cs{listoftables} but for theorems.
-For \pkg{memoir} and the AMS classes, \pkg{keytheorems} tries to copy the formatting of these commands as defined by the class.
+For \cls{memoir} and the AMS classes, \pkg{keytheorems} tries to copy the formatting of these commands as defined by the class.
 For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} may be necessary.
 \end{docCommand}
 
@@ -828,7 +828,7 @@ A translation can be added with a GitHub pull request or manually with \cs{Decla
   {=\meta{length}}
   {initially |1.5em|}
 Sets the left indent of items in the list of theorems.
-For \pkg{memoir} and the AMS classes, the indent is initially |0pt|.
+For \cls{memoir} and the AMS classes, the indent is initially |0pt|.
 It is not recommended to change this unless your class has different defaults not already covered.
 \end{docKey}
 
@@ -897,6 +897,12 @@ Setting this key to |true| removes this space.
   {=\meta{dimension}}
   {initially |10pt|}
 Controls the amount of space inserted between chunks.
+\end{docKey}
+
+\begin{docKey}{no-toc}
+  {\colOpt{=true\textbar false}}
+  {initially false}
+With the standard classes, lists of figures/tables are not added to the table of contents by default. The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing. However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents. With these classes, this key suppresses the addition of the list of theorems to the table of contents.
 \end{docKey}
 
 \subsection{Adding code to list of theorems}

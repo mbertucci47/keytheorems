@@ -4,20 +4,45 @@
 \ProvidesExplFile{keythms-memoir-support.tex}{2024-09-10}{0.1.2-dev}
   {keytheorems~support~for~the~memoir~class}
 
+\bool_new:N \l__keythms_support_titlecode_bool
+
 \keys_define:nn { keytheorems/listof }
   {
-    indent .initial:n = 0pt,
-    title-code .initial:n = % should really use memoir's list mechanism
-      { % copied from memoir.cls
-         \chapterheadstart
-        {\parindent\z@
-         \parskip\z@
-         \interlinepenalty\@M
-         \printchapternonum
-         \printchaptertitle{#1}
-         \thispagestyle{chapter}
-         \afterchaptertitle
-        }
-         \@afterheading
+    indent     .initial:n = 0pt,
+    title-code .code:n    =
+      {
+        \bool_set_true:N \l__keythms_support_titlecode_bool
+        \cs_set:Npn \__keythms_listof_titlecmd:n ##1 { #1 }
       },
+  }
+
+% use memoir's list function; not using \newlistentry, though
+\newlistof{ keythms_support_memoir_listof:w }{ thlist }
+  { \l__keythms_listof_title_tl }
+
+\RenewDocumentCommand \listofkeytheorems { O{} }
+  {
+    \bool_gset_true:N \g__keythms_listof_writefile_bool
+    \group_begin:
+    \keys_set:nn { keytheorems/listof } { #1 }
+    \bool_if:NT \l__keythms_listof_nochapskip_bool
+      {
+        \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
+      }
+    \bool_if:NTF \l__keythms_listof_notitle_bool
+      {
+        \cs_set:Npn \@thlistmaketitle {}
+        \keythms_support_memoir_listof:w*
+      }
+      {
+        \bool_if:NT \l__keythms_support_titlecode_bool
+          {
+            \cs_set:Npn \@thlistmaketitle
+              { \__keythms_listof_titlecmd:n { \l__keythms_listof_title_tl } }
+          }
+        \bool_if:NTF \l__keythms_listof_notoc_bool
+          { \keythms_support_memoir_listof:w* }
+          { \keythms_support_memoir_listof:w }
+      }
+    \group_end:
   }
