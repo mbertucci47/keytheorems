@@ -1,14 +1,14 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\ProvidesExplFile{keythms-amsart-support}{2024-09-10}{0.1.2-dev}
+\ProvidesExplFile{keythms-amsart-support}{2024-09-16}{0.1.2}
   {keytheorems~support~for~the~amsart~class}
 
 \__keythms_support_AMSshared_code:
 
 \IfClassLoadedTF { acmart }
   { % acmart loads amsart
-    % QUESTION: Set overload to be true so the predefined theorems pick up keytheorems functionality?
+    \keytheoremset{overload} % since acmart predefines several theorems
     \keythms_thmstyle_setdefaultkeys:n
       {
         spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
@@ -21,6 +21,17 @@
         notefont      = \@acmplainnotefont,
         notebraces    = {(}{)},
         headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+      }
+    \keys_define:nn { keytheorems/thmstyle }
+      {
+        inherit-style / acmplain      .meta:n = {},
+        inherit-style / acmdefinition .meta:n =
+          {
+            bodyfont   = \@acmdefinitionbodyfont,
+            headindent = \@acmdefinitionindent,
+            headfont   = \@acmdefinitionheadfont,
+            notefont   = \@acmdefinitionnotefont,
+          },
       }
     % TODO: define inherit-style=acmdefinition/acmplain
   }
