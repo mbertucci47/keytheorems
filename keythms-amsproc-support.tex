@@ -1,0 +1,29 @@
+% Maintained by Matthew Bertucci, 2024-present
+% Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
+% This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
+\ProvidesExplFile{keythms-amsproc-support.tex}{2024-09-10}{0.1.2-dev}
+  {keytheorems~support~for~the~amsproc~class}
+
+\__keythms_support_AMSshared_code:
+
+\keythms_thmstyle_setdefaultkeys:n
+  {
+    spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+    spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+    bodyfont      = \itshape,
+    headindent    = \parindent,
+    headfont      = \scshape,
+    headpunct     = {.},
+    postheadspace = 5pt plus 1pt minus 1pt,
+    notefont      = \fontseries\mddefault\upshape,
+    notebraces    = {(}{)},
+    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+  }
+
+\keys_define:nn { keytheorems/thmstyle }
+  {
+    inherit-style / remark .meta:n =
+      {
+        bodyfont = \normalfont,
+      },
+  }

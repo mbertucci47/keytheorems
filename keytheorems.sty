@@ -261,21 +261,14 @@
       }
   }
 
-%%% <SURELY A BETTER WAY>
-\cs_new_protected:Npn \__keythms_thmstyle_definekeylist:nn #1#2
+\cs_new_protected:Npn \keythms_thmstyle_setdefaultkeys:n #1
   {
-    \clist_const:cn { c__keythms_thmstyle_defaultkeys_ #1 _clist } { #2 }
-  }
-
-\cs_new_protected:Npn \__keythms_thmstyle_setdefaultkeys:n #1
-  {
-    \keys_precompile:nvN { keytheorems/thmstyle }
-      { c__keythms_thmstyle_defaultkeys_ #1 _clist }
+    \keys_precompile:nnN { keytheorems/thmstyle }
+      { #1 }
       \l__keythms_thmstyle_defaultkeys_tl
   }
-
-\__keythms_thmstyle_definekeylist:nn { default }
-  {
+\keythms_thmstyle_setdefaultkeys:n
+  { % support files may overwrite these defaults
     spaceabove    = \topsep,
     spacebelow    = \topsep,
     bodyfont      = \itshape,
@@ -287,105 +280,6 @@
     notebraces    = {(}{)},
     headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
   }
-\__keythms_thmstyle_definekeylist:nn { amsart }
-  {
-    spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    bodyfont      = \itshape,
-    headindent    = 0pt,
-    headfont      = \bfseries,
-    headpunct     = {.},
-    postheadspace = 5pt plus 1pt minus 1pt,
-    notefont      = \fontseries\mddefault\upshape,
-    notebraces    = {(}{)},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-  }
-\__keythms_thmstyle_definekeylist:nn { amsproc }
-  {
-    spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    bodyfont      = \itshape,
-    headindent    = \parindent,
-    headfont      = \scshape,
-    headpunct     = {.},
-    postheadspace = 5pt plus 1pt minus 1pt,
-    notefont      = \fontseries\mddefault\upshape,
-    notebraces    = {(}{)},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-  }
-\__keythms_thmstyle_definekeylist:nn { amsbook }
-  {
-    spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    bodyfont      = \itshape,
-    headindent    = \parindent,
-    headfont      = \scshape,
-    headpunct     = {.},
-    postheadspace = 5pt plus 1pt minus 1pt,
-    notefont      = \fontseries\mddefault\upshape,
-    notebraces    = {(}{)},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-  }
-\__keythms_thmstyle_definekeylist:nn { acmart }
-  {
-    spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-    bodyfont      = \@acmplainbodyfont,
-    headindent    = \@acmplainindent,
-    headfont      = \@acmplainheadfont,
-    headpunct     = {.},
-    postheadspace = .5em,
-    notefont      = \@acmplainnotefont,
-    notebraces    = {(}{)},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-  }
-
-\IfClassLoadedTF { amsart }
-  {
-    \IfClassLoadedTF { acmart } % acmart loads amsart
-      {
-        \__keythms_thmstyle_setdefaultkeys:n { acmart }
-      }
-      {
-        \__keythms_thmstyle_setdefaultkeys:n { amsart }
-        \keys_define:nn { keytheorems/thmstyle }
-          {
-            inherit-style / remark .meta:n =
-              {
-                headfont = \itshape,
-                bodyfont = \normalfont,
-              }
-          }
-      }
-  }
-  {
-    \IfClassLoadedTF { amsbook }
-      {
-        \__keythms_thmstyle_setdefaultkeys:n { amsbook }
-        \keys_define:nn { keytheorems/thmstyle }
-          {
-            inherit-style / remark .meta:n =
-              {
-                bodyfont = \normalfont,
-              },
-          }
-      }
-      {
-        \IfClassLoadedTF { amsproc }
-          {
-            \__keythms_thmstyle_setdefaultkeys:n { amsproc }
-            \keys_define:nn { keytheorems/thmstyle }
-              {
-                inherit-style / remark .meta:n =
-                  {
-                    bodyfont = \normalfont,
-                  },
-              }
-          }
-          {  \__keythms_thmstyle_setdefaultkeys:n { default } }
-      }
-  }
-%%% </SURELY A BETTER WAY>
 
 \NewDocumentCommand \newkeytheoremstyle { m m }
   {
@@ -1616,106 +1510,40 @@
   { \cs_set_protected:Npn \__keythms_listof_titlecmd:n #1 { \chapter*{#1} } }
   { \cs_set_protected:Npn \__keythms_listof_titlecmd:n #1 { \section*{#1} } }
 
+\cs_new_protected:Npn \__keythms_listof_default_tocline:
+   {
+     \@dottedtocline{ 1 }{ \l__keythms_listof_indent_dim }
+       { \l__keythms_listof_numwidth_dim }
+   }
+\cs_new_eq:NN \keythms_listof_tocline: \__keythms_listof_default_tocline:
+
 \hook_gput_code:nnn { begindocument } { . }
   {
-    % try to detect ams classes
-    \keythms_if_amsclass:TF
+    \prop_map_inline:Nn \g__keythms_thmnames_prop
       {
-        \prop_map_inline:Nn \g__keythms_thmnames_prop
-          {
-            \cs_set:cpn { l@ #1 }
-              {
-                \@tocline{ 0 }{ 3pt plus 2pt }{ \l__keythms_listof_indent_dim }
-                  { \l__keythms_listof_numwidth_dim }{ }
-              }
-          }
-      }
-      {
-        \prop_map_inline:Nn \g__keythms_thmnames_prop
-          {
-            \cs_set:cpn { l@ #1 }
-              {
-                \@dottedtocline{ 1 }{ \l__keythms_listof_indent_dim }
-                  { \l__keythms_listof_numwidth_dim }
-              }
-          }
+        \cs_set_eq:cN { l@ #1 } \keythms_listof_tocline:
       }
   }
 
-\keythms_if_amsclass:TF
+\NewDocumentCommand \listofkeytheorems { O{} }
   {
-    \keys_define:nn { keytheorems/listof } % adjust to AMS classes
+    \bool_gset_true:N \g__keythms_listof_writefile_bool
+    \group_begin:
+    \keys_set:nn { keytheorems/listof } { #1 }
+    \bool_if:NT \l__keythms_listof_nochapskip_bool
       {
-        numwidth   .initial:n = 1.5pc,
-        indent     .initial:n = 0pt,
-        title-code .code:n    =
-          { % warn but set titlecmd just in case
-            \msg_warning:nn { keytheorems } { title-code-with-AMS }
-            \cs_set_protected:Npn \__keythms_listof_titlecmd:n ##1 { #1 }
-          },
+        \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
       }
-    \NewDocumentCommand \listofkeytheorems { O{} }
-      { % title command not customizable here
-        \bool_gset_true:N \g__keythms_listof_writefile_bool
-        \group_begin:
-        \keys_set:nn { keytheorems/listof } { #1 }
-        \bool_if:NT \l__keythms_listof_nochapskip_bool
-          {
-            \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
-          }
-        \legacy_if_set_false:n { @filesw }
-        \bool_if:NTF \l__keythms_listof_notitle_bool
-          {
-            \@starttoc{ thlist }{ }
-          }
-          { % ams classes don't expand title enough
-            \protected@edef \l__keythms_tmpa_tl { \l__keythms_listof_title_tl }
-            \@starttoc{ thlist }{ \l__keythms_tmpa_tl }
-          }
-        \group_end:
-      }
-  }
-  {
-    \IfClassLoadedT { memoir } % adjust for memoir class
+    \bool_if:NF \l__keythms_listof_notitle_bool
       {
-        \keys_define:nn { keytheorems/listof }
-          {
-            indent .initial:n = 0pt,
-            title-code .initial:n = % should really use memoir's list mechanism
-              { % copied from memoir.cls
-                 \chapterheadstart
-                {\parindent\z@
-                 \parskip\z@
-                 \interlinepenalty\@M
-                 \printchapternonum
-                 \printchaptertitle{#1}
-                 \thispagestyle{chapter}
-                 \afterchaptertitle
-                }
-                 \@afterheading
-              },
-          }
+        \__keythms_listof_titlecmd:n { \l__keythms_listof_title_tl }
+        \@mkboth % QUESTION: should this go in titlecmd ?
+          { \MakeUppercase \l__keythms_listof_title_tl }
+          { \MakeUppercase \l__keythms_listof_title_tl }
       }
-    \NewDocumentCommand \listofkeytheorems { O{} }
-      {
-        \bool_gset_true:N \g__keythms_listof_writefile_bool
-        \group_begin:
-        \keys_set:nn { keytheorems/listof } { #1 }
-        \bool_if:NT \l__keythms_listof_nochapskip_bool
-          {
-            \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
-          }
-        \bool_if:NF \l__keythms_listof_notitle_bool
-          {
-            \__keythms_listof_titlecmd:n { \l__keythms_listof_title_tl }
-            \@mkboth % QUESTION: should this go in titlecmd ?
-              { \MakeUppercase \l__keythms_listof_title_tl }
-              { \MakeUppercase \l__keythms_listof_title_tl }
-          }
-        \legacy_if_set_false:n { @filesw }
-        \@starttoc{ thlist }
-        \group_end:
-      }
+    \legacy_if_set_false:n { @filesw }
+    \@starttoc{ thlist }
+    \group_end:
   }
 % ^ unlike thmtools we don't use the class's style of \listoffigures because
 %   we want control over title-code, no-title, etc. But this means we have to guess
@@ -2213,12 +2041,66 @@
         \ProvideTranslation { German } { keythms_listof_title } { Liste~der~Theoreme }
         \ProvideTranslation { German } { keythms_continues } { weiter~von~Seite~ }
         \ProvideTranslation { Italian } { keythms_listof_title } { Elenco~dei~teoremi }
-        \ProvideTranslation { Italian } { keythms_continues } { continua~da~p.\,~ }
+        \ProvideTranslation { Italian } { keythms_continues } { continua~da~p.\, }
         \ProvideTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
         \ProvideTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
       }
   }
 
 \ProcessKeyOptions[keytheorems]
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Support for non-default classes %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\cs_new_protected:Npn \__keythms_support_AMSshared_code:
+  {
+    \keys_define:nn { keytheorems/listof } % adjust to AMS classes
+      {
+        numwidth   .initial:n = 1.5pc,
+        indent     .initial:n = 0pt,
+        title-code .code:n    =
+          { % warn but set titlecmd just in case
+            \msg_warning:nn { keytheorems } { title-code-with-AMS }
+            \cs_set_protected:Npn \__keythms_listof_titlecmd:n ####1 { ##1 }
+          },
+      }
+    \RenewDocumentCommand \listofkeytheorems { O{} }
+      { % title command not customizable here
+        \bool_gset_true:N \g__keythms_listof_writefile_bool
+        \group_begin:
+        \keys_set:nn { keytheorems/listof } { ##1 }
+        \bool_if:NT \l__keythms_listof_nochapskip_bool
+          {
+            \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
+          }
+        \legacy_if_set_false:n { @filesw }
+        \bool_if:NTF \l__keythms_listof_notitle_bool
+          {
+            \@starttoc{ thlist }{ }
+          }
+          { % ams classes don't expand title enough
+            \protected@edef \l__keythms_tmpa_tl { \l__keythms_listof_title_tl }
+            \@starttoc{ thlist }{ \l__keythms_tmpa_tl }
+          }
+        \group_end:
+      }
+    \cs_new:Npn \__keythms_listof_ams_tocline:
+      {
+        \@tocline{ 0 }{ 3pt plus 2pt }{ \l__keythms_listof_indent_dim }
+          { \l__keythms_listof_numwidth_dim }{ }
+      }
+    \cs_set_eq:NN \keythms_listof_tocline: \__keythms_listof_ams_tocline:
+  }
+
+\cs_new_protected:Npn \keythms_support_check:n #1
+  {
+    \IfClassLoadedT { #1 } { \file_input:n { keythms-#1-support } }
+  }
+
+\keythms_support_check:n { amsart } % acmart defaults also handled in amsart support file
+\keythms_support_check:n { amsbook }
+\keythms_support_check:n { amsproc }
+\keythms_support_check:n { memoir }
 
 \file_input_stop:
