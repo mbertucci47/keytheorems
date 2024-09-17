@@ -2013,6 +2013,11 @@
         thmbox .default:n = M,
         mdframed .code:n = \msg_error:nn { keytheorems } { mdframed-undefined },
       }
+    \keys_define:nn { keytheorems/thmstyle }
+      {
+        shaded .code:n = \keythms_thmstyle_savethmkey_optval:n { ##1 },
+        thmbox .code:n = \keythms_thmstyle_savethmkey_optval:n { ##1 },
+      }
   }
 
 \cs_new_protected:Npn \__keythms_storeall_code:
