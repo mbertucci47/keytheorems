@@ -133,19 +133,6 @@
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc }
 
-% for detecting AMS classes
-\prg_new_conditional:Npnn \keythms_if_amsclass: { T, TF }
-  {
-    \IfClassLoadedTF { amsart } { \prg_return_true: }
-      {
-        \IfClassLoadedTF { amsbook } { \prg_return_true: }
-          {
-            \IfClassLoadedTF { amsproc } { \prg_return_true: }
-              { \prg_return_false: }
-          }
-      }
-  }
-
 %%%%%%%%%%%%%%
 %%% Styles %%%
 %%%%%%%%%%%%%%
