@@ -252,11 +252,10 @@
 \cs_new:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
   {
     \keythms_thmstyle_thmname:n { #1 }
-    \keythms_thmstyle_thmnumber:n
-      { \tl_if_empty:nF { #1 } { ~ } \exp_not:N \textup { #2 } }
-      % ^ this \tl_if_empty has no effect...
+    \keythms_thmstyle_thmnumber:n { ~ \textup { #2 } }
     \keythms_thmstyle_thmnote:n
-      { ~ \group_begin: % group so notefont doesn't affect headpunct
+      { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
+        \group_begin: % group so notefont doesn't affect headpunct
         \exp_not:V \l__keythms_thmstyle_notefont_tl
         \l__keythms_thmstyle_lnotebrace_tl #3 \l__keythms_thmstyle_rnotebrace_tl
         \group_end:

@@ -107,12 +107,7 @@ Some of the code is a direct translation from thmtools but a few things are chan
 - With thmtools, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
   only use the new interface or load the package with option `overload`.
-- All new keys (see doc for descriptions):
-  - global (load-time or in `\keytheoremset`): `overload`, `thmtools-compat`, `store-all`, `restate-counters`, `continues-code`, `qed-symbol`, `auto-translate`
-  - keys for theorem envs: `note` (alias `name`), `short-note`, `continues*`, `store` (alias `restate`), `seq`
-  - declaring theorems (in `\newkeytheorem`): `tcolorbox`, `tcolorbox-no-titlebar`
-  - declaring styles (in `\newkeytheoremstyle`): `inherit-style`
-  - list of theorems (in `\keytheoremlistset` and `\listofkeytheorems`): `onlynumbered`, `seq`, `title-code`, `no-title`, `note-code`, `print-body`, `no-continues`, `no-chapter-skip`, `chapter-skip-length`
+- Adds several new keys (see doc for details).
 
 ## thmtools issues resolved by keytheorems
 Issues from the thmtools [github page](https://github.com/muzimuzhi/thmtools),
