@@ -734,8 +734,21 @@ Fascinating example.
 
 \end{docCommand}
 
-\begin{docCommand}{IfRestatingTF}
-  {\marg{true code}\marg{false code}}
+\begin{docCommands}
+  {
+    {
+      doc name = IfRestatingTF,
+      doc parameter=\marg{true code}\marg{false code}
+    },
+    {
+      doc name = IfRestatingT,
+      doc parameter=\marg{true code}
+    },
+    {
+      doc name = IfRestatingF,
+      doc parameter=\marg{false code}
+    }
+  }
 Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem.
 
 \begin{keythmscode}[]
@@ -748,7 +761,7 @@ example!
 \getkeytheorem{hmm}
 \end{keythmscode}
 
-\end{docCommand}
+\end{docCommands}
 
 \section{Listing Theorems}
 
