@@ -20,7 +20,7 @@
 \usepackage{cleveref}
 \usepackage{amssymb}
 
-\def\version{0.1.2}
+\def\version{0.1.3dev}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -137,7 +137,7 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 
 \section{Dependencies}
 
-Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, and \pkg{translations} packages.
+Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, \pkg{translations}, and \pkg{unique} packages.
 A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01, \pkg{nameref} is required.
     
 \section{Global Options}
@@ -697,6 +697,12 @@ Alias \docAuxKey{headstyle}. Within \meta{code}, the commands \docAuxCommand{NAM
 \end{docKey}
 
 \subsection{Keys added by \pkg{keytheorems}}
+
+\begin{docKey}{noteseparator}
+  {=\meta{code}}
+  {initially \textvisiblespace}
+The code inserted before the note, and printed only if there is a note. This is executed \emph{before} the font commands set by \refKey{notefont} take effect.
+\end{docKey}
 
 \begin{docKey}{inherit-style}
   {=\meta{style name}}

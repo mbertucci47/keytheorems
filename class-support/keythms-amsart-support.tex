@@ -1,7 +1,7 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\ProvidesExplFile{keythms-amsart-support}{2024-09-16}{0.1.2}
+\ProvidesExplFile{keythms-amsart-support}{2024-09-16}{0.1.3dev}
   {keytheorems~support~for~the~amsart~class}
 
 \__keythms_support_AMSshared_code:
@@ -20,6 +20,7 @@
         postheadspace = .5em,
         notefont      = \@acmplainnotefont,
         notebraces    = {(}{)},
+        noteseparator = {~},
         headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
       }
     \keys_define:nn { keytheorems/thmstyle }
@@ -47,6 +48,7 @@
         postheadspace = 5pt plus 1pt minus 1pt,
         notefont      = \fontseries\mddefault\upshape,
         notebraces    = {(}{)},
+        noteseparator = {~},
         headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
       }
   }

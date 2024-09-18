@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\ProvidesExplPackage{keytheorems}{2024-09-16}{0.1.2}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-09-16}{0.1.3dev}{l3keys interface to amsthm}
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
@@ -187,6 +187,7 @@
     break         .value_forbidden:n = true,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
     notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
+    noteseparator .tl_set:N = \l__keythms_thmstyle_noteseparator_tl,
     headstyle     .choice:,
     headstyle / margin .code:n =
       {
@@ -240,7 +241,8 @@
 \cs_new:Npn \NOTE
   {
     \keythms_thmstyle_thmnote:n
-      { ~ \group_begin: % group so notefont doesn't affect headpunct
+      { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
+        \group_begin: % group so notefont doesn't affect headpunct
         \exp_not:V \l__keythms_thmstyle_notefont_tl
         \l__keythms_thmstyle_lnotebrace_tl ##3 \l__keythms_thmstyle_rnotebrace_tl
         \group_end:
@@ -278,6 +280,7 @@
     postheadspace = 5pt plus 1pt minus 1pt,
     notefont      = \fontseries\mddefault\upshape,
     notebraces    = {(}{)},
+    noteseparator = {~},
     headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
   }
 
@@ -1098,6 +1101,8 @@
       { \prg_return_false: }
   }
 \NewDocumentCommand \IfRestatingTF { } { \keythms_if_restating:TF }
+\NewDocumentCommand \IfRestatingT { } { \keythms_if_restating:T }
+\NewDocumentCommand \IfRestatingF { } { \keythms_if_restating:F }
 
 \cs_new_protected:Npn \__keythms_getthm_theorem:nnnnn #1#2#3#4#5
   { % #1 = name, #2 = number, #3 = restate counters, #4 = keys, #5 = theorem body
