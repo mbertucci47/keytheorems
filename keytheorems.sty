@@ -1074,6 +1074,20 @@
                 \__keythms_getthm_body:nn {#5}{#7}
               }
           }
+        \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
+          {
+            \cs_new_protected:cpn
+              { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _theorem }
+              {
+                \__keythms_getthmreversed_theorem:nnnnn
+                  {#1}{#2}{#5}{#6}{#7}
+              }
+            \cs_new_protected:cpn
+              { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _body }
+              {
+                \__keythms_getthm_body:nn {#5}{#7}
+              }
+          }
         \group_end:
       }
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }

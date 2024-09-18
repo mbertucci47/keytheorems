@@ -53,7 +53,17 @@
 \newkeytheorem{remark}[style=remark]
 \tcbset{
   defstyle/.style={arc=0mm,colback=blue!5!white,colframe=blue!75!black},
+  thmstyle/.style={colback=green!5,colframe=green!35!black},
   }
+\newkeytheoremstyle{tcb-standard}{
+  tcolorbox=thmstyle,
+  headpunct={},
+  notebraces={}{},
+  noteseparator={: },
+  notefont=\bfseries,
+  bodyfont=\normalfont,
+  }
+\newkeytheorem{mytheo}[name=My Theorem,style=tcb-standard]
 \newkeytheorem{corollary}[tcolorbox]
 \newkeytheorem{definition}[
   style=definition,
@@ -609,6 +619,33 @@ Some text
 \end{keythmscode}
 
 \end{docKey}
+
+\pkg{tcolorbox} offers its own comprehensive \texttt{theorems} library. If all of your theorems are to be tcolorboxes, I highly recommend using it instead of this package! However, if only some of your theorems will use a tcolorbox, you may want to replicate the styles of \cs{NewTcbTheorem}. Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem style.
+
+\begin{tcbwritetemp}
+\tcbset{
+  thmstyle/.style={
+    colback=green!5,
+    colframe=green!35!black},
+  }
+\newkeytheoremstyle{tcb-standard}{
+  tcolorbox=thmstyle,
+  headpunct={},
+  notebraces={}{},
+  noteseparator={: },
+  notefont=\bfseries,
+  bodyfont=\normalfont,
+  }
+\newkeytheorem{mytheo}[
+  name=My Theorem,
+  style=tcb-standard]
+\end{tcbwritetemp}
+
+\begin{keythmscode}[withpreamble]
+\begin{mytheo}[This is my title]
+Some theorem text
+\end{mytheo}
+\end{keythmscode}
 
 \section{Theorem Styles}
 

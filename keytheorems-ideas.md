@@ -91,3 +91,4 @@
       Should I just use memoir's list commands when it's loaded?
 - [x] Idea: just define everything for the default classes, then have support files
             for the other classes that redefine things
+- [ ] Remove dependency on unique.sty
