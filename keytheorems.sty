@@ -45,6 +45,11 @@
     Try~compiling~again.~If~that~doesn't~work,~
     check~the~spelling~of~'#1'.
   }
+\msg_new:nnn { keytheorems } { store-reversed-not-got }
+  {
+    'store*=#1'~only~makes~sense~if~you've~called~\protect\getkeytheorem{#1}.~
+    Either~compile~again~or~call~\protect\getkeytheorem{#1}.
+  }
 \msg_new:nnn { keytheorems } { undefined-thm-hook }
   {
     No~theorem~hook~'#1'.~Check~the~spelling.~
@@ -813,6 +818,8 @@
     %store      .default:n = \q_no_value, % ={name} causes issues
     restate    .meta:n   = { store = #1 },
     % ^ thmtools compatibility
+    store*   .tl_set:N = \l__keythms_thmuse_storereversed_tl,
+    restate* .meta:n   = { store* = #1 },
     listhack   .choice:, % need equals sign
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
@@ -845,6 +852,73 @@
         \__keythms_thm_postfoot_code:n { #1 }
       }
       {}
+    \DeclareDocumentEnvironment { keythms_grabreversed_#1 } { m O{} +b }
+      { % ##1 = keys, ##2 = note, ##3 = theorem body
+        \tl_if_exist:cTF { g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
+          {
+            \exp_args:NNe \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop
+              { \tl_use:c{g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl} }
+            \prop_map_inline:Nn \l__keythms_restate_counters_prop
+              {
+                \tl_set:ce { l_keythms_restate_current_####1_tl } { \the\value{####1} }
+                \setcounter { ####1 } { ####2 }
+                % ^ FIX: what if eq's numbered by section, theorem, etc.? The
+                %        thmtools code is opaque.... Or maybe should be up to the
+                %        user to say "restate-counters={section,chapter,...}".
+                \cs_set:cpn { theH ####1 } { \use:c { the ####1 } . \theHkeythms_restate_dummyctr }
+              }
+            \tl_if_empty:cTF {g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl}
+              { \refstepcounter{keythms_restate_dummyctr} } % for unnumbered theorems
+              {
+                \cs_set:cpn { the #1 } { \tl_use:c{g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl} }
+                \cs_set_eq:cN { c@ #1 } \c@keythms_restate_dummyctr
+                \cs_set_eq:cN { theH #1 } \theHkeythms_restate_dummyctr
+                % ^ why are the last two lines here? We shouldn't be referencing
+                %   restated theorems. Think it's a remnant of thmtools
+                % WRONG: needed to make numbering correct after restated theorem.
+                % not sure about theH. <- this is needed to prevent duplicate anchors
+              }
+           }
+           { \msg_warning:nne { keytheorems } { store-reversed-not-got } { \l__keythms_thmuse_storereversed_tl } }
+        \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
+        \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
+        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
+        \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
+        % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
+        \hook_use:n { keytheorems/#1/restated }
+        \hook_use:n { keytheorems/allthms/restated }
+        \__keythms_thm_prehead_code:n { #1 }
+        \begin{keythms_orig_#1}[{##2}]
+        \__keythms_thm_posthead_code:n { #1 }
+        % below needs to come after posthead so that correct \@currentHref
+        % is stored for tcolorbox theorems
+        \iow_shipout:Ne \@auxout
+          {
+            \exp_not:N \@writefile { thlist }
+              {
+                \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
+                  { #1 }
+                  { \exp_not:n { ##1 } }
+                  { \exp_not:n { ##3 } }
+              }
+          }
+        \tl_gset:Ne \g__keythms_thmuse_temprestatedatareversed_tl % needs to be global to get out of env
+          {
+            { #1 }
+            { \exp_not:n { ##1 } }
+            { \exp_not:n { ##3 } }
+          }
+        ##3
+        \__keythms_thm_prefoot_code:n { #1 }
+        \end{keythms_orig_#1}
+        \__keythms_thm_postfoot_code:n { #1 }
+        \prop_map_inline:Nn \l__keythms_restate_counters_prop
+          {
+            \exp_args:Nnc \setcounter { ####1 }
+              { l_keythms_restate_current_####1_tl }
+          }
+      }
+      {}
       % NOTE: have to do a lot of shenanigans to make sure the begin/end of grabbed
       %       theorem env captures only the body and no package code.
       %       This is the price of on-the-fly redefining the env to grab body
@@ -858,6 +932,14 @@
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
               \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
+            }
+          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
+            {
+              \bool_gset_true:N \g__keythms_listof_writefile_bool
+              \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grabreversed_begin:nn
+              \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
+              \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grabreversed_begin:nnV
+              \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
             }
           \__keythms_thm_prehead_continues_code:n { #1 }
           \tl_if_empty:NTF \l__keythms_thmuse_note_tl
@@ -892,6 +974,19 @@
                     }
                 }
             }
+          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
+            {
+              \cs_if_exist:cF
+                { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+                {
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+                    {
+                      \exp_not:N \__keythms_getthmreversed_theorem:nnn
+                      \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
+                    }
+                }
+      }
         }
   }
 \cs_new:Npn \__keythms_use_iii_v_braced:nnnnn #1#2#3#4#5 { {#3}{#5} }
@@ -929,6 +1024,17 @@
   }
 \cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
+
+\cs_new_protected:Npn \__keythms_grabreversed_begin:nn #1#2
+  { % #1 = theorem name, #2 = keys
+    \begin{keythms_grabreversed_#1}{#2}
+  }
+\cs_new_protected:Npn \__keythms_grabreversed_begin:nnn #1#2#3
+  { % #1 = theorem name, #2 = keys, #3 = note
+    \begin{keythms_grabreversed_#1}{#2}[{#3}]
+  }
+\cs_generate_variant:Nn \__keythms_grabreversed_begin:nnn { nnV }
+\cs_new_protected:Npn \__keythms_grabreversed_end:n #1 { \end{keythms_grabreversed_#1} }
 
 \cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
 \cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
@@ -1023,11 +1129,14 @@
 
 \cs_new_protected:Npn \KeyThmsSavedTheorem #1#2#3#4#5#6#7 % 7th arg is body
   { \use:c { __keythms_thmitem_#1:nnnnnn } {#2}{#3}{#4}{#5}{#6}{#7} }
+\cs_new_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4 { } % gobble by default
 
 \keys_define:nn { keytheorems/storeatbegin }
   {
     store   .tl_set:N = \l__keythms_storeatbegin_store_tl,
     restate .meta:n   = { store=#1 },
+    store*   .tl_set:N = \l__keythms_storeatbegin_storereversed_tl,
+    restate* .meta:n   = { store*=#1 },
     unknown .code:n   = { } % do nothing with unknown keys
   }
 
@@ -1076,12 +1185,8 @@
           }
         \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
           {
-            \cs_new_protected:cpn
-              { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _theorem }
-              {
-                \__keythms_getthmreversed_theorem:nnnnn
-                  {#1}{#2}{#5}{#6}{#7}
-              }
+            \tl_gset:cn { g__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _label_tl } { #2 }
+            \tl_gset:cn { g__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _restatecounters_tl } { #5 }
             \cs_new_protected:cpn
               { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _body }
               {
@@ -1089,6 +1194,10 @@
               }
           }
         \group_end:
+      }
+    \cs_set_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4
+      {
+        \cs_gset:cpn { __keythms_getthm_ #1 _theorem } { \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 } }
       }
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
@@ -1180,6 +1289,47 @@
       {
         \exp_args:Nnc \setcounter { ##1 }
           { l_keythms_restate_current_##1_tl }
+      }
+    \group_end:
+  }
+
+\cs_new_protected:Npn \__keythms_getthmreversed_theorem:nnn #1#2#3
+  { % #1 = envname, #2 = keys, #3 = theorem body
+    \group_begin:
+    \bool_set_false:N \l__keythms_thmuse_restating_bool
+    \keys_set:nn { keytheorems/thmuse } { #2 }
+    \__keythms_thm_prehead_continues_code:n { #1 }
+    \__keythms_thm_prehead_code:n { #1 }
+    \tl_if_empty:NTF \l__keythms_thmuse_note_tl
+      { \__keythms_orig_begin:n { #1 } }
+      { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
+    \clist_map_inline:Nn \g__keythms_restatecounters_clist
+      {
+        \prop_gput:Nne \g__keythms_thmuse_othercounters_prop { ##1 }
+          { \the\value{##1} }
+      }
+    \__keythms_thm_posthead_code:n { #1 }
+    \__keythms_thm_addcontentsdata:nnnn { #1 }
+      { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
+      { #2 } { #3 }
+    \__keythms_thm_tempstorerestatedata:nnn { #1 } { #2 } { #3 } % for defining getthm_body
+    #3
+    \__keythms_thm_prefoot_code:n { #1 }
+    \__keythms_orig_end:n { #1 }
+    \__keythms_thm_postfoot_code:n { #1 }
+    % While we're here, define getthm_body
+    \cs_if_exist:cF { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+      {
+        \cs_new:cpe
+          { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+          {
+            \exp_not:N \__keythms_getthm_body:nn
+            \exp_args:No \exp_not:o
+              {
+                \exp_after:wN \__keythms_use_iii_v_braced:nnnnn
+                  \g__keythms_thmuse_temprestatedata_tl
+              }
+          }
       }
     \group_end:
   }
