@@ -4,6 +4,7 @@
 - add `noteseparator` key
 - add `\IfRestatingT`, `\IfRestatingF`
 - add `store*` key
+- add Portuguese translations
 
 ## [v0.1.2]
 - Move support for memoir and AMS classes to dedicated files

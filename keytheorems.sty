@@ -1433,13 +1433,11 @@
 %%%%%%%%%%%%%%%%%%%%%
 
 %%% \addtotheoremhook[<envname>]{<hook>}{<code>}
-\NewDocumentCommand \addtotheoremhook { o m +m }
+\NewDocumentCommand \addtotheoremhook { O{allthms} m +m }
   {
     \__hook_if_declared:nTF { keytheorems/allthms/#2 }
       {
-        \IfNoValueTF { #1 }
-          { \hook_gput_code:nnn { keytheorems/allthms/#2 } { . } { #3 } }
-          { \hook_gput_code:nnn { keytheorems/#1/#2 } { . } { #3 } }
+        \hook_gput_code:nnn { keytheorems/#1/#2 } { . } { #3 }
       }
       {
         \msg_error:nnn { keytheorems } { undefined-thm-hook } { #2 }
@@ -1900,7 +1898,7 @@
 
 \cs_new_protected:Npn \__keythms_overload_code:
   {
-    \RenewDocumentCommand { \newtheorem } { smomo }
+    \RenewDocumentCommand { \newtheorem } { s m o m o }
       {
         \IfBooleanTF { ##1 }
           { \keythms_thm_newkeythm:nn { ##2 } { name=##4, numbered=no } }
@@ -1943,29 +1941,21 @@
           }
       }
     \ProvideDocumentCommand { \listoftheorems } { } { \listofkeytheorems }
-    \ProvideDocumentCommand { \addtotheorempreheadhook } { o m }
+    \ProvideDocumentCommand { \addtotheorempreheadhook } { O{allthms} m }
       {
-        \IfNoValueTF { ##1 }
-          { \addtotheoremhook { prehead } { ##2 } }
-          { \addtotheoremhook [ ##1 ] { prehead } { ##2 } }
+        \addtotheoremhook [ ##1 ] { prehead } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheorempostheadhook } { o m }
+    \ProvideDocumentCommand { \addtotheorempostheadhook } { O{allthms} m }
       {
-        \IfNoValueTF { ##1 }
-          { \addtotheoremhook { posthead } { ##2 } }
-          { \addtotheoremhook [ ##1 ] { posthead } { ##2 } }
+        \addtotheoremhook [ ##1 ] { posthead } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheoremprefoothook } { o m }
+    \ProvideDocumentCommand { \addtotheoremprefoothook } { O{allthms} m }
       {
-        \IfNoValueTF { ##1 }
-          { \addtotheoremhook { prefoot } { ##2 } }
-          { \addtotheoremhook [ ##1 ] { prefoot } { ##2 } }
+        \addtotheoremhook [ ##1 ] { prefoot } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheorempostfoothook } { o m }
+    \ProvideDocumentCommand { \addtotheorempostfoothook } { O{allthms} m }
       {
-        \IfNoValueTF { ##1 }
-          { \addtotheoremhook { postfoot } { ##2 } }
-          { \addtotheoremhook [ ##1 ] { postfoot } { ##2 } }
+        \addtotheoremhook [ ##1 ] { postfoot } { ##2 }
       }
     \clist_new:N \l__keythms_tcbshaded_keys_clist
     \clist_new:N \l__keythms_tcbthmbox_keys_clist
@@ -2287,6 +2277,8 @@
         \ProvideTranslation { Italian } { keythms_continues } { continua~da~p.\, }
         \ProvideTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
         \ProvideTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
+        \ProvideTranslation { Portuguese } { keythms_listof_title } { Lista~de~teoremas }
+        \ProvideTranslation { Portuguese } { keythms_continues } { continua~da~p.\, }
       }
   }
 

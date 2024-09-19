@@ -82,7 +82,7 @@
 - [x] also different behavior for tcb theorems and not, namely spaceabove adds space
       after section for former but not latter
 - [ ] full control over list-of appearance, including name and number
-- [ ] option to add list of theorems to TOC
+- [x] option to add list of theorems to TOC. No, let user control manually.
 - [x] list appearance does not match list of figures in memoir
 - [x] make indent configurable in general
 - [x] With amsart etc. no-title vert spacing is bad; currently uses empty title
