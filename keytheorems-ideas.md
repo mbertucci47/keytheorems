@@ -92,3 +92,4 @@
 - [x] Idea: just define everything for the default classes, then have support files
             for the other classes that redefine things
 - [ ] Remove dependency on unique.sty
+- [ ] Line numbers for errors/warnings

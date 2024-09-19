@@ -3,6 +3,7 @@
 ## [unreleased]
 - add `noteseparator` key
 - add `\IfRestatingT`, `\IfRestatingF`
+- add `store*` key
 
 ## [v0.1.2]
 - Move support for memoir and AMS classes to dedicated files

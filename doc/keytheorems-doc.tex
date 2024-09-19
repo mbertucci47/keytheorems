@@ -314,10 +314,10 @@ The starred version also copies the theorem note, if it exists.
 \end{docKey}
 
 \begin{docKey}{store}
-  {=\meta{tag}}
+  {\sarg=\meta{tag}}
   {initially unset}
-Alias \docAuxKey{restate}.
-Stores the the theorem to be restated at any point in the document with \refCom{getkeytheorem}.
+Alias \docAuxKey{restate}\sarg.
+Stores the the theorem to be restated at any point in the document with \refCom{getkeytheorem}. With the starred version, counters and labels are taken from the copy called with \cs{getkeytheorem}, so in this case can only be restated once. This allows you, for example, to write all theorems and proofs in the appendix and call \cs{getkeytheorem} at the appropriate time mid-document.
 
 \begin{keythmscode}[]
 \begin{theorem}[store=blub]
@@ -755,7 +755,7 @@ At the start of the next run, this file is input at the beginning of the documen
 
 \begin{docCommand}{getkeytheorem}
   {\oarg{property}\marg{tag}}
-Retrieves the theorem given the key |store=|\meta{tag}.
+Retrieves the theorem given the key |store=|\meta{tag} or |store*=|\meta{tag}.
 An optional \meta{property} can be given to retrieve only the corresponding part of the theorem.
 Currently only the property |body| is implemented, which retrieves the (unformatted) body of the theorem.
 
@@ -786,7 +786,7 @@ Fascinating example.
       doc parameter=\marg{false code}
     }
   }
-Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem.
+Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem. This is reversed if \texttt{store*} is used.
 
 \begin{keythmscode}[]
 \begin{example}[store=hmm]

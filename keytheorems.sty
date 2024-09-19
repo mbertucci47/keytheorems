@@ -10,6 +10,7 @@
     \cs_generate_variant:Nn \cs_set:Npn { Npe }
     \cs_generate_variant:Nn \iow_shipout:Nn { Ne }
     \cs_generate_variant:Nn \keys_set:nn { ne }
+    \cs_generate_variant:Nn \msg_warning:nnn { nne }
     \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
     \ProvideDocumentCommand \IfPackageLoadedT { m m }
       { \IfPackageLoadedTF{#1}{#2}{ } }
@@ -45,10 +46,24 @@
     Try~compiling~again.~If~that~doesn't~work,~
     check~the~spelling~of~'#1'.
   }
+\msg_new:nnn { keytheorems } { no-prop-for-stored-theorem }
+  {
+    No~property~'#1'~found~for~stored~theorem~'#2'.
+  }
 \msg_new:nnn { keytheorems } { store-reversed-not-got }
   {
     'store*=#1'~only~makes~sense~if~you've~called~\protect\getkeytheorem{#1}.~
-    Either~compile~again~or~call~\protect\getkeytheorem{#1}.
+    Check~that~\protect\getkeytheorem{#1}~is~called~and~compile~again.
+  }
+\msg_new:nnn { keytheorems } { restate-body-never-got }
+  {
+    With~'store*=#1',~\protect\getkeytheorem[body]{#1}~only~makes~sense~if~
+    \protect\getkeytheorem{#1}~has~been~called.~
+    Check~that~\protect\getkeytheorem{#1}~is~called~and~compile~again.
+  }
+\msg_new:nnn { keytheorems } { store-reversed-called-twice }
+  {
+    With~'store*=#1',~\protect\getkeytheorem{#1}~can~be~called~only~once.
   }
 \msg_new:nnn { keytheorems } { undefined-thm-hook }
   {
@@ -121,6 +136,7 @@
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
 \tl_new:N \l__keythms_thmuse_envname_tl
 \tl_new:N \g__keythms_thmuse_temprestatedata_tl
+\tl_new:N \g__keythms_thmuse_temprestatedatareversed_tl
 
 \newcounter{keythms_restate_dummyctr}
 \cs_gset:Npn \theHkeythms_restate_dummyctr
@@ -854,23 +870,29 @@
       {}
     \DeclareDocumentEnvironment { keythms_grabreversed_#1 } { m O{} +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
-        \tl_if_exist:cTF { g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
+        \tl_if_exist:cTF
+          { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
           {
+            \bool_set_true:N \l__keythms_thmuse_restating_bool
             \exp_args:NNe \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop
-              { \tl_use:c{g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl} }
+              { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
             \prop_map_inline:Nn \l__keythms_restate_counters_prop
               {
-                \tl_set:ce { l_keythms_restate_current_####1_tl } { \the\value{####1} }
+                \tl_set:ce { l_keythms_restate_current_####1_tl }
+                  { \the\value{####1} }
                 \setcounter { ####1 } { ####2 }
                 % ^ FIX: what if eq's numbered by section, theorem, etc.? The
                 %        thmtools code is opaque.... Or maybe should be up to the
                 %        user to say "restate-counters={section,chapter,...}".
-                \cs_set:cpn { theH ####1 } { \use:c { the ####1 } . \theHkeythms_restate_dummyctr }
+                \cs_set:cpn { theH ####1 }
+                  { \use:c { the ####1 } . \theHkeythms_restate_dummyctr }
               }
-            \tl_if_empty:cTF {g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl}
+            \tl_if_empty:cTF
+              { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl }
               { \refstepcounter{keythms_restate_dummyctr} } % for unnumbered theorems
               {
-                \cs_set:cpn { the #1 } { \tl_use:c{g__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl} }
+                \cs_set:cpn { the #1 }
+                  { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl } }
                 \cs_set_eq:cN { c@ #1 } \c@keythms_restate_dummyctr
                 \cs_set_eq:cN { theH #1 } \theHkeythms_restate_dummyctr
                 % ^ why are the last two lines here? We shouldn't be referencing
@@ -879,7 +901,10 @@
                 % not sure about theH. <- this is needed to prevent duplicate anchors
               }
            }
-           { \msg_warning:nne { keytheorems } { store-reversed-not-got } { \l__keythms_thmuse_storereversed_tl } }
+           {
+             \msg_warning:nne { keytheorems } { store-reversed-not-got }
+               { \l__keythms_thmuse_storereversed_tl }
+           }
         \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
         \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
         \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
@@ -892,22 +917,8 @@
         \__keythms_thm_posthead_code:n { #1 }
         % below needs to come after posthead so that correct \@currentHref
         % is stored for tcolorbox theorems
-        \iow_shipout:Ne \@auxout
-          {
-            \exp_not:N \@writefile { thlist }
-              {
-                \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
-                  { #1 }
-                  { \exp_not:n { ##1 } }
-                  { \exp_not:n { ##3 } }
-              }
-          }
-        \tl_gset:Ne \g__keythms_thmuse_temprestatedatareversed_tl % needs to be global to get out of env
-          {
-            { #1 }
-            { \exp_not:n { ##1 } }
-            { \exp_not:n { ##3 } }
-          }
+        \__keythms_thm_addstoredreverseddata:nnn { #1 } { ##1 } { ##3 }
+        \__keythms_thm_tempstorerestatedatareversed:nnn { #1 } { ##1 } { ##3 }
         ##3
         \__keythms_thm_prefoot_code:n { #1 }
         \end{keythms_orig_#1}
@@ -918,7 +929,7 @@
               { l_keythms_restate_current_####1_tl }
           }
       }
-      {}
+      { }
       % NOTE: have to do a lot of shenanigans to make sure the begin/end of grabbed
       %       theorem env captures only the body and no package code.
       %       This is the price of on-the-fly redefining the env to grab body
@@ -985,6 +996,13 @@
                       \exp_not:N \__keythms_getthmreversed_theorem:nnn
                       \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
                     }
+                  \cs_new:cpn
+                    { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+                    {
+                      \textbf{??}
+                      \msg_warning:nnn { keytheorems } { restate-body-never-got }
+                        { #1 }
+                    }
                 }
       }
         }
@@ -1034,7 +1052,8 @@
     \begin{keythms_grabreversed_#1}{#2}[{#3}]
   }
 \cs_generate_variant:Nn \__keythms_grabreversed_begin:nnn { nnV }
-\cs_new_protected:Npn \__keythms_grabreversed_end:n #1 { \end{keythms_grabreversed_#1} }
+\cs_new_protected:Npn \__keythms_grabreversed_end:n #1
+  { \end{keythms_grabreversed_#1} }
 
 \cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
 \cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
@@ -1111,6 +1130,19 @@
           }
       }
   }
+\cs_new_protected:Npn \__keythms_thm_addstoredreverseddata:nnn #1#2#3
+  {
+    \iow_shipout:Ne \@auxout
+      {
+        \exp_not:N \@writefile { thlist }
+          {
+            \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
+              { #1 }
+              { \exp_not:n { #2 } }
+              { \exp_not:n { #3 } }
+          }
+      }
+  }
 \cs_new_protected:Npn \__keythms_thm_tempstorerestatedata:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = body
     \tl_gset:Ne \g__keythms_thmuse_temprestatedata_tl % needs to be global to get out of env
@@ -1122,7 +1154,15 @@
         { \exp_not:n { #3 } } % with \text_expand:n ?
       }
   }
-
+\cs_new_protected:Npn \__keythms_thm_tempstorerestatedatareversed:nnn #1#2#3
+  {
+    \tl_gset:Ne \g__keythms_thmuse_temprestatedatareversed_tl % needs to be global to get out of env
+      {
+        { #1 }
+        { \exp_not:n { #2 } }
+        { \exp_not:n { #3 } }
+      }
+  }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Retrieving Theorem Data %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1185,8 +1225,12 @@
           }
         \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
           {
-            \tl_gset:cn { g__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _label_tl } { #2 }
-            \tl_gset:cn { g__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _restatecounters_tl } { #5 }
+            \tl_const:cn
+              { c__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _label_tl }
+              { #2 }
+            \tl_const:cn
+              { c__keythms_storeatbegin_ \l__keythms_storeatbegin_storereversed_tl _restatecounters_tl }
+              { #5 }
             \cs_new_protected:cpn
               { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _body }
               {
@@ -1197,7 +1241,20 @@
       }
     \cs_set_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4
       {
-        \cs_gset:cpn { __keythms_getthm_ #1 _theorem } { \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 } }
+        \bool_new:c { g__keythms_restate_#1_called_bool }
+        \cs_gset:cpn { __keythms_getthm_ #1 _theorem }
+          { \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 } }
+        \hook_gput_code:nnn { begindocument/end } { . }
+          {
+            \cs_if_exist:cF { __keythms_getthm_ #1 _body }
+              {
+                \cs_new_protected:cpn { __keythms_getthm_ #1 _body }
+                  {
+                    \textbf{??}
+                    \msg_warning:nnn { keytheorems } { restate-body-never-got } { #1 }
+                  }
+              }
+          }
       }
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
@@ -1225,7 +1282,8 @@
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
         %        user to say "restate-counters={section,chapter,...}".
-        \cs_set:cpn { theH ##1 } { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
+        \cs_set:cpn { theH ##1 }
+          { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
     \tl_if_empty:nTF { #2 }
       { \refstepcounter{keythms_restate_dummyctr} } % for unnumbered theorems
@@ -1276,7 +1334,8 @@
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
         %        user to say "restate-counters={section,chapter,...}".
-        \cs_set:cpn { theH ##1 } { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
+        \cs_set:cpn { theH ##1 }
+          { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
     \refstepcounter{keythms_restate_dummyctr}
     \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
@@ -1318,7 +1377,8 @@
     \__keythms_orig_end:n { #1 }
     \__keythms_thm_postfoot_code:n { #1 }
     % While we're here, define getthm_body
-    \cs_if_exist:cF { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+    \cs_if_exist:cF
+      { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
       {
         \cs_new:cpe
           { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
@@ -1331,21 +1391,40 @@
               }
           }
       }
+    \bool_gset_true:c
+      { g__keythms_restate_ \l__keythms_thmuse_storereversed_tl _called_bool }
     \group_end:
   }
 
 % \getkeytheorem[<property>]{<tag>}
-\NewDocumentCommand \getkeytheorem { o m }
+\NewDocumentCommand \getkeytheorem { O{theorem} m }
   {
-    \cs_if_exist:cTF { __keythms_getthm_#2_theorem }
+    \cs_if_exist:cTF { __keythms_getthm_#2_#1 }
       {
-        \IfNoValueTF { #1 }
-          { \use:c { __keythms_getthm_#2_theorem } }
+        \bool_if_exist:cTF { g__keythms_restate_#2_called_bool }
+          {
+            \str_if_eq:nnTF { #1 } { theorem }
+              {
+                \bool_if:cTF
+                  { g__keythms_restate_#2_called_bool }
+                  {
+                    \msg_error:nnn { keytheorems }
+                      { store-reversed-called-twice } { #2 }
+                  }
+                  { \use:c { __keythms_getthm_#2_#1 } }
+              }
+              { \use:c { __keythms_getthm_#2_#1 } }
+          }
           { \use:c { __keythms_getthm_#2_#1 } }
       }
       {
         \textbf{??}
-        \msg_warning:nnn { keytheorems } { no-stored-theorem } { #2 }
+        \cs_if_exist:cTF { __keythms_getthm_#2_theorem }
+          {
+            \msg_warning:nnnn { keytheorems } { no-prop-for-stored-theorem }
+              { #1 } { #2 } % should this be an error?
+          }
+          { \msg_warning:nnn { keytheorems } { no-stored-theorem } { #2 } }
       }
   }
 
@@ -1732,7 +1811,8 @@
       {
         \cs_set_protected:Npn \keythms_listof_chaptervspacehack:
           {
-            \int_compare:nNnF { \value{chapter} } = { \g_keythms_listof_prevchapter_int }
+            \int_compare:nNnF
+              { \value{chapter} } = { \g_keythms_listof_prevchapter_int }
               {
                 \addtocontents{ thlist }
                   {
@@ -1891,14 +1971,21 @@
     \clist_new:N \l__keythms_tcbthmbox_keys_clist
     \keys_define:nn { keytheorems/thm/shaded }
       {
-        textwidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { width=##1 },
-        bgcolor     .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colback=##1 },
-        rulewidth   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxrule=##1 },
-        rulecolor   .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colframe=##1 },
-        margin      .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxsep=##1 },
+        textwidth   .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { width=##1 },
+        bgcolor     .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colback=##1 },
+        rulewidth   .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxrule=##1 },
+        rulecolor   .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colframe=##1 },
+        margin      .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxsep=##1 },
         padding     .meta:n = { margin=##1 },
-        leftmargin  .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { left~skip=##1 },
-        rightmargin .code:n = \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { right~skip=##1 },
+        leftmargin  .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { left~skip=##1 },
+        rightmargin .code:n =
+          \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { right~skip=##1 },
       }
     \keys_define:nn { keytheorems/thm/thmbox }
       {
