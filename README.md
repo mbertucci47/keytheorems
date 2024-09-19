@@ -94,7 +94,8 @@ Some of the code is a direct translation from thmtools but a few things are chan
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
 - There is no `restatable` environment except with package option `thmtools-compat`. Use the
-  `store` (alias `restate`) key.
+  `store` (alias `restate`) key. For counters and labels pointing to the restated theorem,
+  use `store*` (alias `restate*`).
 - Rather than `restate=foo` defining a command `\foo*`, theorems are retrieved with `\getkeytheorem{foo}`.
   For just the theorem body, use `\getkeytheorem[body]{foo}`. Also, this retrieval
   can happen even before the theorem is stated since keytheorems writes the contents
@@ -459,7 +460,6 @@ text
 - Clean up the code. Things are out of order, poorly named, etc.
 - Add more error messages.
 - thmtools features not yet implemented
-    - labels pointing to restated theorem, not original
     - real [`beamer`](https://ctan.org/pkg/beamer) support
     - certainly more
 - For a complete list, see [`keytheorems-ideas.md`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems-ideas.md)

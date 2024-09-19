@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [unreleased]
+## [v0.1.3]
 - add `noteseparator` key
 - add `\IfRestatingT`, `\IfRestatingF`
 - add `store*` key
@@ -20,6 +20,6 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.2...HEAD
+[v0.1.3]: https://github.com/mbertucci47/keytheorems/compare/v0.1.2...v0.1.3
 [v0.1.2]: https://github.com/mbertucci47/keytheorems/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/mbertucci47/keytheorems/compare/v0.1.0...v0.1.1
