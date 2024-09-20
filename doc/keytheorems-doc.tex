@@ -20,7 +20,7 @@
 \usepackage{cleveref}
 \usepackage{amssymb}
 
-\def\version{0.1.3}
+\def\version{0.1.4dev}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -222,6 +222,12 @@ Redefines \cs{qedsymbol} to be \meta{symbol}.
   {default |true|, initially |true|}
 If |false|, \pkg{keytheorems} does not automatically translate the title text for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key.
 These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
+\end{docKey}
+
+\begin{docKey}{store-sets-translate}
+  {}
+  {initially unset}
+Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}.
 \end{docKey}
 
 \section{Defining Theorems}

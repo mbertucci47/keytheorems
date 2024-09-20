@@ -93,3 +93,6 @@
             for the other classes that redefine things
 - [ ] Remove dependency on unique.sty
 - [ ] Line numbers for errors/warnings
+- [x] store-sets-label
+- [ ] allow passing options to restated env
+- [ ] number font

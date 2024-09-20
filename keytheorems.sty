@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\ProvidesExplPackage{keytheorems}{2024-09-19}{0.1.3}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-09-20}{0.1.4dev}{l3keys interface to amsthm}
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
@@ -1886,6 +1886,17 @@
     store-all        .usage:n = preamble,
     auto-translate   .bool_gset:N = \g__keythms_autotranslate_bool,
     auto-translate   .initial:n = true,
+    store-sets-label .code:n =
+      {
+        \keys_define:nn { keytheorems/thmuse }
+          {
+            store .code:n =
+              {
+                \tl_set:Nn \l__keythms_thmuse_label_tl { ##1 }
+                \tl_set:Nn \l__keythms_thmuse_store_tl { ##1 }
+              }
+          }
+      },
   }
 
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
