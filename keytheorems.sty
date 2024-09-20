@@ -815,6 +815,7 @@
   {
     label      .tl_set:N = \l__keythms_thmuse_label_tl,
     note       .tl_set:N = \l__keythms_thmuse_note_tl,
+    note       .initial:n = {},
     name       .meta:n   = { note = #1 },
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     short-note .code:n   = {}, % these do nothing at point of use
@@ -846,7 +847,7 @@
 \cs_new_protected:Npn \keythms_keyify_theorem:n #1
   { % #1 = theorem name
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
-    \DeclareDocumentEnvironment { keythms_grab_#1 } { m O{} +b }
+    \DeclareDocumentEnvironment { keythms_grab_#1 } { m m +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
         \__keythms_thm_prehead_code:n { #1 }
         \begin{keythms_orig_#1}[{##2}]
@@ -868,7 +869,7 @@
         \__keythms_thm_postfoot_code:n { #1 }
       }
       {}
-    \DeclareDocumentEnvironment { keythms_grabreversed_#1 } { m O{} +b }
+    \DeclareDocumentEnvironment { keythms_grabreversed_#1 } { m m +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
         \tl_if_exist:cTF
           { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
@@ -939,7 +940,6 @@
           \tl_if_empty:NF \l__keythms_thmuse_store_tl
             {
               \bool_gset_true:N \g__keythms_listof_writefile_bool
-              \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
               \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
@@ -947,18 +947,12 @@
           \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
             {
               \bool_gset_true:N \g__keythms_listof_writefile_bool
-              \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grabreversed_begin:nn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grabreversed_begin:nnV
               \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
             }
           \__keythms_thm_prehead_continues_code:n { #1 }
-          \tl_if_empty:NTF \l__keythms_thmuse_note_tl
-            { \__keythms_withhooks_begin:nn { #1 } { ##1 } }
-            {
-              \__keythms_withhooks_begin:nnV { #1 } { ##1 }
-                \l__keythms_thmuse_note_tl
-            }
+          \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl
         }
         {
           \__keythms_withhooks_end:n { #1 }
@@ -1009,14 +1003,6 @@
   }
 \cs_new:Npn \__keythms_use_iii_v_braced:nnnnn #1#2#3#4#5 { {#3}{#5} }
 
-\cs_new_protected:Npn \__keythms_withhooks_begin:nn #1#2
-  { % #1 = theorem name, #2 = keys
-    \__keythms_thm_prehead_code:n { #1 }
-    \begin{keythms_orig_#1}
-    \__keythms_thm_posthead_code:n { #1 }
-    \__keythms_thm_addcontentsdata:nnnn { #1 } { } { #2 } { }
-    \ignorespaces % I hope this is alright
-  }
 \cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
     \__keythms_thm_prehead_code:n { #1 }
@@ -1032,30 +1018,21 @@
     \end{keythms_orig_#1}
     \__keythms_thm_postfoot_code:n { #1 }
   }
-\cs_new_protected:Npn \__keythms_grab_begin:nn #1#2
-  { % #1 = theorem name, #2 = keys
-    \begin{keythms_grab_#1}{#2}
-  }
 \cs_new_protected:Npn \__keythms_grab_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
-    \begin{keythms_grab_#1}{#2}[{#3}]
+    \begin{keythms_grab_#1}{#2}{#3}
   }
 \cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
 
-\cs_new_protected:Npn \__keythms_grabreversed_begin:nn #1#2
-  { % #1 = theorem name, #2 = keys
-    \begin{keythms_grabreversed_#1}{#2}
-  }
 \cs_new_protected:Npn \__keythms_grabreversed_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
-    \begin{keythms_grabreversed_#1}{#2}[{#3}]
+    \begin{keythms_grabreversed_#1}{#2}{#3}
   }
 \cs_generate_variant:Nn \__keythms_grabreversed_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grabreversed_end:n #1
   { \end{keythms_grabreversed_#1} }
 
-\cs_new_protected:Npn \__keythms_orig_begin:n #1 { \begin{keythms_orig_#1} }
 \cs_new_protected:Npn \__keythms_orig_begin:nn #1#2
   { \begin{keythms_orig_#1}[{#2}] }
 \cs_generate_variant:Nn \__keythms_orig_begin:nn { nV }
@@ -1306,9 +1283,7 @@
     \hook_use:n { keytheorems/allthms/restated }
     \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
-    \tl_if_empty:NTF \l__keythms_thmuse_note_tl
-      { \__keythms_orig_begin:n { #1 } }
-      { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
+    \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl
     \__keythms_thm_posthead_code:n { #1 }
     #5
     \__keythms_thm_prefoot_code:n { #1 }
@@ -1359,9 +1334,7 @@
     \keys_set:nn { keytheorems/thmuse } { #2 }
     \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
-    \tl_if_empty:NTF \l__keythms_thmuse_note_tl
-      { \__keythms_orig_begin:n { #1 } }
-      { \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl }
+    \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl
     \clist_map_inline:Nn \g__keythms_restatecounters_clist
       {
         \prop_gput:Nne \g__keythms_thmuse_othercounters_prop { ##1 }
@@ -2316,7 +2289,6 @@
 
 \cs_new_protected:Npn \__keythms_storeall_code:
   {
-    \cs_set_eq:NN \__keythms_withhooks_begin:nn \__keythms_grab_begin:nn
     \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
     \cs_set_eq:NN \__keythms_withhooks_begin:nnV \__keythms_grab_begin:nnV
     \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n

@@ -96,3 +96,5 @@
 - [x] store-sets-label
 - [ ] allow passing options to restated env
 - [ ] number font
+- [ ] allow to suppress content of env, then restate later (or earlier)
+- [x] \begin{theorem}[store=foo][text that should be in body] picks up latter bracketed material as note
