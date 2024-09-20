@@ -830,7 +830,7 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
-    store      .tl_set:N = \l__keythms_thmuse_store_tl,
+    store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
     %store      .default:n = \q_no_value, % ={name} causes issues
     restate    .meta:n   = { store = #1 },
     % ^ thmtools compatibility
@@ -1894,7 +1894,12 @@
               {
                 \tl_set:Nn \l__keythms_thmuse_label_tl { ##1 }
                 \tl_set:Nn \l__keythms_thmuse_store_tl { ##1 }
-              }
+              },
+            store* .code:n =
+              {
+                \tl_set:Nn \l__keythms_thmuse_label_tl { ##1 }
+                \tl_set:Nn \l__keythms_thmuse_storereversed_tl { ##1 }
+              },
           }
       },
   }
@@ -1938,7 +1943,25 @@
         \newkeytheorem { ##2 } [ ##1 ]
       }
     \ProvideDocumentEnvironment { restatable } { O{} m m }
-      { % set store outside [] so keyless note is recognized
+      { % need to redefine this to add store to thlist since we set it outside env
+        \cs_set_protected:Npn \__keythms_thm_addcontentsdata:nnnn ####1####2####3####4
+          { % #1 = theorem name, #2 = stored counters, #3 = keys, #4 = body
+            \keythms_listof_chaptervspacehack:
+            \iow_shipout:Ne \@auxout
+              {
+                \exp_not:N \@writefile { thlist }
+                  {
+                    \KeyThmsSavedTheorem{ ####1 }
+                      { \@currentlabel }
+                      { \@currentHref }
+                      { \thepage }
+                      { ####2 }
+                      { store=\l__keythms_thmuse_store_tl,\exp_not:n { ####3 } } % this line is changed
+                      { \exp_not:n { ####4 } }
+                  }
+              }
+          }
+        % set store outside [] so keyless note is recognized
         \keys_set:nn { keytheorems/thmuse } { store=##3 }
         \begin{##2}[##1]
       }
@@ -1947,8 +1970,36 @@
         \cs_new_protected:cpn { ##3 }
           { % make \foo and \foo* identical
             \peek_meaning_remove:NTF *
-              { \use:c { __keythms_getthm_ ##3 _theorem } }
-              { \use:c { __keythms_getthm_ ##3 _theorem } }
+              { \getkeytheorem{ ##3 } }
+              { \getkeytheorem{ ##3 } }
+          }
+      }
+    \ProvideDocumentEnvironment { restatable* } { O{} m m }
+      { % need to redefine this to add store* to thlist since we set it outside env
+        \cs_set_protected:Npn \__keythms_thm_addstoredreverseddata:nnn ####1####2####3
+          {
+            \iow_shipout:Ne \@auxout
+              {
+                \exp_not:N \@writefile { thlist }
+                  {
+                    \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
+                      { ####1 }
+                      { store*=\l__keythms_thmuse_storereversed_tl,\exp_not:n { ####2 } } % this line is changed
+                      { \exp_not:n { ####3 } }
+                  }
+              }
+          }
+        % set store* outside [] so keyless note is recognized
+        \keys_set:nn { keytheorems/thmuse } { store*=##3 }
+        \begin{##2}[##1]
+      }
+      {
+        \end{##2}
+        \cs_new_protected:cpn { ##3 }
+          { % make \foo and \foo* identical
+            \peek_meaning_remove:NTF *
+              { \getkeytheorem{ ##3 } }
+              { \getkeytheorem{ ##3 } }
           }
       }
     \ProvideDocumentCommand { \listoftheorems } { } { \listofkeytheorems }

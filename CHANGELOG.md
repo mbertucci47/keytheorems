@@ -2,6 +2,7 @@
 
 ## [unreleased]
 - add `store-sets-label` option
+- add `restatable*` environment for `thmtools-compat`
 
 ## [v0.1.3]
 - add `noteseparator` key

@@ -93,7 +93,7 @@ Some of the code is a direct translation from thmtools but a few things are chan
   
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
-- There is no `restatable` environment except with package option `thmtools-compat`. Use the
+- There is no `restatable(*)` environment except with package option `thmtools-compat`. Use the
   `store` (alias `restate`) key. For counters and labels pointing to the restated theorem,
   use `store*` (alias `restate*`).
 - Rather than `restate=foo` defining a command `\foo*`, theorems are retrieved with `\getkeytheorem{foo}`.

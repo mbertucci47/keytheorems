@@ -132,6 +132,19 @@
     \path[fill=red!40!black,draw=none] (interior.south west) rectangle node[white]{\LARGE\bfseries !} ([xshift=4mm]interior.north west);
     },
   drop fuzzy shadow,#1}
+\makeatletter
+% allow for optional argument specifying printed text, mostly for starred keys
+\RenewDocumentCommand\tcb@ref@doc{msom}{%
+  \hyperref[{#1:#4}]{%
+  \IfValueTF{#3}{\texttt{#3}}{\texttt{\ref*{#1:#4}}}%
+  \IfBooleanTF{#2}{}{%
+    \ifnum\getpagerefnumber{#1:#4}=\thepage\relax%
+    \else%
+      \kvtcb@doc@format@page{{\fontfamily{pzd}\fontencoding{U}\fontseries{m}\fontshape{n}\selectfont\char213}%
+      \,\kvtcb@text@pageshort\,\pageref*{#1:#4}}%
+    \fi}}%
+}
+\makeatother
 \makeindex
 
 \begin{document}
@@ -183,7 +196,8 @@ The right column lists the corresponding \pkg{keytheorems} replacement that shou
 \docAuxCommand*{addtotheoremprefoothook}\\
 \docAuxCommand*{addtotheorempostfoothook}\\
 \end{tabular} & \refCom{addtotheoremhook} \\
-\docAuxEnvironment*{restatable} environment & \refKey{store} key
+\docAuxEnvironment*{restatable} environment & \refKey{store} key \\
+\docAuxEnvironment*{restatable*} environment & \refKey[store*]{store} key
 \end{tabular}
 \end{center}
 Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
@@ -227,7 +241,7 @@ These texts can be manually customized with the \refKey{title} and \refKey{conti
 \begin{docKey}{store-sets-translate}
   {}
   {initially unset}
-Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}.
+Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}. Similarly for \refKey[store*]{store}.
 \end{docKey}
 
 \section{Defining Theorems}
