@@ -163,7 +163,7 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, \pkg{translations}, and \pkg{unique} packages.
 A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01, \pkg{nameref} is required.
     
-\section{Global Options}
+\section{Global options}
 
 \begin{docCommand}{keytheoremset}
   {\marg{options}}
@@ -244,7 +244,7 @@ These texts can be manually customized with the \refKey{title} and \refKey{conti
 Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}. Similarly for \refKey[store*]{store}.
 \end{docKey}
 
-\section{Defining Theorems}
+\section{Defining theorems}
 
 \begin{docCommand}{newkeytheorem}
   {\marg{env name}\oarg{options}}
@@ -337,7 +337,10 @@ The starred version also copies the theorem note, if it exists.
   {\sarg=\meta{tag}}
   {initially unset}
 Alias \docAuxKey{restate}\sarg.
-Stores the the theorem to be restated at any point in the document with \refCom{getkeytheorem}. With the starred version, counters and labels are taken from the copy called with \cs{getkeytheorem}, so in this case can only be restated once. This allows you, for example, to write all theorems and proofs in the appendix and call \cs{getkeytheorem} at the appropriate time mid-document.
+Stores the the theorem to be restated at any point in the document with \refCom{getkeytheorem}.
+With the starred version, counters and labels are taken from the copy called with \cs{getkeytheorem}, so in this case can only be restated once.
+This allows you, for example, to write all theorems and proofs in the appendix and call \cs{getkeytheorem} at the appropriate time mid-document.
+For the numbering to be correct, the unstarred key will need at most two runs and the starred key at most three runs.
 
 \begin{keythmscode}[]
 \begin{theorem}[store=blub]
@@ -365,6 +368,24 @@ Y \ar[r] \& S
 \end{lemma}
 \dots
 \getkeytheorem{diagram}
+\end{keythmscode}
+
+\end{docKey}
+
+\begin{docKey}{restate-keys}
+  {=\marg{list of keys}}
+  {initially unset}
+Allows passing different keys to the restated theorem.
+At the moment this is only useful with the \refKey{note} key.
+
+\begin{keythmscode}[]
+\begin{theorem}[
+  store=rktest,
+  note=ORIGINAL,
+  restate-keys={note=RESTATED}]
+Wow, yet another theorem.
+\end{theorem}
+\getkeytheorem{rktest}
 \end{keythmscode}
 
 \end{docKey}
@@ -667,7 +688,7 @@ Some theorem text
 \end{mytheo}
 \end{keythmscode}
 
-\section{Theorem Styles}
+\section{Theorem styles}
 
 \begin{docCommand}{newkeytheoremstyle}
   {\marg{name}\marg{options}}
@@ -774,7 +795,7 @@ Inherit the keys of any style declared with \refCom{newkeytheoremstyle}.
 Additionally, the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
 \end{docKey}
 
-\section{Restating Theorems}
+\section{Restating theorems}
 
 When a theorem is given the \refKey{store} key, the contents of the theorem are saved and written to a |.thlist| file.
 At the start of the next run, this file is input at the beginning of the document and allows you to retrieve the stored theorems at any point, before or after the original theorem.
@@ -826,7 +847,7 @@ example!
 
 \end{docCommands}
 
-\section{Listing Theorems}
+\section{Listing theorems}
 
 \begin{docCommand}{listofkeytheorems}
   {\oarg{options}}
@@ -1005,7 +1026,7 @@ You \emph{must} use these commands rather than the aforementioned because the |.
 
 \end{docCommand}
 
-\section{Theorem Hooks} \label{keythms-hooks}
+\section{Theorem hooks} \label{keythms-hooks}
 
 \begin{docCommand}{addtotheoremhook}
   {\oarg{env name}\marg{hook name}\marg{code}}
@@ -1065,6 +1086,10 @@ This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses un
 Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
 This may change if I think of good reasons to do so\dots
 \end{docCommand}
+
+\section{Miscellaneous notes for the ambitious}
+
+Inside theorem environments, as well as in all of the theorem hooks, you have access to the theorem's environment and counter name in the token list variable |\l_keythms_thmuse_envname_tl|.
 
 \section{Further examples}
 

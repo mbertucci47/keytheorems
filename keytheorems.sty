@@ -118,6 +118,7 @@
 \bool_gset_false:N \g__keythms_listof_writefile_bool
 \bool_new:N \g__keythms_thmtoolscompat_bool
 \bool_gset_false:N \g__keythms_thmtoolscompat_bool
+\bool_new:N \l__keythms_listofheading_storereversed_bool
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
 \bool_new:N \l__keythms_thmuse_listhack_bool
@@ -833,7 +834,7 @@
     name       .meta:n   = { note = #1 },
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     short-note .code:n   = {}, % these do nothing at point of use
-    short-name .code:n   = {}, % ^ worthwhile compatibility?
+    short-name .code:n   = {},
     continues  .tl_set:N = \l__keythms_thmuse_contlabel_tl,
     continues* .code:n   =
       {
@@ -847,10 +848,10 @@
       },
     store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
     %store      .default:n = \q_no_value, % ={name} causes issues
-    restate    .meta:n   = { store = #1 },
-    % ^ thmtools compatibility
-    store*   .tl_set:N = \l__keythms_thmuse_storereversed_tl,
-    restate* .meta:n   = { store* = #1 },
+    restate    .meta:n   = { store = #1 }, % thmtools compatibility
+    store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
+    restate*   .meta:n   = { store* = #1 },
+    restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
     listhack   .choice:, % need equals sign
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
@@ -1164,11 +1165,11 @@
 
 \keys_define:nn { keytheorems/storeatbegin }
   {
-    store   .tl_set:N = \l__keythms_storeatbegin_store_tl,
-    restate .meta:n   = { store=#1 },
-    store*   .tl_set:N = \l__keythms_storeatbegin_storereversed_tl,
-    restate* .meta:n   = { store*=#1 },
-    unknown .code:n   = { } % do nothing with unknown keys
+    store    .tl_set:N    = \l__keythms_storeatbegin_store_tl,
+    restate  .meta:n      = { store=#1 },
+    store*   .tl_set:N    = \l__keythms_storeatbegin_storereversed_tl,
+    restate* .meta:n      = { store*=#1 },
+    unknown  .code:n      = { } % do nothing with unknown keys
   }
 
 \cs_new_protected:Npn \KeyThmsContentsLine #1 { #1 }
@@ -1293,6 +1294,7 @@
     \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
     % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
     \keys_set:nn { keytheorems/thmuse } { #4 }
+    \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }
     \__keythms_thm_prehead_continues_code:n { #1 }
@@ -1346,6 +1348,7 @@
     \group_begin:
     \bool_set_false:N \l__keythms_thmuse_restating_bool
     \keys_set:nn { keytheorems/thmuse } { #2 }
+    \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
     \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl
@@ -1667,6 +1670,9 @@
           }
       },
     seq     .tl_set:N = \l__keythms_listofheading_seq_tl,
+    store*  .code:n = \bool_set_true:N \l__keythms_listofheading_storereversed_bool,
+    restate* .meta:n = { store*=#1 },
+    restate-keys .clist_set:N = \l__keythms_listofheading_restatekeys_clist,
     unknown .code:n = { } % do nothing with unknown keys
     % ^ this is OK because we have total control over possible keys; if invalid
     %   key is given to theorem then an error will be raised there
@@ -1706,6 +1712,11 @@
   { % #1 = keys, #2 = list command
     \group_begin:
     \keys_set:nn { keytheorems/listofheading } { #1 }
+    \bool_if:NT \l__keythms_listofheading_storereversed_bool
+      {
+        \keys_set:no { keytheorems/listofheading }
+          { \l__keythms_listofheading_restatekeys_clist }
+      }
     \tl_if_empty:NTF \l__keythms_listofheading_contlabel_tl
       { #2 }
       {

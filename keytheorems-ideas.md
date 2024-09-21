@@ -38,7 +38,7 @@
 - [ ] (partial) "short name" key for theorems to replace thmtools'
       "name={[short name]name}". Should we also support this syntax?
       Progress: key implemented but not yet compat with continues
-- [ ] And what about "restate={[options]foo}" syntax? How useful is this?
+- [x] (see restate-keys) And what about "restate={[options]foo}" syntax? How useful is this?
 - [x] Should "continues(*)" theorems appear in list of theorems? Decide and add option to
       change default.
 - [x] Add "shaded" and "thmbox" keys that use tcolorbox under the hood.
@@ -94,7 +94,7 @@
 - [ ] Remove dependency on unique.sty
 - [ ] Line numbers for errors/warnings
 - [x] store-sets-label
-- [ ] allow passing options to restated env
-- [ ] number font
+- [x] allow passing options to restated env
+- [x] number font
 - [ ] allow to suppress content of env, then restate later (or earlier)
 - [x] \begin{theorem}[store=foo][text that should be in body] picks up latter bracketed material as note

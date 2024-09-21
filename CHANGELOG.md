@@ -3,6 +3,8 @@
 ## [unreleased]
 - add `store-sets-label` option
 - add `restatable*` environment for `thmtools-compat`
+- add `numberfont` style key
+- add `restate-keys` key
 
 ## [v0.1.3]
 - add `noteseparator` key
