@@ -134,7 +134,7 @@
 \tl_new:N \l__keythms_thmstyle_defaultkeys_tl
 \tl_new:N \l__keythms_thmstyle_lnotebrace_tl
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
-\tl_new:N \l__keythms_thmuse_envname_tl
+\tl_new:N \l_keythms_thmuse_envname_tl
 \tl_new:N \g__keythms_thmuse_temprestatedata_tl
 \tl_new:N \g__keythms_thmuse_temprestatedatareversed_tl
 
@@ -193,6 +193,7 @@
     postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
     break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
     break         .value_forbidden:n = true,
+    numberfont    .tl_set:N = \l__keythms_thmstyle_numberfont_tl,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
     notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
     noteseparator .tl_set:N = \l__keythms_thmstyle_noteseparator_tl,
@@ -244,7 +245,13 @@
 \cs_new:Npn \NAME { \keythms_thmstyle_thmname:n { ##1 } }
 \cs_new:Npn \NUMBER
   {
-    \keythms_thmstyle_thmnumber:n { \textup { ##2 } }
+    \keythms_thmstyle_thmnumber:n
+      {
+        \group_begin:
+        \exp_not:V \l__keythms_thmstyle_numberfont_tl
+        ##2
+        \group_end:
+      }
   }
 \cs_new:Npn \NOTE
   {
@@ -260,7 +267,13 @@
 \cs_new:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
   {
     \keythms_thmstyle_thmname:n { #1 }
-    \keythms_thmstyle_thmnumber:n { ~ \textup { #2 } }
+    \keythms_thmstyle_thmnumber:n
+      { ~
+        \group_begin:
+        \exp_not:V \l__keythms_thmstyle_numberfont_tl
+        #2
+        \group_end:
+      }
     \keythms_thmstyle_thmnote:n
       { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
         \group_begin: % group so notefont doesn't affect headpunct
@@ -285,6 +298,7 @@
     headfont      = \bfseries,
     headpunct     = {.},
     postheadspace = 5pt plus 1pt minus 1pt,
+    numberfont    = \upshape,
     notefont      = \fontseries\mddefault\upshape,
     notebraces    = {(}{)},
     noteseparator = {~},
@@ -1040,7 +1054,7 @@
 
 \cs_new_protected:Npn \__keythms_thm_prehead_code:n #1
   { % #1 = theorem name
-    \tl_set:Nn \l__keythms_thmuse_envname_tl { #1 }
+    \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }
   }
