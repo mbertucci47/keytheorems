@@ -98,3 +98,4 @@
 - [x] number font
 - [ ] allow to suppress content of env, then restate later (or earlier)
 - [x] \begin{theorem}[store=foo][text that should be in body] picks up latter bracketed material as note
+- [x] \theoremstyle does not apply thm keys

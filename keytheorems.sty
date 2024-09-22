@@ -520,10 +520,14 @@
     \tl_use:N \l__keythms_thm_defaultkeys_tl
     % First set style so we can pick up additional thm keys, then overwrite if necessary
     \keys_set_groups:nnn { keytheorems/thm } { style-comes-first } { #2 }
-    \tl_if_empty:NF \l__keythms_thm_style_tl
+    % Store theorem style
+    \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \the\thm@style }
+    \tl_if_empty:NTF \l__keythms_thm_style_tl
+      { % if \theoremstyle set, also use saved thm keys
+        \tl_if_exist:cT {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedkeys_tl}
+          { \tl_use:c {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedkeys_tl} }
+      }
       {
-        % Store theorem style
-        \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \the\thm@style }
         % Temporarily set theorem style
         \__keythms_theoremstyle:n { \l__keythms_thm_style_tl }
         % If thm keys given in style, call now (possibly overwritten in next step)
