@@ -100,4 +100,4 @@
 - [x] \begin{theorem}[store=foo][text that should be in body] picks up latter bracketed material as note
 - [x] \theoremstyle does not apply thm keys
 - [ ] nested inherit-style errors
-- [ ] use tcb style with #1 for tcolorbox theorems so style can be added to or overridden
+- [x] use tcb style with #1 for tcolorbox theorems so style can be added to or overridden

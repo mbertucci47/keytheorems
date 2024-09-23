@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [unreleased]
+## [v0.1.4]
 - add `store-sets-label` option
 - add `restatable*` environment for `thmtools-compat`
 - add `numberfont` style key
@@ -27,7 +27,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...HEAD
+[v0.1.4]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/mbertucci47/keytheorems/compare/v0.1.2...v0.1.3
 [v0.1.2]: https://github.com/mbertucci47/keytheorems/compare/v0.1.1...v0.1.2
 [v0.1.1]: https://github.com/mbertucci47/keytheorems/compare/v0.1.0...v0.1.1
