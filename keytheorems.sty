@@ -14,6 +14,8 @@
     \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
     \ProvideDocumentCommand \IfPackageLoadedT { m m }
       { \IfPackageLoadedTF{#1}{#2}{ } }
+    \ProvideDocumentCommand \IfPackageLoadedF { m m }
+      { \IfPackageLoadedTF{#1}{ }{#2} }
     \ProvideDocumentCommand \IfClassLoadedT { m m }
       { \IfClassLoadedTF{#1}{#2}{ } }
   }
@@ -693,46 +695,32 @@
       { keythms_tcbox } { after } { keythms_hook_keys }
     \hook_gset_rule:nnnn { keytheorems/#1/prefoot }
       { keythms_tcbox } { after } { keythms_qed }
-    \bool_if:NTF \l__keythms_thm_numbered_bool
+    \tcbset
+      {
+        keythms_tcbox_#1/.style =
+          {
+            savedelimiter=#1,
+            title={ \__keythms_thm_tcboxtemphead: },
+          }
+      }
+    \bool_if:NT \l__keythms_thm_numbered_bool
       {
         \hook_gput_code:nnn { begindocument } { . }
           {
-            \IfPackageLoadedTF{cleveref}
+            \IfPackageLoadedF{cleveref}
               { % hyperref doesn't patch \@thm if cleveref loaded
-                \hook_gput_code:nnn { keytheorems/#1/posthead }
-                  { keythms_tcbox }
+                \tcbset
                   {
-                    \begin{tcolorbox}[
-                      savedelimiter=#1,
-                      title={ \__keythms_thm_tcboxtemphead: },
-                      #2]
-                  }
-              }
-              {
-                \hook_gput_code:nnn { keytheorems/#1/posthead }
-                  { keythms_tcbox }
-                  {
-                    \begin{tcolorbox}[
-                      savedelimiter=#1,
-                      title={ \__keythms_thm_tcboxtemphead: },
-                      phantom={ \MakeLinkTarget*{\@currentHref} }, % fix hyperlinking
-                      #2]
+                    keythms_tcbox_#1/.append~style = % fix hyperlinking
+                      { phantom={ \MakeLinkTarget*{\@currentHref} } }
                   }
               }
           }
       }
-      {
-        \hook_gput_code:nnn { keytheorems/#1/posthead }
-          { keythms_tcbox }
-          {
-            \begin{tcolorbox}[
-              savedelimiter=#1,
-              title={ \__keythms_thm_tcboxtemphead: },
-              #2]
-          }
-      }
-    \hook_gput_code:nnn { keytheorems/#1/prefoot }
-      { keythms_tcbox } { \end{tcolorbox} }
+    \hook_gput_code:nnn { keytheorems/#1/posthead } { keythms_tcbox }
+      { \begin{tcolorbox}[keythms_tcbox_#1,#2] }
+    \hook_gput_code:nnn { keytheorems/#1/prefoot } { keythms_tcbox }
+      { \end{tcolorbox} }
   }
 \cs_new_protected:Npn \__keythms_thm_qedcode:nn #1#2
   {
