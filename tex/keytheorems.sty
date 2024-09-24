@@ -129,6 +129,7 @@
 \clist_new:N \l__keythms_thmstyle_savedkeys_clist
 \iow_new:N \g__keythms_listof_stream
 \prop_new:N \g__keythms_thmnames_prop
+\prop_new:N \g__keythms_thmstyle_defaultkeys_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
 \prop_new:N \l__keythms_restate_counters_prop
 \tl_new:N \l__keythms_thm_currentthmstyle_tl
@@ -155,7 +156,7 @@
 \cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
-\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc }
+\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, ne }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -286,13 +287,7 @@
       }
   }
 
-\cs_new_protected:Npn \keythms_thmstyle_setdefaultkeys:n #1
-  {
-    \keys_precompile:nnN { keytheorems/thmstyle }
-      { #1 }
-      \l__keythms_thmstyle_defaultkeys_tl
-  }
-\keythms_thmstyle_setdefaultkeys:n
+\prop_gset_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
   { % support files may overwrite these defaults
     spaceabove    = \topsep,
     spacebelow    = \topsep,
@@ -306,6 +301,12 @@
     notebraces    = {(}{)},
     noteseparator = {~},
     headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+  }
+\hook_gput_code:nnn { package/keytheorems/after } { . }
+  { % need to defer to wait for support files
+    \keys_precompile:neN { keytheorems/thmstyle }
+      { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
+      \l__keythms_thmstyle_defaultkeys_tl
   }
 
 \NewDocumentCommand \newkeytheoremstyle { m m }

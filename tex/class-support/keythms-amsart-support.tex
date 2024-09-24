@@ -1,7 +1,7 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\ProvidesExplFile{keythms-amsart-support}{2024-09-22}{0.1.4}
+\ProvidesExplFile{keythms-amsart-support}{2024-09-22}{0.1.5dev}
   {keytheorems~support~for~the~amsart~class}
 
 \__keythms_support_AMSshared_code:
@@ -9,20 +9,15 @@
 \IfClassLoadedTF { acmart }
   { % acmart loads amsart
     \keytheoremset{overload} % since acmart predefines several theorems
-    \keythms_thmstyle_setdefaultkeys:n
+    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
       {
         spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
         spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
         bodyfont      = \@acmplainbodyfont,
         headindent    = \@acmplainindent,
         headfont      = \@acmplainheadfont,
-        headpunct     = {.},
         postheadspace = .5em,
-        numberfont    = \upshape,
         notefont      = \@acmplainnotefont,
-        notebraces    = {(}{)},
-        noteseparator = {~},
-        headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
       }
     \keys_define:nn { keytheorems/thmstyle }
       {
@@ -35,22 +30,12 @@
             notefont   = \@acmdefinitionnotefont,
           },
       }
-    % TODO: define inherit-style=acmdefinition/acmplain
   }
   {
-    \keythms_thmstyle_setdefaultkeys:n
+    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
       {
         spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
         spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-        bodyfont      = \itshape,
-        headindent    = 0pt,
-        headfont      = \bfseries,
-        headpunct     = {.},
-        postheadspace = 5pt plus 1pt minus 1pt,
-        notefont      = \fontseries\mddefault\upshape,
-        notebraces    = {(}{)},
-        noteseparator = {~},
-        headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
       }
   }
 
