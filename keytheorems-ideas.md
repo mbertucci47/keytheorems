@@ -81,7 +81,7 @@
 - [x] tcolorbox theorem spacing after sections is not good when titlesec loaded
 - [x] also different behavior for tcb theorems and not, namely spaceabove adds space
       after section for former but not latter
-- [ ] full control over list-of appearance, including name and number
+- [x] (see format-code) full control over list-of appearance, including name and number
 - [x] option to add list of theorems to TOC. No, let user control manually.
 - [x] list appearance does not match list of figures in memoir
 - [x] make indent configurable in general

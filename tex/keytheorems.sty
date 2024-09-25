@@ -156,7 +156,7 @@
 \cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
-\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, ne }
+\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, nnc, ne }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -244,30 +244,6 @@
 \cs_new_protected:Nn \keythms_thmstyle_thmnumber:n { \thmnumber{#1} }
 \cs_new_protected:Nn \keythms_thmstyle_thmnote:n { \thmnote{#1} }
 
-%% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
-%% QUESTION: should these be moved into def of \newkeytheoremstyle?
-\cs_new:Npn \NAME { \keythms_thmstyle_thmname:n { ##1 } }
-\cs_new:Npn \NUMBER
-  {
-    \keythms_thmstyle_thmnumber:n
-      {
-        \group_begin:
-        \exp_not:V \l__keythms_thmstyle_numberfont_tl
-        ##2
-        \group_end:
-      }
-  }
-\cs_new:Npn \NOTE
-  {
-    \keythms_thmstyle_thmnote:n
-      { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
-        \group_begin: % group so notefont doesn't affect headpunct
-        \exp_not:V \l__keythms_thmstyle_notefont_tl
-        \l__keythms_thmstyle_lnotebrace_tl ##3 \l__keythms_thmstyle_rnotebrace_tl
-        \group_end:
-      }
-  }
-
 \cs_new:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
   {
     \keythms_thmstyle_thmname:n { #1 }
@@ -352,15 +328,46 @@
       \l__keythms_thmstyle_headfont_tl
       \l__keythms_thmstyle_headpunct_tl
       \l__keythms_thmstyle_postheadspace_tl
-      { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
+      { %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
+        \exp_not:n
+          { % better inside to not conflict, but also much faster for some reason?
+            \cs_set:Npn \NAME { \keythms_thmstyle_thmname:n { ##1 } }
+            \cs_set:Npn \NUMBER
+              {
+                \keythms_thmstyle_thmnumber:n
+                  {
+                    \group_begin:
+                    \exp_not:V \l__keythms_thmstyle_numberfont_tl
+                    ##2
+                    \group_end:
+                  }
+              }
+            \cs_set:Npn \NOTE
+              {
+                \keythms_thmstyle_thmnote:n
+                  { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
+                    \group_begin: % group so notefont doesn't affect headpunct
+                    \exp_not:V \l__keythms_thmstyle_notefont_tl
+                    \l__keythms_thmstyle_lnotebrace_tl ##3 \l__keythms_thmstyle_rnotebrace_tl
+                    \group_end:
+                  }
+              }
+          }
+        % \tl_put_right:Nn \l_text_expand_exclude_tl { \thmnote }
+        \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} }
+      }
     % Define new inherit-style key
-    \keys_define:nn { keytheorems/thmstyle }
-      { inherit-style / #1 .meta:n = { #2 } }
-    \tl_if_exist:cF { l__keythms_thmstyle_ #1 _savedkeys_tl }
-      { \tl_new:c { l__keythms_thmstyle_ #1 _savedkeys_tl } }
+    \tl_if_exist:cF { l__keythms_thmstyle_ #1 _metakeys_tl }
+      { \tl_new:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
+    \keys_precompile:nnc { keytheorems/thmstyle } { #2 } % use precompile instead of meta key
+      { l__keythms_thmstyle_ #1 _metakeys_tl }           % because that's sensitive to hashes
+    \keys_define:nn { keytheorems/thmstyle }             % and we want to allow both # and ##
+      { inherit-style / #1 .code:n = \tl_use:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
+    \tl_if_exist:cF { l__keythms_thmstyle_ #1 _savedthmkeys_tl }
+      { \tl_new:c { l__keythms_thmstyle_ #1 _savedthmkeys_tl } }
     \keys_precompile:nVc { keytheorems/thm }
       \l__keythms_thmstyle_savedkeys_clist
-      { l__keythms_thmstyle_ #1 _savedkeys_tl }
+      { l__keythms_thmstyle_ #1 _savedthmkeys_tl }
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
@@ -508,9 +515,9 @@
 \@onlypreamble \newkeytheorem
 
 % to prevent error when plain, remark, or definition style used
-\tl_new:N \l__keythms_thmstyle_plain_savedkeys_tl
-\tl_new:N \l__keythms_thmstyle_remark_savedkeys_tl
-\tl_new:N \l__keythms_thmstyle_definition_savedkeys_tl
+\tl_new:N \l__keythms_thmstyle_plain_savedthmkeys_tl
+\tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
+\tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
 % \keythms_thm_newkeythm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
@@ -527,16 +534,16 @@
     \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \the\thm@style }
     \tl_if_empty:NTF \l__keythms_thm_style_tl
       { % if \theoremstyle set, also use saved thm keys
-        \tl_if_exist:cT {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedkeys_tl}
-          { \tl_use:c {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedkeys_tl} }
+        \tl_if_exist:cT {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedthmkeys_tl}
+          { \tl_use:c {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedthmkeys_tl} }
       }
       {
         % Temporarily set theorem style
         \__keythms_theoremstyle:n { \l__keythms_thm_style_tl }
         % If thm keys given in style, call now (possibly overwritten in next step)
         % but don't error if user uses a style defined with just \newtheoremstyle
-        \tl_if_exist:cT { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl }
-          { \tl_use:c { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedkeys_tl } }
+        \tl_if_exist:cT { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedthmkeys_tl }
+          { \tl_use:c { l__keythms_thmstyle_ \l__keythms_thm_style_tl _savedthmkeys_tl } }
       }
     % Set env-specific keys
     \keys_set:nn { keytheorems/thm } { #2 }

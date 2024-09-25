@@ -1,5 +1,5 @@
 %% Lines from the original file have been commented out.
-%% Equivalent 'keytheorems' declarations are given adjacent.
+%% Equivalent 'thmtools' declarations are given adjacent.
 \RequirePackage{l3benchmark}
 \ExplSyntaxOn
 \AtEndDocument { \benchmark_toc: }
@@ -9,39 +9,39 @@
 \title{\texttt{\char`\\ newkeytheorem} and \texttt{\char`\\ newkeytheoremstyle} test}
 \author{%
   Original document by Michael Downes; updated by Barbara Beeton\\
-  Adjusted for \textsf{keytheorems} by Matthew Bertucci
+  Adjusted for \textsf{thmtools} by Matthew Bertucci
   }
 
-\usepackage{keytheorems}
+\usepackage{amsthm,thmtools}
 
-\newkeytheorem{thm}[name=Theorem, parent=section]
-\newkeytheorem{cor}[name=Corollary, sibling=thm]
-\newkeytheorem{prop}[name=Proposition]
-\newkeytheorem{lem}[name=Lemma, sibling=thm]
+\declaretheorem[name=Theorem, parent=section]{thm}
+\declaretheorem[name=Corollary, sibling=thm]{cor}
+\declaretheorem[name=Proposition]{prop}
+\declaretheorem[name=Lemma, sibling=thm]{lem}
 
 %\newtheorem{thm}{Theorem}[section]
 %\newtheorem{cor}[thm]{Corollary}
 %\newtheorem{prop}{Proposition}
 %\newtheorem{lem}[thm]{Lemma}
 
-\newkeytheorem{rmk}[name=Remark, numbered=false, style=remark]
+\declaretheorem[name=Remark, numbered=no, style=remark]{rmk}
 
 %\theoremstyle{remark}
 %\newtheorem*{rmk}{Remark}
 
-\newkeytheorem{Ahlfors}[name=Ahlfors' Lemma, numbered=false]
+\declaretheorem[name=Ahlfors' Lemma, numbered=no]{Ahlfors}
 
 %\theoremstyle{plain}
 %\newtheorem*{Ahlfors}{Ahlfors' Lemma}
 
-\newkeytheoremstyle{note}{
+\declaretheoremstyle[
   spaceabove=3pt,
   spacebelow=3pt,
   bodyfont=\normalfont,
   headfont=\itshape,
   headpunct={:},
-  postheadspace=.5em,
-  }
+  postheadspace=.5em
+  ]{note}
 
 %\newtheoremstyle{note}% name
 %  {3pt}%      Space above
@@ -54,20 +54,21 @@
 %        %       \newline = linebreak
 %  {}%         Thm head spec (can be left empty, meaning `normal')
 
-\newkeytheorem{note}[style=note] % no 'name' key means capitalize first letter
+\declaretheorem[style=note]{note} % no 'name' key means capitalize first letter
 
 %\theoremstyle{note}
 %\newtheorem{note}{Note}
 
-\newkeytheoremstyle{citing}{
+\declaretheoremstyle[
   spaceabove=3pt,
   spacebelow=3pt,
   notefont=\bfseries,
   postheadspace=.5em,
   notebraces={}{},
   % \NOTE begins with space so prefix with \ignorespaces
-  headstyle=\ignorespaces\NOTE
-  }
+  headstyle=\ignorespaces\NOTE,
+  bodyfont=\itshape,
+  ]{citing}
   
 %\newtheoremstyle{citing}% name
 %  {3pt}%      Space above, empty = `usual value'
@@ -80,16 +81,17 @@
 %        %       \newline = linebreak
 %  {\thmnote{#3}}% Thm head spec
 
-\newkeytheorem{varthm}[name={}, numbered=false, style=citing]
+\declaretheorem[name={}, numbered=no, style=citing]{varthm}
 
 %\theoremstyle{citing}
 %\newtheorem*{varthm}{}% all text supplied in the note
 
-\newkeytheoremstyle{break}{
+\declaretheoremstyle[
   spaceabove=9pt,
   spacebelow=9pt,
-  break 
-  }
+  bodyfont=\itshape,
+  break
+  ]{break}
 
 %\newtheoremstyle{break}% name
 %  {9pt}%      Space above, empty = `usual value'
@@ -101,25 +103,25 @@
 %  {\newline}% Space after thm head: \newline = linebreak
 %  {}%         Thm head spec
 
-\newkeytheorem{bthm}[name=B-Theorem, style=break]
+\declaretheorem[name=B-Theorem, style=break]{bthm}
 
 %\theoremstyle{break}
 %\newtheorem{bthm}{B-Theorem}
 
-\newkeytheoremstyle{exercise}{
+\declaretheoremstyle[
   bodyfont=\normalfont,
   headpunct={:}
-  }
-\newkeytheorem{exer}[name=Exercise, style=exercise]
+  ]{exercise}
+\declaretheorem[name=Exercise, style=exercise]{exer}
 
 %\theoremstyle{exercise}
 %\newtheorem{exer}{Exercise}
 
-\newkeytheoremstyle{swap}{headstyle=swapnumber}
-\newkeytheorem{thmsw}[name=Theorem, parent=section, style=swap]
-\newkeytheorem{corsw}[name=Corollary, sibling=thmsw, style=swap]
-\newkeytheorem{propsw}[name=Proposition, style=swap]
-\newkeytheorem{lemsw}[name=Lemma, sibling=thmsw, style=swap]
+\declaretheoremstyle[headstyle=swapnumber,bodyfont=\itshape]{swap}
+\declaretheorem[name=Theorem, parent=section, style=swap]{thmsw}
+\declaretheorem[name=Corollary, sibling=thmsw, style=swap]{corsw}
+\declaretheorem[name=Proposition, style=swap]{propsw}
+\declaretheorem[name=Lemma, sibling=thmsw, style=swap]{lemsw}
 
 %\swapnumbers
 %\theoremstyle{plain}

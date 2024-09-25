@@ -6,6 +6,7 @@
 *.listing
 *.loe
 *.log
+*.minted
 *.out
 *.synctex.gz
 *.tcbtemp

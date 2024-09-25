@@ -1,11 +1,11 @@
-% !TeX program = txs:///pdflatex/[--shell-escape] | txs:///makeindex | txs:///pdflatex/[--shell-escape] | txs:///view-pdf
+% !TeX program = txs:///pdflatex | txs:///makeindex | txs:///pdflatex | txs:///view-pdf
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
 \usepackage{geometry}
 \geometry{margin=1in}
-\usepackage{minted2}
 \usepackage{tcolorbox}
+\PassOptionsToPackage{highlightmode=immediate}{minted}
 \tcbuselibrary{documentation,minted}
 \tcbset{
   listing engine=minted,
@@ -632,7 +632,7 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
 \begin{corollary}
 Some text
 \end{corollary}
-\begin{definition}
+\begin{definition}[A nice definition]
 Some more text
 \end{definition}
 \end{keythmscode}
