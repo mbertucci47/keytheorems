@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\ProvidesExplPackage{keytheorems}{2024-09-22}{0.1.4}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-09-22}{0.1.5dev}{l3keys interface to amsthm}
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
@@ -1483,6 +1483,8 @@
     title      .initial:n  = \GetTranslation{keythms_listof_title},
     swapnumber .bool_set:N = \l__keythms_listof_swapnumber_bool,
     swapnumber .initial:n  = false,
+    format-code     .cs_set:Np = \__keythms_listof_misdirect:nnn #1#2#3,
+    format-code     .initial:n  = \numberline{#2}#1#3,
     title-code .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
     no-title   .bool_set:N = \l__keythms_listof_notitle_bool,
     no-title   .initial:n  = false,
@@ -1671,7 +1673,7 @@
     %   key is given to theorem then an error will be raised there
   }
 
-\cs_new:Npn \__keythms_listof_printheading:
+\cs_new:Npn \__keythms_listof_printnote:
   {
     \tl_if_empty:NTF \l__keythms_listofheading_shortnote_tl
       {
@@ -1683,19 +1685,14 @@
       }
   }
 
-\cs_new:Npn \__keythms_listof_default_listcmd:nnnnnnn #1#2#3#4#5#6#7
-  {
+\cs_new:Npn \keythms_listof_listcmd:nnnnnnn #1#2#3#4#5#6#7
+  { % #1=name, #2=number, #3=Href, #4=page, #5=restate counters, #6=keys, #7=body
     \contentsline{ #1 }
       {
-        \bool_if:NTF \l__keythms_listof_swapnumber_bool
-          {
-            \prop_item:Nn \g__keythms_thmnames_prop { #1 } ~ #2
-          }
-          {
-            \numberline{ #2 }
-            \prop_item:Nn \g__keythms_thmnames_prop { #1 }
-          }
-        \__keythms_listof_printheading:
+        \__keythms_listof_misdirect:nnn
+          { \prop_item:Nn \g__keythms_thmnames_prop { #1 } }
+          { #2 }
+          { \__keythms_listof_printnote: }
       }
       { #4 }{ #3 }
   }
@@ -1729,10 +1726,6 @@
     \group_end:
   }
 
-% set default listcmd
-\cs_new_eq:NN \keythms_listof_listcmd:nnnnnnn
-  \__keythms_listof_default_listcmd:nnnnnnn
-
 \cs_if_exist:NTF \chapter
   { \cs_set_protected:Npn \__keythms_listof_titlecmd:n #1 { \chapter*{#1} } }
   { \cs_set_protected:Npn \__keythms_listof_titlecmd:n #1 { \section*{#1} } }
@@ -1759,6 +1752,10 @@
         \@mkboth % QUESTION: should this go in titlecmd ?
           { \MakeUppercase \l__keythms_listof_title_tl }
           { \MakeUppercase \l__keythms_listof_title_tl }
+      }
+    \bool_if:NT \l__keythms_listof_swapnumber_bool
+      {
+        \cs_set:Npn \__keythms_listof_misdirect:nnn ##1##2##3 { ##1 ~ ##2##3 }
       }
     \legacy_if_set_false:n { @filesw }
     \@starttoc{ thlist }

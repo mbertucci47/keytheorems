@@ -4,6 +4,7 @@
 \documentclass{ltxdoc}
 \usepackage{geometry}
 \geometry{margin=1in}
+\usepackage{minted2}
 \usepackage{tcolorbox}
 \tcbuselibrary{documentation,minted}
 \tcbset{
@@ -975,6 +976,12 @@ Useful for custom ordering of the list.
   {=\meta{code with \textup{\texttt{\#1}}}}
   {initially \ttbraces{ (\#1)}}
 Formats the optional note in the list of theorems.
+\end{docKey}
+
+\begin{docKey}{format-code}
+  {=\meta{code with \textup{\texttt{\#1}}, \textup{\texttt{\#2}}, and \textup{\texttt{\#3}}}}
+  {initially \cs{numberline}\texttt{\{\#2\}\#1\#3}}
+Allows full control over the format for list entries. The theorem name is |#1|, the number is |#2|, and the (formatted) note is |#3|. The note formatting is still controlled by \refKey{note-code}.
 \end{docKey}
 
 \begin{docKey}{print-body}
