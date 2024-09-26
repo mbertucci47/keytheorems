@@ -315,8 +315,31 @@
 \cs_new_eq:NN \keythms_thmstyle_new:nnnnnnnnn \newtheoremstyle
 \cs_generate_variant:Nn \keythms_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
 
+\tl_put_right:Nn \l_text_expand_exclude_tl { \thmnote \thmnumber \thmname }
+% ^ allows \thmnote, etc. to work in headstyle; hope no bad side effects!
 \cs_new_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
-  {
+  { %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
+    \cs_set:Npn \NAME { \keythms_thmstyle_thmname:n { ####1 } }
+    \cs_set:Npn \NUMBER
+      {
+        \keythms_thmstyle_thmnumber:n
+          {
+            \group_begin:
+            \exp_not:V \l__keythms_thmstyle_numberfont_tl
+            ####2
+            \group_end:
+          }
+      }
+    \cs_set:Npn \NOTE
+      {
+        \keythms_thmstyle_thmnote:n
+          { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
+            \group_begin: % group so notefont doesn't affect headpunct
+            \exp_not:V \l__keythms_thmstyle_notefont_tl
+            \l__keythms_thmstyle_lnotebrace_tl ####3 \l__keythms_thmstyle_rnotebrace_tl
+            \group_end:
+          }
+      }
     \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
     \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
     \keys_set:nn { keytheorems/thmstyle } { #2 }
@@ -328,34 +351,7 @@
       \l__keythms_thmstyle_headfont_tl
       \l__keythms_thmstyle_headpunct_tl
       \l__keythms_thmstyle_postheadspace_tl
-      { %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
-        \exp_not:n
-          { % better inside to not conflict, but also much faster for some reason?
-            \cs_set:Npn \NAME { \keythms_thmstyle_thmname:n { ##1 } }
-            \cs_set:Npn \NUMBER
-              {
-                \keythms_thmstyle_thmnumber:n
-                  {
-                    \group_begin:
-                    \exp_not:V \l__keythms_thmstyle_numberfont_tl
-                    ##2
-                    \group_end:
-                  }
-              }
-            \cs_set:Npn \NOTE
-              {
-                \keythms_thmstyle_thmnote:n
-                  { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
-                    \group_begin: % group so notefont doesn't affect headpunct
-                    \exp_not:V \l__keythms_thmstyle_notefont_tl
-                    \l__keythms_thmstyle_lnotebrace_tl ##3 \l__keythms_thmstyle_rnotebrace_tl
-                    \group_end:
-                  }
-              }
-          }
-        % \tl_put_right:Nn \l_text_expand_exclude_tl { \thmnote }
-        \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} }
-      }
+      { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define new inherit-style key
     \tl_if_exist:cF { l__keythms_thmstyle_ #1 _metakeys_tl }
       { \tl_new:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
@@ -368,6 +364,9 @@
     \keys_precompile:nVc { keytheorems/thm }
       \l__keythms_thmstyle_savedkeys_clist
       { l__keythms_thmstyle_ #1 _savedthmkeys_tl }
+    \cs_undefine:N \NAME % undefine to prevent conflicts
+    \cs_undefine:N \NUMBER
+    \cs_undefine:N \NOTE
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
