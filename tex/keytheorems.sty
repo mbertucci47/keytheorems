@@ -19,11 +19,10 @@
     \ProvideDocumentCommand \IfClassLoadedT { m m }
       { \IfClassLoadedTF{#1}{#2}{ } }
   }
-\RequirePackage{aliascnt} % for sibling theorems
-\RequirePackage{amsthm}
-% ^ ams classes have way of ignoring this so don't need to check if they're loaded
-\RequirePackage{refcount} % for \getrefnumber
-\RequirePackage{translations} % for translating "List of Theorems"
+\RequirePackage{aliascnt}
+\RequirePackage{amsthm} % ams classes have way of ignoring this
+\RequirePackage{refcount}
+\RequirePackage{translations}
 
 %%%%%%%%%%%%%%%%%%%%%%
 %%% Error Messages %%%
@@ -162,19 +161,18 @@
 %%% Styles %%%
 %%%%%%%%%%%%%%
 
-% \__keythms_thmstyle_setbraces:nn { <left brace> } { <right brace> }
 \cs_new_protected:Npn \__keythms_thmstyle_setbraces:nn #1#2
-  {
+  { % #1 = left brace, #2 = right brace
     \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl { #1 }
     \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl { #2 }
   }
 \cs_new_protected:Npn \keythms_thmstyle_savethmkey_reqval:n #1
-  {
+  { % #1 = key value
     \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
       { \l_keys_key_str = { #1 } }
   }
 \cs_new_protected:Npn \keythms_thmstyle_savethmkey_optval:n #1
-  {
+  { % #1 = key value
     \tl_if_empty:NTF \l_keys_value_tl
       {
         \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
@@ -318,7 +316,7 @@
 \tl_put_right:Nn \l_text_expand_exclude_tl { \thmnote \thmnumber \thmname }
 % ^ allows \thmnote, etc. to work in headstyle; hope no bad side effects!
 \cs_new_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
-  { %% NOTE: if these are used, user is in charge of spacing with \NAME and \NUMBER
+  { % user is in charge of spacing with \NAME and \NUMBER (thmtools compat...)
     \cs_set:Npn \NAME { \keythms_thmstyle_thmname:n { ####1 } }
     \cs_set:Npn \NUMBER
       {
@@ -352,7 +350,7 @@
       \l__keythms_thmstyle_headpunct_tl
       \l__keythms_thmstyle_postheadspace_tl
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
-    % Define new inherit-style key
+    % Define inherit-style key
     \tl_if_exist:cF { l__keythms_thmstyle_ #1 _metakeys_tl }
       { \tl_new:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
     \keys_precompile:nnc { keytheorems/thmstyle } { #2 } % use precompile instead of meta key
@@ -374,10 +372,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 % FIX: reimplement these without \NewDocumentCommand and \SplitArgument
-
-% \keythms_thm_setrefnames:n { <envname> } { <refname> or <sing,plural> }
 \NewDocumentCommand \keythms_thm_setrefnames:nn
-  { m >{\SplitArgument{1}{,}} m }
+  { m >{\SplitArgument{1}{,}} m } % #1 = envname, #2 = <refname> or <sing,plural>
   { \__keythms_thm_setrefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
   {
@@ -391,9 +387,8 @@
   }
 \cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
 
-% \keythms_thm_setRefnames:n { <envname> } { <refname> or <sing,plural> }
 \NewDocumentCommand \keythms_thm_setRefnames:nn
-  { m >{\SplitArgument{1}{,}} m }
+  { m >{\SplitArgument{1}{,}} m } % #1 = envname, #2 = <refname> or <sing,plural>
   { \__keythms_thm_setRefnames_aux:nnn{#1}#2 }
 \cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
   {
@@ -504,13 +499,11 @@
 % Make generic theorem hooks
 \__keythms_thm_makethmhooks:n { allthms }
 
-% \newkeytheorem{<name>}{<keys>}
 \NewDocumentCommand \newkeytheorem { m O{} }
-  {
+  { % #1 = name, #2 = keys
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
   }
-
 \@onlypreamble \newkeytheorem
 
 % to prevent error when plain, remark, or definition style used
@@ -518,9 +511,8 @@
 \tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
 \tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
-% \keythms_thm_newkeythm:nn { <envname> } { <keys> }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
-  {
+  { % #1 = name, #2 = keys
     % Store envname
     \tl_set:Nn \l__keythms_thm_envname_tl { #1 }
     % Make unless-unique false by default (can't precompile this)
@@ -574,7 +566,7 @@
     \quark_if_no_value:NT \l__keythms_thm_name_tl % use quark so name={} is valid
       {
         % use e so \text_titlecase called only once per theorem definition,
-        %  not each time the theorem is used
+        % not each time the theorem is used
         \tl_set:Ne \l__keythms_thm_name_tl 
           { \text_titlecase_first:n { #1 } }
       }
@@ -677,9 +669,7 @@
     \__keythms_listof_show_aux:n { #1 }
     % Set theorem style back to original state if needed
     \tl_if_empty:NF \l__keythms_thm_style_tl
-      {
-        \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl
-      }
+      { \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl }
   }
 
 \cs_new_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
@@ -846,12 +836,11 @@
           }
       },
     store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
-    %store      .default:n = \q_no_value, % ={name} causes issues
     restate    .meta:n   = { store = #1 }, % thmtools compatibility
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
     restate*   .meta:n   = { store* = #1 },
     restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
-    listhack   .choice:, % need equals sign
+    listhack   .choice:, % needs equals sign
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
     listhack   .initial:n = false,

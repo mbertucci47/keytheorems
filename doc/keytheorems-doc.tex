@@ -1,4 +1,4 @@
-% !TeX program = txs:///pdflatex | txs:///makeindex | txs:///pdflatex | txs:///view-pdf
+% !TeX program = txs:///lualatex | txs:///makeindex | txs:///lualatex | txs:///view-pdf
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
@@ -11,15 +11,17 @@
   listing engine=minted,
   minted language=latex,
   }
-\ifTUTeX\else
+\ifTUTeX
+\usepackage{newcomputermodern}
+\else
 \usepackage{lmodern}
 \usepackage[T1]{fontenc}
+\usepackage{amssymb}
 \fi
 \usetikzlibrary{cd}
 \usepackage{booktabs}
 \usepackage{keytheorems}
 \usepackage{cleveref}
-\usepackage{amssymb}
 
 \def\version{0.1.5dev}
 

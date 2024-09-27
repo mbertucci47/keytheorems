@@ -2,6 +2,7 @@
 
 ## [unreleased]
 - add `format-code` list key
+- can now use `\thmname`, `\thmnumber`, `\thmnote` in `headformat`
 
 ## [v0.1.4]
 - add `store-sets-label` option

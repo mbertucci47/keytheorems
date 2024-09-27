@@ -1,7 +1,7 @@
 # Ideas/Issues:
 - [ ] Only print "up-to-now" theorems, or by section.
       This is complicated. See etoc. And acro (\acbarrier).
-- [ ] Use style key for multiple theorems, like
+- [x] (just use \theoremstyle) Use style key for multiple theorems, like
       ```tex
       \keytheoremset{style={<keys>}}
       \newkeytheorem{thm1}
@@ -28,7 +28,7 @@
 - [x] What about \zlabel and other "label" commands in restated theorem? Should
       there be an interface for disabling them?
 - [ ] unless-unique more general: https://tex.stackexchange.com/a/705572/208544
-- [ ] Rename "preheadhook" etc. to "prehead"?
+- [x] Rename "preheadhook" etc. to "prehead"? Answer: no, prehead sounds like a skip amount
 - [ ] \listofkeytheorems does not print restated theorems. Should an option be added
       to do this? No, right?
 - [x] Language support? At least for list of theorems title
@@ -74,7 +74,7 @@
 - [x] use different dummy counters for unnumbered, continues, and restate
 - [x] seq for custom lists of theorems
 - [x] make code more modular
-- [ ] option to restate without writing to file
+- [x] option to restate without writing to file (let's wait to see if this is an issue)
 - [x] code with brackets fail in note key, e.g. \cite[bla]{ref}
 - [x] with tcolorbox theorems, spaceabove and spacebelow should always be set to 0pt
 - [x] no-auto-translate or something like that
@@ -101,3 +101,5 @@
 - [x] \theoremstyle does not apply thm keys
 - [ ] nested inherit-style errors
 - [x] use tcb style with #1 for tcolorbox theorems so style can be added to or overridden
+- [ ] can't define \renewkeytheorem, etc., until figure out preheadhook situation.
+      Right now we don't add if empty, but then \hook_remove gives warnings
