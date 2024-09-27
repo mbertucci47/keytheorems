@@ -242,7 +242,7 @@ If |false|, \pkg{keytheorems} does not automatically translate the title text fo
 These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
-\begin{docKey}{store-sets-translate}
+\begin{docKey}{store-sets-label}
   {}
   {initially unset}
 Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}. Similarly for \refKey[store*]{store}.
@@ -429,7 +429,7 @@ Adds the theorem to a custom sequence \meta{name} that can then be listed with \
 See \refKey{listof/seq} for more details.
 \end{docKey}
 
-\subsection{Keys inherited from \pkg{thmtools}} \label{thm-thmtools-keys}
+\subsection{Keys also defined in \pkg{thmtools}} \label{thm-thmtools-keys}
 
 These are the \oarg{options} available to \cs{newkeytheorem}.
 Except for \refKey{thm/name} and \refKey{style}, each key below can also be used in \refCom{newkeytheoremstyle}.
@@ -709,7 +709,7 @@ The defined style can be used with either the \refKey{style} key or the traditio
 For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart}, the initial key values are slightly different than what's below in order to match those class's defaults.
 \end{notebox}
 
-\subsection{Keys inherited from \pkg{thmtools}}
+\subsection{Keys also defined in \pkg{thmtools}}
 
 The following keys have the same meaning and syntax as the corresponding \pkg{thmtools} keys.
 In addition to the list below, most of the keys available to \refCom{newkeytheorem} can be used in \cs{newkeytheoremstyle}.
