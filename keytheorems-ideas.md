@@ -103,5 +103,5 @@
 - [x] use tcb style with #1 for tcolorbox theorems so style can be added to or overridden
 - [ ] can't define \renewkeytheorem, etc., until figure out preheadhook situation.
       Right now we don't add if empty, but then \hook_remove gives warnings
-- [ ] \KeyThmsContentsLine, etc. should be default be no-ops, redefined to do things, not reverse as now
+- [x] \KeyThmsContentsLine, etc. should be default be no-ops, redefined to do things, not reverse as now
 - [ ] amsbook and no-title...
