@@ -1077,9 +1077,7 @@ As in \pkg{thmtools}, the order of hooks is as follows:
 The \hook{restated} hook is applied at the start of theorems retrieved with \cs{getkeytheorem}, before the \hook{prehead} hook. 
 This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.
 \begin{dispListing}
-\addtotheoremhook{restated}{%
-  \renewcommand\footnote[2][]{}%
-  }
+\addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
 \end{dispListing}
 By default, \pkg{keytheorems} disables the \cs{label} and \cs{RecordProperties} commands in restated theorems.
 
