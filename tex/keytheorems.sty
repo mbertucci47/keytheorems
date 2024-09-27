@@ -1981,6 +1981,12 @@
           }
       }
     \ProvideDocumentCommand { \listoftheorems } { } { \listofkeytheorems }
+    \ProvideDocumentCommand { \listtheoremname } { }
+      { \GetTranslation{keythms_listof_title} }
+    \keys_define:nn { keytheorems/listof }
+      { % redefine since thmtools way is \renewcommand\listtheoremname{...}
+        title .initial:n  = \listtheoremname
+      }
     \ProvideDocumentCommand { \addtotheorempreheadhook } { O{allthms} m }
       {
         \addtotheoremhook [ ##1 ] { prehead } { ##2 }

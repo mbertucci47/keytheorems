@@ -183,23 +183,25 @@ This is automatically set by \refKey{thmtools-compat}.
   {}
   {initially unset}
 For compatibility with \pkg{thmtools} syntax.
-Currently defines the commands in the left column below.
+For most documents, \cs{usepackage}\bracks{thmtools-compat}\ttbraces{keytheorems} should be a drop-in replacement for \cs{usepackage}\ttbraces{amsthm,thmtools}.
+The option defines the commands in the left column below.
 The right column lists the corresponding \pkg{keytheorems} replacement that should be used in new documents.
 \begin{center}
-\begin{tabular}{cc}
-\pkg{thmtools} command & \pkg{keytheorems} replacement \\
+\begin{tabular}{rcl}
+\multicolumn{1}{c}{\pkg{thmtools} command} & & \multicolumn{1}{c}{\pkg{keytheorems} replacement} \\
 \toprule
-\docAuxCommand*{declaretheorem} & \refCom{newkeytheorem} \\
-\docAuxCommand*{declaretheoremstyle} & \refCom{newkeytheoremstyle} \\
-\docAuxCommand*{listoftheorems} & \refCom{listofkeytheorems} \\
-\begin{tabular}{c}
+\docAuxCommand*{declaretheorem} & $\rightarrow$ & \refCom{newkeytheorem} \\
+\docAuxCommand*{declaretheoremstyle} & $\rightarrow$ & \refCom{newkeytheoremstyle} \\
+\docAuxCommand*{listoftheorems} & $\rightarrow$ & \refCom{listofkeytheorems} \\
+\docAuxCommand*{listtheoremname} & $\rightarrow$ & \refKey{title} key \\
+\begin{tabular}{r@{}}
 \docAuxCommand*{addtotheorempreheadhook}\\
 \docAuxCommand*{addtotheorempostheadhook}\\
 \docAuxCommand*{addtotheoremprefoothook}\\
 \docAuxCommand*{addtotheorempostfoothook}\\
-\end{tabular} & \refCom{addtotheoremhook} \\
-\docAuxEnvironment*{restatable} environment & \refKey{store} key \\
-\docAuxEnvironment*{restatable*} environment & \refKey[store*]{store} key
+\end{tabular} & $\rightarrow$ & \refCom{addtotheoremhook} \\
+\docAuxEnvironment*{restatable} environment & $\rightarrow$ & \refKey{store} key \\
+\docAuxEnvironment*{restatable*} environment & $\rightarrow$ & \refKey[store*]{store} key
 \end{tabular}
 \end{center}
 Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
