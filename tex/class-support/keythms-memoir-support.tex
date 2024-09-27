@@ -25,9 +25,10 @@
     \bool_gset_true:N \g__keythms_listof_writefile_bool
     \group_begin:
     \keys_set:nn { keytheorems/listof } { #1 }
-    \bool_if:NT \l__keythms_listof_nochapskip_bool
+    \cs_set_protected:Npn \KeyThmsContentsLine ##1 { ##1 }
+    \bool_if:NF \l__keythms_listof_nochapskip_bool
       {
-        \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
+        \cs_set_eq:NN \KeyThmsAddvspace \addvspace
       }
     \bool_if:NTF \l__keythms_listof_notitle_bool
       {

@@ -1160,7 +1160,8 @@
     unknown  .code:n      = { } % do nothing with unknown keys
   }
 
-\cs_new_protected:Npn \KeyThmsContentsLine #1 { #1 }
+\cs_new_protected:Npn \KeyThmsContentsLine #1 { }
+% ^ initially a no-op, redefined where needed; important it's protected!
 \NewDocumentCommand \addtheoremcontentsline { m m }
   {
     \addtocontents { thlist }
@@ -1183,8 +1184,6 @@
 \hook_gput_code:nnn { begindocument } { . }
   {
     \group_begin:
-    \cs_set_eq:NN \KeyThmsContentsLine \use_none:n
-    \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
     \cs_set_protected:Npn \KeyThmsSavedTheorem #1#2#3#4#5#6#7
       {
         \group_begin:
@@ -1491,9 +1490,6 @@
                   {##1}{##2}{##5}{##6}{##7}
               }
           }
-        \cs_set_eq:NN \KeyThmsContentsLine \use_none:n
-        % ^ I assume we want this?
-        \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
       },
     note-code  .cs_set:Np = \__keythms_listof_notecmd:n #1,
     note-code  .initial:n = { ~ (#1) },
@@ -1733,9 +1729,10 @@
     \bool_gset_true:N \g__keythms_listof_writefile_bool
     \group_begin:
     \keys_set:nn { keytheorems/listof } { #1 }
-    \bool_if:NT \l__keythms_listof_nochapskip_bool
+    \cs_set_protected:Npn \KeyThmsContentsLine ##1 { ##1 }
+    \bool_if:NF \l__keythms_listof_nochapskip_bool
       {
-        \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
+        \cs_set_eq:NN \KeyThmsAddvspace \addvspace
       }
     \bool_if:NF \l__keythms_listof_notitle_bool
       {
@@ -1776,7 +1773,7 @@
   }
 
 % chaptervspacehack (code translated from thmtools)
-\cs_new_eq:NN \KeyThmsAddvspace \addvspace
+\cs_new_protected:Npn \KeyThmsAddvspace #1 { } % initially no-op, redefined where needed
 \int_new:N \g_keythms_listof_prevchapter_int
 \int_gset:Nn \g_keythms_listof_prevchapter_int { 1 }
 % ^ if this is zero, bad things happen if title-code is changed; anyways don't
@@ -1793,7 +1790,7 @@
               {
                 \addtocontents{ thlist }
                   {
-                    \protect\KeyThmsAddvspace
+                    \KeyThmsAddvspace
                       { \keythms@listof@chaptervspace@dim }
                   }
                 \int_gset:Nn \g_keythms_listof_prevchapter_int { \value{chapter} }
@@ -2350,9 +2347,10 @@
         \bool_gset_true:N \g__keythms_listof_writefile_bool
         \group_begin:
         \keys_set:nn { keytheorems/listof } { ##1 }
-        \bool_if:NT \l__keythms_listof_nochapskip_bool
+        \cs_set_protected:Npn \KeyThmsContentsLine ####1 { ####1 }
+        \bool_if:NF \l__keythms_listof_nochapskip_bool
           {
-            \cs_set_eq:NN \KeyThmsAddvspace \use_none:n
+            \cs_set_eq:NN \KeyThmsAddvspace \addvspace
           }
         \legacy_if_set_false:n { @filesw }
         \bool_if:NTF \l__keythms_listof_notitle_bool
