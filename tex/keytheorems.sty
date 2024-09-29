@@ -1483,6 +1483,11 @@
               }
           }
       },
+    seq                 .code:n     = 
+      {
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+          { \keythms_listof_showseq:n { #1 } }
+      },
     show                .code:n     =
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1638,8 +1643,8 @@
 %% See acro.sty for template idea.
 \keys_define:nn { keytheorems/listofheading }
   {
-    continues  .tl_set:N = \l__keythms_listofheading_contlabel_tl,
-    continues* .code:n   =
+    continues    .tl_set:N    = \l__keythms_listofheading_contlabel_tl,
+    continues*   .code:n      =
       {
         \keys_set:nn { keytheorems/listofheading } { continues = #1 }
         \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n{#1} }
@@ -1649,15 +1654,18 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
-    name       .meta:n   = { note = #1 },
-    note       .tl_set:N = \l__keythms_listofheading_note_tl,
-    restate* .meta:n = { store*=#1 },
+    name         .meta:n      = { note = #1 },
+    note         .tl_set:N    = \l__keythms_listofheading_note_tl,
+    restate*     .meta:n      = { store*=#1 },
     restate-keys .clist_set:N = \l__keythms_listofheading_restatekeys_clist,
-    seq     .tl_set:N = \l__keythms_listofheading_seq_tl,
-    short-note .tl_set:N = \l__keythms_listofheading_shortnote_tl,
-    short-name .meta:n   = { short-note = #1 },
-    store*  .code:n = \bool_set_true:N \l__keythms_listofheading_storereversed_bool,
-    unknown .code:n = { } % do nothing with unknown keys
+    seq          .tl_set:N    = \l__keythms_listofheading_seq_tl,
+    short-note   .tl_set:N    = \l__keythms_listofheading_shortnote_tl,
+    short-name   .meta:n      = { short-note = #1 },
+    store*       .code:n      =
+      {
+        \bool_set_true:N \l__keythms_listofheading_storereversed_bool
+      },
+    unknown      .code:n      = { } % do nothing with unknown keys
   }
 
 \cs_new:Npn \__keythms_listof_printnote:

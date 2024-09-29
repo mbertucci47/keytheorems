@@ -172,6 +172,8 @@ A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01
 Every key in this section can be given as a package option with \cs{usepackage}\bracks{\meta{options}}\ttbraces{keytheorems} or in \cs{keytheoremset}\marg{options}, with the exception that \refKey{continues-code} can only be used in the latter.
 \end{docCommand}
 
+\subsection{Compatibility options}
+
 \begin{docKey}{overload}
   {}
   {initially unset}
@@ -207,18 +209,13 @@ The right column lists the corresponding \pkg{keytheorems} replacement that shou
 Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
 \end{docKey}
 
-\begin{docKey}{store-all}
-  {}
-  {initially unset}
-Tells \pkg{keytheorems} to grab the body of each theorem so it can later be printed with the \refKey{print-body} option of \refCom{listofkeytheorems}.
-Note that this means a theorem body \emph{cannot} contain verbatim material.
-\end{docKey}
+\subsection{Other global options}
 
-\begin{docKey}{restate-counters}
-  {=\marg{comma-list of counters}}
-  {initially \ttbraces{equation}}
-Additional counters whose values are preserved when a theorem is restated.
-This key does not reset the list, so you don't need to include |equation| in \meta{comma-list}.
+\begin{docKey}{auto-translate}
+  {\colOpt{=true\textbar false}}
+  {default |true|, initially |true|}
+If |false|, \pkg{keytheorems} does not automatically translate the title text for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key.
+These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
 \begin{docKey}{continues-code}
@@ -235,11 +232,18 @@ Currently (likely inaccurate!) translations exist for French, German, Italian, P
 Redefines \cs{qedsymbol} to be \meta{symbol}.
 \end{docKey}
 
-\begin{docKey}{auto-translate}
-  {\colOpt{=true\textbar false}}
-  {default |true|, initially |true|}
-If |false|, \pkg{keytheorems} does not automatically translate the title text for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key.
-These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
+\begin{docKey}{restate-counters}
+  {=\marg{comma-list of counters}}
+  {initially \ttbraces{equation}}
+Additional counters whose values are preserved when a theorem is restated.
+This key does not reset the list, so you don't need to include |equation| in \meta{comma-list}.
+\end{docKey}
+
+\begin{docKey}{store-all}
+  {}
+  {initially unset}
+Tells \pkg{keytheorems} to grab the body of each theorem so it can later be printed with the \refKey{print-body} option of \refCom{listofkeytheorems}.
+Note that this means a theorem body \emph{cannot} contain verbatim material.
 \end{docKey}
 
 \begin{docKey}{store-sets-label}
@@ -438,7 +442,7 @@ For more description, see the \href{https://ctan.org/pkg/thmtools}{\pkg{thmtools
 \begin{docKey}[][doc label=thm/name]{name}
   {=\meta{display name}}
   {initially title-cased \meta{env name}}
-Aliases \docAuxKey{title} and \docAuxKey{heading}.
+Aliases \docAuxKey{heading} and \docAuxKey{title}.
 
 \begin{tcbwritetemp}
 \newkeytheorem{mythm}[name=Some Name]
@@ -550,6 +554,28 @@ Some text
 
 \end{docKeys}
 
+\begin{docKey}{qed}
+  {\colOpt{=\meta{symbol}}}
+  {default \cs{openbox}, initially unset}
+Adds \colOpt{\meta{symbol}} to the end of the theorem body.
+If no value is given, the symbol \openbox\ is used.
+
+\begin{tcbwritetemp}
+\newkeytheorem{example}[qed]
+\newkeytheorem{solution}[qed=$\clubsuit$]
+\end{tcbwritetemp}
+
+\begin{keythmscode}[withpreamble]
+\begin{example}
+Some text
+\end{example}
+\begin{solution}
+Some more text
+\end{solution}
+\end{keythmscode}
+
+\end{docKey}
+
 \begin{docKey}{refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \meta{display name}}
@@ -583,28 +609,6 @@ Some more text
 Consider \cref{abc,def}.
 \Autoref{abc} \dots
 \end{theorem}
-\end{keythmscode}
-
-\end{docKey}
-
-\begin{docKey}{qed}
-  {\colOpt{=\meta{symbol}}}
-  {default \cs{openbox}, initially unset}
-Adds \colOpt{\meta{symbol}} to the end of the theorem body.
-If no value is given, the symbol \openbox\ is used.
-
-\begin{tcbwritetemp}
-\newkeytheorem{example}[qed]
-\newkeytheorem{solution}[qed=$\clubsuit$]
-\end{tcbwritetemp}
-
-\begin{keythmscode}[withpreamble]
-\begin{example}
-Some text
-\end{example}
-\begin{solution}
-Some more text
-\end{solution}
 \end{keythmscode}
 
 \end{docKey}
@@ -714,46 +718,10 @@ For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as t
 The following keys have the same meaning and syntax as the corresponding \pkg{thmtools} keys.
 In addition to the list below, most of the keys available to \refCom{newkeytheorem} can be used in \cs{newkeytheoremstyle}.
 
-\begin{docKey}{spaceabove}
-  {=\meta{length}}
-  {initially \cs{topsep}}
-
-\end{docKey}
-
-\begin{docKey}{spacebelow}
-  {=\meta{length}}
-  {initially \cs{topsep}}
-
-\end{docKey}
-
 \begin{docKey}{bodyfont}
   {=\meta{font declarations}}
   {initially \cs{itshape}}
 
-\end{docKey}
-
-\begin{docKey}{headindent}
-  {=\meta{length}}
-  {initially |0pt|}
-
-\end{docKey}
-
-\begin{docKey}{headfont}
-  {=\meta{font declarations}}
-  {initially \cs{bfseries}}
-
-\end{docKey}
-
-\begin{docKey}{headpunct}
-  {=\meta{code}}
-  {initially \ttbraces{.}}
-
-\end{docKey}
-
-\begin{docKey}{postheadspace}
-  {=\meta{length}}
-  {initially |5pt plus 1pt minus 1pt|}
-Do not use this with the \refKey{break} key.
 \end{docKey}
 
 \begin{docKey}{break}
@@ -762,15 +730,9 @@ Do not use this with the \refKey{break} key.
 Do not use this with the \refKey{postheadspace} key.
 \end{docKey}
 
-\begin{docKey}{notefont}
+\begin{docKey}{headfont}
   {=\meta{font declarations}}
-  {initially \cs{fontseries}\cs{mddefault}\cs{upshape}}
-
-\end{docKey}
-
-\begin{docKey}{notebraces}
-  {=\marg{left brace}\marg{right brace}}
-  {initially \ttbraces{(}\ttbraces{)}}
+  {initially \cs{bfseries}}
 
 \end{docKey}
 
@@ -784,7 +746,56 @@ Alias \docAuxKey{headstyle}. Within \meta{code}, the commands \docAuxCommand{NAM
 In \refKey{headformat}, you may also use the traditional \pkg{amsthm} commands \cs{thmname}, \cs{thmnumber}, and \cs{thmnote}, where |#1| is the theorem name, |#2| the number, and |#3| the note. \pkg{keytheorems} expands the head spec inside |\text_expand:n| so for these commands to work properly, the package adds them to |\l_text_expand_exclude_tl|. Note also that if you use these lower-level commands, the style keys \refKey{notebraces}, \refKey{notefont}, \refKey{noteseparator}, and \refKey{numberfont} will have no effect (of course, you can manually control these things inside the commands' arguments).
 \end{notebox}
 
+\begin{docKey}{headindent}
+  {=\meta{length}}
+  {initially |0pt|}
+
+\end{docKey}
+
+\begin{docKey}{headpunct}
+  {=\meta{code}}
+  {initially \ttbraces{.}}
+
+\end{docKey}
+
+\begin{docKey}{notebraces}
+  {=\marg{left brace}\marg{right brace}}
+  {initially \ttbraces{(}\ttbraces{)}}
+
+\end{docKey}
+
+\begin{docKey}{notefont}
+  {=\meta{font declarations}}
+  {initially \cs{fontseries}\cs{mddefault}\cs{upshape}}
+
+\end{docKey}
+
+\begin{docKey}{postheadspace}
+  {=\meta{length}}
+  {initially |5pt plus 1pt minus 1pt|}
+Do not use this with the \refKey{break} key.
+\end{docKey}
+
+\begin{docKey}{spaceabove}
+  {=\meta{length}}
+  {initially \cs{topsep}}
+
+\end{docKey}
+
+\begin{docKey}{spacebelow}
+  {=\meta{length}}
+  {initially \cs{topsep}}
+
+\end{docKey}
+
 \subsection{Keys added by \pkg{keytheorems}}
+
+\begin{docKey}{inherit-style}
+  {=\meta{style name}}
+  {initially unset}
+Inherit the keys of any style declared with \refCom{newkeytheoremstyle}.
+Additionally, the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
+\end{docKey}
 
 \begin{docKey}{noteseparator}
   {=\meta{code}}
@@ -796,13 +807,6 @@ The code inserted before the note, and printed only if there is a note. This is 
   {=\meta{font declarations}}
   {initially |\upshape|}
 For almost all theorem styles, it is recommended that you \emph{do not} change this setting.
-\end{docKey}
-
-\begin{docKey}{inherit-style}
-  {=\meta{style name}}
-  {initially unset}
-Inherit the keys of any style declared with \refCom{newkeytheoremstyle}.
-Additionally, the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
 \end{docKey}
 
 \section{Restating theorems}
@@ -877,26 +881,8 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
 
 \subsection{Keys inherited from \pkg{thmtools}}
 
-\begin{docKey}{numwidth}
-  {=\meta{length}}
-  {initially |2.3em|}
-For the AMS classes, this is initially |1.5pc|.
-\end{docKey}
-
 \begin{docKey}{ignore}
   {=\marg{comma-list of env names}}
-  {initially unset}
-
-\end{docKey}
-
-\begin{docKey}{show}
-  {=\marg{comma-list of env names}}
-  {initially all theorems}
-
-\end{docKey}
-
-\begin{docKey}{onlynamed}
-  {\colOpt{=\marg{comma-list of env names}}}
   {initially unset}
 
 \end{docKey}
@@ -915,9 +901,33 @@ For the AMS classes, this is initially |1.5pc|.
 
 \end{docKey}
 
+\begin{docKey}{numwidth}
+  {=\meta{length}}
+  {initially |2.3em|}
+For the AMS classes, this is initially |1.5pc|.
+\end{docKey}
+
+\begin{docKey}{onlynamed}
+  {\colOpt{=\marg{comma-list of env names}}}
+  {initially unset}
+
+\end{docKey}
+
+\begin{docKey}{show}
+  {=\marg{comma-list of env names}}
+  {initially all theorems}
+
+\end{docKey}
+
 \begin{docKey}{showall}
   {}
   {initially set}
+
+\end{docKey}
+
+\begin{docKey}{swapnumber}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
 
 \end{docKey}
 
@@ -929,13 +939,13 @@ Currently French, German, Italian, Portuguese, and Spanish have (likely inaccura
 A translation can be added with a GitHub pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
 \end{docKey}
 
-\begin{docKey}{swapnumber}
-  {\colOpt{=true\textbar false}}
-  {initially |false|}
-
-\end{docKey}
-
 \subsection{Keys added by \pkg{keytheorems}}
+
+\begin{docKey}{format-code}
+  {=\meta{code with \textup{\texttt{\#1}}, \textup{\texttt{\#2}}, and \textup{\texttt{\#3}}}}
+  {initially \cs{numberline}\texttt{\{\#2\}\#1\#3}}
+Allows full control over the format for list entries. The theorem name is |#1|, the number is |#2|, and the (formatted) note is |#3|. The note formatting is still controlled by \refKey{note-code}.
+\end{docKey}
 
 \begin{docKey}{indent}
   {=\meta{length}}
@@ -945,25 +955,23 @@ For \cls{memoir} and the AMS classes, the indent is initially |0pt|.
 It is not recommended to change this unless your class has different defaults not already covered.
 \end{docKey}
 
-\begin{docKey}{onlynumbered}
-  {\colOpt{=\marg{comma-list of env names}}}
-  {initially unset}
-Similar to \refKey{onlynamed}, but lists only those theorems which are numbered.
-This is useful if you'd like to exclude things like unnumbered definitions and remarks from the list of theorems.
+\begin{docKey}{no-chapter-skip}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
+By default a small vertical space is inserted between each chapter's chunk of theorems.
+Setting this key to |true| removes this space.
 \end{docKey}
 
-\begin{docKey}[][doc label=listof/seq]{seq}
-  {=\meta{name}}
-  {initially unset}
-Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key.
-This is the only way to fully customize which theorems appear in the list of theorems.
-Unlike with \refKey{show}, you do not need to use \refKey{ignoreall} to prevent theorems not in \meta{name} from being printed.
+\begin{docKey}{chapter-skip-length}
+  {=\meta{dimension}}
+  {initially |10pt|}
+Controls the amount of space inserted between chunks.
 \end{docKey}
 
-\begin{docKey}{title-code}
-  {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially \cs{section*}\ttbraces{\#1}}
-If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbraces{\#1}. This key has no effect if used with an AMS class because these classes hard-code the section heading into \cs{@starttoc}.
+\begin{docKey}{no-continues}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
+Suppresses the printing of theorems given the \refKey{continues} key in the list of theorems.
 \end{docKey}
 
 \begin{docKey}{no-title}
@@ -980,16 +988,23 @@ Useful for custom ordering of the list.
 
 \end{docKey}
 
+\begin{docKey}{no-toc}
+  {\colOpt{=true\textbar false}}
+  {initially false}
+With the standard classes, lists of figures/tables are not added to the table of contents by default. The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing. However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents. With these classes, this key suppresses the addition of the list of theorems to the table of contents.
+\end{docKey}
+
 \begin{docKey}{note-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
   {initially \ttbraces{ (\#1)}}
 Formats the optional note in the list of theorems.
 \end{docKey}
 
-\begin{docKey}{format-code}
-  {=\meta{code with \textup{\texttt{\#1}}, \textup{\texttt{\#2}}, and \textup{\texttt{\#3}}}}
-  {initially \cs{numberline}\texttt{\{\#2\}\#1\#3}}
-Allows full control over the format for list entries. The theorem name is |#1|, the number is |#2|, and the (formatted) note is |#3|. The note formatting is still controlled by \refKey{note-code}.
+\begin{docKey}{onlynumbered}
+  {\colOpt{=\marg{comma-list of env names}}}
+  {initially unset}
+Similar to \refKey{onlynamed}, but lists only those theorems which are numbered.
+This is useful if you'd like to exclude things like unnumbered definitions and remarks from the list of theorems.
 \end{docKey}
 
 \begin{docKey}{print-body}
@@ -999,29 +1014,18 @@ Instead of listing the theorem headings, the theorems are restated with their bo
 Not very useful without the \refKey{store-all} load-time option.
 \end{docKey}
 
-\begin{docKey}{no-continues}
-  {\colOpt{=true\textbar false}}
-  {initially |false|}
-Suppresses the printing of theorems given the \refKey{continues} key in the list of theorems.
+\begin{docKey}[][doc label=listof/seq]{seq}
+  {=\meta{name}}
+  {initially unset}
+Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key.
+This is the only way to fully customize which theorems appear in the list of theorems.
+Unlike with \refKey{show}, you do not need to use \refKey{ignoreall} to prevent theorems not in \meta{name} from being printed.
 \end{docKey}
 
-\begin{docKey}{no-chapter-skip}
-  {\colOpt{=true\textbar false}}
-  {initially |false|}
-By default a small vertical space is inserted between each chapter's chunk of theorems.
-Setting this key to |true| removes this space.
-\end{docKey}
-
-\begin{docKey}{chapter-skip-length}
-  {=\meta{dimension}}
-  {initially |10pt|}
-Controls the amount of space inserted between chunks.
-\end{docKey}
-
-\begin{docKey}{no-toc}
-  {\colOpt{=true\textbar false}}
-  {initially false}
-With the standard classes, lists of figures/tables are not added to the table of contents by default. The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing. However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents. With these classes, this key suppresses the addition of the list of theorems to the table of contents.
+\begin{docKey}{title-code}
+  {=\meta{code with \textup{\texttt{\#1}}}}
+  {initially \cs{section*}\ttbraces{\#1}}
+If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbraces{\#1}. This key has no effect if used with an AMS class because these classes hard-code the section heading into \cs{@starttoc}.
 \end{docKey}
 
 \subsection{Adding code to list of theorems}
