@@ -186,19 +186,13 @@
 
 \keys_define:nn { keytheorems/thmstyle }
   {
-    spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
-    spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     bodyfont      .tl_set:N = \l__keythms_thmstyle_bodyfont_tl,
-    headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
-    headfont      .tl_set:N = \l__keythms_thmstyle_headfont_tl,
-    headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
-    postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
     break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
     break         .value_forbidden:n = true,
-    numberfont    .tl_set:N = \l__keythms_thmstyle_numberfont_tl,
-    notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
-    notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
-    noteseparator .tl_set:N = \l__keythms_thmstyle_noteseparator_tl,
+    headfont      .tl_set:N = \l__keythms_thmstyle_headfont_tl,
+    headformat    .meta:n   = { headstyle = #1 },
+    headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
+    headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
     headstyle     .choice:,
     headstyle / margin .code:n =
       {
@@ -210,32 +204,38 @@
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn { \NUMBER\ \NAME\NOTE }
       },
     headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
-    headformat    .meta:n = { headstyle = #1 },
     inherit-style .choice:,
     inherit-style / plain .meta:n = {},
     inherit-style / definition .meta:n = { bodyfont = \normalfont },
     inherit-style / remark .meta:n =
       {
-        headfont = \itshape,
-        bodyfont = \normalfont,
+        bodyfont   = \normalfont,
+        headfont   = \itshape,
         spaceabove = 0.5\topsep,
         spacebelow = 0.5\topsep,
       },
+    notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
+    notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
+    noteseparator .tl_set:N = \l__keythms_thmstyle_noteseparator_tl,
+    numberfont    .tl_set:N = \l__keythms_thmstyle_numberfont_tl,
+    postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
+    spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
+    spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     % thm keys that are saved for later
     numbered              .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
-    parent                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    numberwithin          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    within                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     numberlike            .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    numberwithin          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    parent                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    postfoothook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     postheadhook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     prefoothook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    postfoothook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     qed                   .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
+    sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     tcolorbox             .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
     tcolorbox-no-titlebar .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
+    within                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
   }
 
 \cs_new_protected:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
@@ -263,18 +263,18 @@
 
 \prop_gset_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
   { % support files may overwrite these defaults
+    bodyfont      = \itshape,
+    headfont      = \bfseries,
+    headindent    = 0pt,
+    headpunct     = {.},
+    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+    notebraces    = {(}{)},
+    notefont      = \fontseries\mddefault\upshape,
+    noteseparator = {~},
+    numberfont    = \upshape,
+    postheadspace = 5pt plus 1pt minus 1pt,
     spaceabove    = \topsep,
     spacebelow    = \topsep,
-    bodyfont      = \itshape,
-    headindent    = 0pt,
-    headfont      = \bfseries,
-    headpunct     = {.},
-    postheadspace = 5pt plus 1pt minus 1pt,
-    numberfont    = \upshape,
-    notefont      = \fontseries\mddefault\upshape,
-    notebraces    = {(}{)},
-    noteseparator = {~},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
   }
 \hook_gput_code:nnn { package/keytheorems/after } { . }
   { % need to defer to wait for support files
@@ -404,37 +404,35 @@
 
 \keys_define:nn { keytheorems/thm }
   {
-    name           .tl_set:N  = \l__keythms_thm_name_tl,
-    title          .meta:n    = { name = #1 },
     heading        .meta:n    = { name = #1 },
-    refname        .tl_set:N  = \l__keythms_thm_refname_tl,
-    Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    name           .tl_set:N  = \l__keythms_thm_name_tl,
     numbered       .choice:,
-    numbered / true .code:n   = \bool_set_true:N \l__keythms_thm_numbered_bool,
+    numbered       .default:n = true,
     numbered / false .code:n  = \bool_set_false:N \l__keythms_thm_numbered_bool,
-    numbered / yes .meta:n    = { numbered = true },
-    numbered / no  .meta:n    = { numbered = false },
+    numbered / no    .meta:n  = { numbered = false },
+    numbered / true  .code:n  = \bool_set_true:N \l__keythms_thm_numbered_bool,
     numbered / unless-unique .code:n = 
       {
         \bool_set_true:N \l__keythms_thm_unlessunique_bool
       },
     numbered / unless~unique .meta:n = { numbered = unless-unique },
-    numbered       .default:n = true,
-    parent         .tl_set:N  = \l__keythms_thm_parent_tl,
-    numberwithin   .meta:n    = { parent = #1 },
-    within         .meta:n    = { parent = #1 },
-    sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
+    numbered / yes .meta:n    = { numbered = true },
     numberlike     .meta:n    = { sibling = #1 },
-    sharenumber    .meta:n    = { sibling = #1 },
-    style          .tl_set:N  = \l__keythms_thm_style_tl,
-    style          .groups:n  = { style-comes-first },
-    preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
+    numberwithin   .meta:n    = { parent = #1 },
+    parent         .tl_set:N  = \l__keythms_thm_parent_tl,
+    postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
     postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
     prefoothook    .tl_set:N  = \l__keythms_thm_prefoothook_tl,
-    postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
+    preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
     qed            .default:n = \c_novalue_tl,
     % ^ distinguish between 'qed' and 'qed={}'
+    refname        .tl_set:N  = \l__keythms_thm_refname_tl,
+    Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    sharenumber    .meta:n    = { sibling = #1 },
+    sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
+    style          .tl_set:N  = \l__keythms_thm_style_tl,
+    style          .groups:n  = { style-comes-first },
     tcolorbox      .tl_set:N  = \l__keythms_thm_tcbkeys_tl,
     tcolorbox      .default:n = {},
     tcolorbox-no-titlebar .meta:n =
@@ -450,6 +448,8 @@
           }
       },
     tcolorbox-no-titlebar .default:n = {},
+    title          .meta:n    = { name = #1 },
+    within         .meta:n    = { parent = #1 },
   }
 
 % what below is unnecessary? I really don't understand this code.
@@ -472,17 +472,17 @@
 \keys_precompile:nnN { keytheorems/thm }
   {
     name         = \q_no_value,
-    refname      = \q_no_value,
-    Refname      = \q_no_value,
     numbered     = true,
     parent       = {},
-    sibling      = {},
-    style        = {},
-    preheadhook  = {},
+    postfoothook = {},
     postheadhook = {},
     prefoothook  = {},
-    postfoothook = {},
+    preheadhook  = {},
     qed          = \q_no_value,
+    refname      = \q_no_value,
+    Refname      = \q_no_value,
+    sibling      = {},
+    style        = {},
     tcolorbox    = \q_no_value,
   }
   \l__keythms_thm_defaultkeys_tl
@@ -816,13 +816,6 @@
 
 \keys_define:nn { keytheorems/thmuse }
   {
-    label      .tl_set:N = \l__keythms_thmuse_label_tl,
-    note       .tl_set:N = \l__keythms_thmuse_note_tl,
-    note       .initial:n = {},
-    name       .meta:n   = { note = #1 },
-    % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
-    short-note .code:n   = {}, % these do nothing at point of use
-    short-name .code:n   = {},
     continues  .tl_set:N = \l__keythms_thmuse_contlabel_tl,
     continues* .code:n   =
       {
@@ -834,16 +827,23 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
-    store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
-    restate    .meta:n   = { store = #1 }, % thmtools compatibility
-    store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
-    restate*   .meta:n   = { store* = #1 },
-    restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
+    label      .tl_set:N = \l__keythms_thmuse_label_tl,
     listhack   .choice:, % needs equals sign
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
     listhack   .initial:n = false,
+    name       .meta:n   = { note = #1 },
+    % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
+    note       .tl_set:N = \l__keythms_thmuse_note_tl,
+    note       .initial:n = {},
+    restate    .meta:n   = { store = #1 }, % thmtools compatibility
+    restate*   .meta:n   = { store* = #1 },
+    restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
     seq        .code:n = {},
+    short-note .code:n   = {}, % these do nothing at point of use
+    short-name .code:n   = {},
+    store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
+    store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
   }
 
 \cs_new_protected:Npn \keythms_keyify_theorem:n #1
@@ -1153,10 +1153,10 @@
 
 \keys_define:nn { keytheorems/storeatbegin }
   {
-    store    .tl_set:N    = \l__keythms_storeatbegin_store_tl,
     restate  .meta:n      = { store=#1 },
-    store*   .tl_set:N    = \l__keythms_storeatbegin_storereversed_tl,
     restate* .meta:n      = { store*=#1 },
+    store    .tl_set:N    = \l__keythms_storeatbegin_store_tl,
+    store*   .tl_set:N    = \l__keythms_storeatbegin_storereversed_tl,
     unknown  .code:n      = { } % do nothing with unknown keys
   }
 
@@ -1429,33 +1429,16 @@
 
 \keys_define:nn { keytheorems/listof }
   {
-    numwidth   .dim_set:N = \l__keythms_listof_numwidth_dim,
-    numwidth   .initial:n = 2.3em,
-    indent     .dim_set:N = \l__keythms_listof_indent_dim,
-    indent     .initial:n = 1.5em,
-    ignore     .code:n    =
+    chapter-skip-length .dim_set:N  = \keythms@listof@chaptervspace@dim,
+    chapter-skip-length .initial:n  = 10pt,
+    format-code         .cs_set:Np  = \__keythms_listof_misdirect:nnn #1#2#3,
+    format-code         .initial:n  = \numberline{#2}#1#3,
+    ignore              .code:n     =
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_ignore:n { #1 } }
       },
-    show       .code:n    =
-      {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
-          { \keythms_listof_show:n { #1 } }
-      },
-    onlynamed  .code:n    =
-      {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
-          { \keythms_listof_onlynamed:n { #1 } }
-      },
-    onlynamed  .default:n = \q_no_value,
-    onlynumbered .code:n  =
-      {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
-          { \keythms_listof_onlynumbered:n { #1 } }
-      },
-    onlynumbered  .default:n = \q_no_value,
-    ignoreall  .code:n    =
+    ignoreall           .code:n     =
       { % in case called before theorem defined
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
           {
@@ -1463,24 +1446,33 @@
               { \__keythms_listof_ignore_aux:n { ##1 } }
           }
       },
-    showall    .code:n    =
-      { % in case called before theorem defined
+    indent              .dim_set:N  = \l__keythms_listof_indent_dim,
+    indent              .initial:n  = 1.5em,
+    no-chapter-skip     .bool_set:N = \l__keythms_listof_nochapskip_bool,
+    no-chapter-skip     .initial:n  = false,
+    no-continues        .bool_set:N = \l__keythms_listof_nocont_bool, 
+    no-continues        .initial:n  = false,
+    no-title            .bool_set:N = \l__keythms_listof_notitle_bool,
+    no-title            .initial:n  = false,
+    no-toc              .bool_set:N = \l__keythms_listof_notoc_bool,
+    no-toc              .initial:n  = false, % false does not mean "to-toc" for standard classes
+    note-code           .cs_set:Np  = \__keythms_listof_notecmd:n #1,
+    note-code           .initial:n  = { ~ (#1) },
+    numwidth            .dim_set:N  = \l__keythms_listof_numwidth_dim,
+    numwidth            .initial:n  = 2.3em,
+    onlynamed           .code:n     =
+      {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
-          {
-            \prop_map_inline:Nn \g__keythms_thmnames_prop
-              { \__keythms_listof_show_aux:n { ##1 } }
-          }
+          { \keythms_listof_onlynamed:n { #1 } }
       },
-    title       .tl_set:N   = \l__keythms_listof_title_tl,
-    title       .initial:n  = \GetTranslation{keythms_listof_title},
-    swapnumber  .bool_set:N = \l__keythms_listof_swapnumber_bool,
-    swapnumber  .initial:n  = false,
-    format-code .cs_set:Np = \__keythms_listof_misdirect:nnn #1#2#3,
-    format-code .initial:n  = \numberline{#2}#1#3,
-    title-code  .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
-    no-title    .bool_set:N = \l__keythms_listof_notitle_bool,
-    no-title    .initial:n  = false,
-    print-body  .code:n     =
+    onlynamed           .default:n  = \q_no_value,
+    onlynumbered        .code:n     =
+      {
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+          { \keythms_listof_onlynumbered:n { #1 } }
+      },
+    onlynumbered        .default:n  = \q_no_value,
+    print-body          .code:n     =
       {
         \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
           {
@@ -1491,39 +1483,47 @@
               }
           }
       },
-    note-code  .cs_set:Np = \__keythms_listof_notecmd:n #1,
-    note-code  .initial:n = { ~ (#1) },
-    no-continues .bool_set:N = \l__keythms_listof_nocont_bool, 
-    no-continues .initial:n  = false,
-    no-chapter-skip .bool_set:N = \l__keythms_listof_nochapskip_bool,
-    no-chapter-skip .initial:n  = false,
-    chapter-skip-length .dim_set:N = \keythms@listof@chaptervspace@dim,
-    chapter-skip-length .initial:n = 10pt,
-    no-toc .bool_set:N = \l__keythms_listof_notoc_bool,
-    no-toc .initial:n  = false, % false does not mean "to-toc" for standard classes
+    show                .code:n     =
+      {
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+          { \keythms_listof_show:n { #1 } }
+      },
+    showall             .code:n     =
+      { % in case called before theorem defined
+        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+          {
+            \prop_map_inline:Nn \g__keythms_thmnames_prop
+              { \__keythms_listof_show_aux:n { ##1 } }
+          }
+      },
+    swapnumber          .bool_set:N = \l__keythms_listof_swapnumber_bool,
+    swapnumber          .initial:n  = false,
+    title               .tl_set:N   = \l__keythms_listof_title_tl,
+    title               .initial:n  = \GetTranslation{keythms_listof_title},
+    title-code          .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
   }
 
 \hook_gput_code:nnn { begindocument } { . }
   { % redefine these keys at begindocument
     \keys_define:nn { keytheorems/listof }
       {
-        ignore    .code:n    = \keythms_listof_ignore:n { #1 },
-        show      .code:n    = \keythms_listof_show:n { #1 },
-        onlynamed .code:n    = \keythms_listof_onlynamed:n { #1 },
-        onlynamed .default:n = \q_no_value,
-        onlynumbered .code:n    = \keythms_listof_onlynumbered:n { #1 },
-        onlynumbered .default:n = \q_no_value,
-        ignoreall .code:n    =
+        ignore       .code:n       = \keythms_listof_ignore:n { #1 },
+        ignoreall    .code:n       =
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_ignore_aux:n { ##1 } }
           },
-        showall   .code:n    =
+        onlynamed    .code:n       = \keythms_listof_onlynamed:n { #1 },
+        onlynamed    .default:n    = \q_no_value,
+        onlynumbered .code:n       = \keythms_listof_onlynumbered:n { #1 },
+        onlynumbered .default:n    = \q_no_value,
+        seq          .code:n       = \keythms_listof_showseq:n { #1 },
+        show         .code:n       = \keythms_listof_show:n { #1 },
+        showall      .code:n       =
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_show_aux:n { ##1 } }
           },
-        seq       .code:n = \keythms_listof_showseq:n { #1 },
       }
   }
 
@@ -1638,10 +1638,6 @@
 %% See acro.sty for template idea.
 \keys_define:nn { keytheorems/listofheading }
   {
-    note       .tl_set:N = \l__keythms_listofheading_note_tl,
-    name       .meta:n   = { note = #1 },
-    short-note .tl_set:N = \l__keythms_listofheading_shortnote_tl,
-    short-name .meta:n   = { short-note = #1 },
     continues  .tl_set:N = \l__keythms_listofheading_contlabel_tl,
     continues* .code:n   =
       {
@@ -1653,10 +1649,14 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
-    seq     .tl_set:N = \l__keythms_listofheading_seq_tl,
-    store*  .code:n = \bool_set_true:N \l__keythms_listofheading_storereversed_bool,
+    name       .meta:n   = { note = #1 },
+    note       .tl_set:N = \l__keythms_listofheading_note_tl,
     restate* .meta:n = { store*=#1 },
     restate-keys .clist_set:N = \l__keythms_listofheading_restatekeys_clist,
+    seq     .tl_set:N = \l__keythms_listofheading_seq_tl,
+    short-note .tl_set:N = \l__keythms_listofheading_shortnote_tl,
+    short-name .meta:n   = { short-note = #1 },
+    store*  .code:n = \bool_set_true:N \l__keythms_listofheading_storereversed_bool,
     unknown .code:n = { } % do nothing with unknown keys
   }
 
@@ -1834,39 +1834,32 @@
 
 \keys_define:nn { keytheorems }
   {
-    restate-counters .code:n =
+    auto-translate   .bool_gset:N         = \g__keythms_autotranslate_bool,
+    auto-translate   .initial:n           = true,
+    continues-code   .cs_set:Np           = \__keythms_thmuse_continues:n #1,
+    continues-code   .initial:n           =
+      { % not sure how best to handle this translation
+        \GetTranslation{keythms_continues}\pageref{#1}
+      },
+    overload         .code:n              = \__keythms_overload_code:,
+    overload         .value_forbidden:n   = true,
+    overload         .usage:n             = preamble,
+    qed-symbol       .cs_set_protected:Np = \qedsymbol,
+    restate-counters .code:n              =
       {
         \clist_map_inline:nn { #1 }
           { \tl_new:c { l_keythms_restate_current_##1_tl } }
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
-    restate-counters .initial:n = equation,
-    continues-code   .cs_set:Np = \__keythms_thmuse_continues:n #1,
-    continues-code   .initial:n =
-      { % not sure how best to handle this translation
-        \GetTranslation{keythms_continues}\pageref{#1}
-      },
-    qed-symbol       .cs_set_protected:Np = \qedsymbol,
-    overload         .code:n = \__keythms_overload_code:,
-    overload         .value_forbidden:n = true,
-    overload         .usage:n = preamble,
-    thmtools-compat  .code:n =
-      { % prevent loading the code again if key called twice
-        \bool_if:NF \g__keythms_thmtoolscompat_bool
-          { \__keythms_thmtoolscompat_code: }
-      },
-    thmtools-compat  .value_forbidden:n = true,
-    thmtools-compat  .usage:n = preamble,
-    store-all        .code:n = \__keythms_storeall_code:,
-    store-all        .value_forbidden:n = true,
-    store-all        .usage:n = preamble,
-    auto-translate   .bool_gset:N = \g__keythms_autotranslate_bool,
-    auto-translate   .initial:n = true,
-    store-sets-label .code:n =
+    restate-counters .initial:n           = equation,
+    store-all        .code:n              = \__keythms_storeall_code:,
+    store-all        .value_forbidden:n   = true,
+    store-all        .usage:n             = preamble,
+    store-sets-label .code:n              =
       {
         \keys_define:nn { keytheorems/thmuse }
           {
-            store .code:n =
+            store  .code:n =
               {
                 \tl_set:Nn \l__keythms_thmuse_label_tl { ##1 }
                 \tl_set:Nn \l__keythms_thmuse_store_tl { ##1 }
@@ -1878,6 +1871,13 @@
               },
           }
       },
+    thmtools-compat  .code:n              =
+      { % prevent loading the code again if key called twice
+        \bool_if:NF \g__keythms_thmtoolscompat_bool
+          { \__keythms_thmtoolscompat_code: }
+      },
+    thmtools-compat  .value_forbidden:n   = true,
+    thmtools-compat  .usage:n             = preamble,
   }
 
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
@@ -1982,7 +1982,7 @@
       { \GetTranslation{keythms_listof_title} }
     \keys_define:nn { keytheorems/listof }
       { % redefine since thmtools way is \renewcommand\listtheoremname{...}
-        title .initial:n  = \listtheoremname
+        title .initial:n = \listtheoremname
       }
     \ProvideDocumentCommand { \addtotheorempreheadhook } { O{allthms} m }
       {
@@ -2334,8 +2334,8 @@
   {
     \keys_define:nn { keytheorems/listof } % adjust to AMS classes
       {
-        numwidth   .initial:n = 1.5pc,
         indent     .initial:n = 0pt,
+        numwidth   .initial:n = 1.5pc,
         title-code .code:n    =
           { % warn but set titlecmd just in case
             \msg_warning:nn { keytheorems } { title-code-with-AMS }

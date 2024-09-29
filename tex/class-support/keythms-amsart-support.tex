@@ -11,13 +11,13 @@
     \keytheoremset{overload} % since acmart predefines several theorems
     \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
       {
+        bodyfont      = \@acmplainbodyfont,
+        headfont      = \@acmplainheadfont,
+        headindent    = \@acmplainindent,
+        notefont      = \@acmplainnotefont,
+        postheadspace = .5em,
         spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
         spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-        bodyfont      = \@acmplainbodyfont,
-        headindent    = \@acmplainindent,
-        headfont      = \@acmplainheadfont,
-        postheadspace = .5em,
-        notefont      = \@acmplainnotefont,
       }
     \keys_define:nn { keytheorems/thmstyle }
       {
@@ -43,7 +43,7 @@
   {
     inherit-style / remark .meta:n =
       {
-        headfont = \itshape,
         bodyfont = \normalfont,
+        headfont = \itshape,
       }
   }
