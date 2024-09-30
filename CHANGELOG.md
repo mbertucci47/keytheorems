@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [unreleased]
+## [v0.1.5]
 - add `format-code` list key
 - can now use `\thmname`, `\thmnumber`, `\thmnote` in `headformat`
 
@@ -31,7 +31,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...HEAD
+[v0.1.5]: https://github.com/mbertucci47/keytheorems/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...v0.1.4
 [v0.1.3]: https://github.com/mbertucci47/keytheorems/compare/v0.1.2...v0.1.3
 [v0.1.2]: https://github.com/mbertucci47/keytheorems/compare/v0.1.1...v0.1.2
