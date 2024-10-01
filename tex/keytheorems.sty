@@ -592,8 +592,6 @@
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
               { \setuniqmark { #1 } }
-            % \hook_gput_code:nnn { keytheorems/#1/prehead }
-              % { keythms_hook_keys } { \setuniqmark { #1 } }
             \ifuniq{ #1 }
               { \bool_set_false:N \l__keythms_thm_numbered_bool }
               { \bool_set_true:N \l__keythms_thm_numbered_bool }
@@ -620,6 +618,9 @@
               }
           }
           {
+            % for \renewkeytheorem need to know parent key if set
+            \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
+            \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
             \__keythms_thm_new_uuwithparent:nVV { #1 }
               \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
           }
@@ -641,6 +642,9 @@
                   }
               }
               {
+                % for \renewkeytheorem need to know parent key if set
+                \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
+                \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
                 \__keythms_thm_new_parent:nVV { #1 }
                   \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
               }
@@ -762,6 +766,10 @@
         \cs_undefine:c { #1 }
         \cs_undefine:c { c@ #1 }
         \cs_undefine:c { the #1 }
+        \tl_if_exist:cT { g__keythms_thm_#1_parent_tl }
+          { % remove parent counter binding
+            \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
+          }
         \keythms_thm_newkeythm:nn { #1 } { #2 }
       }
       { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
@@ -778,6 +786,10 @@
     \cs_undefine:c { #1 }
     \cs_undefine:c { c@ #1 }
     \cs_undefine:c { the #1 }
+    \tl_if_exist:cT { g__keythms_thm_#1_parent_tl }
+      { % remove parent counter binding
+        \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
+      }
     \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
