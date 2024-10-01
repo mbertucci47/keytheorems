@@ -105,3 +105,4 @@
       Right now we don't add if empty, but then \hook_remove gives warnings
 - [x] \KeyThmsContentsLine, etc. should be default be no-ops, redefined to do things, not reverse as now
 - [ ] amsbook and no-title...
+- [ ] hook order with \addtotheoremhook and qed is wrong

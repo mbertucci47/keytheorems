@@ -23,7 +23,7 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.1.5}
+\def\version{0.1.6dev}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -273,6 +273,17 @@ All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref
 Some text
 \end{theorem}
 \end{keythmscode}
+
+\begin{docCommands}[
+  doc parameter=\marg{env name}\oarg{options}
+  ]
+  {
+    {doc name = renewkeytheorem},
+    {doc name = providekeytheorem},
+    {doc name = declarekeytheorem},
+  }
+Sometimes a package or class defines theorems that need to be overwritten by the user. For this case, \pkg{keytheorems} provides \cs{renewkeytheorem} which redefines \meta{env name} or errors if it is not defined. For completeness, also provided are \cs{providekeytheorem} and \cs{declarekeytheorem}. The former only defines \meta{env name} if it is not already defined; the latter always overwrites \meta{env name}.
+\end{docCommands}
 
 \subsection{Keys available to theorem environments} \label{in-doc-keys}
 
@@ -704,7 +715,7 @@ This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\b
 Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
 Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if a style has already been defined.
 To overwrite an existing style, there is the analogous \docAuxCommand{renewkeytheoremstyle}.
-For completeness, there is also \docAuxCommand{declarekeytheoremstyle} and \docAuxCommand{providekeytheoremstyle}.
+For completeness, there are also \docAuxCommand{providekeytheoremstyle} and \docAuxCommand{declarekeytheoremstyle}.
 
 The defined style can be used with either the \refKey{style} key or the traditional \cs{theoremstyle}.
 \end{docCommand}
