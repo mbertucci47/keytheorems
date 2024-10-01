@@ -815,7 +815,8 @@
           {
             \keythms_if_restating:F
               { \refstepcounter{ keythms_unnumbered_dummyctr } }
-            \tcbset{keythms_tcbox_#1/.append~style=nophantom}
+            \IfPackageLoadedT { tcolorbox }
+              { \tcbset{keythms_tcbox_#1/.append~style=nophantom} }
             % ^ otherwise we try to set two identical anchors
             \begin{keythms_orig_nonumber_#1}
           }
