@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\ProvidesExplPackage{keytheorems}{2024-09-22}{0.1.5dev}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-09-30}{0.1.6dev}{l3keys interface to amsthm}
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
@@ -91,6 +91,11 @@
     Theorem~style~'#1'~already~defined.~
     Use~\protect\renewkeytheoremstyle\space instead.
   }
+\msg_new:nnn { keytheorems } { thm-undefined }
+  {
+    Command~\c_backslash_str #1~undefined.~
+    Use~\protect\newkeytheorem\space instead.
+  }
 \msg_new:nnn { keytheorems } { title-code-with-AMS }
   {
     The~'title-code'~key~has~no~effect~with~an~AMS~class.
@@ -154,7 +159,7 @@
   { unnumbered.\arabic{keythms_unnumbered_dummyctr} }
 \cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
 
-\cs_generate_variant:Nn \hook_gput_code:nnn { nnV }
+\cs_generate_variant:Nn \hook_gput_code:nnn { nnv }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, nnc, ne }
 
 %%%%%%%%%%%%%%
@@ -504,17 +509,50 @@
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
   }
+\NewDocumentCommand \renewkeytheorem { m O{} }
+  {
+    \clist_map_inline:nn { #1 } % define multiple theorems at once
+      { \keythms_thm_renewkeythm:nn { ##1 } { #2 } }
+  }
+\NewDocumentCommand \providekeytheorem { m O{} }
+  {
+    \clist_map_inline:nn { #1 } % define multiple theorems at once
+      { \keythms_thm_providekeythm:nn { ##1 } { #2 } }
+  }
+\NewDocumentCommand \declarekeytheorem { m O{} }
+  {
+    \clist_map_inline:nn { #1 } % define multiple theorems at once
+      { \keythms_thm_declarekeythm:nn { ##1 } { #2 } }
+  }
 \@onlypreamble \newkeytheorem
+\@onlypreamble \renewkeytheorem
+\@onlypreamble \providekeytheorem
+\@onlypreamble \declarekeytheorem
 
 % to prevent error when plain, remark, or definition style used
 \tl_new:N \l__keythms_thmstyle_plain_savedthmkeys_tl
 \tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
 \tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
+\cs_new_protected:Npn \keythms_thm_reset_parent:n #1
+  {
+    \tl_if_exist:cT
+      { l__keythms_thm_last_parent_#1_tl }
+      {
+        \exp_args:NNnv
+        \counterwithout*{#1}{ l__keythms_thm_last_parent_#1_tl }
+      }
+  }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
   { % #1 = name, #2 = keys
     % Store envname
     \tl_set:Nn \l__keythms_thm_envname_tl { #1 }
+    % Set up tl's for hooks; hooks will be created and added to at begindocument
+    \tl_gclear_new:c { g__keythms_thm_preheadfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_postheadfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_prefootfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_postfootfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_tcbpatch_#1_tl }
     % Make unless-unique false by default (can't precompile this)
     \bool_set_false:N \l__keythms_thm_unlessunique_bool
     % Set default keys
@@ -538,30 +576,11 @@
       }
     % Set env-specific keys
     \keys_set:nn { keytheorems/thm } { #2 }
-    % Set up env-specific hooks
-    \__keythms_thm_makethmhooks:n { #1 }
-    % Add to env-specific hooks (use label so code given in keys is outermost)
-    % NOTE: faster to check if empty than add empty code to hook
-    \tl_if_empty:NF \l__keythms_thm_preheadhook_tl
-      {
-        \hook_gput_code:nnV { keytheorems/#1/prehead }
-          { keythms_hook_keys } \l__keythms_thm_preheadhook_tl
-      }
-    \tl_if_empty:NF \l__keythms_thm_postheadhook_tl
-      {
-        \hook_gput_code:nnV { keytheorems/#1/posthead }
-          { keythms_hook_keys } \l__keythms_thm_postheadhook_tl
-      }
-    \tl_if_empty:NF \l__keythms_thm_prefoothook_tl
-      {
-        \hook_gput_code:nnV { keytheorems/#1/prefoot }
-          { keythms_hook_keys } \l__keythms_thm_prefoothook_tl
-      }
-    \tl_if_empty:NF \l__keythms_thm_postfoothook_tl
-      {
-        \hook_gput_code:nnV { keytheorems/#1/postfoot }
-          { keythms_hook_keys } \l__keythms_thm_postfoothook_tl
-      }
+    % Build tl for env-specific hooks; will be added to hooks at begindocument
+    \tl_gput_right:cV { g__keythms_thm_preheadfromkeys_#1_tl } \l__keythms_thm_preheadhook_tl
+    \tl_gput_right:cV { g__keythms_thm_postheadfromkeys_#1_tl } \l__keythms_thm_postheadhook_tl
+    \tl_gput_right:cV { g__keythms_thm_prefootfromkeys_#1_tl } \l__keythms_thm_prefoothook_tl
+    \tl_gput_right:cV { g__keythms_thm_postfootfromkeys_#1_tl } \l__keythms_thm_postfoothook_tl
     % Set name if none given
     \quark_if_no_value:NT \l__keythms_thm_name_tl % use quark so name={} is valid
       {
@@ -580,8 +599,10 @@
         \RequirePackage[unq]{unique}
         \tl_if_empty:NTF \l__keythms_thm_parent_tl
           {
-            \hook_gput_code:nnn { keytheorems/#1/prehead }
-              { keythms_hook_keys } { \setuniqmark { #1 } }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+              { \setuniqmark { #1 } }
+            % \hook_gput_code:nnn { keytheorems/#1/prehead }
+              % { keythms_hook_keys } { \setuniqmark { #1 } }
             \ifuniq{ #1 }
               { \bool_set_false:N \l__keythms_thm_numbered_bool }
               { \bool_set_true:N \l__keythms_thm_numbered_bool }
@@ -600,7 +621,7 @@
               }
               {
                 \__keythms_thm_new_unnumbered:nV { #1 } \l__keythms_thm_name_tl
-                \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
+                \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
                   {
                     \keythms_if_restating:F
                       { \refstepcounter{ keythms_unnumbered_dummyctr } }
@@ -610,6 +631,7 @@
           {
             \__keythms_thm_new_uuwithparent:nVV { #1 }
               \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+            \keythms_thm_reset_parent:n { #1 }
           }
       }
       {
@@ -631,11 +653,12 @@
               {
                 \__keythms_thm_new_parent:nVV { #1 }
                   \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+                \keythms_thm_reset_parent:n { #1 }
               }
           }
           {
             \__keythms_thm_new_unnumbered:nV { #1 } \l__keythms_thm_name_tl
-            \hook_gput_code:nnn { keytheorems/#1/prehead } { keythms_hook_keys }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
               {
                 \keythms_if_restating:F
                   { \refstepcounter{ keythms_unnumbered_dummyctr } }
@@ -670,13 +693,32 @@
     % Set theorem style back to original state if needed
     \tl_if_empty:NF \l__keythms_thm_style_tl
       { \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl }
+    \tl_set_eq:cN
+      { l__keythms_thm_last_parent_#1_tl }
+      \l__keythms_thm_parent_tl
+  }
+
+\hook_gput_code:nnn { begindocument } { . }
+  {
+    \prop_map_inline:Nn \g__keythms_thmnames_prop
+      {
+        \__keythms_thm_makethmhooks:n { #1 }
+        \clist_map_inline:nn { prehead, posthead, prefoot, postfoot }
+          {
+            \tl_if_empty:cF { g__keythms_thm_##1fromkeys_#1_tl }
+              {
+                \hook_gput_code:nnv { keytheorems/#1/##1 } { keythms_hook_keys }
+                  { g__keythms_thm_##1fromkeys_#1_tl }
+              }
+          }
+        \tl_use:c { g__keythms_thm_tcbpatch_#1_tl }
+      }
   }
 
 \cs_new_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
-  {
+  { % #1 = name, #2 = tcolorbox keys
     \RequirePackage{tcolorbox}
-    \hook_gput_code:nnn { keytheorems/#1/prehead }
-      { keythms_tcbox }
+    \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
       {
         \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferredthmhead:n
         \cs_set_eq:NN \Hy@theorem@makelinktarget \use_none:n
@@ -686,12 +728,6 @@
         \cs_set_protected:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
         % ^ to match tcolorbox defaults; shouldn't interfere with user styles
       }
-    \hook_gset_rule:nnnn { keytheorems/#1/posthead }
-      { keythms_tcbox } { before } { keythms_hook_keys }
-    \hook_gset_rule:nnnn { keytheorems/#1/prefoot }
-      { keythms_tcbox } { after } { keythms_hook_keys }
-    \hook_gset_rule:nnnn { keytheorems/#1/prefoot }
-      { keythms_tcbox } { after } { keythms_qed }
     \tcbset
       {
         keythms_tcbox_#1/.style =
@@ -702,7 +738,7 @@
       }
     \bool_if:NT \l__keythms_thm_numbered_bool
       {
-        \hook_gput_code:nnn { begindocument } { . }
+        \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
           {
             \IfPackageLoadedF{cleveref}
               { % hyperref doesn't patch \@thm if cleveref loaded
@@ -714,25 +750,49 @@
               }
           }
       }
-    \hook_gput_code:nnn { keytheorems/#1/posthead } { keythms_tcbox }
+    \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       { \begin{tcolorbox}[keythms_tcbox_#1,#2] }
-    \hook_gput_code:nnn { keytheorems/#1/prefoot } { keythms_tcbox }
+    \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       { \end{tcolorbox} }
   }
 \cs_new_protected:Npn \__keythms_thm_qedcode:nn #1#2
-  {
-    \hook_gput_code:nnn { keytheorems/#1/posthead }
-      { keythms_qed }
+  { % #1 = name, #2 = symbol
+    \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
         \exp_args:No \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \pushQED{\qed}
       }
-    \hook_gput_code:nnn { keytheorems/#1/prefoot }
-      { keythms_qed }
+    \tl_gput_left:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       {
         \exp_args:No \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \popQED
       }
+  }
+
+\cs_new_protected:Npn \keythms_thm_renewkeythm:nn #1#2
+  { % #1 = name, #2 = keys
+    \cs_if_exist:cTF { #1 }
+      {
+        \cs_undefine:c { #1 }
+        \cs_undefine:c { c@ #1 }
+        \cs_undefine:c { the #1 }
+        \keythms_thm_newkeythm:nn { #1 } { #2 }
+      }
+      { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
+  }
+\cs_new_protected:Npn \keythms_thm_providekeythm:nn #1#2
+  { % #1 = name, #2 = keys
+    \cs_if_free:cT { #1 }
+      {
+        \keythms_thm_newkeythm:nn { #1 } { #2 }
+      }
+  }
+\cs_new_protected:Npn \keythms_thm_declarekeythm:nn #1#2
+  { % #1 = name, #2 = keys
+    \cs_undefine:c { #1 }
+    \cs_undefine:c { c@ #1 }
+    \cs_undefine:c { the #1 }
+    \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
 \cs_new_eq:NN \__keythms_theoremstyle:n \theoremstyle
@@ -769,6 +829,8 @@
           {
             \keythms_if_restating:F
               { \refstepcounter{ keythms_unnumbered_dummyctr } }
+            \tcbset{keythms_tcbox_#1/.append~style=nophantom}
+            % ^ otherwise we try to set two identical anchors
             \begin{keythms_orig_nonumber_#1}
           }
           {
@@ -2063,32 +2125,27 @@
         nocut .meta:n = { cut=false },
         thickness .code:n =
           { % could also add keys to clist with changed dimens; which is better?
-            \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
-              { keythms_tcbox }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { ##1 } }
           },
         leftmargin .code:n =
           {
-            \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
-              { keythms_tcbox }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { ##1 } }
           },
         rightmargin .code:n =
           {
-            \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
-              { keythms_tcbox }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { ##1 } }
           },
         hskip .code:n =
           {
-            \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
-              { keythms_tcbox }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { ##1 } }
           },
         vskip .code:n =
           {
-            \hook_gput_code:nnn { keytheorems/\l__keythms_thm_envname_tl/prehead }
-              { keythms_tcbox }
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { ##1 } }
           },
       }
