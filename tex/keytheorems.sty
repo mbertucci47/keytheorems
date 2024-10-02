@@ -618,9 +618,6 @@
               }
           }
           {
-            % for \renewkeytheorem need to know parent key if set
-            \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
-            \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
             \__keythms_thm_new_uuwithparent:nVV { #1 }
               \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
           }
@@ -642,9 +639,6 @@
                   }
               }
               {
-                % for \renewkeytheorem need to know parent key if set
-                \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
-                \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
                 \__keythms_thm_new_parent:nVV { #1 }
                   \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
               }
@@ -807,7 +801,12 @@
 \cs_generate_variant:Nn \__keythms_thm_new_unnumbered:nn { nV }
 
 \cs_new_protected:Npn \__keythms_thm_new_parent:nnn #1#2#3
-  { \__keythms_thm_new:w { #1 } { #2 } [ #3 ] }
+  {
+    % for \renewkeytheorem need to know parent key if set
+    \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
+    \tl_gset:cn { g__keythms_thm_#1_parent_tl } { #3 }
+    \__keythms_thm_new:w { #1 } { #2 } [ #3 ]
+  }
 \cs_generate_variant:Nn \__keythms_thm_new_parent:nnn { nVV }
 
 \cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
