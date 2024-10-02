@@ -202,11 +202,12 @@
     headstyle / margin .code:n =
       {
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn
-          { \makebox[0pt][r]{\NUMBER\ }\NAME\NOTE }
+          { \makebox[0pt][r]{\thmnumber{ ##2 ~ }}\NAME\NOTE }
       },
     headstyle / swapnumber .code:n =
       {
-        \cs_set:Nn \keythms_thmstyle_headcmd:nnn { \NUMBER\ \NAME\NOTE }
+        \cs_set:Nn \keythms_thmstyle_headcmd:nnn
+          { \thmnumber{ ##2 ~ }\NAME\NOTE }
       },
     headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
     inherit-style .choice:,
