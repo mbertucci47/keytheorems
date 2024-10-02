@@ -534,6 +534,15 @@
 \tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
 \tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
+\cs_new_protected:Npn \keythms_thm_reset_parent:n #1
+  {
+    \tl_if_exist:cT
+      { l__keythms_thm_last_parent_#1_tl }
+      {
+        \exp_args:NNnv
+        \counterwithout*{#1}{ l__keythms_thm_last_parent_#1_tl }
+      }
+  }
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
   { % #1 = name, #2 = keys
     % Store envname
@@ -592,6 +601,8 @@
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
               { \setuniqmark { #1 } }
+            % \hook_gput_code:nnn { keytheorems/#1/prehead }
+              % { keythms_hook_keys } { \setuniqmark { #1 } }
             \ifuniq{ #1 }
               { \bool_set_false:N \l__keythms_thm_numbered_bool }
               { \bool_set_true:N \l__keythms_thm_numbered_bool }
@@ -618,11 +629,9 @@
               }
           }
           {
-            % for \renewkeytheorem need to know parent key if set
-            \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
-            \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
             \__keythms_thm_new_uuwithparent:nVV { #1 }
               \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+            \keythms_thm_reset_parent:n { #1 }
           }
       }
       {
@@ -642,11 +651,9 @@
                   }
               }
               {
-                % for \renewkeytheorem need to know parent key if set
-                \tl_gclear_new:c { g__keythms_thm_#1_parent_tl }
-                \tl_gset:cV { g__keythms_thm_#1_parent_tl } \l__keythms_thm_parent_tl
                 \__keythms_thm_new_parent:nVV { #1 }
                   \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+                \keythms_thm_reset_parent:n { #1 }
               }
           }
           {
@@ -686,6 +693,9 @@
     % Set theorem style back to original state if needed
     \tl_if_empty:NF \l__keythms_thm_style_tl
       { \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl }
+    \tl_set_eq:cN
+      { l__keythms_thm_last_parent_#1_tl }
+      \l__keythms_thm_parent_tl
   }
 
 \hook_gput_code:nnn { begindocument } { . }
@@ -766,10 +776,6 @@
         \cs_undefine:c { #1 }
         \cs_undefine:c { c@ #1 }
         \cs_undefine:c { the #1 }
-        \tl_if_exist:cT { g__keythms_thm_#1_parent_tl }
-          { % remove parent counter binding
-            \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
-          }
         \keythms_thm_newkeythm:nn { #1 } { #2 }
       }
       { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
@@ -786,10 +792,6 @@
     \cs_undefine:c { #1 }
     \cs_undefine:c { c@ #1 }
     \cs_undefine:c { the #1 }
-    \tl_if_exist:cT { g__keythms_thm_#1_parent_tl }
-      { % remove parent counter binding
-        \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
-      }
     \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
@@ -827,8 +829,7 @@
           {
             \keythms_if_restating:F
               { \refstepcounter{ keythms_unnumbered_dummyctr } }
-            \IfPackageLoadedT { tcolorbox }
-              { \tcbset{keythms_tcbox_#1/.append~style=nophantom} }
+            \tcbset{keythms_tcbox_#1/.append~style=nophantom}
             % ^ otherwise we try to set two identical anchors
             \begin{keythms_orig_nonumber_#1}
           }
