@@ -510,18 +510,18 @@
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
   }
 \NewDocumentCommand \renewkeytheorem { m O{} }
-  {
-    \clist_map_inline:nn { #1 } % define multiple theorems at once
+  { % #1 = name, #2 = keys
+    \clist_map_inline:nn { #1 }
       { \keythms_thm_renewkeythm:nn { ##1 } { #2 } }
   }
 \NewDocumentCommand \providekeytheorem { m O{} }
-  {
-    \clist_map_inline:nn { #1 } % define multiple theorems at once
+  { % #1 = name, #2 = keys
+    \clist_map_inline:nn { #1 }
       { \keythms_thm_providekeythm:nn { ##1 } { #2 } }
   }
 \NewDocumentCommand \declarekeytheorem { m O{} }
-  {
-    \clist_map_inline:nn { #1 } % define multiple theorems at once
+  { % #1 = name, #2 = keys
+    \clist_map_inline:nn { #1 }
       { \keythms_thm_declarekeythm:nn { ##1 } { #2 } }
   }
 \@onlypreamble \newkeytheorem
@@ -753,7 +753,7 @@
       }
   }
 
-\cs_new_protected:Npn \keythms_nocheck_removefromreset:nn #1#2
+\cs_new_protected:Npn \__keythms_nocheck_removefromreset:nn #1#2
   { % need to fake @ckpt counter
     \group_begin:
     \cs_if_exist:cF { c@#2 } { \cs_set:cpn { c@#2 } { } }
@@ -772,7 +772,7 @@
           { % remove parent counter binding
             \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
           }
-        \keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
+        \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
         \keythms_thm_newkeythm:nn { #1 } { #2 }
       }
       { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
@@ -793,7 +793,7 @@
       { % remove parent counter binding
         \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
       }
-    \keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
+    \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
     \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
