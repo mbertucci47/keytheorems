@@ -2,6 +2,7 @@
 
 ## [unreleased]
 - add `\renewkeytheorem`, `\providekeytheorem`, and `\declarekeytheorem`
+- tcolorbox theorems no longer error with beamer
 
 ## [v0.1.5]
 - add `format-code` list key

@@ -67,7 +67,7 @@
       and need general mechanism for setting up class defaults
 - [x] need to clear .thlist file if no restate or list of
 - [ ] Beamer issues:
-    - tcolorbox theorems not compatible with beamer
+    - [x] tcolorbox theorems not compatible with beamer
     - cannot give action spec to theorems
 - [ ] Idea: delay making hooks until begindocument to avoid using internal cmd
 - [x] fix acmart defaults
