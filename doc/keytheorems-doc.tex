@@ -6,7 +6,7 @@
 \geometry{margin=1in}
 \usepackage{tcolorbox}
 \PassOptionsToPackage{highlightmode=immediate}{minted}
-\tcbuselibrary{documentation,minted}
+\tcbuselibrary{documentation,minted,hooks}
 \tcbset{
   listing engine=minted,
   minted language=latex,
@@ -85,6 +85,7 @@
 \newcommand{\bracks}[1]{\texttt{[#1]}}
 \newcommand{\ttbraces}[1]{\braces{\texttt{#1}}}
 %\tcbset{index gather commands=false}
+\colorlet{ExampleBack}{yellow!10!white}
 \tcbset{
   color command=BrickRed,
   color key=Fuchsia,
@@ -93,6 +94,7 @@
     \setlength{\parindent}{15pt}
     \noindent
     },
+  docexample/.append style={boxrule=0pt,arc=0pt,after app={\noindent}}
   }
 \tcbset{
   withpreamble/.style = {
@@ -108,8 +110,7 @@
 
 \NewTCBListing{keythmscode}{ O{} }
   {
-    colback=yellow!10!white,
-    colframe=blue!50!black,
+    colback=ExampleBack,
     arc=0pt,
     boxrule=0pt,
     listing side text,
@@ -170,7 +171,7 @@ A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01
 
 \begin{docCommand}{keytheoremset}
   {\marg{options}}
-Every key in this section can be given as a package option with \cs{usepackage}\bracks{\meta{options}}\ttbraces{keytheorems} or in \cs{keytheoremset}\marg{options}, with the exception that \refKey{continues-code} can only be used in the latter.
+Every key in this section can be given as an option to \cs{usepackage} or in \cs{keytheoremset}, with the exception that \refKey{continues-code} can only be used in the latter.
 \end{docCommand}
 
 \subsection{Compatibility options}
@@ -186,7 +187,11 @@ This is automatically set by \refKey{thmtools-compat}.
   {}
   {initially unset}
 For compatibility with \pkg{thmtools} syntax.
-For most documents, \cs{usepackage}\bracks{thmtools-compat}\ttbraces{keytheorems} should be a drop-in replacement for \cs{usepackage}\ttbraces{amsthm,thmtools}.
+For most documents,
+\begin{dispListing}
+\usepackage[thmtools-compat]{keytheorems}
+\end{dispListing}
+should be a drop-in replacement for \cs{usepackage}\ttbraces{amsthm,thmtools}.
 The option defines the commands in the left column below.
 The right column lists the corresponding \pkg{keytheorems} replacement that should be used in new documents.
 \begin{center}
@@ -948,7 +953,10 @@ For the AMS classes, this is initially |1.5pc|.
   {initially \cs{GetTranslation}\ttbraces{keythms\string_listof\string_title}}
 Defaults to ``List of Theorems'' if English or an unknown language is used.
 Currently French, German, Italian, Portuguese, and Spanish have (likely inaccurate!) translations.
-A translation can be added with a GitHub pull request or manually with \cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
+A translation can be added with a GitHub pull request or manually with
+\begin{center}
+\cs{DeclareTranslation}\marg{lang}\ttbraces{keythms\string_listof\string_title}\marg{text}.
+\end{center}
 \end{docKey}
 
 \subsection{Keys added by \pkg{keytheorems}}
@@ -1113,12 +1121,24 @@ With \pkg{keytheorems}, code is added in the order declared, meaning
 results in |AB| after the theorem.
 This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses under the hood.
 
-Right now, code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
-This may change if I think of good reasons to do so\dots
+Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
 \end{docCommand}
 
-\section{Miscellaneous notes for the ambitious}
+\section{Miscellaneous notes}
 
+\subsection{\cls{beamer} support}
+The package tries to adapt to \cls{beamer}'s changes to internal \pkg{amsthm} commands, however the same restrictions on theorems defined with \cs{newtheorem} apply here.
+Most style keys are disabled by the |default| \cls{beamer} theorem template.
+More become available by setting
+\begin{dispListing}
+\setbeamertemplate{theorems}[ams style]
+\end{dispListing}
+in the preamble.
+Alternatively, you have full control of theorems by setting the class option |noamsthm|.
+
+\pkg{keytheorems} does not yet support the optional \texttt{<\meta{overlay specification}>} argument for theorems.
+
+\subsection{Further customization}
 Inside theorem environments, as well as in all of the theorem hooks, you have access to the theorem's environment and counter name in the token list variable |\l_keythms_thmuse_envname_tl|.
 
 \section{Further examples}

@@ -1,0 +1,68 @@
+% Maintained by Matthew Bertucci, 2024-present
+% Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
+% This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
+\ProvidesExplFile{keythms-beamer-support}{2024-09-30}{0.1.6dev}
+  {keytheorems~support~for~the~beamer~class}
+
+% do nothing if noamsthm loaded
+\IfClassLoadedWithOptionsT{ beamer }{ noamsthm }{ \file_input_stop: }
+
+\keys_define:nn { keytheorems/thm }
+  { % redefine key to include \thm@headsep
+    tcolorbox-no-titlebar .meta:n =
+      {
+        tcolorbox={
+          notitle,
+          before~upper={
+            \group_begin:
+            \usebeamerfont*{block title}
+            \__keythms_thm_tcboxtemphead:
+            \hskip\thm@headsep
+            \group_end:
+            },
+          #1
+          }
+      },
+  }
+\cs_set_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
+  { % #1 = name, #2 = tcolorbox keys
+    \RequirePackage{tcolorbox}
+    \tcbset
+      {
+        keythms_tcbox_#1/.style =
+          {
+            savedelimiter=#1,
+            #2
+          }
+      }
+    \bool_if:NT \l__keythms_thm_numbered_bool
+      {
+        \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
+          {
+            \IfPackageLoadedF{cleveref}
+              { % hyperref doesn't patch \@thm if cleveref loaded
+                \tcbset
+                  {
+                    keythms_tcbox_#1/.append~style = % fix hyperlinking
+                      { phantom={ \MakeLinkTarget*{\@currentHref} } }
+                  }
+              }
+          }
+      }
+    \tl_gput_left:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+      {
+        \cs_set_protected:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
+        \cs_set:Npn \inserttheoremblockenv { keythms_beamer_tcbox }
+      }
+  }
+\NewDocumentEnvironment{ keythms_beamer_tcbox }{ m }
+  {
+    \cs_set:Npn \__keythms_thm_tcboxtemphead: { #1 } % for tcolorbox-no-titlebar
+    \begin{tcolorbox}[
+      title=\usebeamerfont*{block title} #1,
+      keythms_tcbox_\l_keythms_thmuse_envname_tl
+      ]
+  }
+  { \end{tcolorbox} }
+
+\file_input_stop:

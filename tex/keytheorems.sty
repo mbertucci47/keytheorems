@@ -18,6 +18,8 @@
       { \IfPackageLoadedTF{#1}{ }{#2} }
     \ProvideDocumentCommand \IfClassLoadedT { m m }
       { \IfClassLoadedTF{#1}{#2}{ } }
+    \ProvideDocumentCommand \IfClassLoadedWithOptionsT { m m m }
+      { \IfClassLoadedWithOptionsTF{#1}{#2}{#3}{ } }
   }
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
@@ -719,6 +721,7 @@
           {
             savedelimiter=#1,
             title={ \__keythms_thm_tcboxtemphead: },
+            #2
           }
       }
     \bool_if:NT \l__keythms_thm_numbered_bool
@@ -736,7 +739,7 @@
           }
       }
     \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
-      { \begin{tcolorbox}[keythms_tcbox_#1,#2] }
+      { \begin{tcolorbox}[keythms_tcbox_#1] }
     \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       { \end{tcolorbox} }
   }
@@ -2456,6 +2459,7 @@
 \keythms_support_check:n { amsart }
 \keythms_support_check:n { amsbook }
 \keythms_support_check:n { amsproc }
+\keythms_support_check:n { beamer }
 \keythms_support_check:n { memoir }
 
 \file_input_stop:
