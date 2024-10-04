@@ -141,10 +141,6 @@
 \tl_new:N \l__keythms_thm_currentthmstyle_tl
 \tl_new:N \l__keythms_thm_defaultkeys_tl
 \tl_new:N \l__keythms_thm_envname_tl
-\tl_new:N \l__keythms_thm_postfoothook_tl
-\tl_new:N \l__keythms_thm_postheadhook_tl
-\tl_new:N \l__keythms_thm_prefoothook_tl
-\tl_new:N \l__keythms_thm_preheadhook_tl
 \tl_new:N \l__keythms_thmstyle_defaultkeys_tl
 \tl_new:N \l__keythms_thmstyle_lnotebrace_tl
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
@@ -432,14 +428,10 @@
     numberlike     .meta:n    = { sibling = #1 },
     numberwithin   .meta:n    = { parent = #1 },
     parent         .tl_set:N  = \l__keythms_thm_parent_tl,
-    postfoothook   .code:n    =
-      \tl_put_right:Nn \l__keythms_thm_postfoothook_tl { #1 },
-    postheadhook   .code:n    =
-      \tl_put_right:Nn \l__keythms_thm_postheadhook_tl { #1 },
-    prefoothook    .code:n    =
-      \tl_put_right:Nn \l__keythms_thm_prefoothook_tl { #1 },
-    preheadhook    .code:n    =
-      \tl_put_right:Nn \l__keythms_thm_preheadhook_tl { #1 },
+    postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
+    postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
+    prefoothook    .tl_set:N  = \l__keythms_thm_prefoothook_tl,
+    preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
     qed            .default:n = \c_novalue_tl,
     % ^ distinguish between 'qed' and 'qed={}'

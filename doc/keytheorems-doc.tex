@@ -3,9 +3,9 @@
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
 \usepackage{geometry}
-\geometry{margin=1in}
+\geometry{margin=1.5in}
 \usepackage{tcolorbox}
-\tcbuselibrary{documentation,minted,hooks}
+\tcbuselibrary{documentation,minted,breakable,hooks}
 \tcbset{
   listing engine=minted,
   minted language=latex,
@@ -84,7 +84,7 @@
 \newcommand{\bracks}[1]{\texttt{[#1]}}
 \newcommand{\ttbraces}[1]{\braces{\texttt{#1}}}
 %\tcbset{index gather commands=false}
-\colorlet{ExampleBack}{yellow!10!white}
+\colorlet{ExampleBack}{yellow!10}
 \tcbset{
   color command=BrickRed,
   color key=Fuchsia,
@@ -112,16 +112,15 @@
     colback=ExampleBack,
     arc=0pt,
     boxrule=0pt,
-    listing side text,
+%    listing side text,
+%    lower separated=false,
+    skin=bicolor,
+    colbacklower=yellow!25,
+    breakable,
+%    enhanced,
+%    segmentation engine=path,
+%    segmentation style={solid,gray},
     #1
-  }
-
-\NewTCBListing{keycode}{ }
-  {
-    colback=yellow!10!white,
-    colframe=blue!50!black,
-    boxrule=0.4pt,
-    listing side text,
   }
 \newtcolorbox{notebox}[1][]{enhanced,
   before skip balanced=2mm,after skip balanced=4mm,
@@ -219,13 +218,13 @@ Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implement
 \begin{docKey}{auto-translate}
   {\colOpt{=true\textbar false}}
   {default |true|, initially |true|}
-If |false|, \pkg{keytheorems} does not automatically translate the title text for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key.
+If |false|, \pkg{keytheorems} does not automatically translate the title text used for \refCom{listofkeytheorems} and the note produced by the \refKey{continues} key.
 These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
 \begin{docKey}{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
+  {initially\\ \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
 The code used to typeset the note produced by the \refKey{continues} key.
 If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}.
 Currently (likely inaccurate!) translations exist for French, German, Italian, Portuguese, and Spanish.
@@ -262,12 +261,14 @@ Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=
 \begin{docCommand}{newkeytheorem}
   {\marg{env name}\oarg{options}}
 Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}).
-You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g. \cs{newkeytheorem}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}.
+You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g.
+\begin{center}
+\cs{newkeytheorem}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}.
+\end{center}
 
 By default, the theorem's printed name is a title-cased \meta{env name}.
 This can be changed with the \refKey{thm/name} key.
 All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref{thm-added-keys}.
-\end{docCommand}
 
 \begin{tcbwritetemp}
 \newkeytheorem{theorem}
@@ -278,6 +279,8 @@ All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref
 Some text
 \end{theorem}
 \end{keythmscode}
+
+\end{docCommand}
 
 \begin{docCommands}[
   doc parameter=\marg{env name}\oarg{options}
@@ -324,7 +327,7 @@ Some more text
   {=\meta{text}}
   {initially unset}
 Alias \docAuxKey{short-name}.
-This replaces the value of \refKey{note} when displayed in \refCom{listofkeytheorems}.
+This replaces the value of \refKey{note} when displayed in the list of theorems.
 \end{docKey}
 
 \begin{docKey}{label}
@@ -478,9 +481,7 @@ Some text
 For compatibility with \pkg{thmtools}, also accepts the values \docValue*{yes}, \docValue*{no}, and \docValue*{unless unique}.
 
 \begin{tcbwritetemp}
-\newkeytheorem{theorem*}[
-  name=Theorem, numbered=false
-  ]
+\newkeytheorem{theorem*}[name=Theorem, numbered=false]
 \end{tcbwritetemp}
 
 \begin{keythmscode}[withpreamble]
@@ -517,8 +518,7 @@ Aliases \docAuxKey{numberlike} and \docAuxKey{sharenumber}.
 
 \begin{keythmscode}[withpreamble]
 \begin{lemma}
-This shares its counter with
-\texttt{theorem}.
+This shares its counter with \texttt{theorem}.
 \end{lemma}
 \end{keythmscode}
 
@@ -622,8 +622,7 @@ Some text
 Some more text
 \end{prop}
 \begin{theorem}
-Consider \cref{abc,def}.
-\Autoref{abc} \dots
+Consider \cref{abc,def}. \Autoref{abc} \dots
 \end{theorem}
 \end{keythmscode}
 
@@ -646,10 +645,7 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
     },
   }
 \newkeytheorem{corollary}[tcolorbox]
-\newkeytheorem{definition}[
-  style=definition,
-  tcolorbox={defstyle}
-  ]
+\newkeytheorem{definition}[style=definition, tcolorbox={defstyle}]
 \end{tcbwritetemp}
 
 \begin{keythmscode}[withpreamble]
@@ -670,10 +666,8 @@ Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not a
 
 \begin{tcbwritetemp}
 \newkeytheorem{boxcor}[
-  tcolorbox-no-titlebar={
-    colback=red!10
-    },
-  name=Corollary,sibling=corollary
+  tcolorbox-no-titlebar={colback=red!10},
+  name=Corollary, sibling=corollary
   ]
 \end{tcbwritetemp}
 
@@ -716,7 +710,7 @@ Some theorem text
 
 \begin{docCommand}{newkeytheoremstyle}
   {\marg{name}\marg{options}}
-This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}\bracks{\meta{options}}\marg{name}.
+This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}.
 Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
 Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if a style has already been defined.
 To overwrite an existing style, there is the analogous \docAuxCommand{renewkeytheoremstyle}.
@@ -1002,7 +996,7 @@ Useful for custom ordering of the list.
 \begin{keythmscode}[]
 \keytheoremlistset{ignoreall}
 \listofkeytheorems[show=example]
-\listofkeytheorems[show=solution,no-title]
+\listofkeytheorems[show=solution, no-title]
 \end{keythmscode}
 
 \end{docKey}
@@ -1074,32 +1068,33 @@ If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook
 As in \pkg{thmtools}, the order of hooks is as follows:
 
 \begin{center}
+  \small
   \tcbset{
     nobeforeafter,
     tikznode,
     tcbox width=forced center,
-    width=2cm,
+    width=1.85cm,
     tcbox raise=-0.4cm,
     size=fbox,
     after=\;$\rightarrow$
     }
   \tcbox{\meta{env name}\\ \hook{prehead}}
   \tcbox{generic\\ \hook{prehead}}
-  \tcbox[width=3.5cm,tcbox raise=-0.2cm]{\cs{begin}\brackets{\meta{env name}}}
+  \tcbox[width=3.25cm,tcbox raise=-0.2cm]{\cs{begin}\brackets{\meta{env name}}}
   \tcbox{\meta{env name}\\ \hook{posthead}}
   \tcbox[after={}]{generic\\ \hook{posthead}}
   \\[2ex]
   \tcbset{before=$\rightarrow$\;}
-  \tcbox[width=2.5cm,tcbox raise=-0.2cm]{\meta{theorem body}}
+  \tcbox[width=2.25cm,tcbox raise=-0.2cm]{\meta{theorem body}}
   \\[2ex]
   \tcbset{after={}}
   \tcbox[before={}]{generic\\ \hook{prefoot}}
   \tcbox{\meta{env name}\\ \hook{prefoot}}
-  \tcbox[width=3.5cm,tcbox raise=-0.2cm]{\cs{end}\brackets{\meta{env name}}}
+  \tcbox[width=3.25cm,tcbox raise=-0.2cm]{\cs{end}\brackets{\meta{env name}}}
   \tcbox{generic\\ \hook{postfoot}}
   \tcbox{\meta{env name}\\ \hook{postfoot}}
 \end{center}
-The \hook{restated} hook is applied at the start of theorems retrieved with \cs{getkeytheorem}, before the \hook{prehead} hook. 
+The \hook{restated} hook is applied at the start of theorems retrieved with the command \cs{getkeytheorem}, before the \hook{prehead} hook. 
 This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.
 \begin{dispListing}
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
