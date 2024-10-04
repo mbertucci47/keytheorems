@@ -7,6 +7,14 @@
 % do nothing if noamsthm loaded
 \IfClassLoadedWithOptionsT{ beamer }{ noamsthm }{ \file_input_stop: }
 
+\keys_define:nn { keytheorems/thmstyle }
+  {
+    inherit-style / example .meta:n =
+      {
+        bodyfont=\normalfont,
+        preheadhook=\def\inserttheoremblockenv{exampleblock},
+      }
+  }
 \keys_define:nn { keytheorems/thm }
   { % redefine key to include \thm@headsep
     tcolorbox-no-titlebar .meta:n =
@@ -301,4 +309,5 @@
           }
       }
   }
+
 \file_input_stop:

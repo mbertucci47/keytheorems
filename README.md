@@ -1,9 +1,9 @@
 # keytheorems
 
 A LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
-with a key-value interface. Meant to emulate most of the functionality of
-[`thmtools`](https://www.ctan.org/pkg/thmtools) but written in expl3. If you
-find a bug please open an issue or pull request.
+with a key-value interface.
+Provides most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools) (and a bit more!) but written in expl3.
+If you find a bug please open an issue or pull request.
 
 The package is maintained by Matthew Bertucci.
 
@@ -454,15 +454,6 @@ text
 
 \end{document}
 ```
-
-## Things to do
-
-- Clean up the code. Things are out of order, poorly named, etc.
-- Add more error messages.
-- thmtools features not yet implemented
-    - real [`beamer`](https://ctan.org/pkg/beamer) support
-    - certainly more
-- For a complete list, see [`keytheorems-ideas.md`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems-ideas.md)
  
 ## Notes/issues on thmtools, not on Github
 
@@ -608,5 +599,11 @@ blub
 
 \end{document}
 ```
+
+## Things to do
+
+- Clean up the code. Things are out of order, poorly named, etc.
+- For a complete list, see [`keytheorems-ideas.md`](https://github.com/mbertucci47/keytheorems/blob/main/keytheorems-ideas.md)
+
 ## License
 Released under the LaTeX Project Public License v1.3c or later. See https://www.latex-project.org/lppl.txt.
