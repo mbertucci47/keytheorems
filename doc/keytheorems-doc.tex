@@ -1127,19 +1127,30 @@ Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning 
 \section{Miscellaneous notes}
 
 \subsection{\cls{beamer} support}
-The package tries to adapt to \cls{beamer}'s changes to internal \pkg{amsthm} commands, however the same restrictions on theorems defined with \cs{newtheorem} apply here.
+
+The package contains some \emph{highly experimental} code to support theorems with \cls{beamer}, including overlays.
 Most style keys are disabled by the |default| \cls{beamer} theorem template.
-More become available by setting
+More become functional by setting
 \begin{dispListing}
 \setbeamertemplate{theorems}[ams style]
 \end{dispListing}
 in the preamble.
 Alternatively, you have full control of theorems by setting the class option |noamsthm|.
 
-\pkg{keytheorems} does not yet support the optional \texttt{<\meta{action specification}>} argument for theorems.
+Note that by default \cls{beamer} defines a set of theorems when the class is loaded.
+These can be overwritten with \refCom{renewkeytheorem} or disabled entirely with the |notheorems| class option.
 
-\subsection{Further customization}
-Inside theorem environments, as well as in all of the theorem hooks, you have access to the theorem's environment and counter name in the token list variable |\l_keythms_thmuse_envname_tl|.
+Due to complications with overlays, writing contents of theorems to the |thlist| file is disabled. This means theorems can only be restated \emph{after} their original statement. Furthermore, \refCom{listofkeytheorems} is disabled and a warning issued if used.
+
+User feedback is necessary to make this code fully compatible. Please report issues on the \href{https://github.com/mbertucci47/keytheorems/issues}{Github page}!
+
+\subsection{Public coding interfaces}
+
+\begin{itemize}
+	\item |\l_keythms_thmuse_envname_tl|
+	
+	Inside theorem environments, as well as in all of the theorem hooks, you have access to the theorem's environment and counter name in this token list variable.
+\end{itemize}
 
 \section{Further examples}
 

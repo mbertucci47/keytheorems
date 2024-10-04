@@ -35,34 +35,270 @@
             #2
           }
       }
-    \bool_if:NT \l__keythms_thm_numbered_bool
-      {
-        \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
-          {
-            \IfPackageLoadedF{cleveref}
-              { % hyperref doesn't patch \@thm if cleveref loaded
-                \tcbset
-                  {
-                    keythms_tcbox_#1/.append~style = % fix hyperlinking
-                      { phantom={ \MakeLinkTarget*{\@currentHref} } }
-                  }
-              }
-          }
-      }
     \tl_gput_left:cn { g__keythms_thm_preheadfromkeys_#1_tl }
       {
         \cs_set_protected:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
         \cs_set:Npn \inserttheoremblockenv { keythms_beamer_tcbox }
       }
   }
-\NewDocumentEnvironment{ keythms_beamer_tcbox }{ m }
+\NewDocumentEnvironment{ keythms_beamer_tcbox }{ m d<> }
   {
     \cs_set:Npn \__keythms_thm_tcboxtemphead: { #1 } % for tcolorbox-no-titlebar
+    \tl_if_novalue:nF { #2 } { \begin{onlyenv}<#2> }
     \begin{tcolorbox}[
-      title=\usebeamerfont*{block title} #1,
+      title={\usebeamerfont*{block title} #1},
       keythms_tcbox_\l_keythms_thmuse_envname_tl
       ]
   }
-  { \end{tcolorbox} }
+  {
+    \end{tcolorbox}
+    \tl_if_novalue:nF { #2 } { \end{onlyenv} }
+  }
 
+\cs_set_protected:Npn \keythms_keyify_theorem:n #1
+  { % #1 = theorem name
+    \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
+    \DeclareDocumentEnvironment { keythms_beamer_grab_#1 } { m m m +b }
+      { % ##1 = keys, ##2 = note, ##3 = action spec, ##4 = theorem body
+        \__keythms_thm_prehead_code:n { #1 }
+        \tl_if_empty:nTF { ##3 }
+          { \begin{keythms_orig_#1}[{##2}] }
+          { \begin{keythms_orig_#1}[{##2}]<##3> }
+        \clist_map_inline:Nn \g__keythms_restatecounters_clist
+          {
+            \prop_gput:Nne \g__keythms_thmuse_othercounters_prop { ####1 }
+              { \the\value{####1} }
+          }
+        \__keythms_thm_posthead_code:n { #1 }
+        % below needs to come after posthead so that correct \@currentHref
+        % is stored for tcolorbox theorems
+        \__keythms_thm_addcontentsdata:nnnn { #1 }
+          { \prop_to_keyval:N \g__keythms_thmuse_othercounters_prop }
+          { ##1 } { ##4 }
+        \__keythms_thm_tempstorerestatedata:nnn { #1 } { ##1 } { ##4 }
+        ##4
+        \__keythms_thm_prefoot_code:n { #1 }
+        \end{keythms_orig_#1}
+        \__keythms_thm_postfoot_code:n { #1 }
+      }
+      {}
+    \DeclareDocumentEnvironment { keythms_beamer_grabreversed_#1 } { m m m +b }
+      { % ##1 = keys, ##2 = note, ##3 = action spec, ##4 = theorem body
+        \tl_if_exist:cTF
+          { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
+          {
+            \bool_set_true:N \l__keythms_thmuse_restating_bool
+            \exp_args:NNe \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop
+              { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
+            \prop_map_inline:Nn \l__keythms_restate_counters_prop
+              {
+                \tl_set:ce { l_keythms_restate_current_####1_tl }
+                  { \the\value{####1} }
+                \setcounter { ####1 } { ####2 }
+                % ^ FIX: what if eq's numbered by section, theorem, etc.? The
+                %        thmtools code is opaque.... Or maybe should be up to the
+                %        user to say "restate-counters={section,chapter,...}".
+                \cs_set:cpn { theH ####1 }
+                  { \use:c { the ####1 } . \theHkeythms_restate_dummyctr }
+              }
+            \tl_if_empty:cTF
+              { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl }
+              { \refstepcounter{keythms_restate_dummyctr} } % for unnumbered theorems
+              {
+                \cs_set:cpn { the #1 }
+                  { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _label_tl } }
+                \cs_set_eq:cN { c@ #1 } \c@keythms_restate_dummyctr
+                \cs_set_eq:cN { theH #1 } \theHkeythms_restate_dummyctr
+                % ^ why are the last two lines here? We shouldn't be referencing
+                %   restated theorems. Think it's a remnant of thmtools
+                % WRONG: needed to make numbering correct after restated theorem.
+                % not sure about theH. <- this is needed to prevent duplicate anchors
+              }
+           }
+           {
+             \msg_warning:nne { keytheorems } { store-reversed-not-got }
+               { \l__keythms_thmuse_storereversed_tl }
+           }
+        \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
+        \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
+        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
+        \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
+        % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
+        \hook_use:n { keytheorems/#1/restated }
+        \hook_use:n { keytheorems/allthms/restated }
+        \__keythms_thm_prehead_code:n { #1 }
+        \tl_if_empty:nTF { ##3 }
+          { \begin{keythms_orig_#1}[{##2}] }
+          { \begin{keythms_orig_#1}[{##2}]<##3> }
+        \__keythms_thm_posthead_code:n { #1 }
+        % below needs to come after posthead so that correct \@currentHref
+        % is stored for tcolorbox theorems
+        \__keythms_thm_addstoredreverseddata:nnn { #1 } { ##1 } { ##4 }
+        \__keythms_thm_tempstorerestatedatareversed:nnn { #1 } { ##1 } { ##4 }
+        ##4
+        \__keythms_thm_prefoot_code:n { #1 }
+        \end{keythms_orig_#1}
+        \__keythms_thm_postfoot_code:n { #1 }
+        \prop_map_inline:Nn \l__keythms_restate_counters_prop
+          {
+            \exp_args:Nnc \setcounter { ####1 }
+              { l_keythms_restate_current_####1_tl }
+          }
+      }
+      { }
+      % NOTE: have to do a lot of shenanigans to make sure the begin/end of grabbed
+      %       theorem env captures only the body and no package code.
+      %       This is the price of on-the-fly redefining the env to grab body
+      \RenewDocumentEnvironment { #1 } { D<>{} ={note} O{} D<>{} }
+        {
+          \keys_set:nn { keytheorems/thmuse } { ##2 }
+          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+            {
+              % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
+              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grab_begin:nnnn
+              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnVn \__keythms_beamer_grab_begin:nnVn
+              \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grab_end:n
+            }
+          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
+            {
+              % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
+              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grabreversed_begin:nnnn
+              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnVn \__keythms_beamer_grabreversed_begin:nnVn
+              \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grabreversed_end:n
+            }
+          \__keythms_thm_prehead_continues_code:n { #1 }
+          \tl_if_empty:nTF { ##3 }
+            { % if ##3 empty, just pass ##1 and withhooks_begin will check if empty
+              \__keythms_beamer_withhooks_begin:nnVn { #1 } { ##2 }
+                \l__keythms_thmuse_note_tl { ##1 }
+            }
+            { % if ##3 nonempty, always use it (beamer defaults to second <> if both given)
+              \__keythms_beamer_withhooks_begin:nnVn { #1 } { ##2 }
+                \l__keythms_thmuse_note_tl { ##3 }
+            }
+        }
+        {
+          \__keythms_beamer_withhooks_end:n { #1 }
+          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+            {
+              \cs_if_exist:cF
+                { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
+                {
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
+                    {
+                      \exp_not:N \__keythms_getthm_theorem:nnnnn
+                      \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
+                    }
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
+                    {
+                      \exp_not:N \__keythms_getthm_body:nn
+                      \exp_args:No \exp_not:o
+                        {
+                          \exp_after:wN \__keythms_use_iii_v_braced:nnnnn
+                            \g__keythms_thmuse_temprestatedata_tl
+                        }
+                    }
+                }
+            }
+          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
+            {
+              \cs_if_exist:cF
+                { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+                {
+                  \cs_new:cpe
+                    { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+                    {
+                      \exp_not:N \__keythms_getthmreversed_theorem:nnn
+                      \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
+                    }
+                  \cs_new:cpn
+                    { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+                    {
+                      \textbf{??}
+                      \msg_warning:nnn { keytheorems } { restate-body-never-got }
+                        { #1 }
+                    }
+                }
+            }
+        }
+  }
+
+\cs_new_protected:Npn \__keythms_beamer_withhooks_begin:nnnn #1#2#3#4
+  { % #1 = theorem name, #2 = keys, #3 = note, #4 = action spec
+    \__keythms_thm_prehead_code:n { #1 }
+    \tl_if_empty:nTF { #4 }
+      { \begin{keythms_orig_#1}[{#3}] }
+      { \begin{keythms_orig_#1}[{#3}]<#4> }
+    \__keythms_thm_posthead_code:n { #1 }
+    \__keythms_thm_addcontentsdata:nnnn { #1 } { } { #2 } { }
+    \ignorespaces % I hope this is alright
+  }
+\cs_generate_variant:Nn \__keythms_beamer_withhooks_begin:nnnn { nnV }
+\cs_new_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_withhooks_end:n
+
+\cs_new_protected:Npn \__keythms_beamer_grab_begin:nnnn #1#2#3#4
+  { % #1 = theorem name, #2 = keys, #3 = note
+    \begin{keythms_beamer_grab_#1}{#2}{#3}{#4}
+  }
+\cs_generate_variant:Nn \__keythms_beamer_grab_begin:nnnn { nnV }
+\cs_new_protected:Npn \__keythms_beamer_grab_end:n #1 { \end{keythms_beamer_grab_#1} }
+
+\cs_new_protected:Npn \__keythms_beamer_grabreversed_begin:nnnn #1#2#3#4
+  { % #1 = theorem name, #2 = keys, #3 = note
+    \begin{keythms_beamer_grabreversed_#1}{#2}{#3}{#4}
+  }
+\cs_generate_variant:Nn \__keythms_beamer_grabreversed_begin:nnnn { nnV }
+\cs_new_protected:Npn \__keythms_beamer_grabreversed_end:n #1
+  { \end{keythms_beamer_grabreversed_#1} }
+  
+% for now, just disable writing to file
+\cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
+\cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
+
+% disable \listofkeytheorems, add warning
+\msg_new:nnn { keytheorems } { beamer-listof }
+  {
+    \protect\listofkeytheorems\space not~supported~with~beamer
+  }
+\RenewDocumentCommand \listofkeytheorems { o }
+  {
+    \msg_warning:nn { keytheorems } { beamer-listof }
+  }
+
+% restatable and restatable* environments need redefinition
+\bool_if:NT \g__keythms_thmtoolscompat_bool
+  {
+    \RenewDocumentEnvironment { restatable } { O{} m m }
+      {
+        % set store outside [] so keyless note is recognized
+        \keys_set:nn { keytheorems/thmuse } { store=#3 }
+        \begin{#2}[#1]
+      }
+      {
+        \end{#2}
+        \cs_gset_protected:cpn { #3 }
+          { % make \foo and \foo* identical
+            \peek_meaning_remove:NTF *
+              { \getkeytheorem{ #3 } }
+              { \getkeytheorem{ #3 } }
+          }
+      }
+    \RenewDocumentEnvironment { restatable* } { O{} m m }
+      {
+        % set store* outside [] so keyless note is recognized
+        \keys_set:nn { keytheorems/thmuse } { store*=#3 }
+        \begin{#2}[#1]
+      }
+      {
+        \end{#2}
+        \cs_gset_protected:cpn { #3 }
+          { % make \foo and \foo* identical
+            \peek_meaning_remove:NTF *
+              { \getkeytheorem{ #3 } }
+              { \getkeytheorem{ #3 } }
+          }
+      }
+  }
 \file_input_stop:
