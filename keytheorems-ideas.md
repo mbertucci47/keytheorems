@@ -16,7 +16,7 @@
       with restate-counters?
 - [x] listhack
 - [ ] Proof hooks? Other proof customization? New proof-like envs? feature creep...
-- [ ] (partial) `\newtheoremstyle` overwrites existing styles. Should `\newkeytheoremstyle` check
+- [x] `\newtheoremstyle` overwrites existing styles. Should `\newkeytheoremstyle` check
       if style exists? Relevant for plain, remark, definition. Could provide
       `\renewkeytheoremstyle`. Further, if there is use for (re)defining theorems
       mid-document, could make cmds usable after preamble by removing package loading
@@ -101,7 +101,7 @@
 - [x] `\theoremstyle` does not apply thm keys
 - [ ] nested inherit-style errors
 - [x] use tcb style with #1 for tcolorbox theorems so style can be added to or overridden
-- [ ] can't define `\renewkeytheorem`, etc., until figure out preheadhook situation.
+- [x] can't define `\renewkeytheorem`, etc., until figure out preheadhook situation.
       Right now we don't add if empty, but then \hook_remove gives warnings
 - [x] `\KeyThmsContentsLine`, etc. should be default be no-ops, redefined to do things, not reverse as now
 - [ ] amsbook and `no-title`...
