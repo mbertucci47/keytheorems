@@ -22,7 +22,7 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.1.6dev}
+\def\version{0.1.6}
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
@@ -162,7 +162,8 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 
 \section{Dependencies}
 
-Without using the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} options, the package loads the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, \pkg{translations}, and \pkg{unique} packages.
+The package depends on the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, \pkg{translations} packages.
+The \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package.
 A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01, \pkg{nameref} is required.
     
 \section{Global options}
@@ -313,9 +314,6 @@ This is the key-value equivalent of the optional argument described above.
 This syntax, however, allows the argument to contain other keys.
 
 \begin{keythmscode}[]
-\begin{theorem}[some heading]
-Some text
-\end{theorem}
 \begin{theorem}[note=another heading]
 Some more text
 \end{theorem}
@@ -327,7 +325,7 @@ Some more text
   {=\meta{text}}
   {initially unset}
 Alias \docAuxKey{short-name}.
-This replaces the value of \refKey{note} when displayed in the list of theorems.
+This replaces the value of \refKey{note} when displayed in the list of theorems (\refCom{listofkeytheorems}).
 \end{docKey}
 
 \begin{docKey}{label}
@@ -572,9 +570,9 @@ Some text
 
 \begin{docKey}{qed}
   {\colOpt{=\meta{symbol}}}
-  {default \cs{openbox}, initially unset}
+  {default \cs{qedsymbol}, initially unset}
 Adds \colOpt{\meta{symbol}} to the end of the theorem body.
-If no value is given, the symbol \openbox\ is used.
+If no value is given, the symbol \qedsymbol{} is used.
 
 \begin{tcbwritetemp}
 \newkeytheorem{example}[qed]

@@ -109,3 +109,4 @@
 - [ ] `\getkeytheorem[body]{foo}` needs to use theorem-specific restated hook
       This means getthm_body needs to take three arguments...
 - [ ] `qed={}` in style does not do the right thing
+- [ ] lots of code duplication, for example in beamer support file
