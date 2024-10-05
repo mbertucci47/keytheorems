@@ -434,6 +434,46 @@ body text
 \end{document}
 ```
 
+### [beamer theorem syntax not fully supported #57](https://github.com/muzimuzhi/thmtools/issues/57)
+Fixed in keytheorems.
+```tex
+\documentclass{beamer}
+\setbeamertemplate{theorems}[numbered]
+\usepackage{keytheorems}
+
+\newkeytheorem{MyTheorem}
+
+\begin{document}
+
+\begin{frame}
+\begin{MyTheorem}[name=bla]
+first text
+\end{MyTheorem}
+\begin{MyTheorem}<2->[name=bla]
+second text
+\end{MyTheorem}
+\begin{MyTheorem}[name=bla]<3->
+third text
+\end{MyTheorem}
+\end{frame}
+
+% Compare:
+
+\begin{frame}
+\begin{theorem}[bla]
+first text
+\end{theorem}
+\begin{theorem}<2->[bla]
+second text
+\end{theorem}
+\begin{theorem}[bla]<3->
+third text
+\end{theorem}
+\end{frame}
+
+\end{document}
+```
+
 ### [restate key incompatible with beamer #58](https://github.com/muzimuzhi/thmtools/issues/58)
 ```tex
 \documentclass{beamer}
