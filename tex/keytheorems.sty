@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\ProvidesExplPackage{keytheorems}{2024-10-05}{0.1.6}{l3keys interface to amsthm}
+\ProvidesExplPackage{keytheorems}{2024-10-05}{0.1.7dev}{l3keys interface to amsthm}
 
 \IfFormatAtLeastTF { 2024-06-01 } { }
   {
@@ -197,7 +197,7 @@
     break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
     break         .value_forbidden:n = true,
     headfont      .tl_set:N = \l__keythms_thmstyle_headfont_tl,
-    headformat    .meta:n   = { headstyle = #1 },
+    headformat    .meta:n   = { headstyle = {#1} }, % extra braces are necessary! Otherwise breaks if #1 contains comma
     headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
     headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
     headstyle     .choice:,
@@ -412,7 +412,7 @@
 
 \keys_define:nn { keytheorems/thm }
   {
-    heading        .meta:n    = { name = #1 },
+    heading        .meta:n    = { name = {#1} },
     name           .tl_set:N  = \l__keythms_thm_name_tl,
     numbered       .choice:,
     numbered       .default:n = true,
@@ -425,8 +425,8 @@
       },
     numbered / unless~unique .meta:n = { numbered = unless-unique },
     numbered / yes .meta:n    = { numbered = true },
-    numberlike     .meta:n    = { sibling = #1 },
-    numberwithin   .meta:n    = { parent = #1 },
+    numberlike     .meta:n    = { sibling = {#1} },
+    numberwithin   .meta:n    = { parent = {#1} },
     parent         .tl_set:N  = \l__keythms_thm_parent_tl,
     postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
     postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
@@ -437,7 +437,7 @@
     % ^ distinguish between 'qed' and 'qed={}'
     refname        .tl_set:N  = \l__keythms_thm_refname_tl,
     Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
-    sharenumber    .meta:n    = { sibling = #1 },
+    sharenumber    .meta:n    = { sibling = {#1} },
     sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
     style          .tl_set:N  = \l__keythms_thm_style_tl,
     style          .groups:n  = { style-comes-first },
@@ -456,8 +456,8 @@
           }
       },
     tcolorbox-no-titlebar .default:n = {},
-    title          .meta:n    = { name = #1 },
-    within         .meta:n    = { parent = #1 },
+    title          .meta:n    = { name = {#1} },
+    within         .meta:n    = { parent = {#1} },
   }
 
 % what below is unnecessary? I really don't understand this code.
@@ -906,12 +906,12 @@
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
     listhack / false .code:n = \bool_set_false:N \l__keythms_thmuse_listhack_bool,
     listhack   .initial:n = false,
-    name       .meta:n   = { note = #1 },
+    name       .meta:n   = { note = {#1} },
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     note       .tl_set:N = \l__keythms_thmuse_note_tl,
     note       .initial:n = {},
-    restate    .meta:n   = { store = #1 }, % thmtools compatibility
-    restate*   .meta:n   = { store* = #1 },
+    restate    .meta:n   = { store = {#1} }, % thmtools compatibility
+    restate*   .meta:n   = { store* = {#1} },
     restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
     seq        .code:n = {},
     short-note .code:n   = {}, % these do nothing at point of use
@@ -1227,8 +1227,8 @@
 
 \keys_define:nn { keytheorems/storeatbegin }
   {
-    restate  .meta:n      = { store=#1 },
-    restate* .meta:n      = { store*=#1 },
+    restate  .meta:n      = { store = {#1} },
+    restate* .meta:n      = { store* = {#1} },
     store    .tl_set:N    = \l__keythms_storeatbegin_store_tl,
     store*   .tl_set:N    = \l__keythms_storeatbegin_storereversed_tl,
     unknown  .code:n      = { } % do nothing with unknown keys
@@ -1727,13 +1727,13 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
-    name         .meta:n      = { note = #1 },
+    name         .meta:n      = { note = {#1} },
     note         .tl_set:N    = \l__keythms_listofheading_note_tl,
-    restate*     .meta:n      = { store*=#1 },
+    restate*     .meta:n      = { store* = {#1} },
     restate-keys .clist_set:N = \l__keythms_listofheading_restatekeys_clist,
     seq          .tl_set:N    = \l__keythms_listofheading_seq_tl,
     short-note   .tl_set:N    = \l__keythms_listofheading_shortnote_tl,
-    short-name   .meta:n      = { short-note = #1 },
+    short-name   .meta:n      = { short-note = {#1} },
     store*       .code:n      =
       {
         \bool_set_true:N \l__keythms_listofheading_storereversed_bool

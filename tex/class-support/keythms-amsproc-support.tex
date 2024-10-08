@@ -1,7 +1,7 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\ProvidesExplFile{keythms-amsproc-support}{2024-10-05}{0.1.6}
+\ProvidesExplFile{keythms-amsproc-support}{2024-10-05}{0.1.7dev}
   {keytheorems~support~for~the~amsproc~class}
 
 \__keythms_support_AMSshared_code:
@@ -16,10 +16,7 @@
 
 \keys_define:nn { keytheorems/thmstyle }
   {
-    inherit-style / remark .meta:n =
-      {
-        bodyfont = \normalfont,
-      },
+    inherit-style / remark .meta:n = { bodyfont = \normalfont },
   }
 
 \file_input_stop:
