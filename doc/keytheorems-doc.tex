@@ -22,11 +22,13 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
-\def\version{0.1.7dev}
+\makeatletter
+\newcommand\keythmsversion{\@keythms@version}
+\makeatother
 
 \title{%
   \pkg{keytheorems} package \\[1ex]
-  \large version \version \\[1ex]
+  \large version \keythmsversion \\[1ex]
   \href{https://github.com/mbertucci47/keytheorems}
     {\texttt{github.com/mbertucci47/keytheorems}}
   }
