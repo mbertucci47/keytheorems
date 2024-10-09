@@ -60,7 +60,7 @@
 - [x] seq approach doesn't work well with `\includeonly`
 - [x] chaptervspacehack
 - [ ] Should there be a way to add content lines to `\listofkeytheorems` with print-body?
-      Currently we disable code added with \addtotheoremcontents
+      Currently we disable code added with `\addtotheoremcontents`
 - [x] hyperref does not jump to correct location for tcolorbox theorems
 - [ ] use `\MakeLinkTarget` instead of dummy counter?
 - [x] should default theorem style be changed if ams class is loaded? Yes,
@@ -108,5 +108,5 @@
 - [ ] hook order with `\addtotheoremhook` and qed is wrong
 - [ ] `\getkeytheorem[body]{foo}` needs to use theorem-specific restated hook
       This means getthm_body needs to take three arguments...
-- [ ] `qed={}` in style does not do the right thing
+- [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file

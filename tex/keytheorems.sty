@@ -241,7 +241,19 @@
     postheadhook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     prefoothook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    qed                   .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
+    qed                   .code:n =
+      { % qed needs special treatment to distinguish qed from qed={}
+        \exp_args:No \tl_if_novalue:nTF { #1 }
+          {
+            \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
+              { \l_keys_key_str }
+          }
+          {
+            \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
+              { \l_keys_key_str = { #1 } }
+          }
+      },
+    qed                   .default:n = \c_novalue_tl,
     sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     tcolorbox             .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
