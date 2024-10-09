@@ -1,0 +1,29 @@
+% Maintained by Matthew Bertucci, 2024-present
+% Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
+% This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
+\ProvidesExplFile{keythms-jlreq-support}{\@keythms@date}{\@keythms@version}
+  {keytheorems~support~for~the~jlreq~class}
+
+\prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+  {
+    bodyfont = \prop_item:Nn \g__jlreq_complements_theorem_prop { font },
+    headfont = \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
+    headindent = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { indent },
+    headpunct = {},
+    postheadspace = 1\jlreq@zw,
+    notebraces = {（}{）},
+    notefont = \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
+    noteseparator = {},
+    spaceabove = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
+    spacebelow = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
+  }
+
+\keys_define:nn { keytheorems/thmstyle } { inherit-style / jlreq .meta:n = {} }
+
+\keys_define:nn { keytheorems/listof }
+  {
+    indent   .initial:n = 0\jlreq@gol,
+    numwidth .initial:n = 2\jlreq@gol,
+  }
+
+\file_input_stop:
