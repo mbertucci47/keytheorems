@@ -23,6 +23,8 @@
       { \IfClassLoadedTF{#1}{#2}{ } }
     \ProvideDocumentCommand \IfClassLoadedWithOptionsT { m m m }
       { \IfClassLoadedWithOptionsTF{#1}{#2}{#3}{ } }
+    \ProvideDocumentCommand \IfPackageLoadedWithOptionsT { m m m }
+      { \IfPackageLoadedWithOptionsTF{#1}{#2}{#3}{ } }
   }
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
@@ -2462,16 +2464,56 @@
     \cs_set_eq:NN \keythms_listof_tocline: \__keythms_listof_ams_tocline:
   }
 
-\cs_new_protected:Npn \keythms_support_check:n #1
+\prg_new_conditional:Npnn \__keythms_if_classloaded:n #1 { p }
   {
-    \IfClassLoadedT { #1 } { \file_input:n { class-support/keythms-#1-support } }
+    \IfClassLoadedTF { #1 } { \prg_return_true: } { \prg_return_false: }
   }
 
-% acmart defaults also handled in amsart support file
-\keythms_support_check:n { amsart }
-\keythms_support_check:n { amsbook }
-\keythms_support_check:n { amsproc }
-\keythms_support_check:n { beamer }
-\keythms_support_check:n { memoir }
+\cs_new_protected:Npn \__keythms_support_input:n #1
+  {
+    \file_input:n { class-support/keythms-#1-support }
+  }
+
+% acmart and aomart defaults also handled in amsart support file
+\bool_case:n
+  {
+    { \__keythms_if_classloaded_p:n { amsart } }
+      { \__keythms_support_input:n { amsart } }
+    { \__keythms_if_classloaded_p:n { amsbook } }
+      { \__keythms_support_input:n { amsbook } }
+    { \__keythms_if_classloaded_p:n { amsproc } }
+      { \__keythms_support_input:n { amsproc } }
+    { \__keythms_if_classloaded_p:n { memoir } }
+      { \__keythms_support_input:n { memoir } }
+    { \__keythms_if_classloaded_p:n { beamer } }
+      { \__keythms_support_input:n { beamer } }
+  }
+
+% now deal with font packages that change plain style
+\cs_new_protected:Npn \__keythms_support_fontpkg:nn #1#2
+  {
+    \clist_map_inline:nn { #1 }
+      {
+        \hook_gput_code:nnn { package/##1/after } { . }
+          {
+            \IfPackageLoadedWithOptionsT { ##1 } { theoremfont }
+              {
+                \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop { #2 }
+                \keys_precompile:neN { keytheorems/thmstyle }
+                  { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
+                  \l__keythms_thmstyle_defaultkeys_tl
+              }
+          }
+      }
+  }
+
+\__keythms_support_fontpkg:nn { baskervillef,cochineal } { bodyfont = \slshape }
+\__keythms_support_fontpkg:nn { libertinust1math,newpxtext,newtxtext,XCharter }
+  {
+    bodyfont   = \thfamily,
+    spaceabove = \medskipamount,
+    spacebelow = \medskipamount,
+  }
+\__keythms_support_fontpkg:nn { scholax } { bodyfont = \thfamily }
 
 \file_input_stop:

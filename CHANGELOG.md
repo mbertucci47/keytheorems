@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [unreleased]
+- add support for aomart class
+- add support for Michael Sharpe's font packages that change plain style
+
 ## [v0.1.6]
 - add `\renewkeytheorem`, `\providekeytheorem`, and `\declarekeytheorem`
 - tcolorbox theorems no longer error with beamer
@@ -36,6 +40,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...HEAD
 [v0.1.6]: https://github.com/mbertucci47/keytheorems/compare/v0.1.5...v0.1.6
 [v0.1.5]: https://github.com/mbertucci47/keytheorems/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...v0.1.4

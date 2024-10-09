@@ -6,45 +6,86 @@
 
 \__keythms_support_AMSshared_code:
 
-\IfClassLoadedTF { acmart }
-  { % acmart loads amsart
-    \keytheoremset{overload} % since acmart predefines several theorems
-    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
-      {
-        bodyfont      = \@acmplainbodyfont,
-        headfont      = \@acmplainheadfont,
-        headindent    = \@acmplainindent,
-        notefont      = \@acmplainnotefont,
-        postheadspace = .5em,
-        spaceabove    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-        spacebelow    = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-      }
-    \keys_define:nn { keytheorems/thmstyle }
-      {
-        inherit-style / acmplain      .meta:n = {},
-        inherit-style / acmdefinition .meta:n =
-          {
-            bodyfont   = \@acmdefinitionbodyfont,
-            headindent = \@acmdefinitionindent,
-            headfont   = \@acmdefinitionheadfont,
-            notefont   = \@acmdefinitionnotefont,
-          },
-      }
-  }
-  {
-    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
-      {
-        spaceabove = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-        spacebelow = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-      }
-  }
-
 \keys_define:nn { keytheorems/thmstyle }
   {
     inherit-style / remark .meta:n =
       {
         bodyfont = \normalfont,
         headfont = \itshape,
+      }
+  }
+
+\bool_case:nF
+  {
+    { \__keythms_if_classloaded_p:n { acmart } }
+      {
+        \keytheoremset{overload} % since acmart predefines several theorems at begindocument
+        \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+          {
+            bodyfont      = \@acmplainbodyfont,
+            headfont      = \@acmplainheadfont,
+            headindent    = \@acmplainindent,
+            notefont      = \@acmplainnotefont,
+            postheadspace = .5em,
+            spaceabove    =
+              .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+            spacebelow    =
+              .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+          }
+        \keys_define:nn { keytheorems/thmstyle }
+          {
+            inherit-style / acmplain      .meta:n = {},
+            inherit-style / acmdefinition .meta:n =
+              {
+                bodyfont   = \@acmdefinitionbodyfont,
+                headindent = \@acmdefinitionindent,
+                headfont   = \@acmdefinitionheadfont,
+                notefont   = \@acmdefinitionnotefont,
+              },
+          }
+      }
+    { \__keythms_if_classloaded_p:n { aomart } }
+      {
+        \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+          {
+            bodyfont      = \sishape,
+            headfont      = \scshape,
+            headindent    = \parindent,
+            notefont      = \normalfont,
+            postheadspace = 0.5em,
+            spaceabove    = 0.5\linespacing,
+            spacebelow    = 0.5\linespacing,
+          }
+        \keys_define:nn { keytheorems/thmstyle }
+          {
+            inherit-style / definition .meta:n =
+              {
+                bodyfont      = \upshape,
+                headfont      = \sishape,
+                headindent    = \parindent,
+                notefont      = \normalfont,
+                postheadspace = 0.5em,
+                spaceabove    = 0.5\linespacing,
+                spacebelow    = 0.5\linespacing,
+              },
+            inherit-style / remark .meta:n =
+              {
+                bodyfont      = \upshape,
+                headfont      = \sishape,
+                headindent    = \parindent,
+                notefont      = \normalfont,
+                postheadspace = 0.5em,
+                spaceabove    = 0.5\linespacing,
+                spacebelow    = 0.5\linespacing,
+              },
+          }
+      }
+  }
+  { % the amsart defaults
+    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+      {
+        spaceabove = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+        spacebelow = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
       }
   }
 
