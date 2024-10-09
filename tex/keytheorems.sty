@@ -985,11 +985,6 @@
              \msg_warning:nne { keytheorems } { store-reversed-not-got }
                { \l__keythms_thmuse_storereversed_tl }
            }
-        \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
-        \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
-        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
-        \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
-        % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
         \__keythms_thm_prehead_code:n { #1 }
@@ -1326,6 +1321,15 @@
 \NewDocumentCommand \IfRestatingT { } { \keythms_if_restating:T }
 \NewDocumentCommand \IfRestatingF { } { \keythms_if_restating:F }
 
+\hook_gput_code:nnn { keytheorems/allthms/restated } { . }
+  { % code to disable things in restated theorems
+    \renewcommand\label[2][]{} % opt arg in case cleveref loaded
+    \cs_set_eq:NN \ltx@label \use_none:n % thmtools does this; why?
+    \cs_set_eq:NN \property_record:nn \use_none:nn
+    \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
+    % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
+  }
+
 \cs_new_protected:Npn \__keythms_getthm_theorem:nnnnn #1#2#3#4#5
   { % #1 = name, #2 = number, #3 = restate counters, #4 = keys, #5 = theorem body
     \group_begin:
@@ -1352,11 +1356,6 @@
         % WRONG: needed to make numbering correct after restated theorem.
         % not sure about theH. <- this is needed to prevent duplicate anchors
       }
-    \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
-    \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
-    \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
-    \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
-    % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \hook_use:n { keytheorems/#1/restated }
@@ -1393,9 +1392,6 @@
           { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
     \refstepcounter{keythms_restate_dummyctr}
-    \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
-    \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
-    \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
     \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }
     #2

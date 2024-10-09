@@ -127,11 +127,6 @@
              \msg_warning:nne { keytheorems } { store-reversed-not-got }
                { \l__keythms_thmuse_storereversed_tl }
            }
-        \renewcommand\label[2][]{} % disable \label (opt arg in case cleveref loaded)
-        \cs_set_eq:NN \ltx@label \use_none:n % disable \ltx@label
-        \cs_set_eq:NN \property_record:nn \use_none:nn % disable \RecordProperties
-        \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
-        % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
         \__keythms_thm_prehead_code:n { #1 }
