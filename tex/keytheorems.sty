@@ -1024,6 +1024,7 @@
       %       This is the price of on-the-fly redefining the env to grab body
       \RenewDocumentEnvironment { #1 } { ={note} O{} }
         {
+          \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
           \keys_set:nn { keytheorems/thmuse } { ##1 }
           \tl_if_empty:NF \l__keythms_thmuse_store_tl
             {
@@ -1128,7 +1129,6 @@
 
 \cs_new_protected:Npn \__keythms_thm_prehead_code:n #1
   { % #1 = theorem name
-    \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }
   }
@@ -1370,6 +1370,7 @@
         % WRONG: needed to make numbering correct after restated theorem.
         % not sure about theH. <- this is needed to prevent duplicate anchors
       }
+    \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \hook_use:n { keytheorems/#1/restated }
@@ -1421,6 +1422,7 @@
   { % #1 = envname, #2 = keys, #3 = theorem body
     \group_begin:
     \bool_set_false:N \l__keythms_thmuse_restating_bool
+    \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \keys_set:nn { keytheorems/thmuse } { #2 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \__keythms_thm_prehead_continues_code:n { #1 }

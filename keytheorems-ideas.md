@@ -110,3 +110,4 @@
       This means getthm_body needs to take three arguments...
 - [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file
+- [ ] space after title with beamer, tcolorbox theorems, and label

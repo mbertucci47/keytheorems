@@ -154,6 +154,7 @@
       %       This is the price of on-the-fly redefining the env to grab body
       \RenewDocumentEnvironment { #1 } { D<>{} ={note} O{} D<>{} }
         {
+          \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
           \keys_set:nn { keytheorems/thmuse } { ##2 }
           \tl_if_empty:NF \l__keythms_thmuse_store_tl
             {
