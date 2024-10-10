@@ -40,7 +40,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...HEAD
+[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...develop
 [v0.1.6]: https://github.com/mbertucci47/keytheorems/compare/v0.1.5...v0.1.6
 [v0.1.5]: https://github.com/mbertucci47/keytheorems/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...v0.1.4
