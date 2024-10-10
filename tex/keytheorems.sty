@@ -488,7 +488,7 @@
     \addvspace\@topsep
     \addvspace{-\parskip}
     \fi
-    % \global\@inlabeltrue % MY COMMENT: if this is uncommented then spacing after sections is wrong
+    % \global\@inlabeltrue % MB: if this is uncommented then spacing after sections is wrong
     \everypar\dth@everypar
     \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
     \ignorespaces
@@ -1828,7 +1828,7 @@
     \cs_set_protected:Npn \KeyThmsContentsLine ##1 { ##1 }
     \bool_if:NF \l__keythms_listof_nochapskip_bool
       {
-        \cs_set_eq:NN \KeyThmsAddvspace \addvspace
+        \cs_set_protected:Npn \KeyThmsAddvspace { \addvspace }
       }
     \bool_if:NF \l__keythms_listof_notitle_bool
       {
@@ -1872,25 +1872,22 @@
 \cs_new_protected:Npn \KeyThmsAddvspace #1 { } % initially no-op, redefined where needed
 \int_new:N \g_keythms_listof_prevchapter_int
 \int_gset:Nn \g_keythms_listof_prevchapter_int { 1 }
-% ^ if this is zero, bad things happen if title-code is changed; anyways don't
-%   need addvspace at top
+% ^ if this is zero, bad things happen if title-code is changed;
+%   anyways don't need addvspace at top
 \cs_new_protected:Npn \keythms_listof_chaptervspacehack: { }
 \cs_if_exist:cT { c@chapter }
   {
-    \cs_if_eq:NNF \c@chapter \relax
+    \cs_set_protected:Npn \keythms_listof_chaptervspacehack:
       {
-        \cs_set_protected:Npn \keythms_listof_chaptervspacehack:
+        \int_compare:nNnF
+          { \value{chapter} } = { \g_keythms_listof_prevchapter_int }
           {
-            \int_compare:nNnF
-              { \value{chapter} } = { \g_keythms_listof_prevchapter_int }
+            \addtocontents{ thlist }
               {
-                \addtocontents{ thlist }
-                  {
-                    \KeyThmsAddvspace
-                      { \keythms@listof@chaptervspace@dim }
-                  }
-                \int_gset:Nn \g_keythms_listof_prevchapter_int { \value{chapter} }
+                \KeyThmsAddvspace
+                  { \keythms@listof@chaptervspace@dim }
               }
+            \int_gset:Nn \g_keythms_listof_prevchapter_int { \value{chapter} }
           }
       }
   }
@@ -2442,7 +2439,7 @@
         \cs_set_protected:Npn \KeyThmsContentsLine ####1 { ####1 }
         \bool_if:NF \l__keythms_listof_nochapskip_bool
           {
-            \cs_set_eq:NN \KeyThmsAddvspace \addvspace
+            \cs_set_protected:Npn \KeyThmsAddvspace { \addvspace }
           }
         \legacy_if_set_false:n { @filesw }
         \bool_if:NTF \l__keythms_listof_notitle_bool
