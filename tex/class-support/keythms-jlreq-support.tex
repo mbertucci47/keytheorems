@@ -6,16 +6,21 @@
 
 \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
   {
-    bodyfont = \prop_item:Nn \g__jlreq_complements_theorem_prop { font },
-    headfont = \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
-    headindent = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { indent },
-    headpunct = {},
+    bodyfont      = \prop_item:Nn \g__jlreq_complements_theorem_prop { font },
+    headfont      =
+      \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
+    headindent    =
+      \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { indent },
+    headpunct     = {},
     postheadspace = 1\jlreq@zw,
-    notebraces = {（}{）},
-    notefont = \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
+    notebraces    = {（}{）},
+    notefont      =
+      \prop_item:Nn \g__jlreq_complements_theorem_prop { label_font },
     noteseparator = {},
-    spaceabove = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
-    spacebelow = \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
+    spaceabove    =
+      \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
+    spacebelow    =
+      \dimexpr\prop_item:Nn \g__jlreq_complements_theorem_prop { beforeafter_space } \relax,
   }
 
 \keys_define:nn { keytheorems/thmstyle } { inherit-style / jlreq .meta:n = {} }
