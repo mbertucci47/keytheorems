@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [unreleased]
+## [v0.1.7]
 - add support for aomart class
 - add support for Michael Sharpe's font packages that change plain style
 
