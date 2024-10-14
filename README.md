@@ -618,7 +618,7 @@ bla
 ```
 
 ### new theorem styles do not preserve "plain" keys
-With keytheorems, this is handled only for the AMS classes and acmart.
+With keytheorems, this is handled only for the AMS classes, acmart, aomart, and jlreq.
 ```tex
 \documentclass{amsbook}
 \usepackage{thmtools}
