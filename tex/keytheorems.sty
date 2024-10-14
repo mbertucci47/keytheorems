@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2024-10-10}
-\def\@keythms@version{0.1.7}
+\def\@keythms@date{2024-10-14}
+\def\@keythms@version{0.1.8dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -209,12 +209,24 @@
     headstyle / margin .code:n =
       {
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn
-          { \makebox[0pt][r]{\thmnumber{ ##2 ~ }}\NAME\NOTE }
+          {
+            \makebox[0pt][r]{
+              \keythms_thmstyle_thmnumber:n {
+                \group_begin: \exp_not:V \l__keythms_thmstyle_numberfont_tl
+                ##2 ~ \group_end: }
+              }
+            \NAME\NOTE
+          }
       },
     headstyle / swapnumber .code:n =
       {
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn
-          { \thmnumber{ ##2 ~ }\NAME\NOTE }
+          {
+            \keythms_thmstyle_thmnumber:n {
+              \group_begin: \exp_not:V \l__keythms_thmstyle_numberfont_tl
+              ##2 ~ \group_end: }
+              \NAME\NOTE
+          }
       },
     headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
     inherit-style .choice:,

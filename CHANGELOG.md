@@ -1,5 +1,7 @@
 # Changelog for keytheorems package
 
+## [unreleased]
+
 ## [v0.1.7]
 - add support for aomart class
 - add support for Michael Sharpe's font packages that change plain style
@@ -40,7 +42,8 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...develop
+[unreleased]: https://github.com/mbertucci47/keytheorems/compare/v0.1.7...develop
+[v0.1.7]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...v0.1.7
 [v0.1.6]: https://github.com/mbertucci47/keytheorems/compare/v0.1.5...v0.1.6
 [v0.1.5]: https://github.com/mbertucci47/keytheorems/compare/v0.1.4...v0.1.5
 [v0.1.4]: https://github.com/mbertucci47/keytheorems/compare/v0.1.3...v0.1.4
