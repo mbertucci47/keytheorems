@@ -1,6 +1,8 @@
 # Changelog for keytheorems package
 
 ## [unreleased]
+- add support for tagged PDF
+- add tagged example file tagged-keytheorems-amsthmtest.tex
 
 ## [v0.1.7]
 - add support for aomart class

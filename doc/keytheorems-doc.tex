@@ -1065,7 +1065,7 @@ You \emph{must} use these commands rather than the aforementioned because the |.
 
 \begin{docCommand}{addtotheoremhook}
   {\oarg{env name}\marg{hook name}\marg{code}}
-\meta{hook name} can be \hook{prehead}, \hook{posthead}, \hook{prefoot}, \hook{postfoot}, or \hook{restated}.
+The \meta{hook name} can be \hook{prehead}, \hook{posthead}, \hook{prefoot}, \hook{postfoot}, or \hook{restated}.
 If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e. applied to all theorems.
 As in \pkg{thmtools}, the order of hooks is as follows:
 
@@ -1101,6 +1101,7 @@ This can be useful for disabling commands such as \cs{footnote} in the restated 
 \begin{dispListing}
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
 \end{dispListing}
+
 By default, \pkg{keytheorems} disables the \cs{label} and \cs{RecordProperties} commands in restated theorems.
 
 In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e. the code
@@ -1150,7 +1151,30 @@ These class support files also contain code to adapt to class' formatting of lis
 \subsection{Support for font packages}
 
 Some font packages, all by Michael Sharpe, offer a |theoremfont| option that redefines the |plain| style body font to have italic text with upright figures, punctuation, and delimiters. \pkg{keytheorems} detects this option and sets its initial style values accordingly. The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust1math}, \pkg{newpxtext}, \pkg{newtxtext}, \pkg{scholax}, and \pkg{XCharter}.
- 
+
+\subsection{Support for tagged PDF}
+
+The \LaTeX{} team has been working hard to support the creation of tagged PDFs (see \url{https://latex3.github.io/tagging-project/}).
+The current |dev| formats make \pkg{amsthm} compatible with the kernel tagging code.
+Most of \pkg{keytheorems} is supported too, and anything that doesn't work should be reported.
+The only things explicitly not supported are the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys.
+
+To produce a tagged PDF, add \cs{DocumentMetadata} in the first line of your document (additional instructions are found on the Tagging Project \href{https://latex3.github.io/tagging-project/documentation/prototype-usage-instructions.html}{website}).
+An example invocation might look like
+
+\begin{dispListing}
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    testphase={phase-III,math,table,title,firstaid}
+  }
+\end{dispListing}
+
+At a minimum, the |testphase| modules |phase-III| and |firstaid| are required.
+The GitHub tests folder contains an example of a tagged PDF using \pkg{keytheorems}: \href{https://github.com/mbertucci47/keytheorems/blob/main/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
+
 \subsection{Public coding interfaces}
 
 \begin{itemize}

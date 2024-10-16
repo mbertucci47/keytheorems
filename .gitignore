@@ -1,5 +1,6 @@
 *.aux
 *.hd
+*-luamml-mathml.html
 *.idx
 *.ilg
 *.ind

@@ -2535,4 +2535,43 @@
   }
 \__keythms_support_fontpkg:nn { scholax } { bodyfont = \thfamily }
 
+%%%%%%%%%%%%%%%%%%%%%%%
+%%% Tagging Support %%%
+%%%%%%%%%%%%%%%%%%%%%%%
+
+\IfDocumentMetadataTF
+  {
+    \tag_if_active:T
+      {
+        \msg_new:nnn { keytheorems } { tcolorbox-tagging }
+          {
+            The~key~'tcolorbox'~does~not~currently~work~with~
+            tagging.~Ignoring~this~key.
+          }
+        \keys_define:nn { keytheorems/thm }
+          {
+            tcolorbox .code:n =
+              \msg_warning:nn { keytheorems } { tcolorbox-tagging },
+          }
+        \keys_define:nn { keytheorems/listof }
+          {
+            print-body .code:n =
+              {
+                \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
+                  {
+                    \tl_if_empty:nF { ##7 }
+                      {
+                        \__keythms_getthm_theorem:nnnnn
+                          {##1}{##2}{##5}{##6}{##7}
+                      }
+                  }
+                % with tagging, make \@starttoc same as input
+                \cs_set_protected:Npn \@starttoc ##1
+                  { \makeatletter \@input { \jobname.##1 } }
+              },
+          }
+      }
+  }
+  { }
+
 \file_input_stop:
