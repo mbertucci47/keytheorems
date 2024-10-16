@@ -125,6 +125,7 @@
 %%% Declare Variables %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\iow_new:N \g__keythms_tmpa_iow
 \tl_new:N \l__keythms_tmpa_tl
 
 \bool_new:N \g__keythms_listof_writefile_bool
@@ -138,7 +139,6 @@
 \bool_new:N \l__keythms_thmuse_restating_bool
 \clist_new:N \g__keythms_restatecounters_clist
 \clist_new:N \l__keythms_thmstyle_savedkeys_clist
-\iow_new:N \g__keythms_listof_stream
 \prop_new:N \g__keythms_thmnames_prop
 \prop_new:N \g__keythms_thmstyle_defaultkeys_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
@@ -1874,8 +1874,8 @@
       { % if .thlist file left over from previous run but not needed, clear it
         \file_if_exist:nT { \c_sys_jobname_str.thlist }
           {
-            \iow_open:Nn \g_tmpa_iow { \c_sys_jobname_str.thlist }
-            \iow_close:N \g_tmpa_iow
+            \iow_open:Nn \g__keythms_tmpa_iow { \c_sys_jobname_str.thlist }
+            \iow_close:N \g__keythms_tmpa_iow
           }
       }
   }
