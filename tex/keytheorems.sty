@@ -1792,6 +1792,9 @@
       { #4 }{ #3 }
   }
 
+\NewDocumentCommand \__keythms_listof_pagerefnolink:w { s m }
+  { \getpagerefnumber{#2} } % tagging does not like links within link
+
 % NOTE: We still need to do this setup for [print-body] so that onlynamed works
 \cs_new_protected:Npn \__keythms_listof_listcmd_setup:nn #1#2
   { % #1 = keys, #2 = list command
@@ -1815,6 +1818,7 @@
               {
                 \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl
               }
+            \cs_set_eq:NN \pageref \__keythms_listof_pagerefnolink:w % always no link
             #2
           }
       }
