@@ -111,3 +111,6 @@
 - [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file
 - [ ] space after title with beamer, tcolorbox theorems, and label
+- [ ] move prehead_code out of withhooks_begin so the preheadhook can change note.
+      Then wouldn't need separate prehead_continues_code, I think.
+      See this for application: https://tex.stackexchange.com/a/728812/208544
