@@ -160,14 +160,12 @@
             {
               % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
               \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grab_begin:nnnn
-              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnVn \__keythms_beamer_grab_begin:nnVn
               \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grab_end:n
             }
           \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
             {
               % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
               \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grabreversed_begin:nnnn
-              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnVn \__keythms_beamer_grabreversed_begin:nnVn
               \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grabreversed_end:n
             }
           \__keythms_thm_prehead_continues_code:n { #1 }
