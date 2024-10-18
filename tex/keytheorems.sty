@@ -1050,7 +1050,6 @@
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
             }
-          \__keythms_thm_prehead_continues_code:n { #1 }
           \__keythms_thm_prehead_code:n { #1 }
           \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl
         }
@@ -1138,14 +1137,9 @@
 \cs_generate_variant:Nn \__keythms_orig_begin:nn { nV }
 \cs_new_protected:Npn \__keythms_orig_end:n #1 { \end{keythms_orig_#1} }
 
-\cs_new_protected:Npn \__keythms_thm_prehead_code:n #1
-  { % #1 = theorem name
-    \hook_use:n { keytheorems/#1/prehead }
-    \hook_use:n { keytheorems/allthms/prehead }
-  }
-%% this below has to be separate from prehead_code above since we need to add
+%% this below has to be separate from withhooks_begin above since we need to add
 %% continues-code to note before retrieving it in \__keythms_withhooks_begin:nnV
-\cs_new_protected:Npn \__keythms_thm_prehead_continues_code:n #1
+\cs_new_protected:Npn \__keythms_thm_prehead_code:n #1
   { % #1 = theorem name
     \tl_if_empty:NF \l__keythms_thmuse_contlabel_tl
       {
@@ -1161,6 +1155,8 @@
         \cs_set_eq:cN { theH #1 } \theHkeythms_continues_dummyctr
         %\cs_set_eq:NN \setuniqmark \use_none:n % not the right fix
       }
+    \hook_use:n { keytheorems/#1/prehead }
+    \hook_use:n { keytheorems/allthms/prehead }
   }
 \cs_new_protected:Npn \__keythms_thm_posthead_code:n #1
   { % #1 = theorem name
@@ -1384,7 +1380,6 @@
     \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
-    \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
     \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }
@@ -1436,7 +1431,6 @@
     \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
     \keys_set:nn { keytheorems/thmuse } { #2 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
-    \__keythms_thm_prehead_continues_code:n { #1 }
     \__keythms_thm_prehead_code:n { #1 }
     \__keythms_orig_begin:nV { #1 } \l__keythms_thmuse_note_tl
     \clist_map_inline:Nn \g__keythms_restatecounters_clist
