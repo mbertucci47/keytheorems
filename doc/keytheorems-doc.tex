@@ -1096,7 +1096,7 @@ As in \pkg{thmtools}, the order of hooks is as follows:
   \tcbox{generic\\ \hook{postfoot}}
   \tcbox{\meta{env name}\\ \hook{postfoot}}
 \end{center}
-The \hook{restated} hook is applied at the start of theorems retrieved with the command \cs{getkeytheorem}, before the \hook{prehead} hook. 
+The \hook{restated} hook is applied at the start of theorems retrieved with the command \cs{getkeytheorem}, after the \hook{prehead} hook. 
 This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.
 \begin{dispListing}
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}

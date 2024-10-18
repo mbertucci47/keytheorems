@@ -68,7 +68,6 @@
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
     \DeclareDocumentEnvironment { keythms_beamer_grab_#1 } { m m m +b }
       { % ##1 = keys, ##2 = note, ##3 = action spec, ##4 = theorem body
-        \__keythms_thm_prehead_code:n { #1 }
         \tl_if_empty:nTF { ##3 }
           { \begin{keythms_orig_#1}[{##2}] }
           { \begin{keythms_orig_#1}[{##2}]<##3> }
@@ -129,7 +128,6 @@
            }
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
-        \__keythms_thm_prehead_code:n { #1 }
         \tl_if_empty:nTF { ##3 }
           { \begin{keythms_orig_#1}[{##2}] }
           { \begin{keythms_orig_#1}[{##2}]<##3> }
@@ -169,6 +167,7 @@
               \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grabreversed_end:n
             }
           \__keythms_thm_prehead_continues_code:n { #1 }
+          \__keythms_thm_prehead_code:n { #1 }
           \tl_if_empty:nTF { ##3 }
             { % if ##3 empty, just pass ##1 and withhooks_begin will check if empty
               \__keythms_beamer_withhooks_begin:nnVn { #1 } { ##2 }
@@ -229,7 +228,6 @@
 
 \cs_new_protected:Npn \__keythms_beamer_withhooks_begin:nnnn #1#2#3#4
   { % #1 = theorem name, #2 = keys, #3 = note, #4 = action spec
-    \__keythms_thm_prehead_code:n { #1 }
     \tl_if_empty:nTF { #4 }
       { \begin{keythms_orig_#1}[{#3}] }
       { \begin{keythms_orig_#1}[{#3}]<#4> }
