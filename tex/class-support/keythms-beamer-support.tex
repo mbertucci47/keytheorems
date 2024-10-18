@@ -95,7 +95,7 @@
           { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
           {
             \bool_set_true:N \l__keythms_thmuse_restating_bool
-            \exp_args:NNe \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop
+            \prop_set_from_keyval:Ne \l__keythms_restate_counters_prop
               { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
             \prop_map_inline:Nn \l__keythms_restate_counters_prop
               {
@@ -123,8 +123,8 @@
               }
            }
            {
-             \msg_warning:nne { keytheorems } { store-reversed-not-got }
-               { \l__keythms_thmuse_storereversed_tl }
+             \msg_warning:nnV { keytheorems } { store-reversed-not-got }
+               \l__keythms_thmuse_storereversed_tl
            }
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }

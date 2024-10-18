@@ -168,6 +168,8 @@
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnv }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, nnc, ne }
+\cs_generate_variant:Nn \prop_set_from_keyval:Nn { ne }
+\prg_generate_conditional_variant:Nnn \tl_if_novalue:n { o } { T, F, TF }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -257,7 +259,7 @@
     preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     qed                   .code:n =
       { % qed needs special treatment to distinguish qed from qed={}
-        \exp_args:No \tl_if_novalue:nTF { #1 }
+        \tl_if_novalue:oTF { #1 }
           {
             \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
               { \l_keys_key_str }
@@ -776,12 +778,12 @@
   { % #1 = name, #2 = symbol
     \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \exp_args:No \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:oF { #2 } { \protected@edef\qedsymbol{#2} }
         \pushQED{\qed}
       }
     \tl_gput_left:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       {
-        \exp_args:No \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:oF { #2 } { \protected@edef\qedsymbol{#2} }
         \popQED
       }
   }
@@ -979,7 +981,7 @@
           { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl }
           {
             \bool_set_true:N \l__keythms_thmuse_restating_bool
-            \exp_args:NNe \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop
+            \prop_set_from_keyval:Ne \l__keythms_restate_counters_prop
               { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
             \prop_map_inline:Nn \l__keythms_restate_counters_prop
               {
@@ -1007,8 +1009,8 @@
               }
            }
            {
-             \msg_warning:nne { keytheorems } { store-reversed-not-got }
-               { \l__keythms_thmuse_storereversed_tl }
+             \msg_warning:nnV { keytheorems } { store-reversed-not-got }
+               \l__keythms_thmuse_storereversed_tl
            }
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
