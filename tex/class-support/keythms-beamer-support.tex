@@ -318,6 +318,15 @@
       }
     \RenewDocumentEnvironment { restatable* } { O{} m m }
       {
+        \cs_set_protected:Npn \__keythms_thm_tempstorerestatedatareversed:nnn ##1##2##3
+          {
+            \tl_gset:Ne \g__keythms_thmuse_temprestatedatareversed_tl % needs to be global to get out of env
+              {
+                { ##1 }
+                {  store*=\l__keythms_thmuse_storereversed_tl,\exp_not:n { ##2 } }
+                { \exp_not:n { ##3 } }
+              }
+          }
         % set store* outside [] so keyless note is recognized
         \keys_set:nn { keytheorems/thmuse } { store*=#3 }
         \begin{#2}[#1]
