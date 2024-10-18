@@ -390,17 +390,17 @@
       \l__keythms_thmstyle_postheadspace_tl
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define inherit-style key
-    \tl_if_exist:cF { l__keythms_thmstyle_ #1 _metakeys_tl }
-      { \tl_new:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
+    \tl_if_exist:cF { l__keythms_thmstyle_#1_metakeys_tl }
+      { \tl_new:c { l__keythms_thmstyle_#1_metakeys_tl } }
     \keys_precompile:nnc { keytheorems/thmstyle } { #2 } % use precompile instead of meta key
-      { l__keythms_thmstyle_ #1 _metakeys_tl }           % because that's sensitive to hashes
+      { l__keythms_thmstyle_#1_metakeys_tl }           % because that's sensitive to hashes
     \keys_define:nn { keytheorems/thmstyle }             % and we want to allow both # and ##
-      { inherit-style / #1 .code:n = \tl_use:c { l__keythms_thmstyle_ #1 _metakeys_tl } }
-    \tl_if_exist:cF { l__keythms_thmstyle_ #1 _savedthmkeys_tl }
-      { \tl_new:c { l__keythms_thmstyle_ #1 _savedthmkeys_tl } }
+      { inherit-style / #1 .code:n = \tl_use:c { l__keythms_thmstyle_#1_metakeys_tl } }
+    \tl_if_exist:cF { l__keythms_thmstyle_#1_savedthmkeys_tl }
+      { \tl_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl } }
     \keys_precompile:nVc { keytheorems/thm }
       \l__keythms_thmstyle_savedkeys_clist
-      { l__keythms_thmstyle_ #1 _savedthmkeys_tl }
+      { l__keythms_thmstyle_#1_savedthmkeys_tl }
     \cs_undefine:N \NAME % undefine to prevent conflicts
     \cs_undefine:N \NUMBER
     \cs_undefine:N \NOTE
@@ -1318,13 +1318,13 @@
     \cs_set_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4
       {
         \bool_new:c { g__keythms_restate_#1_called_bool }
-        \cs_gset:cpn { __keythms_getthm_ #1 _theorem }
+        \cs_gset:cpn { __keythms_getthm_#1_theorem }
           { \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 } }
         \hook_gput_code:nnn { begindocument/end } { . }
           {
-            \cs_if_exist:cF { __keythms_getthm_ #1 _body }
+            \cs_if_exist:cF { __keythms_getthm_#1_body }
               {
-                \cs_new_protected:cpn { __keythms_getthm_ #1 _body }
+                \cs_new_protected:cpn { __keythms_getthm_#1_body }
                   {
                     \textbf{??}
                     \msg_warning:nnn { keytheorems } { restate-body-never-got } { #1 }

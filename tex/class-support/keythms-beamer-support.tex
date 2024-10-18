@@ -4,7 +4,17 @@
 \ProvidesExplFile{keythms-beamer-support}{\@keythms@date}{\@keythms@version}
   {keytheorems~support~for~the~beamer~class}
 
-% do nothing if noamsthm loaded
+% disable \listofkeytheorems, add warning
+\msg_new:nnn { keytheorems } { beamer-listof }
+  {
+    \protect\listofkeytheorems\space not~supported~with~beamer
+  }
+\RenewDocumentCommand \listofkeytheorems { o }
+  {
+    \msg_warning:nn { keytheorems } { beamer-listof }
+  }
+
+% besides above, do nothing if noamsthm loaded
 \IfClassLoadedWithOptionsT{ beamer }{ noamsthm }{ \file_input_stop: }
 
 \keys_define:nn { keytheorems/thmstyle }
@@ -257,14 +267,36 @@
 \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
 \cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
 
-% disable \listofkeytheorems, add warning
-\msg_new:nnn { keytheorems } { beamer-listof }
+\cs_new_protected:Npn \__keythms_beamer_reversedauxdata:nnnn #1#2#3#4
   {
-    \protect\listofkeytheorems\space not~supported~with~beamer
+    \iow_shipout:Ne \@auxout
+      {
+        \KeyThmsBeamerReversedData { \l__keythms_thmuse_storereversed_tl }
+          { \@currentlabel }
+          { #2 }
+      }
   }
-\RenewDocumentCommand \listofkeytheorems { o }
+\cs_new_protected:Npn \KeyThmsBeamerReversedData #1#2#3
   {
-    \msg_warning:nn { keytheorems } { beamer-listof }
+    \tl_if_exist:cF { c__keythms_storeatbegin_#1_label_tl }
+      {
+        \tl_const:cn { c__keythms_storeatbegin_#1_label_tl } { #2 }
+      }
+    \tl_if_exist:cF { c__keythms_storeatbegin_#1_restatecounters_tl }
+      {
+        \tl_const:cn { c__keythms_storeatbegin_#1_restatecounters_tl } { #3 }
+      }
+    \bool_if_exist:cF { g__keythms_restate_#1_called_bool }
+      { \bool_new:c { g__keythms_restate_#1_called_bool } }
+  }
+\cs_new_eq:NN \__keythms_ORIGgetthmreversed_theorem:nnn
+  \__keythms_getthmreversed_theorem:nnn
+\cs_set_protected:Npn \__keythms_getthmreversed_theorem:nnn #1#2#3
+  {
+    \group_begin:
+    \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \__keythms_beamer_reversedauxdata:nnnn
+    \__keythms_ORIGgetthmreversed_theorem:nnn { #1 } { #2 } { #3 }
+    \group_end:
   }
 
 % restatable and restatable* environments need redefinition

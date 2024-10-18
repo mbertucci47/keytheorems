@@ -111,6 +111,9 @@
 - [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file
 - [ ] space after title with beamer, tcolorbox theorems, and label
-- [x] move prehead_code out of withhooks_begin so the preheadhook can change note.
-      Then wouldn't need separate prehead_continues_code, I think.
+- [x] move `prehead_code` out of `withhooks_begin` so the preheadhook can change note.
+      Then wouldn't need separate `prehead_continues_code`, I think.
       See this for application: https://tex.stackexchange.com/a/728812/208544
+- [x] logic with `restate-keys` and `store*` is reversed. Nevermind, it has to
+      work this way. Otherwise all keys for actually written theorem would have
+      to be passes to `restate-keys`.
