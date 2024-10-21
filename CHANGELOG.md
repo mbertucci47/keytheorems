@@ -1,7 +1,7 @@
 # Changelog for keytheorems package
 
 ## [unreleased]
-- add support for tagged PDF (#4)
+- add support for tagged PDF ([\#4](https://github.com/mbertucci47/keytheorems/issues/4))
 - add tagged example file tagged-keytheorems-amsthmtest.tex
 
 ## [v0.1.7]
@@ -9,7 +9,7 @@
 - add support for Michael Sharpe's font packages that change plain style
 
 ## [v0.1.6]
-- add `\renewkeytheorem`, `\providekeytheorem`, and `\declarekeytheorem` (#5)
+- add `\renewkeytheorem`, `\providekeytheorem`, and `\declarekeytheorem` ([\#5](https://github.com/mbertucci47/keytheorems/issues/5))
 - tcolorbox theorems no longer error with beamer
 - add support for beamer action spec
 
