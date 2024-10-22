@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2024-10-21}
-\def\@keythms@version{0.1.8}
+\def\@keythms@date{2024-10-22}
+\def\@keythms@version{0.1.9dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -15,15 +15,15 @@
     \cs_generate_variant:Nn \keys_set:nn { ne }
     \cs_generate_variant:Nn \msg_warning:nnn { nne }
     \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
-    \ProvideDocumentCommand \IfPackageLoadedT { m m }
+    \ProvideDocumentCommand \IfPackageLoadedT { m +m }
       { \IfPackageLoadedTF{#1}{#2}{ } }
-    \ProvideDocumentCommand \IfPackageLoadedF { m m }
+    \ProvideDocumentCommand \IfPackageLoadedF { m +m }
       { \IfPackageLoadedTF{#1}{ }{#2} }
-    \ProvideDocumentCommand \IfClassLoadedT { m m }
+    \ProvideDocumentCommand \IfClassLoadedT { m +m }
       { \IfClassLoadedTF{#1}{#2}{ } }
-    \ProvideDocumentCommand \IfClassLoadedWithOptionsT { m m m }
+    \ProvideDocumentCommand \IfClassLoadedWithOptionsT { m m +m }
       { \IfClassLoadedWithOptionsTF{#1}{#2}{#3}{ } }
-    \ProvideDocumentCommand \IfPackageLoadedWithOptionsT { m m m }
+    \ProvideDocumentCommand \IfPackageLoadedWithOptionsT { m m +m }
       { \IfPackageLoadedWithOptionsTF{#1}{#2}{#3}{ } }
   }
 \RequirePackage{aliascnt}
@@ -322,24 +322,24 @@
       \l__keythms_thmstyle_defaultkeys_tl
   }
 
-\NewDocumentCommand \newkeytheoremstyle { m m }
+\NewDocumentCommand \newkeytheoremstyle { m +m }
   {
     \cs_if_free:cTF { th@ #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
       { \msg_error:nnn { keytheorems } { thmstyle-defined } { #1 } }
   }
-\NewDocumentCommand \renewkeytheoremstyle { m m }
+\NewDocumentCommand \renewkeytheoremstyle { m +m }
   {
     \cs_if_free:cTF { th@ #1 }
       { \msg_error:nnn { keytheorems } { thmstyle-undefined } { #1 } }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
-\NewDocumentCommand \providekeytheoremstyle { m m }
+\NewDocumentCommand \providekeytheoremstyle { m +m }
   {
     \cs_if_free:cT { th@ #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
-\NewDocumentCommand \declarekeytheoremstyle { m m }
+\NewDocumentCommand \declarekeytheoremstyle { m +m }
   {
     \keythms_thmstyle_declarestyle:nn { #1 } { #2 }
   }
@@ -538,22 +538,22 @@
 % Make generic theorem hooks
 \__keythms_thm_makethmhooks:n { allthms }
 
-\NewDocumentCommand \newkeytheorem { m O{} }
+\NewDocumentCommand \newkeytheorem { m +O{} }
   { % #1 = name, #2 = keys
     \clist_map_inline:nn { #1 } % define multiple theorems at once
       { \keythms_thm_newkeythm:nn { ##1 } { #2 } }
   }
-\NewDocumentCommand \renewkeytheorem { m O{} }
+\NewDocumentCommand \renewkeytheorem { m +O{} }
   { % #1 = name, #2 = keys
     \clist_map_inline:nn { #1 }
       { \keythms_thm_renewkeythm:nn { ##1 } { #2 } }
   }
-\NewDocumentCommand \providekeytheorem { m O{} }
+\NewDocumentCommand \providekeytheorem { m +O{} }
   { % #1 = name, #2 = keys
     \clist_map_inline:nn { #1 }
       { \keythms_thm_providekeythm:nn { ##1 } { #2 } }
   }
-\NewDocumentCommand \declarekeytheorem { m O{} }
+\NewDocumentCommand \declarekeytheorem { m +O{} }
   { % #1 = name, #2 = keys
     \clist_map_inline:nn { #1 }
       { \keythms_thm_declarekeythm:nn { ##1 } { #2 } }
@@ -1255,7 +1255,7 @@
 
 \cs_new_protected:Npn \KeyThmsContentsLine #1 { }
 % ^ initially a no-op, redefined where needed; important it's protected!
-\NewDocumentCommand \addtheoremcontentsline { m m }
+\NewDocumentCommand \addtheoremcontentsline { m +m }
   {
     \addtocontents { thlist }
       {
@@ -1266,7 +1266,7 @@
           }
       }
   }
-\NewDocumentCommand \addtotheoremcontents { m }
+\NewDocumentCommand \addtotheoremcontents { +m }
   {
     \addtocontents { thlist }
       {
@@ -1625,7 +1625,7 @@
       }
   }
 
-\NewDocumentCommand \keytheoremlistset { m }
+\NewDocumentCommand \keytheoremlistset { +m }
   {
     \keys_set:nn { keytheorems/listof } { #1 }
   }
@@ -1829,7 +1829,7 @@
    }
 \cs_new_eq:NN \keythms_listof_tocline: \__keythms_listof_default_tocline:
 
-\NewDocumentCommand \listofkeytheorems { O{} }
+\NewDocumentCommand \listofkeytheorems { +O{} }
   {
     \bool_gset_true:N \g__keythms_listof_writefile_bool
     \group_begin:
@@ -1984,7 +1984,7 @@
 
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
 
-\NewDocumentCommand \keytheoremset { m }
+\NewDocumentCommand \keytheoremset { +m }
   { % #1 = keys
     \keys_set:nn { keytheorems } { #1 }
   }
@@ -2011,11 +2011,11 @@
   {
     \bool_gset_true:N \g__keythms_thmtoolscompat_bool
     \__keythms_overload_code: % since thmtools overwrites \newtheorem
-    \ProvideDocumentCommand { \declaretheoremstyle } { O{} m }
+    \ProvideDocumentCommand { \declaretheoremstyle } { +O{} m }
       {
         \declarekeytheoremstyle { ##2 } { ##1 }
       }
-    \ProvideDocumentCommand { \declaretheorem } { O{} m }
+    \ProvideDocumentCommand { \declaretheorem } { +O{} m }
       {
         \newkeytheorem { ##2 } [ ##1 ]
       }
@@ -2095,19 +2095,19 @@
       { % redefine since thmtools way is \renewcommand\listtheoremname{...}
         title .initial:n = \listtheoremname
       }
-    \ProvideDocumentCommand { \addtotheorempreheadhook } { O{allthms} m }
+    \ProvideDocumentCommand { \addtotheorempreheadhook } { O{allthms} +m }
       {
         \addtotheoremhook [ ##1 ] { prehead } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheorempostheadhook } { O{allthms} m }
+    \ProvideDocumentCommand { \addtotheorempostheadhook } { O{allthms} +m }
       {
         \addtotheoremhook [ ##1 ] { posthead } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheoremprefoothook } { O{allthms} m }
+    \ProvideDocumentCommand { \addtotheoremprefoothook } { O{allthms} +m }
       {
         \addtotheoremhook [ ##1 ] { prefoot } { ##2 }
       }
-    \ProvideDocumentCommand { \addtotheorempostfoothook } { O{allthms} m }
+    \ProvideDocumentCommand { \addtotheorempostfoothook } { O{allthms} +m }
       {
         \addtotheoremhook [ ##1 ] { postfoot } { ##2 }
       }
@@ -2448,7 +2448,7 @@
             \cs_set_protected:Npn \__keythms_listof_titlecmd:n ####1 { ##1 }
           },
       }
-    \RenewDocumentCommand \listofkeytheorems { O{} }
+    \RenewDocumentCommand \listofkeytheorems { +O{} }
       { % title command not customizable here
         \bool_gset_true:N \g__keythms_listof_writefile_bool
         \group_begin:

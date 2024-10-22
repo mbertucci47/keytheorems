@@ -20,7 +20,7 @@
 \newlistof{ keythms_support_memoir_listof:w }{ thlist }
   { \l__keythms_listof_title_tl }
 
-\RenewDocumentCommand \listofkeytheorems { O{} }
+\RenewDocumentCommand \listofkeytheorems { +O{} }
   {
     \bool_gset_true:N \g__keythms_listof_writefile_bool
     \group_begin:
