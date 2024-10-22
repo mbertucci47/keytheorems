@@ -1190,9 +1190,9 @@
     \keythms_listof_chaptervspacehack:
     \iow_shipout:Ne \@auxout
       {
-        \exp_not:N \@writefile { thlist }
+        \token_to_str:N \@writefile { thlist }
           {
-            \KeyThmsSavedTheorem{ #1 }
+            \token_to_str:N \KeyThmsSavedTheorem{ #1 }
               { \@currentlabel }
               { \@currentHref }
               { \thepage }
@@ -1206,9 +1206,9 @@
   { % #1 = theorem name, #2 = keys, #3 = body
     \iow_shipout:Ne \@auxout
       {
-        \exp_not:N \@writefile { thlist }
+        \token_to_str:N \@writefile { thlist }
           {
-            \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
+            \token_to_str:N \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
               { #1 }
               { \exp_not:n { #2 } }
               { \exp_not:n { #3 } }
@@ -2026,9 +2026,9 @@
             \keythms_listof_chaptervspacehack:
             \iow_shipout:Ne \@auxout
               {
-                \exp_not:N \@writefile { thlist }
+                \token_to_str:N \@writefile { thlist }
                   {
-                    \KeyThmsSavedTheorem{ ####1 }
+                    \token_to_str:N \KeyThmsSavedTheorem{ ####1 }
                       { \@currentlabel }
                       { \@currentHref }
                       { \thepage }
@@ -2057,9 +2057,9 @@
           { % ####1 = theorem name, ####2 = keys, ####3 = body
             \iow_shipout:Ne \@auxout
               {
-                \exp_not:N \@writefile { thlist }
+                \token_to_str:N \@writefile { thlist }
                   {
-                    \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
+                    \token_to_str:N \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
                       { ####1 }
                       { store*=\l__keythms_thmuse_storereversed_tl,\exp_not:n { ####2 } } % this line is changed
                       { \exp_not:n { ####3 } }
