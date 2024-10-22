@@ -169,7 +169,6 @@
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnv }
 \cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, nnc, ne }
 \cs_generate_variant:Nn \prop_set_from_keyval:Nn { Ne }
-\prg_generate_conditional_variant:Nnn \tl_if_novalue:n { o } { T, F, TF }
 
 %%%%%%%%%%%%%%
 %%% Styles %%%
@@ -259,7 +258,7 @@
     preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     qed                   .code:n =
       { % qed needs special treatment to distinguish qed from qed={}
-        \tl_if_novalue:oTF { #1 }
+        \tl_if_novalue:nTF { #1 }
           {
             \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
               { \l_keys_key_str }
@@ -269,7 +268,7 @@
               { \l_keys_key_str = { #1 } }
           }
       },
-    qed                   .default:n = \c_novalue_tl,
+    qed                   .default:o = \c_novalue_tl,
     sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     tcolorbox             .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
@@ -464,7 +463,7 @@
     prefoothook    .tl_set:N  = \l__keythms_thm_prefoothook_tl,
     preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
-    qed            .default:n = \c_novalue_tl,
+    qed            .default:o = \c_novalue_tl,
     % ^ distinguish between 'qed' and 'qed={}'
     refname        .tl_set:N  = \l__keythms_thm_refname_tl,
     Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
@@ -778,12 +777,12 @@
   { % #1 = name, #2 = symbol
     \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \tl_if_novalue:oF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \pushQED{\qed}
       }
     \tl_gput_left:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       {
-        \tl_if_novalue:oF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \popQED
       }
   }
