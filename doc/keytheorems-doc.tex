@@ -86,7 +86,9 @@
 \newcommand{\bracks}[1]{\texttt{[#1]}}
 \newcommand{\ttbraces}[1]{\braces{\texttt{#1}}}
 %\tcbset{index gather commands=false}
-\colorlet{ExampleBack}{yellow!10}
+\usepackage{xcolor-solarized}
+\colorlet{ExampleBack}{solarized-base3!50}
+\colorlet{ExampleBackLower}{solarized-base3}
 \tcbset{
   color command=BrickRed,
   color key=Fuchsia,
@@ -117,7 +119,7 @@
 %    listing side text,
 %    lower separated=false,
     skin=bicolor,
-    colbacklower=yellow!25,
+    colbacklower=ExampleBackLower,
     breakable,
 %    enhanced,
 %    segmentation engine=path,
@@ -1177,11 +1179,23 @@ The GitHub tests folder contains an example of a tagged PDF using \pkg{keytheore
 
 \subsection{Public coding interfaces}
 
-\begin{itemize}
-	\item |\l_keythms_thmuse_envname_tl|
-	
-	Inside theorem environments and in all theorem hooks, you have access to the theorem's environment and counter name in this token list variable.
-\end{itemize}
+\begin{docCommand}{l_keythms_thmuse_envname_tl}{}
+Inside theorem environments and in all theorem hooks, you have access to the theorem's environment and counter name in this token list variable.
+\end{docCommand}
+\begin{docKeys}[doc no index,color command=green]
+  {
+    {
+      doc name=keytheorems/allthms/\textmd{\meta{hook name}},
+      doc label=allthms-hook,
+    },
+    {
+      doc name=keytheorems/\textmd{\meta{envname}}/\textmd{\meta{hook name}},
+      doc label=envname-hook,
+    }
+  }
+These are the ``real'' names for the hooks described in \autoref{keythms-hooks}.
+They can be useful with \cs{AddToHookNext} or the kernel's label mechanism for hooks.
+\end{docKeys}
 
 \section{Further examples}
 

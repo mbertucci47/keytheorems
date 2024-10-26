@@ -1569,10 +1569,7 @@
         \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
           {
             \tl_if_empty:nF { ##7 }
-              {
-                \__keythms_getthm_theorem:nnnnn
-                  {##1}{##2}{##5}{##6}{##7}
-              }
+              { \__keythms_getthm_theorem:nnnnn {##1}{##2}{##5}{##6}{##7} }
           }
       },
     seq                 .code:n     = 
