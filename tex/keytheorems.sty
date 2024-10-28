@@ -901,11 +901,6 @@
       {
         \property_new:nnnn { keytheorems/recordednote } { now } { }
           { \l__keythms_thmuse_note_tl }
-        \cs_new:Npn \__keythms_getrecordednote:n #1
-          {
-            \property_ref:nn { keythms_recordednote_#1 }
-              { keytheorems/recordednote }
-          }
         \cs_new:Npn \__keythms_thmuse_recordnote:
           {
             \tl_if_empty:NF \l__keythms_thmuse_note_tl
@@ -914,6 +909,11 @@
                   { keythms_recordednote_\l__keythms_thmuse_label_tl }
                   { keytheorems/recordednote }
               }
+          }
+        \cs_new:Npn \__keythms_getrecordednote:n #1
+          {
+            \property_ref:nn { keythms_recordednote_#1 }
+              { keytheorems/recordednote }
           }
       }
   }
