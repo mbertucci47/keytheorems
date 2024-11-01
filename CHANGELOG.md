@@ -1,7 +1,8 @@
 # Changelog for keytheorems package
 
-## [v0.1.9dev]
+## [v0.2.0dev]
 - make several commands "long" so keyvals can contain `\par` tokens
+- add `leftmargin` and `rightmargin` keys
 
 ## [v0.1.8]
 - add support for tagged PDF ([\#4](https://github.com/mbertucci47/keytheorems/issues/4))
@@ -47,7 +48,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.1.9dev]: https://github.com/mbertucci47/keytheorems/compare/v0.1.8...develop
+[v0.2.0dev]: https://github.com/mbertucci47/keytheorems/compare/v0.1.8...develop
 [v0.1.8]: https://github.com/mbertucci47/keytheorems/compare/v0.1.7...v0.1.8
 [v0.1.7]: https://github.com/mbertucci47/keytheorems/compare/v0.1.6...v0.1.7
 [v0.1.6]: https://github.com/mbertucci47/keytheorems/compare/v0.1.5...v0.1.6

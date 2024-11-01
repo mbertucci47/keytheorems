@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2024-10-22}
-\def\@keythms@version{0.1.9dev}
+\def\@keythms@date{2024-11-01}
+\def\@keythms@version{0.2.0dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -28,6 +28,7 @@
   }
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
+\RequirePackage{etoolbox} % only for patching theorem margins
 \RequirePackage{refcount}
 \RequirePackage{translations}
 
@@ -139,6 +140,8 @@
 \bool_new:N \l__keythms_thmuse_restating_bool
 \clist_new:N \g__keythms_restatecounters_clist
 \clist_new:N \l__keythms_thmstyle_savedkeys_clist
+\dim_new:N \l__keythms_thm_currparindent_dim
+\dim_new:N \l__keythms_thm_currparskip_dim
 \prop_new:N \g__keythms_thmnames_prop
 \prop_new:N \g__keythms_thmstyle_defaultkeys_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
@@ -248,6 +251,7 @@
     spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
     spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     % thm keys that are saved for later
+    leftmargin            .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     numbered              .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
     numberlike            .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     numberwithin          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
@@ -269,6 +273,7 @@
           }
       },
     qed                   .default:o = \c_novalue_tl,
+    rightmargin           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
     tcolorbox             .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
@@ -443,6 +448,7 @@
 \keys_define:nn { keytheorems/thm }
   {
     heading        .meta:n    = { name = {#1} },
+    leftmargin     .dim_set:N = \l__keythms_thm_leftmargin_dim,
     name           .tl_set:N  = \l__keythms_thm_name_tl,
     numbered       .choice:,
     numbered       .default:n = true,
@@ -467,6 +473,7 @@
     % ^ distinguish between 'qed' and 'qed={}'
     refname        .tl_set:N  = \l__keythms_thm_refname_tl,
     Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    rightmargin    .dim_set:N = \l__keythms_thm_rightmargin_dim,
     sharenumber    .meta:n    = { sibling = {#1} },
     sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
     style          .tl_set:N  = \l__keythms_thm_style_tl,
@@ -509,6 +516,7 @@
 
 \keys_precompile:nnN { keytheorems/thm }
   {
+    leftmargin   = 0pt,
     name         = \q_no_value,
     numbered     = true,
     parent       = {},
@@ -519,6 +527,7 @@
     qed          = \q_no_value,
     refname      = \q_no_value,
     Refname      = \q_no_value,
+    rightmargin  = 0pt,
     sibling      = {},
     style        = {},
     tcolorbox    = \q_no_value,
@@ -695,6 +704,14 @@
       { \keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
     \quark_if_no_value:NF \l__keythms_thm_Refname_tl 
       { \keythms_thm_setRefnames:nV { #1 } \l__keythms_thm_Refname_tl }
+    % Set margins if needed
+    \bool_lazy_or:nnT
+      { ! \dim_compare_p:nNn { \l__keythms_thm_leftmargin_dim } = { 0pt } }
+      { ! \dim_compare_p:nNn { \l__keythms_thm_rightmargin_dim } = { 0pt } }
+      {
+        \exp_args:NnVV \__keythms_thm_margincode:nnn { #1 }
+          \l__keythms_thm_leftmargin_dim \l__keythms_thm_rightmargin_dim
+      }
     % Set up qed if needed
     \quark_if_no_value:NF \l__keythms_thm_qed_tl
       {
@@ -729,6 +746,41 @@
               }
           }
         \tl_use:c { g__keythms_thm_tcbpatch_#1_tl }
+      }
+  }
+
+\cs_new_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+  { % #1 = name, #2 = leftmargin, #3 = rightmargin
+    \IfPackageLoadedTF { cleveref } % why is it enough to only patch \cref@thmnoarg and not \cref@thmoptarg?
+      { \__keythms_thm_margincode_aux:nnnn { #1 } { \cref@thmnoarg } { #2 } { #3 } }
+      {
+        \IfPackageLoadedTF { theoremref }
+          { \__keythms_thm_margincode_aux:nnnn { #1 } { \thmref@oldthm } { #2 } { #3 } }
+          { \__keythms_thm_margincode_aux:nnnn { #1 } { \@thm } { #2 } { #3 } }
+      }
+  }
+\cs_new_protected:Npn \__keythms_thm_margincode_aux:nnnn #1#2#3#4
+  {
+    \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+      {
+        \dim_set_eq:NN \l__keythms_thm_currparindent_dim \parindent
+        \dim_set_eq:NN \l__keythms_thm_currparskip_dim \parskip
+        \patchcmd{ #2 }{ \trivlist }
+          { \keythms@thm@margincode@patch{#3}{#4} }
+          { }{ \TRIVLISTPATCHFAILED }
+      }
+  }
+% need nice catcodes for \patchcmd
+\cs_new_protected:Npn \keythms@thm@margincode@patch #1#2
+  { % #1 = leftmargin, #2 = rightmargin
+    \list{ }
+      {
+        \dim_set:Nn \leftmargin { #1 }
+        \dim_set:Nn \rightmargin { #2 }
+        % need to revert some adjustments \list makes (any more?)
+        \int_gdecr:N \@listdepth % avoid changing format of inner lists
+        \dim_set_eq:NN \listparindent \l__keythms_thm_currparindent_dim
+        \dim_set_eq:NN \parsep \l__keythms_thm_currparskip_dim  
       }
   }
 

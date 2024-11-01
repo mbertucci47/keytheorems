@@ -78,6 +78,8 @@
   sibling=corollary,
   ]
 \newkeytheorem{observation}[style=breaksty]
+\newkeytheorem{quotethm}[name=Quote Theorem,leftmargin=1cm,rightmargin=1cm]
+\newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
 
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
@@ -104,8 +106,8 @@
     before upper = {%
       {\ttfamily\itshape \% preamble}%
       \vspace{-0.7\baselineskip}%
-      \tcbusetemplisting%
-      {\ttfamily\itshape \% document}%
+      \tcbusetemplisting
+      \noindent{\ttfamily\itshape \% document}%
       \vspace{-0.7\baselineskip}%
       }
     }
@@ -121,6 +123,7 @@
     skin=bicolor,
     colbacklower=ExampleBackLower,
     breakable,
+    parbox=false, % so examples match document with indent, etc.
 %    enhanced,
 %    segmentation engine=path,
 %    segmentation style={solid,gray},
@@ -166,7 +169,7 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 
 \section{Dependencies}
 
-The package depends on the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, \pkg{translations} packages.
+The package depends on the \pkg{aliascnt}, \pkg{amsthm}, \pkg{etoolbox}, \pkg{refcount}, \pkg{translations} packages.
 The \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package.
 A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01, \pkg{nameref} is required.
     
@@ -632,6 +635,45 @@ Consider \cref{abc,def}. \Autoref{abc} \dots
 
 \subsection{Keys added by \pkg{keytheorems}} \label{thm-added-keys}
 
+\begin{docKeys}[doc parameter={=\meta{length}}]
+  {
+    { doc name=leftmargin },
+    { doc name=rightmargin },
+  }
+Sets the left (respectively, right) margin of the theorem relative to the text width.
+This sets the theorem apart from the text, similar to a block quote. Code adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
+\begin{itemize}
+	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
+	\item \href{https://tex.stackexchange.com/a/236407/208544}{A theoremstyle with complete indentation using amsthm}
+\end{itemize}
+These keys patch the \cs{@thm} command with \pkg{etoolbox}'s \cs{patchcmd} hence can break with changes to \cs{@thm}.
+This is accounted for with the changes made by \pkg{cleveref} and \pkg{theoremref} but other packages might break them.
+\begin{tcbwritetemp}
+\newcommand{\marginthmtext}{%
+  We need some text to show off theorems with margins. }
+\newkeytheorem{quotethm}[
+  name=Quote Theorem,
+  leftmargin=1cm, rightmargin=1cm]
+\newkeytheorem{indentedthm}[name=Indented Theorem, leftmargin=1cm]
+\end{tcbwritetemp}
+
+\newcommand{\marginthmtext}{We need some text to show off theorems with margins. }
+\begin{keythmscode}[withpreamble]
+\marginthmtext\marginthmtext\marginthmtext
+
+\begin{quotethm}
+\marginthmtext\marginthmtext\marginthmtext
+\end{quotethm}
+
+\marginthmtext\marginthmtext\marginthmtext
+
+\begin{indentedthm}
+\marginthmtext\marginthmtext\marginthmtext
+\end{indentedthm}
+\end{keythmscode}
+
+\end{docKeys}
+
 \begin{docKey}{tcolorbox}
   {\colOpt{=\marg{tcolorbox options}}}
   {initially unset}
@@ -980,7 +1022,7 @@ Setting this key to |true| removes this space.
 \end{docKey}
 
 \begin{docKey}{chapter-skip-length}
-  {=\meta{dimension}}
+  {=\meta{length}}
   {initially |10pt|}
 Controls the amount of space inserted between chunks.
 \end{docKey}
