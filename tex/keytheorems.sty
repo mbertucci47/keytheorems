@@ -2607,6 +2607,17 @@
                   { \makeatletter \@input { \jobname.##1 } }
               },
           }
+        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+          { % tagging code does not define theorems with lists
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+              {
+                \SetTemplateKeys{ block }{ display }
+                  {
+                    leftmargin = #2,
+                    rightmargin = #3,
+                  }
+              }
+          }
       }
   }
   { }
