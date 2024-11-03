@@ -117,3 +117,6 @@
 - [x] logic with `restate-keys` and `store*` is reversed. Nevermind, it has to
       work this way. Otherwise all keys for actually written theorem would have
       to be passes to `restate-keys`.
+- [x] Don't patch `\@thm` for `leftmargin` and `rightmargin`. Just redefine `\trivlist`
+      in the prehead hook and restore original definition in posthead.
+- [ ] Make margin theorems work with tagging code

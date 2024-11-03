@@ -28,7 +28,6 @@
   }
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
-\RequirePackage{etoolbox} % only for patching theorem margins
 \RequirePackage{refcount}
 \RequirePackage{translations}
 
@@ -747,41 +746,30 @@
           }
         \tl_use:c { g__keythms_thm_tcbpatch_#1_tl }
       }
+    \cs_set_eq:NN \__keythms_thm_origtrivlist: \trivlist % for margin code below
   }
 
 \cs_new_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
-  { % #1 = name, #2 = leftmargin, #3 = rightmargin
-    \IfPackageLoadedTF { cleveref } % why is it enough to only patch \cref@thmnoarg and not \cref@thmoptarg?
-      { \__keythms_thm_margincode_aux:nnnn { #1 } { \cref@thmnoarg } { #2 } { #3 } }
-      {
-        \IfPackageLoadedTF { theoremref }
-          { \__keythms_thm_margincode_aux:nnnn { #1 } { \thmref@oldthm } { #2 } { #3 } }
-          { \__keythms_thm_margincode_aux:nnnn { #1 } { \@thm } { #2 } { #3 } }
-      }
-  }
-\cs_new_protected:Npn \__keythms_thm_margincode_aux:nnnn #1#2#3#4
   {
     \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
       {
         \dim_set_eq:NN \l__keythms_thm_currparindent_dim \parindent
         \dim_set_eq:NN \l__keythms_thm_currparskip_dim \parskip
-        \patchcmd{ #2 }{ \trivlist }
-          { \keythms@thm@margincode@patch{#3}{#4} }
-          { }{ \TRIVLISTPATCHFAILED }
+        \cs_set_protected:Npn \trivlist
+          {
+            \list{ }
+              {
+                \dim_set:Nn \leftmargin { #2 }
+                \dim_set:Nn \rightmargin { #3 }
+                % need to revert some adjustments \list makes (any more?)
+                \int_gdecr:N \@listdepth % avoid changing format of inner lists
+                \dim_set_eq:NN \listparindent \l__keythms_thm_currparindent_dim
+                \dim_set_eq:NN \parsep \l__keythms_thm_currparskip_dim  
+              }
+          }
       }
-  }
-% need nice catcodes for \patchcmd
-\cs_new_protected:Npn \keythms@thm@margincode@patch #1#2
-  { % #1 = leftmargin, #2 = rightmargin
-    \list{ }
-      {
-        \dim_set:Nn \leftmargin { #1 }
-        \dim_set:Nn \rightmargin { #2 }
-        % need to revert some adjustments \list makes (any more?)
-        \int_gdecr:N \@listdepth % avoid changing format of inner lists
-        \dim_set_eq:NN \listparindent \l__keythms_thm_currparindent_dim
-        \dim_set_eq:NN \parsep \l__keythms_thm_currparskip_dim  
-      }
+    \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+      { \cs_set_eq:NN \trivlist \__keythms_thm_origtrivlist: }
   }
 
 \cs_new_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
