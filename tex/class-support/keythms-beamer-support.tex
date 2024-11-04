@@ -25,52 +25,99 @@
         preheadhook = \def\inserttheoremblockenv{exampleblock},
       }
   }
-\keys_define:nn { keytheorems/thm }
-  { % redefine key to include \thm@headsep
-    tcolorbox-no-titlebar .meta:n =
-      {
-        tcolorbox={
-          notitle,
-          before~upper={
-            \group_begin:
-            \usebeamerfont*{block title}
-            \__keythms_thm_tcboxtemphead:
-            \hskip\thm@headsep
-            \group_end:
-            },
-          #1
-          }
-      },
-  }
-\cs_set_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
+
+\cs_set_protected:Npn \__keythms_thm_tcbcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
+    \__keythms_thm_tcbshared:nn { #1 } { #2 }
+    \tl_gput_left:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+      {
+        \cs_set:Npn \inserttheoremblockenv { keythms_beamer_tcb }
+      }
+  }
+\cs_set_protected:Npn \__keythms_thm_tcbnotitlebarcode:nn #1#2
+  { % #1 = name, #2 = tcolorbox keys
+    \__keythms_thm_tcbshared:nn { #1 } { #2 }
+    \tl_gput_left:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+      {
+        \cs_set:Npn \inserttheoremblockenv { keythms_beamer_tcbnotitlebar }
+      }
+  }
+\cs_set_protected:Npn \__keythms_thm_tcbshared:nn #1#2
+  {
     \RequirePackage{tcolorbox}
+    \AddToHook{env/#1/begin}
+      { % fix labels adding extra space
+        \keys_define:nn { keytheorems/thmuse }
+          { label .code:n = \tcbset{ phantom = { \label{##1} } } }
+      }
     \tcbset
       {
-        keythms_tcbox_#1/.style =
+        keythms_tcb_#1/.style =
           {
             savedelimiter=#1,
             #2
           }
       }
-    \tl_gput_left:cn { g__keythms_thm_preheadfromkeys_#1_tl }
-      {
-        \cs_set_protected:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
-        \cs_set:Npn \inserttheoremblockenv { keythms_beamer_tcbox }
-      }
+      \tl_if_empty:NTF \l__keythms_thm_style_tl
+        {
+          \tl_set_eq:NN \l__keythms_thm_tempstyle_tl
+            \l__keythms_thm_currentthmstyle_tl
+        }
+        { \tl_set_eq:NN \l__keythms_thm_tempstyle_tl \l__keythms_thm_style_tl }
+      \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
+        { % don't mess with tcolorbox defaults unless explicitly asked to in style
+          \exp_not:N \tl_put_right:cn { th@ \l__keythms_thm_tempstyle_tl }
+            { \thm@preskip=0pt \thm@postskip=0pt }
+        }
+      \tl_if_exist:cT
+        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+        {
+          \exp_args:Ne \tcbset
+            {
+              keythms_tcb_#1/.prefix~style =
+                {
+                  before~skip =
+                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+                }
+            }
+        }
+      \tl_if_exist:cT
+        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+        {
+          \exp_args:Ne \tcbset
+            {
+              keythms_tcb_#1/.prefix~style =
+                {
+                  after~skip =
+                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+                }
+            }
+        }
   }
-\NewDocumentEnvironment{ keythms_beamer_tcbox }{ m d<> }
+\NewDocumentEnvironment{ keythms_beamer_tcb }{ m d<> }
   {
-    \cs_set:Npn \__keythms_thm_tcboxtemphead: { #1 } % for tcolorbox-no-titlebar
-    \tl_if_novalue:nF { #2 } { \begin{onlyenv}<#2> }
+    \tl_if_novalue:nF { #2 } { \begin{actionenv}<#2> }
     \begin{tcolorbox}[
       title={\usebeamerfont*{block title} #1},
-      keythms_tcbox_\l_keythms_thmuse_envname_tl
+      keythms_tcb_\l_keythms_thmuse_envname_tl
       ]
   }
   {
     \end{tcolorbox}
-    \tl_if_novalue:nF { #2 } { \end{onlyenv} }
+    \tl_if_novalue:nF { #2 } { \end{actionenv} }
+  }
+\NewDocumentEnvironment{ keythms_beamer_tcbnotitlebar }{ m d<> }
+  {
+    \tl_if_novalue:nF { #2 } { \begin{actionenv}<#2> }
+    \begin{tcolorbox}[ keythms_tcb_\l_keythms_thmuse_envname_tl ]
+      \group_begin:
+      \usebeamerfont*{block title} #1
+      \hskip\thm@headsep
+      \group_end:
+  }
+  {
+    \end{tcolorbox}
+    \tl_if_novalue:nF { #2 } { \end{actionenv} }
   }
 
 \cs_set_protected:Npn \keythms_keyify_theorem:n #1

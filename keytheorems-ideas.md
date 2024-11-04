@@ -110,7 +110,7 @@
       This means getthm_body needs to take three arguments...
 - [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file
-- [ ] space after title with beamer, tcolorbox theorems, and label
+- [x] space after title with beamer, tcolorbox theorems, and label
 - [x] move `prehead_code` out of `withhooks_begin` so the preheadhook can change note.
       Then wouldn't need separate `prehead_continues_code`, I think.
       See this for application: https://tex.stackexchange.com/a/728812/208544
@@ -123,4 +123,3 @@
 - [x] Manual label after `tcolorbox-no-titlebar` theorem produces extra space
 - [ ] Nested theorem inside tcolorbox theorem
 - [x] Default spacing of tcolorbox theorems
-- [ ] Fix tcolorbox theorems for beamer

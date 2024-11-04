@@ -172,7 +172,7 @@
 \cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnv }
-\cs_generate_variant:Nn \keys_precompile:nnN { nv, nVc, nnc, ne }
+\cs_generate_variant:Nn \keys_precompile:nnN { ne, nv, nnc, nVc }
 \cs_generate_variant:Nn \prop_set_from_keyval:Nn { Ne }
 
 %%%%%%%%%%%%%%
@@ -713,13 +713,13 @@
     % Set up tcolorbox if needed
     \int_compare:nNnTF { \l__keythms_thm_tcbstate_int } = { 1 }
       {
-        \exp_args:Nno \__keythms_thm_tcboxcode:nn { #1 }
+        \exp_args:Nno \__keythms_thm_tcbcode:nn { #1 }
           { \l__keythms_thm_tcbkeys_tl }
       }
       {
         \int_compare:nNnT { \l__keythms_thm_tcbstate_int } = { 2 }
           {
-            \exp_args:Nno \__keythms_thm_tcboxnotitlebarcode:nn { #1 }
+            \exp_args:Nno \__keythms_thm_tcbnotitlebarcode:nn { #1 }
               { \l__keythms_thm_tcbkeys_tl }
           }
       }
@@ -774,31 +774,31 @@
       { \cs_set_eq:NN \trivlist \__keythms_thm_origtrivlist: }
   }
 
-\cs_new_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
+\cs_new_protected:Npn \__keythms_thm_tcbcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
-    \__keythms_thm_tcboxshared:nn { #1 }
+    \__keythms_thm_tcbshared:nn { #1 }
       {
-        title={ \__keythms_thm_tcboxtemphead: },
+        title={ \__keythms_thm_tcbtemphead: },
         #2
       }
     \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
-      { \begin{tcolorbox}[keythms_tcbox_#1] }
+      { \begin{tcolorbox}[keythms_tcb_#1] }
     \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       { \end{tcolorbox} }
   }
-\cs_new_protected:Npn \__keythms_thm_tcboxnotitlebarcode:nn #1#2
+\cs_new_protected:Npn \__keythms_thm_tcbnotitlebarcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
-    \__keythms_thm_tcboxshared:nn { #1 } { #2 }
+    \__keythms_thm_tcbshared:nn { #1 } { #2 }
     \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \begin{tcolorbox}[keythms_tcbox_#1]
+        \begin{tcolorbox}[keythms_tcb_#1]
         \dim_zero:N \labelsep
-        \item[ \__keythms_thm_tcboxtemphead: ]
+        \item[ \__keythms_thm_tcbtemphead: ]
       }
     \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       { \end{tcolorbox} }
   }
-\cs_new_protected:Npn \__keythms_thm_tcboxshared:nn #1#2
+\cs_new_protected:Npn \__keythms_thm_tcbshared:nn #1#2
   {
     \RequirePackage{tcolorbox}
     \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
@@ -811,7 +811,7 @@
       }
     \tcbset
       {
-        keythms_tcbox_#1/.style =
+        keythms_tcb_#1/.style =
           {
             savedelimiter=#1,
             #2
@@ -825,47 +825,47 @@
               { % hyperref doesn't patch \@thm if cleveref loaded
                 \tcbset
                   {
-                    keythms_tcbox_#1/.append~style = % fix hyperlinking
+                    keythms_tcb_#1/.append~style = % fix hyperlinking
                       { phantom={ \MakeLinkTarget*{\@currentHref} } }
                   }
               }
           }
       }
-      \tl_if_empty:NTF \l__keythms_thm_style_tl
-        {
-          \tl_set_eq:NN \l__keythms_thm_tempstyle_tl
-            \l__keythms_thm_currentthmstyle_tl
-        }
-        { \tl_set_eq:NN \l__keythms_thm_tempstyle_tl \l__keythms_thm_style_tl }
-      \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
-        { % don't mess with tcolorbox defaults unless explicitly asked to in style
-          \exp_not:N \tl_put_right:cn { th@ \l__keythms_thm_tempstyle_tl }
-            { \thm@preskip=0pt \thm@postskip=0pt }
-        }
-      \tl_if_exist:cT
-        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
-        {
-          \exp_args:Ne \tcbset
-            {
-              keythms_tcbox_#1/.prefix~style =
-                {
-                  before~skip =
-                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
-                }
-            }
-        }
-      \tl_if_exist:cT
-        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
-        {
-          \exp_args:Ne \tcbset
-            {
-              keythms_tcbox_#1/.prefix~style =
-                {
-                  after~skip =
-                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
-                }
-            }
-        }
+    \tl_if_empty:NTF \l__keythms_thm_style_tl
+      {
+        \tl_set_eq:NN \l__keythms_thm_tempstyle_tl
+          \l__keythms_thm_currentthmstyle_tl
+      }
+      { \tl_set_eq:NN \l__keythms_thm_tempstyle_tl \l__keythms_thm_style_tl }
+    \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
+      { % don't mess with tcolorbox defaults unless explicitly asked to in style
+        \exp_not:N \tl_put_right:cn { th@ \l__keythms_thm_tempstyle_tl }
+          { \thm@preskip=0pt \thm@postskip=0pt }
+      }
+    \tl_if_exist:cT
+      { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+      {
+        \exp_args:Ne \tcbset
+          {
+            keythms_tcb_#1/.prefix~style =
+              {
+                before~skip =
+                  \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+              }
+          }
+      }
+    \tl_if_exist:cT
+      { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+      {
+        \exp_args:Ne \tcbset
+          {
+            keythms_tcb_#1/.prefix~style =
+              {
+                after~skip =
+                  \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+              }
+          }
+      }
   }
 % what below is unnecessary? I really don't understand this code.
 \cs_new_protected:Npn \__keythms_thm_storedeferred@thm@head:n #1
@@ -880,7 +880,7 @@
     \fi
     % \global\@inlabeltrue % MB: if this is uncommented then spacing after sections is wrong
     \everypar\dth@everypar
-    \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
+    \cs_set:Npn \__keythms_thm_tcbtemphead: { \normalfont #1 }
     \ignorespaces
   }
 \cs_new_protected:Npn \__keythms_thm_qedcode:nn #1#2
@@ -981,7 +981,7 @@
             \keythms_if_restating:F
               { \refstepcounter{ keythms_unnumbered_dummyctr } }
             \IfPackageLoadedT { tcolorbox }
-              { \tcbset{keythms_tcbox_#1/.append~style=nophantom} }
+              { \tcbset{keythms_tcb_#1/.append~style=nophantom} }
             % ^ otherwise we try to set two identical anchors
             \begin{keythms_orig_nonumber_#1}
           }
