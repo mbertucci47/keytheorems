@@ -149,6 +149,8 @@
 \tl_new:N \l__keythms_thm_currentthmstyle_tl
 \tl_new:N \l__keythms_thm_defaultkeys_tl
 \tl_new:N \l__keythms_thm_envname_tl
+\tl_new:N \l__keythms_thm_tcbkeys_tl
+\tl_new:N \l__keythms_thm_tempstyle_tl
 \tl_new:N \l__keythms_thmstyle_defaultkeys_tl
 \tl_new:N \l__keythms_thmstyle_lnotebrace_tl
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
@@ -394,17 +396,27 @@
       \l__keythms_thmstyle_postheadspace_tl
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define inherit-style key
-    \tl_if_exist:cF { l__keythms_thmstyle_#1_metakeys_tl }
-      { \tl_new:c { l__keythms_thmstyle_#1_metakeys_tl } }
+    \tl_clear_new:c { l__keythms_thmstyle_#1_metakeys_tl }
     \keys_precompile:nnc { keytheorems/thmstyle } { #2 } % use precompile instead of meta key
       { l__keythms_thmstyle_#1_metakeys_tl }           % because that's sensitive to hashes
     \keys_define:nn { keytheorems/thmstyle }             % and we want to allow both # and ##
       { inherit-style / #1 .code:n = \tl_use:c { l__keythms_thmstyle_#1_metakeys_tl } }
-    \tl_if_exist:cF { l__keythms_thmstyle_#1_savedthmkeys_tl }
-      { \tl_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl } }
+    \tl_clear_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl }
     \keys_precompile:nVc { keytheorems/thm }
       \l__keythms_thmstyle_savedkeys_clist
       { l__keythms_thmstyle_#1_savedthmkeys_tl }
+    \tl_if_empty:NF \l__keythms_thmstyle_spaceabove_tl
+      {
+        \skip_zero_new:c { g__keythms_thmstyle_#1_tcbspaceabove_skip }
+        \skip_set_eq:cN { g__keythms_thmstyle_#1_tcbspaceabove_skip }
+          \l__keythms_thmstyle_spaceabove_tl
+      }
+    \tl_if_empty:NF \l__keythms_thmstyle_spacebelow_tl
+      {
+        \skip_zero_new:c { g__keythms_thmstyle_#1_tcbspacebelow_skip }
+        \skip_set_eq:cN { g__keythms_thmstyle_#1_tcbspacebelow_skip }
+          \l__keythms_thmstyle_spacebelow_tl
+      }
     \cs_undefine:N \NAME % undefine to prevent conflicts
     \cs_undefine:N \NUMBER
     \cs_undefine:N \NOTE
@@ -818,7 +830,42 @@
                   }
               }
           }
-      }  
+      }
+      \tl_if_empty:NTF \l__keythms_thm_style_tl
+        {
+          \tl_set_eq:NN \l__keythms_thm_tempstyle_tl
+            \l__keythms_thm_currentthmstyle_tl
+        }
+        { \tl_set_eq:NN \l__keythms_thm_tempstyle_tl \l__keythms_thm_style_tl }
+      \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
+        { % don't mess with tcolorbox defaults unless explicitly asked to in style
+          \exp_not:N \tl_put_right:cn { th@ \l__keythms_thm_tempstyle_tl }
+            { \thm@preskip=0pt \thm@postskip=0pt }
+        }
+      \tl_if_exist:cT
+        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+        {
+          \exp_args:Ne \tcbset
+            {
+              keythms_tcbox_#1/.prefix~style =
+                {
+                  before~skip =
+                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspaceabove_skip }
+                }
+            }
+        }
+      \tl_if_exist:cT
+        { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+        {
+          \exp_args:Ne \tcbset
+            {
+              keythms_tcbox_#1/.prefix~style =
+                {
+                  after~skip =
+                    \skip_use:c { g__keythms_thmstyle_ \l__keythms_thm_tempstyle_tl _tcbspacebelow_skip }
+                }
+            }
+        }
   }
 % what below is unnecessary? I really don't understand this code.
 \cs_new_protected:Npn \__keythms_thm_storedeferred@thm@head:n #1
