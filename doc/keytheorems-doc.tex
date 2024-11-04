@@ -1215,7 +1215,8 @@ Some font packages, all by Michael Sharpe, offer a |theoremfont| option that red
 The \LaTeX{} team has been working hard to support the creation of tagged PDFs (see \url{https://latex3.github.io/tagging-project/}).
 The current |dev| formats make \pkg{amsthm} compatible with the kernel tagging code.
 Most of \pkg{keytheorems} is supported too, and anything that doesn't work should be reported.
-The only things explicitly not supported are the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys.
+Explicitly not supported are the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys.
+There is only partial support for \refKey{leftmargin} and \refKey{rightmargin}, namely only the latter works.
 
 To produce a tagged PDF, add \cs{DocumentMetadata} in the first line of your document (additional instructions are found on the Tagging Project \href{https://latex3.github.io/tagging-project/documentation/prototype-usage-instructions.html}{website}).
 An example invocation might look like
