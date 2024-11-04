@@ -646,8 +646,6 @@ This sets the theorem apart from the text, similar to a block quote. Code adapte
 	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
 	\item \href{https://tex.stackexchange.com/a/236407/208544}{A theoremstyle with complete indentation using amsthm}
 \end{itemize}
-These keys patch the \cs{@thm} command with \pkg{etoolbox}'s \cs{patchcmd} hence can break with changes to \cs{@thm}.
-This is accounted for with the changes made by \pkg{cleveref} and \pkg{theoremref} but other packages might break them.
 \begin{tcbwritetemp}
 \newcommand{\marginthmtext}{%
   We need some text to show off theorems with margins. }
