@@ -22,6 +22,18 @@
 \usepackage{keytheorems}
 \usepackage{cleveref}
 
+%%% TEMPORARY (https://tex.stackexchange.com/q/730126/208544)
+\RemoveFromHook{label}[firstaid/cleveref]
+\makeatletter
+\AddToHook{label}[firstaid/cleveref]
+         {\ifx
+           \@currentcounter\@empty
+          \else
+           \firstaid@cref@updatelabeldata{\@currentcounter}%<--- was missing
+          \fi} 
+\makeatother
+%%% END TEMPORARY
+
 \makeatletter
 \newcommand\keythmsversion{\@keythms@version}
 \makeatother
