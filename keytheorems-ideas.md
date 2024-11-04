@@ -121,3 +121,5 @@
       in the prehead hook and restore original definition in posthead.
 - [ ] Make margin theorems work with tagging code
 - [ ] Manual label after `tcolorbox-no-titlebar` theorem produces extra space
+- [ ] Nested theorem inside tcolorbox theorem
+- [ ] Default spacing of tcolorbox theorems

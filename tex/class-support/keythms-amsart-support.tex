@@ -27,10 +27,6 @@
             headindent    = \@acmplainindent,
             notefont      = \@acmplainnotefont,
             postheadspace = .5em,
-            spaceabove    =
-              .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-            spacebelow    =
-              .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
           }
         \keys_define:nn { keytheorems/thmstyle }
           {
@@ -79,13 +75,6 @@
                 spacebelow    = 0.5\linespacing,
               },
           }
-      }
-  }
-  { % the amsart defaults
-    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
-      {
-        spaceabove = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
-        spacebelow = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
       }
   }
 

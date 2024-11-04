@@ -141,6 +141,7 @@
 \clist_new:N \l__keythms_thmstyle_savedkeys_clist
 \dim_new:N \l__keythms_thm_currparindent_dim
 \dim_new:N \l__keythms_thm_currparskip_dim
+\int_new:N \l__keythms_thm_tcbstate_int
 \prop_new:N \g__keythms_thmnames_prop
 \prop_new:N \g__keythms_thmstyle_defaultkeys_prop
 \prop_new:N \g__keythms_thmuse_othercounters_prop
@@ -315,8 +316,8 @@
     noteseparator = {~},
     numberfont    = \upshape,
     postheadspace = 5pt plus 1pt minus 1pt,
-    spaceabove    = \topsep,
-    spacebelow    = \topsep,
+    spaceabove    = {}, % empty means default (works for AMS classes too)
+    spacebelow    = {}, % empty means default (works for AMS classes too)
   }
 \hook_gput_code:nnn { package/keytheorems/after } { . }
   { % need to defer to wait for support files
@@ -477,40 +478,20 @@
     sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
     style          .tl_set:N  = \l__keythms_thm_style_tl,
     style          .groups:n  = { style-comes-first },
-    tcolorbox      .tl_set:N  = \l__keythms_thm_tcbkeys_tl,
-    tcolorbox      .default:n = {},
-    tcolorbox-no-titlebar .meta:n =
+    tcolorbox      .code:n    =
       {
-        tcolorbox={
-          notitle,
-          before~upper={
-            \group_begin:
-            \__keythms_thm_tcboxtemphead:
-            \group_end:
-            },
-          #1
-          }
+        \int_set:Nn \l__keythms_thm_tcbstate_int { 1 }
+        \tl_set:Nn \l__keythms_thm_tcbkeys_tl { #1 }
+      },
+    tcolorbox      .default:n = {},
+    tcolorbox-no-titlebar .code:n =
+      {
+        \int_set:Nn \l__keythms_thm_tcbstate_int { 2 }
+        \tl_set:Nn \l__keythms_thm_tcbkeys_tl { #1 }
       },
     tcolorbox-no-titlebar .default:n = {},
     title          .meta:n    = { name = {#1} },
     within         .meta:n    = { parent = {#1} },
-  }
-
-% what below is unnecessary? I really don't understand this code.
-\cs_new_protected:Npn \__keythms_thm_storedeferredthmhead:n #1
-  {
-    \if@inlabel \indent \par \fi % eject a section head if one is pending
-    \if@nobreak
-      \adjust@parskip@nobreak
-    \else
-    \addpenalty\@beginparpenalty
-    \addvspace\@topsep
-    \addvspace{-\parskip}
-    \fi
-    % \global\@inlabeltrue % MB: if this is uncommented then spacing after sections is wrong
-    \everypar\dth@everypar
-    \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
-    \ignorespaces
   }
 
 \keys_precompile:nnN { keytheorems/thm }
@@ -529,7 +510,6 @@
     rightmargin  = 0pt,
     sibling      = {},
     style        = {},
-    tcolorbox    = \q_no_value,
   }
   \l__keythms_thm_defaultkeys_tl
 
@@ -589,6 +569,8 @@
     \bool_set_false:N \l__keythms_thm_unlessunique_bool
     % Set default keys
     \tl_use:N \l__keythms_thm_defaultkeys_tl
+    % Initialize tcb state to zero (1 is with title bar, 2 is without title bar)
+    \int_zero:N \l__keythms_thm_tcbstate_int
     % First set style so we can pick up additional thm keys, then overwrite if necessary
     \keys_set_groups:nnn { keytheorems/thm } { style-comes-first } { #2 }
     % Store theorem style
@@ -717,10 +699,17 @@
         \exp_args:Nno \__keythms_thm_qedcode:nn { #1 } { \l__keythms_thm_qed_tl }
       }
     % Set up tcolorbox if needed
-    \quark_if_no_value:NF \l__keythms_thm_tcbkeys_tl
+    \int_compare:nNnTF { \l__keythms_thm_tcbstate_int } = { 1 }
       {
         \exp_args:Nno \__keythms_thm_tcboxcode:nn { #1 }
           { \l__keythms_thm_tcbkeys_tl }
+      }
+      {
+        \int_compare:nNnT { \l__keythms_thm_tcbstate_int } = { 2 }
+          {
+            \exp_args:Nno \__keythms_thm_tcboxnotitlebarcode:nn { #1 }
+              { \l__keythms_thm_tcbkeys_tl }
+          }
       }
     % Set up list-of definition
     \cs_set_eq:cN { l@ #1 } \keythms_listof_tocline:
@@ -761,6 +750,7 @@
               {
                 \dim_set:Nn \leftmargin { #2 }
                 \dim_set:Nn \rightmargin { #3 }
+                \dim_zero:N \labelwidth % trivlist does this; important for tcb-no-title
                 % need to revert some adjustments \list makes (any more?)
                 \int_gdecr:N \@listdepth % avoid changing format of inner lists
                 \dim_set_eq:NN \listparindent \l__keythms_thm_currparindent_dim
@@ -774,23 +764,44 @@
 
 \cs_new_protected:Npn \__keythms_thm_tcboxcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
+    \__keythms_thm_tcboxshared:nn { #1 }
+      {
+        title={ \__keythms_thm_tcboxtemphead: },
+        #2
+      }
+    \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+      { \begin{tcolorbox}[keythms_tcbox_#1] }
+    \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
+      { \end{tcolorbox} }
+  }
+\cs_new_protected:Npn \__keythms_thm_tcboxnotitlebarcode:nn #1#2
+  { % #1 = name, #2 = tcolorbox keys
+    \__keythms_thm_tcboxshared:nn { #1 } { #2 }
+    \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+      {
+        \begin{tcolorbox}[keythms_tcbox_#1]
+        \dim_zero:N \labelsep
+        \item[ \__keythms_thm_tcboxtemphead: ]
+      }
+    \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
+      { \end{tcolorbox} }
+  }
+\cs_new_protected:Npn \__keythms_thm_tcboxshared:nn #1#2
+  {
     \RequirePackage{tcolorbox}
     \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
       {
-        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferredthmhead:n
+        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferred@thm@head:n
         \cs_set_eq:NN \Hy@theorem@makelinktarget \use_none:n
-        % ^ don't like playing with hyperref internals... but don't see around
-        %   it because hyperref tries to add to para hook which doesn't work
-        %   when title set up the way we do it
-        \cs_set_protected:Npn \thm@space@setup { \thm@preskip=0pt \thm@postskip=0pt }
-        % ^ to match tcolorbox defaults; shouldn't interfere with user styles
+        % % ^ don't like playing with hyperref internals... but don't see around
+        % %   it because hyperref tries to add to para hook which doesn't work
+        % %   when title set up the way we do it
       }
     \tcbset
       {
         keythms_tcbox_#1/.style =
           {
             savedelimiter=#1,
-            title={ \__keythms_thm_tcboxtemphead: },
             #2
           }
       }
@@ -807,11 +818,23 @@
                   }
               }
           }
-      }
-    \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
-      { \begin{tcolorbox}[keythms_tcbox_#1] }
-    \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
-      { \end{tcolorbox} }
+      }  
+  }
+% what below is unnecessary? I really don't understand this code.
+\cs_new_protected:Npn \__keythms_thm_storedeferred@thm@head:n #1
+  {
+    \if@inlabel \indent \par \fi % eject a section head if one is pending
+    \if@nobreak
+      \adjust@parskip@nobreak
+    \else
+    \addpenalty\@beginparpenalty
+    \addvspace\@topsep
+    \addvspace{-\parskip}
+    \fi
+    % \global\@inlabeltrue % MB: if this is uncommented then spacing after sections is wrong
+    \everypar\dth@everypar
+    \cs_set:Npn \__keythms_thm_tcboxtemphead: { \normalfont #1 }
+    \ignorespaces
   }
 \cs_new_protected:Npn \__keythms_thm_qedcode:nn #1#2
   { % #1 = name, #2 = symbol
@@ -2580,15 +2603,23 @@
   {
     \tag_if_active:T
       {
-        \msg_new:nnn { keytheorems } { tcolorbox-tagging }
+        \msg_new:nnn { keytheorems } { tag-incompat-key }
           {
-            The~key~'tcolorbox'~does~not~currently~work~with~
+            The~key~'#1'~does~not~currently~work~with~
             tagging.~Ignoring~this~key.
           }
         \keys_define:nn { keytheorems/thm }
           {
             tcolorbox .code:n =
-              \msg_warning:nn { keytheorems } { tcolorbox-tagging },
+              {
+                \msg_warning:nn { keytheorems } { tag-incompat-key }
+                  { tcolorbox }
+              },
+            tcolorbox-no-titlebar .code:n =
+              {
+                \msg_warning:nn { keytheorems } { tag-incompat-key }
+                  { tcolorbox-no-titlebar }
+              },
           }
         \keys_define:nn { keytheorems/listof }
           {
