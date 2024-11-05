@@ -123,3 +123,5 @@
 - [x] Manual label after `tcolorbox-no-titlebar` theorem produces extra space
 - [ ] Nested theorem inside tcolorbox theorem
 - [x] Default spacing of tcolorbox theorems
+- [ ] For tcb-no-title, wrap in prehead and postfoot hooks and just declare hook
+      rules to match tcolorbox key. Otherwise this is a pain
