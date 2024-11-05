@@ -125,6 +125,7 @@
 %%% Declare Variables %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\dim_new:N \l__keythms_tmpa_dim
 \iow_new:N \g__keythms_tmpa_iow
 \tl_new:N \l__keythms_tmpa_tl
 
@@ -792,8 +793,10 @@
     \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
         \begin{tcolorbox}[keythms_tcb_#1]
+        \dim_set_eq:NN \l__keythms_tmpa_dim \labelsep
         \dim_zero:N \labelsep
         \item[ \__keythms_thm_tcbtemphead: ]
+        \dim_set_eq:NN \labelsep \l__keythms_tmpa_dim
       }
     \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
       { \end{tcolorbox} }
