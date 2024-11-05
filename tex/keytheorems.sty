@@ -528,10 +528,8 @@
 
 \cs_new_protected:Npn \__keythms_thm_makethmhooks:n #1
   {
-    \hook_new:n { keytheorems/#1/prehead }
-    \hook_new:n { keytheorems/#1/posthead }
-    \hook_new_reversed:n { keytheorems/#1/prefoot }
-    \hook_new_reversed:n { keytheorems/#1/postfoot }
+    \hook_new_pair:nn { keytheorems/#1/prehead } { keytheorems/#1/postfoot }
+    \hook_new_pair:nn { keytheorems/#1/posthead } { keytheorems/#1/prefoot }
     \hook_new:n { keytheorems/#1/restated }
   }
 
@@ -777,10 +775,32 @@
 
 \cs_new_protected:Npn \__keythms_thm_tcbcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
+    \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+      {
+        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferred@thm@head:n
+        \cs_set_eq:NN \Hy@theorem@makelinktarget \use_none:n
+        % % ^ don't like playing with hyperref internals... but don't see around
+        % %   it because hyperref tries to add to para hook which doesn't work
+        % %   when title set up the way we do it
+      }
     \__keythms_thm_tcbshared:nn { #1 }
       {
         title={ \__keythms_thm_tcbtemphead: },
         #2
+      }
+    \bool_if:NT \l__keythms_thm_numbered_bool
+      {
+        \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
+          {
+            \IfPackageLoadedF { cleveref }
+              { % hyperref doesn't patch \@thm if cleveref loaded
+                \tcbset
+                  {
+                    keythms_tcb_#1/.append~style = % fix hyperlinking
+                      { phantom={ \MakeLinkTarget*{\@currentHref} } }
+                  }
+              }
+          }
       }
     \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       { \begin{tcolorbox}[keythms_tcb_#1] }
@@ -790,48 +810,22 @@
 \cs_new_protected:Npn \__keythms_thm_tcbnotitlebarcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
     \__keythms_thm_tcbshared:nn { #1 } { #2 }
-    \tl_gput_left:cn { g__keythms_thm_postheadfromkeys_#1_tl }
-      {
-        \begin{tcolorbox}[keythms_tcb_#1]
-        \dim_set_eq:NN \l__keythms_tmpa_dim \labelsep
-        \dim_zero:N \labelsep
-        \item[ \__keythms_thm_tcbtemphead: ]
-        \dim_set_eq:NN \labelsep \l__keythms_tmpa_dim
-      }
-    \tl_gput_right:cn { g__keythms_thm_prefootfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_#1_tcbprehead_tl }
+    \tl_gset:cn { g__keythms_thm_#1_tcbprehead_tl }
+      { \begin{tcolorbox}[keythms_tcb_#1] }
+    \tl_gclear_new:c { g__keythms_thm_#1_tcbpostfoot_tl }
+    \tl_gset:cn { g__keythms_thm_#1_tcbpostfoot_tl }
       { \end{tcolorbox} }
   }
 \cs_new_protected:Npn \__keythms_thm_tcbshared:nn #1#2
   {
     \RequirePackage{tcolorbox}
-    \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
-      {
-        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_storedeferred@thm@head:n
-        \cs_set_eq:NN \Hy@theorem@makelinktarget \use_none:n
-        % % ^ don't like playing with hyperref internals... but don't see around
-        % %   it because hyperref tries to add to para hook which doesn't work
-        % %   when title set up the way we do it
-      }
     \tcbset
       {
         keythms_tcb_#1/.style =
           {
             savedelimiter=#1,
             #2
-          }
-      }
-    \bool_if:NT \l__keythms_thm_numbered_bool
-      {
-        \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
-          {
-            \IfPackageLoadedF{cleveref}
-              { % hyperref doesn't patch \@thm if cleveref loaded
-                \tcbset
-                  {
-                    keythms_tcb_#1/.append~style = % fix hyperlinking
-                      { phantom={ \MakeLinkTarget*{\@currentHref} } }
-                  }
-              }
           }
       }
     \tl_if_empty:NTF \l__keythms_thm_style_tl
@@ -1068,6 +1062,7 @@
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
     \DeclareDocumentEnvironment { keythms_grab_#1 } { m m +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
+        \__keythms_thm_prehead_code:n { #1 }
         \begin{keythms_orig_#1}[{##2}]
         \clist_map_inline:Nn \g__keythms_restatecounters_clist
           {
@@ -1124,6 +1119,7 @@
              \msg_warning:nnV { keytheorems } { store-reversed-not-got }
                \l__keythms_thmuse_storereversed_tl
            }
+        \__keythms_thm_prehead_code:n { #1 }
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
         \begin{keythms_orig_#1}[{##2}]
@@ -1150,19 +1146,21 @@
         {
           \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
           \keys_set:nn { keytheorems/thmuse } { ##1 }
-          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+          \tl_if_empty:NTF \l__keythms_thmuse_store_tl
+            {
+              \tl_if_empty:NTF \l__keythms_thmuse_storereversed_tl
+                { \__keythms_thm_prehead_code:n { #1 } }
+                {
+                  \bool_gset_true:N \g__keythms_listof_writefile_bool
+                  \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
+                  \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
+                }
+            }
             {
               \bool_gset_true:N \g__keythms_listof_writefile_bool
               \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
               \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
             }
-          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
-            {
-              \bool_gset_true:N \g__keythms_listof_writefile_bool
-              \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
-              \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
-            }
-          \__keythms_thm_prehead_code:n { #1 }
           \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl
         }
         {
@@ -1269,6 +1267,8 @@
       }
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }
+    \tl_if_exist:cT { g__keythms_thm_#1_tcbprehead_tl }
+      { \tl_use:c { g__keythms_thm_#1_tcbprehead_tl } }
   }
 \cs_new_protected:Npn \__keythms_thm_posthead_code:n #1
   { % #1 = theorem name
@@ -1294,6 +1294,8 @@
   }
 \cs_new_protected:Npn \__keythms_thm_postfoot_code:n #1
   { % #1 = theorem name
+    \tl_if_exist:cT { g__keythms_thm_#1_tcbpostfoot_tl }
+      { \tl_use:c { g__keythms_thm_#1_tcbpostfoot_tl } }
     \hook_use:n { keytheorems/allthms/postfoot }
     \hook_use:n { keytheorems/#1/postfoot }
   }

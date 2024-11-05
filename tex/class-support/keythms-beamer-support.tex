@@ -126,6 +126,7 @@
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
     \DeclareDocumentEnvironment { keythms_beamer_grab_#1 } { m m m +b }
       { % ##1 = keys, ##2 = note, ##3 = action spec, ##4 = theorem body
+        \__keythms_thm_prehead_code:n { #1 }
         \tl_if_empty:nTF { ##3 }
           { \begin{keythms_orig_#1}[{##2}] }
           { \begin{keythms_orig_#1}[{##2}]<##3> }
@@ -184,6 +185,7 @@
              \msg_warning:nnV { keytheorems } { store-reversed-not-got }
                \l__keythms_thmuse_storereversed_tl
            }
+        \__keythms_thm_prehead_code:n { #1 }
         \hook_use:n { keytheorems/#1/restated }
         \hook_use:n { keytheorems/allthms/restated }
         \tl_if_empty:nTF { ##3 }
@@ -212,19 +214,21 @@
         {
           \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
           \keys_set:nn { keytheorems/thmuse } { ##2 }
-          \tl_if_empty:NF \l__keythms_thmuse_store_tl
+          \tl_if_empty:NTF \l__keythms_thmuse_store_tl
+            {
+              \tl_if_empty:NTF \l__keythms_thmuse_storereversed_tl
+                { \__keythms_thm_prehead_code:n { #1 } }
+                {
+                  % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
+                  \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grabreversed_begin:nnnn
+                  \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grabreversed_end:n
+                }
+            }
             {
               % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
               \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grab_begin:nnnn
               \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grab_end:n
             }
-          \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
-            {
-              % \bool_gset_true:N \g__keythms_listof_writefile_bool % disable writing to file
-              \cs_set_eq:NN \__keythms_beamer_withhooks_begin:nnnn \__keythms_beamer_grabreversed_begin:nnnn
-              \cs_set_eq:NN \__keythms_beamer_withhooks_end:n \__keythms_beamer_grabreversed_end:n
-            }
-          \__keythms_thm_prehead_code:n { #1 }
           \tl_if_empty:nTF { ##3 }
             { % if ##3 empty, just pass ##1 and withhooks_begin will check if empty
               \__keythms_beamer_withhooks_begin:nnVn { #1 } { ##2 }

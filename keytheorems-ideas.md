@@ -105,7 +105,7 @@
       Right now we don't add if empty, but then \hook_remove gives warnings
 - [x] `\KeyThmsContentsLine`, etc. should be default be no-ops, redefined to do things, not reverse as now
 - [ ] amsbook and `no-title`...
-- [ ] hook order with `\addtotheoremhook` and qed is wrong
+- [ ] hook order with `\addtotheoremhook` and qed is wrong (or is it?)
 - [ ] `\getkeytheorem[body]{foo}` needs to use theorem-specific restated hook
       This means getthm_body needs to take three arguments...
 - [x] `qed={}` in style does not do the right thing
@@ -123,5 +123,6 @@
 - [x] Manual label after `tcolorbox-no-titlebar` theorem produces extra space
 - [ ] Nested theorem inside tcolorbox theorem
 - [x] Default spacing of tcolorbox theorems
-- [ ] For tcb-no-title, wrap in prehead and postfoot hooks and just declare hook
+- [x] For tcb-no-title, wrap in prehead and postfoot hooks and just declare hook
       rules to match tcolorbox key. Otherwise this is a pain
+- [ ] Decrease garishness of documentation

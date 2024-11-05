@@ -3,7 +3,7 @@
 ## [v0.2.0dev]
 - make several commands "long" so keyvals can contain `\par` tokens
 - add `leftmargin` and `rightmargin` keys
-- improve spacing of tcolorbox theorems
+- improve implementation of tcolorbox theorems
 
 ## [v0.1.8]
 - add support for tagged PDF ([\#4](https://github.com/mbertucci47/keytheorems/issues/4))
