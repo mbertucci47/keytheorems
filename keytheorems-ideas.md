@@ -126,3 +126,5 @@
 - [x] For tcb-no-title, wrap in prehead and postfoot hooks and just declare hook
       rules to match tcolorbox key. Otherwise this is a pain
 - [ ] Decrease garishness of documentation
+- [x] for thm keys used in `\newkeytheoremstyle`, `\l_keys_key_str` is wrong when
+      `inherit-style` is called

@@ -12,9 +12,7 @@
     headindent = \parindent,
   }
 
-\keys_define:nn { keytheorems/thmstyle }
-  {
-    inherit-style / remark .meta:n = { bodyfont = \normalfont },
-  }
+% redefine inherit-style=remark
+\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl { bodyfont = \normalfont }
 
 \file_input_stop:

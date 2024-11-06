@@ -17,13 +17,11 @@
 % besides above, do nothing if noamsthm loaded
 \IfClassLoadedWithOptionsT{ beamer }{ noamsthm }{ \file_input_stop: }
 
-\keys_define:nn { keytheorems/thmstyle }
+\tl_new:N \g__keythms_thmstyle_example_metakeys_tl
+\tl_gset:Nn \g__keythms_thmstyle_example_metakeys_tl
   {
-    inherit-style / example .meta:n =
-      {
-        bodyfont    = \normalfont,
-        preheadhook = \def\inserttheoremblockenv{exampleblock},
-      }
+    bodyfont = \normalfont,
+    headfont = \def\inserttheoremblockenv{exampleblock},
   }
 
 \cs_set_protected:Npn \__keythms_thm_tcbcode:nn #1#2

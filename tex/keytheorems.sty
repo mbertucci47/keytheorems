@@ -98,6 +98,10 @@
     Theorem~style~'#1'~already~defined.~
     Use~\protect\renewkeytheoremstyle\space instead.
   }
+\msg_new:nnn { keytheorems } { inherit-thmstyle-undefined }
+  {
+    Theorem~style~'#1'~undefined.
+  }
 \msg_new:nnn { keytheorems } { thm-undefined }
   {
     Command~\c_backslash_str #1~undefined.~
@@ -236,15 +240,14 @@
           }
       },
     headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
-    inherit-style .choice:,
-    inherit-style / plain .meta:n = {},
-    inherit-style / definition .meta:n = { bodyfont = \normalfont },
-    inherit-style / remark .meta:n =
+    inherit-style .code:n =
       {
-        bodyfont   = \normalfont,
-        headfont   = \itshape,
-        spaceabove = 0.5\topsep,
-        spacebelow = 0.5\topsep,
+        \tl_if_exist:cTF { g__keythms_thmstyle_#1_metakeys_tl }
+          {
+            \keys_set:nv { keytheorems/thmstyle }
+              { g__keythms_thmstyle_#1_metakeys_tl }
+          }
+          { \msg_error:nnn { keytheorems } { inherit-thmstyle-undefined } { #1 } }
       },
     notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
@@ -380,7 +383,9 @@
           { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
             \group_begin: % group so notefont doesn't affect headpunct
             \exp_not:V \l__keythms_thmstyle_notefont_tl
-            \l__keythms_thmstyle_lnotebrace_tl ####3 \l__keythms_thmstyle_rnotebrace_tl
+            \l__keythms_thmstyle_lnotebrace_tl
+            ####3
+            \l__keythms_thmstyle_rnotebrace_tl
             \group_end:
           }
       }
@@ -397,11 +402,8 @@
       \l__keythms_thmstyle_postheadspace_tl
       { \text_expand:n { \keythms_thmstyle_headcmd:nnn{##1}{##2}{##3} } }
     % Define inherit-style key
-    \tl_clear_new:c { l__keythms_thmstyle_#1_metakeys_tl }
-    \keys_precompile:nnc { keytheorems/thmstyle } { #2 } % use precompile instead of meta key
-      { l__keythms_thmstyle_#1_metakeys_tl }           % because that's sensitive to hashes
-    \keys_define:nn { keytheorems/thmstyle }             % and we want to allow both # and ##
-      { inherit-style / #1 .code:n = \tl_use:c { l__keythms_thmstyle_#1_metakeys_tl } }
+    \tl_gclear_new:c { g__keythms_thmstyle_#1_metakeys_tl }
+    \tl_gset:cn { g__keythms_thmstyle_#1_metakeys_tl } { #2 }
     \tl_clear_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl }
     \keys_precompile:nVc { keytheorems/thm }
       \l__keythms_thmstyle_savedkeys_clist
@@ -421,6 +423,19 @@
     \cs_undefine:N \NAME % undefine to prevent conflicts
     \cs_undefine:N \NUMBER
     \cs_undefine:N \NOTE
+  }
+
+% set up plain, definition, and remark for inherit-style
+\tl_new:N \g__keythms_thmstyle_plain_metakeys_tl
+\tl_new:N \g__keythms_thmstyle_definition_metakeys_tl
+\tl_new:N \g__keythms_thmstyle_remark_metakeys_tl
+\tl_gset:Nn \g__keythms_thmstyle_definition_metakeys_tl { bodyfont=\normalfont }
+\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
+  {
+    bodyfont   = \normalfont,
+    headfont   = \itshape,
+    spaceabove = 0.5\topsep,
+    spacebelow = 0.5\topsep,
   }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%

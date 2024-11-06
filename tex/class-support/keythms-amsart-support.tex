@@ -6,13 +6,11 @@
 
 \__keythms_support_AMSshared_code:
 
-\keys_define:nn { keytheorems/thmstyle }
+% redefine inherit-style=remark
+\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
   {
-    inherit-style / remark .meta:n =
-      {
-        bodyfont = \normalfont,
-        headfont = \itshape,
-      }
+    bodyfont      = \normalfont,
+    headfont      = \itshape,
   }
 
 \bool_case:nF
@@ -28,16 +26,14 @@
             notefont      = \@acmplainnotefont,
             postheadspace = .5em,
           }
-        \keys_define:nn { keytheorems/thmstyle }
+        \tl_new:N \g__keythms_thmstyle_acmplain_metakeys_tl
+        \tl_new:N \g__keythms_thmstyle_acmdefinition_metakeys_tl
+        \tl_gset:Nn \g__keythms_thmstyle_acmdefinition_metakeys_tl
           {
-            inherit-style / acmplain      .meta:n = {},
-            inherit-style / acmdefinition .meta:n =
-              {
-                bodyfont   = \@acmdefinitionbodyfont,
-                headindent = \@acmdefinitionindent,
-                headfont   = \@acmdefinitionheadfont,
-                notefont   = \@acmdefinitionnotefont,
-              },
+            bodyfont   = \@acmdefinitionbodyfont,
+            headindent = \@acmdefinitionindent,
+            headfont   = \@acmdefinitionheadfont,
+            notefont   = \@acmdefinitionnotefont,
           }
       }
     { \__keythms_if_classloaded_p:n { aomart } }
@@ -52,28 +48,25 @@
             spaceabove    = 0.5\linespacing,
             spacebelow    = 0.5\linespacing,
           }
-        \keys_define:nn { keytheorems/thmstyle }
+        \tl_gset:Nn \g__keythms_thmstyle_definition_metakeys_tl
           {
-            inherit-style / definition .meta:n =
-              {
-                bodyfont      = \upshape,
-                headfont      = \sishape,
-                headindent    = \parindent,
-                notefont      = \normalfont,
-                postheadspace = 0.5em,
-                spaceabove    = 0.5\linespacing,
-                spacebelow    = 0.5\linespacing,
-              },
-            inherit-style / remark .meta:n =
-              {
-                bodyfont      = \upshape,
-                headfont      = \sishape,
-                headindent    = \parindent,
-                notefont      = \normalfont,
-                postheadspace = 0.5em,
-                spaceabove    = 0.5\linespacing,
-                spacebelow    = 0.5\linespacing,
-              },
+            bodyfont      = \upshape,
+            headfont      = \sishape,
+            headindent    = \parindent,
+            notefont      = \normalfont,
+            postheadspace = 0.5em,
+            spaceabove    = 0.5\linespacing,
+            spacebelow    = 0.5\linespacing,
+          }
+        \tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
+          {
+            bodyfont      = \upshape,
+            headfont      = \sishape,
+            headindent    = \parindent,
+            notefont      = \normalfont,
+            postheadspace = 0.5em,
+            spaceabove    = 0.5\linespacing,
+            spacebelow    = 0.5\linespacing,
           }
       }
   }
