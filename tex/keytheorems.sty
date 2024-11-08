@@ -1282,8 +1282,8 @@
       }
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }
-    \tl_if_exist:cT { g__keythms_thm_#1_tcbprehead_tl }
-      { \tl_use:c { g__keythms_thm_#1_tcbprehead_tl } }
+    % \use:c instead of \tl_use:c so doesn't error if tl doesn't exist
+    \use:c { g__keythms_thm_#1_tcbprehead_tl }
   }
 \cs_new_protected:Npn \__keythms_thm_posthead_code:n #1
   { % #1 = theorem name
@@ -1309,8 +1309,7 @@
   }
 \cs_new_protected:Npn \__keythms_thm_postfoot_code:n #1
   { % #1 = theorem name
-    \tl_if_exist:cT { g__keythms_thm_#1_tcbpostfoot_tl }
-      { \tl_use:c { g__keythms_thm_#1_tcbpostfoot_tl } }
+    \use:c { g__keythms_thm_#1_tcbpostfoot_tl }
     \hook_use:n { keytheorems/allthms/postfoot }
     \hook_use:n { keytheorems/#1/postfoot }
   }

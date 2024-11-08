@@ -128,3 +128,4 @@
 - [ ] Decrease garishness of documentation
 - [x] for thm keys used in `\newkeytheoremstyle`, `\l_keys_key_str` is wrong when
       `inherit-style` is called
+- [ ] adjust doc for spaceabove, etc. that are skips, not dimens
