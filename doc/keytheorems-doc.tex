@@ -6,10 +6,7 @@
 \geometry{margin=1.5in}
 \usepackage{tcolorbox}
 \tcbuselibrary{documentation,minted,breakable,hooks}
-\tcbset{
-  listing engine=minted,
-  minted language=latex,
-  }
+
 \ifTUTeX
 \usepackage{newcomputermodern}
 \else
@@ -113,32 +110,53 @@
     },
   docexample/.append style={boxrule=0pt,arc=0pt,after app={\noindent}}
   }
+  
+\makeatletter % code from muzimuzhi (https://github.com/T-F-S/tcolorbox/issues/298)
 \tcbset{
+  before verbatim write app/.code={%
+    \appto\tcb@verbatim@begin@hook{\tcb@iow@write{#1}}},
+  % provided for symmetry, but not used
+  after verbatim write pre/.code={%
+    \preto\tcb@verbatim@end@hook{\tcb@iow@write{#1}}},
+}
+\tcbset{
+  mark preamble/.style={
+    before verbatim write app={\@percentchar\space preamble},
+  },
+  mark document/.style={
+    before verbatim write app={\@percentchar\space document},
+  },
+}
+\tcbset{
+  listing engine=minted,
+  minted language=latex,
   withpreamble/.style = {
+    mark document,
     before upper = {%
-      {\ttfamily\itshape \% preamble}%
-      \vspace{-0.7\baselineskip}%
+      % affects both the \tcbsettemplisting and the original upper
+      \setminted{listparameters={\topsep=0pt \partopsep=0pt}}%
       \tcbusetemplisting
-      \noindent{\ttfamily\itshape \% document}%
-      \vspace{-0.7\baselineskip}%
-      }
+      \vspace{5pt}%
     }
   }
+}
+\NewDocumentEnvironment{codepreamble}{}{%
+  \tcbset{mark preamble}%
+  \tcbwritetemp
+}{%
+  \endtcbwritetemp
+}
+\makeatother
 
 \NewTCBListing{keythmscode}{ O{} }
   {
     colback=ExampleBack,
     arc=0pt,
     boxrule=0pt,
-%    listing side text,
-%    lower separated=false,
     skin=bicolor,
     colbacklower=ExampleBackLower,
     breakable,
     parbox=false, % so examples match document with indent, etc.
-%    enhanced,
-%    segmentation engine=path,
-%    segmentation style={solid,gray},
     #1
   }
 \newtcolorbox{notebox}[1][]{enhanced,
@@ -290,9 +308,9 @@ By default, the theorem's printed name is a title-cased \meta{env name}.
 This can be changed with the \refKey{thm/name} key.
 All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref{thm-added-keys}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{theorem}
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{theorem}
@@ -397,17 +415,17 @@ More brilliant mathematics.
 A theorem given this key \emph{cannot} contain verbatim material or other unexpected catcodes, such as a \pkg{tikz-cd} diagram.
 The latter issue can be averted with the \texttt{ampersand-replacement} key.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \usepackage{tikz}
 \usetikzlibrary{cd}
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{lemma}[store=diagram]
 Some commutative diagram:
 \[\begin{tikzcd}[ampersand replacement=\&]
-X\times_S Y \ar[r] \ar[d] \& X \ar[d] \\
-Y \ar[r] \& S
+    X\times_S Y \ar[r] \ar[d] \& X \ar[d] \\
+    Y \ar[r] \& S
 \end{tikzcd}\]
 \end{lemma}
 \dots
@@ -440,10 +458,10 @@ Wow, yet another theorem.
 Meant only to be used with the \refKey{break} style key for a theorem starting with a list.
 Compare:
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheoremstyle{breaksty}{break}
 \newkeytheorem{observation}[style=breaksty]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{observation}
@@ -480,9 +498,9 @@ For more description, see the \href{https://ctan.org/pkg/thmtools}{\pkg{thmtools
   {initially title-cased \meta{env name}}
 Aliases \docAuxKey{heading} and \docAuxKey{title}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{mythm}[name=Some Name]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{mythm}
@@ -497,9 +515,9 @@ Some text
   {default |true|, initially |true|}
 For compatibility with \pkg{thmtools}, also accepts the values \docValue*{yes}, \docValue*{no}, and \docValue*{unless unique}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{theorem*}[name=Theorem, numbered=false]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{theorem*}
@@ -514,9 +532,9 @@ An unnumbered theorem.
   {initially unset}
 Aliases \docAuxKey{numberwithin} and \docAuxKey{within}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{conjecture}[parent=section]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{conjecture}
@@ -529,9 +547,9 @@ The first number is the section.
 \begin{docKey}{sibling}{=\meta{counter}}{initially unset}
 Aliases \docAuxKey{numberlike} and \docAuxKey{sharenumber}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{lemma}[sibling=theorem]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{lemma}
@@ -546,9 +564,9 @@ This shares its counter with \texttt{theorem}.
   {initially unset}
 Accepts any \meta{style name} defined by \refCom{newkeytheoremstyle}, as well as any of the predefined \pkg{amsthm} styles: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{remark}[style=remark]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{remark}
@@ -570,14 +588,14 @@ Some text
   }
 Details in \autoref{keythms-hooks}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{test}[
   preheadhook=PREHEAD,
   postheadhook=POSTHEAD,
   prefoothook=PREFOOT,
   postfoothook=POSTFOOT
 ]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{test}
@@ -593,10 +611,10 @@ Some text
 Adds \colOpt{\meta{symbol}} to the end of the theorem body.
 If no value is given, the symbol \qedsymbol{} is used.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{example}[qed]
 \newkeytheorem{solution}[qed=$\clubsuit$]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{example}
@@ -623,13 +641,13 @@ Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}.
 Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
 As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} that suppresses the hyperlink.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{prop}[
   name=Proposition,
   refname={proposition,propositions},
   Refname={Proposition,Propositions}
   ]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{prop}[label=abc]
@@ -658,14 +676,14 @@ This sets the theorem apart from the text, similar to a block quote. Code adapte
 	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
 	\item \href{https://tex.stackexchange.com/a/236407/208544}{A theoremstyle with complete indentation using amsthm}
 \end{itemize}
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newcommand{\marginthmtext}{%
   We need some text to show off theorems with margins. }
 \newkeytheorem{quotethm}[
   name=Quote Theorem,
   leftmargin=1cm, rightmargin=1cm]
 \newkeytheorem{indentedthm}[name=Indented Theorem, leftmargin=1cm]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \newcommand{\marginthmtext}{We need some text to show off theorems with margins. }
 \begin{keythmscode}[withpreamble]
@@ -690,7 +708,7 @@ This sets the theorem apart from the text, similar to a block quote. Code adapte
 This key specifies that the theorem be placed inside a tcolorbox environment with \colOpt{\meta{options}}.
 The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcolorbox-no-titlebar}.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \tcbset{
   defstyle/.style={
     arc=0mm,
@@ -700,7 +718,7 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
   }
 \newkeytheorem{corollary}[tcolorbox]
 \newkeytheorem{definition}[style=definition, tcolorbox={defstyle}]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{corollary}
@@ -718,12 +736,12 @@ Some more text
   {initially unset}
 Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not as a tcolorbox title.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \newkeytheorem{boxcor}[
   tcolorbox-no-titlebar={colback=red!10},
   name=Corollary, sibling=corollary
   ]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{boxcor}
@@ -735,7 +753,7 @@ Some text
 
 \pkg{tcolorbox} offers its own comprehensive \texttt{theorems} library. If all of your theorems are to be tcolorboxes, I highly recommend using it instead of this package! However, if only some of your theorems will use a tcolorbox, you may want to replicate the styles of \cs{NewTcbTheorem}. Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem style.
 
-\begin{tcbwritetemp}
+\begin{codepreamble}
 \tcbset{
   thmstyle/.style={
     colback=green!5,
@@ -752,7 +770,7 @@ Some text
 \newkeytheorem{mytheo}[
   name=My Theorem,
   style=tcb-standard]
-\end{tcbwritetemp}
+\end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{mytheo}[This is my title]
