@@ -590,7 +590,6 @@
     \tl_gclear_new:c { g__keythms_thm_postheadfromkeys_#1_tl }
     \tl_gclear_new:c { g__keythms_thm_prefootfromkeys_#1_tl }
     \tl_gclear_new:c { g__keythms_thm_postfootfromkeys_#1_tl }
-    \tl_gclear_new:c { g__keythms_thm_tcbpatch_#1_tl }
     % Make unless-unique false by default (can't precompile this)
     \bool_set_false:N \l__keythms_thm_unlessunique_bool
     % Set default keys
@@ -759,7 +758,7 @@
                   { g__keythms_thm_##1fromkeys_#1_tl }
               }
           }
-        \tl_use:c { g__keythms_thm_tcbpatch_#1_tl }
+        \use:c { g__keythms_thm_tcbpatch_#1_tl }
       }
     \cs_set_eq:NN \__keythms_thm_origtrivlist: \trivlist % for margin code below
   }
@@ -805,6 +804,7 @@
       }
     \bool_if:NT \l__keythms_thm_numbered_bool
       {
+        \tl_gclear_new:c { g__keythms_thm_tcbpatch_#1_tl }
         \tl_gset:cn { g__keythms_thm_tcbpatch_#1_tl }
           {
             \IfPackageLoadedF { cleveref }
