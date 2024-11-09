@@ -2,6 +2,7 @@
 
 ## [v0.2.2dev]
 - fix implementation of `inherit-style` so it can contain thm keys
+- add support for zref-clever in `refname` and `Refname`
 
 ## [v0.2.1]
 - make several commands "long" so keyvals can contain `\par` tokens

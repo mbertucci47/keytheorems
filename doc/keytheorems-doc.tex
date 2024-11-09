@@ -630,14 +630,14 @@ Some more text
 \begin{docKey}{refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \meta{display name}}
-If a single string, then the name used by \pkg{hyperref}'s \cs{autoref} and \pkg{cleveref}'s \cs{cref}.
+If a single string, then the name used by \pkg{hyperref}'s \cs{autoref}, \pkg{cleveref}'s \cs{cref}, and \pkg{zref-clever}'s \cs{zcref}.
 If two strings separated by a comma, then the second string is the plural form used by \cs{cref}.
 \end{docKey}
 
 \begin{docKey}{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \meta{display name}}
-Same as \refKey{refname} but for \docAuxCommand{Autoref} and \cs{Cref}.
+Same as \refKey{refname} but for \docAuxCommand{Autoref}, \cs{Cref}, and \cs{zcref} with any of its capitalizing options.
 Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
 As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} that suppresses the hyperlink.
 
@@ -663,6 +663,13 @@ Consider \cref{abc,def}. \Autoref{abc} \dots
 
 \end{docKey}
 
+\begin{notebox}
+The \refPkg{cleveref} package has not been updated since 2018 and contains several incompatibilities with the \LaTeX{} kernel.
+These are often patched by the \LaTeX{} team, but further incompatibilities are likely to arise with each future update.
+For this reason, I recommend moving to \refPkg{zref-clever}.
+It offers all the same features as \pkg{cleveref} and is actively maintained.
+\end{notebox}
+
 \subsection{Keys added by \pkg{keytheorems}} \label{thm-added-keys}
 
 \begin{docKeys}[doc parameter={=\meta{length}}]
@@ -671,7 +678,7 @@ Consider \cref{abc,def}. \Autoref{abc} \dots
     { doc name=rightmargin },
   }
 Sets the left (respectively, right) margin of the theorem relative to the text width.
-This sets the theorem apart from the text, similar to a block quote. Code adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
+This sets the theorem apart from the text, similar to a block quote. The code was adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
 \begin{itemize}
 	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
 	\item \href{https://tex.stackexchange.com/a/236407/208544}{A theoremstyle with complete indentation using amsthm}

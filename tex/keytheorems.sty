@@ -455,6 +455,12 @@
           { \crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \crefname{#1}{#2}{#3} }
       }
+    \IfPackageLoadedT { zref-clever }
+      {
+        \tl_if_novalue:nTF { #3 }
+          { \zcRefTypeSetup{#1}{ name-sg=#2 } }
+          { \zcRefTypeSetup{#1}{ name-sg=#2, name-pl=#3 } }
+      }
   }
 \cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
 
@@ -469,6 +475,12 @@
         \tl_if_novalue:nTF { #3 }
           { \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
           { \Crefname{#1}{#2}{#3} }
+      }
+    \IfPackageLoadedT { zref-clever }
+      {
+        \tl_if_novalue:nTF { #3 }
+          { \zcRefTypeSetup{#1}{ Name-sg=#2 } }
+          { \zcRefTypeSetup{#1}{ Name-sg=#2, Name-pl=#3 } }
       }
   }
 \cs_generate_variant:Nn \keythms_thm_setRefnames:nn { nV }
