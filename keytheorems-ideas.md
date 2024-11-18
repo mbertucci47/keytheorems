@@ -129,3 +129,4 @@
 - [x] for thm keys used in `\newkeytheoremstyle`, `\l_keys_key_str` is wrong when
       `inherit-style` is called
 - [ ] adjust doc for spaceabove, etc. that are skips, not dimens
+- [ ] `continues*` does not work with manual `\label` and nameref not loaded
