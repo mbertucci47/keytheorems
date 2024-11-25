@@ -800,6 +800,11 @@
       { \cs_set_eq:NN \trivlist \__keythms_thm_origtrivlist: }
   }
 
+\hook_gput_code:nnn { begindocument/end } { . }
+  { % use /end because hyperref redefines \Hy@theorem@makelinktarget in begindocument
+    \cs_new_eq:NN \__keythms_thm_origdeferred@thm@head:n \deferred@thm@head
+    \cs_new_eq:NN \__keythms_thm_origHy@theorem@makelinktarget:n \Hy@theorem@makelinktarget
+  }
 \cs_new_protected:Npn \__keythms_thm_tcbcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
     \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
@@ -809,6 +814,11 @@
         % % ^ don't like playing with hyperref internals... but don't see around
         % %   it because hyperref tries to add to para hook which doesn't work
         % %   when title set up the way we do it
+      }
+    \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+      {
+        \cs_set_eq:NN \deferred@thm@head \__keythms_thm_origdeferred@thm@head:n
+        \cs_set_eq:NN \Hy@theorem@makelinktarget \__keythms_thm_origHy@theorem@makelinktarget:n
       }
     \__keythms_thm_tcbshared:nn { #1 }
       {
@@ -892,19 +902,9 @@
           }
       }
   }
-% what below is unnecessary? I really don't understand this code.
+
 \cs_new_protected:Npn \__keythms_thm_storedeferred@thm@head:n #1
   {
-    \if@inlabel \indent \par \fi % eject a section head if one is pending
-    \if@nobreak
-      \adjust@parskip@nobreak
-    \else
-    \addpenalty\@beginparpenalty
-    \addvspace\@topsep
-    \addvspace{-\parskip}
-    \fi
-    % \global\@inlabeltrue % MB: if this is uncommented then spacing after sections is wrong
-    \everypar\dth@everypar
     \cs_set:Npn \__keythms_thm_tcbtemphead: { \normalfont #1 }
     \ignorespaces
   }
