@@ -130,3 +130,5 @@
       `inherit-style` is called
 - [x] adjust doc for spaceabove, etc. that are skips, not dimens
 - [ ] `continues*` does not work with manual `\label` and nameref not loaded
+- [ ] theorem option to manually override label
+- [ ] full example in doc, including restating theorem in intro before stated
