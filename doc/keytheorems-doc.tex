@@ -16,6 +16,7 @@
 \usepackage{amssymb}
 \fi
 \usetikzlibrary{cd}
+\usepackage{fontawesome5}
 \usepackage{booktabs}
 \usepackage{keytheorems}
 \usepackage{cleveref}
@@ -368,6 +369,22 @@ Some text
 
 \end{docKey}
 
+\begin{docKey}{manual-num}
+  {=\marg{text}}
+  {initially unset}
+Use this to override the printed number of a theorem.
+It is useful for making ``starred'' versions of other theorems, perhaps to represent a reformulated or more difficult version.
+
+\begin{keythmscode}[]
+\begin{theorem}[manual-num=\ref*{foo}*]
+A reformulated version of \Cref{foo}.
+\end{theorem}
+\begin{theorem}[manual-num=\faRocket] % requires fontawesome5
+Don't confuse your readers by changing the numbering without good reason.
+\end{theorem}
+\end{keythmscode}
+
+\end{docKey}
 \begin{docKey}{continues}
   {\sarg=\meta{label name}}
   {initially unset}

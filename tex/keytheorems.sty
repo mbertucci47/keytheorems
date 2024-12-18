@@ -176,6 +176,10 @@
 \cs_gset:Npn \theHkeythms_unnumbered_dummyctr
   { unnumbered.\arabic{keythms_unnumbered_dummyctr} }
 \cs_gset:Npn \thekeythms_unnumbered_dummyctr { }
+\newcounter{keythms_manualnum_dummyctr}
+\cs_gset:Npn \theHkeythms_manualnum_dummyctr
+  { manualnum.\arabic{keythms_manualnum_dummyctr} }
+\cs_gset:Npn \thekeythms_manualnum_dummyctr { }
 
 \cs_generate_variant:Nn \hook_gput_code:nnn { nnv }
 \cs_generate_variant:Nn \keys_precompile:nnN { ne, nVc }
@@ -1075,10 +1079,11 @@
     % ^ for compatibility. "name" is ambiguous and doesn't match amsthm language
     note       .tl_set:N = \l__keythms_thmuse_note_tl,
     note       .initial:n = {},
+    manual-num .tl_set:N = \l__keythms_thmuse_manualnum_tl,
     restate    .meta:n   = { store = {#1} }, % thmtools compatibility
     restate*   .meta:n   = { store* = {#1} },
     restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
-    seq        .code:n = {},
+    seq        .code:n   = {},
     short-note .code:n   = {}, % these do nothing at point of use
     short-name .code:n   = {},
     store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
@@ -1292,6 +1297,12 @@
         \cs_set_eq:cN { c@ #1 } \c@keythms_continues_dummyctr
         \cs_set_eq:cN { theH #1 } \theHkeythms_continues_dummyctr
         %\cs_set_eq:NN \setuniqmark \use_none:n % not the right fix
+      }
+    \tl_if_empty:NF \l__keythms_thmuse_manualnum_tl
+      {
+        \cs_set:cpn { the #1 } { \l__keythms_thmuse_manualnum_tl }
+        \cs_set_eq:cN { c@ #1 } \c@keythms_manualnum_dummyctr
+        \cs_set_eq:cN { theH #1 } \theHkeythms_manualnum_dummyctr
       }
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }

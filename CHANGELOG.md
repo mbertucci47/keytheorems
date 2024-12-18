@@ -2,6 +2,7 @@
 
 ## [v0.2.3dev]
 - add many translations; some missing translation of "continuing from p."
+- add `manual-num` key
 
 ## [v0.2.2]
 - fix implementation of `inherit-style` so it can contain thm keys
