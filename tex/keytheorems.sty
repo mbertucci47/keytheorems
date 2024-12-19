@@ -194,12 +194,12 @@
     \tl_set:Nn \l__keythms_thmstyle_lnotebrace_tl { #1 }
     \tl_set:Nn \l__keythms_thmstyle_rnotebrace_tl { #2 }
   }
-\cs_new_protected:Npn \keythms_thmstyle_savethmkey_reqval:n #1
+\cs_new_protected:Npn \__keythms_thmstyle_savethmkey_reqval:n #1
   { % #1 = key value
     \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
       { \l_keys_key_str = { #1 } }
   }
-\cs_new_protected:Npn \keythms_thmstyle_savethmkey_optval:n #1
+\cs_new_protected:Npn \__keythms_thmstyle_savethmkey_optval:n #1
   { % #1 = key value
     \tl_if_empty:NTF \l_keys_value_tl
       {
@@ -262,15 +262,15 @@
     spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
     spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     % thm keys that are saved for later
-    leftmargin            .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    numbered              .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
-    numberlike            .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    numberwithin          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    parent                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    postfoothook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    postheadhook          .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    prefoothook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    preheadhook           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    leftmargin            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    numbered              .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
+    numberlike            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    numberwithin          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    parent                .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    postfoothook          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    postheadhook          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    prefoothook           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    preheadhook           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     qed                   .code:n =
       { % qed needs special treatment to distinguish qed from qed={}
         \tl_if_novalue:nTF { #1 }
@@ -284,12 +284,12 @@
           }
       },
     qed                   .default:o = \c_novalue_tl,
-    rightmargin           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    sharenumber           .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    sibling               .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
-    tcolorbox             .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
-    tcolorbox-no-titlebar .code:n = \keythms_thmstyle_savethmkey_optval:n { #1 },
-    within                .code:n = \keythms_thmstyle_savethmkey_reqval:n { #1 },
+    rightmargin           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    sharenumber           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    sibling               .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    tcolorbox             .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
+    tcolorbox-no-titlebar .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
+    within                .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
   }
 
 \cs_new_protected:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
@@ -364,8 +364,8 @@
 \@onlypreamble \providekeytheoremstyle
 \@onlypreamble \declarekeytheoremstyle
 
-\cs_new_eq:NN \keythms_thmstyle_new:nnnnnnnnn \newtheoremstyle
-\cs_generate_variant:Nn \keythms_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
+\cs_new_eq:NN \__keythms_thmstyle_new:nnnnnnnnn \newtheoremstyle
+\cs_generate_variant:Nn \__keythms_thmstyle_new:nnnnnnnnn { nVVVVVVVe }
 
 \tl_put_right:Nn \l_text_expand_exclude_tl { \thmnote \thmnumber \thmname }
 % ^ allows \thmnote, etc. to work in headstyle; hope no bad side effects!
@@ -397,7 +397,7 @@
     \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
     \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
     \keys_set:nn { keytheorems/thmstyle } { #2 }
-    \keythms_thmstyle_new:nVVVVVVVe { #1 }
+    \__keythms_thmstyle_new:nVVVVVVVe { #1 }
       \l__keythms_thmstyle_spaceabove_tl
       \l__keythms_thmstyle_spacebelow_tl
       \l__keythms_thmstyle_bodyfont_tl
@@ -2545,8 +2545,8 @@
       }
     \keys_define:nn { keytheorems/thmstyle }
       {
-        shaded   .code:n = \keythms_thmstyle_savethmkey_optval:n { ##1 },
-        thmbox   .code:n = \keythms_thmstyle_savethmkey_optval:n { ##1 },
+        shaded   .code:n = \__keythms_thmstyle_savethmkey_optval:n { ##1 },
+        thmbox   .code:n = \__keythms_thmstyle_savethmkey_optval:n { ##1 },
         mdframed .code:n = \msg_error:nn { keytheorems } { mdframed-undefined },
       }
   }
