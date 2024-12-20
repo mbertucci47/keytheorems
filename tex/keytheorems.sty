@@ -1004,8 +1004,8 @@
     \DeclareEnvironmentCopy { keythms_orig_withparent_#1 } { #1 }
     \renewenvironment { #1 } % opt arg is implicit
       {
-        \setuniqmark{ #1. \use:c {the #3} }
-        \ifuniq{ #1. \use:c {the #3} }
+        \setuniqmark{ #1. \use:c { the #3 } }
+        \ifuniq{ #1. \use:c { the #3 } }
           {
             \keythms_if_restating:F
               { \refstepcounter{ keythms_unnumbered_dummyctr } }
@@ -1019,7 +1019,7 @@
           }
       }
       {
-        \ifuniq{ #1. \use:c {the #3} }
+        \ifuniq{ #1. \use:c { the #3 } }
           { \end{keythms_orig_nonumber_#1} }
           { \end{keythms_orig_withparent_#1} }
       }
