@@ -19,7 +19,8 @@
 \usepackage{fontawesome5}
 \usepackage{booktabs}
 \usepackage{keytheorems}
-\usepackage{cleveref}
+\usepackage{zref-clever}
+\zcsetup{nameinlink=false}
 
 \makeatletter
 \newcommand\keythmsversion{\@keythms@version}
@@ -377,7 +378,7 @@ It is useful for making ``starred'' versions of other theorems, perhaps to repre
 
 \begin{keythmscode}[]
 \begin{theorem}[manual-num=\ref*{foo}*]
-A reformulated version of \Cref{foo}.
+A reformulated version of \zcref[S]{foo}.
 \end{theorem}
 \begin{theorem}[manual-num=\faRocket] % requires fontawesome5
 Don't confuse your readers by changing the numbering without good reason.
@@ -663,7 +664,7 @@ Some text
 Some more text
 \end{prop}
 \begin{theorem}
-Consider \cref{abc,def}. \Autoref{abc} \dots
+Consider \zcref{abc,def}. \Autoref{abc} \dots
 \end{theorem}
 \end{keythmscode}
 
