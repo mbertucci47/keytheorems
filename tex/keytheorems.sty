@@ -2766,15 +2766,25 @@
                   { \makeatletter \@input { \jobname.##1 } }
               },
           }
+        \IfFormatAtLeastTF { 2025-06-01 }
+          { % dev formats use theoremblock instance
+            \tl_const:Nn \c__keythms_tagging_instance_tl { theoremblock-0 }
+          }
+          { % current format uses displayblock instance
+            \tl_const:Nn \c__keythms_tagging_instance_tl { displayblock-0 }
+          }
         \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
           { % tagging code does not define theorems with lists
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
               {
-                \SetTemplateKeys{ block }{ display }
+                \exp_args:Nne \EditInstance { block }
+                  { \c__keythms_tagging_instance_tl }
                   {
                     leftmargin = #2,
                     rightmargin = #3,
                   }
+                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+                \EditInstance { block } { list-1 } { rightmargin = 0pt }
               }
           }
       }

@@ -119,7 +119,7 @@
       to be passes to `restate-keys`.
 - [x] Don't patch `\@thm` for `leftmargin` and `rightmargin`. Just redefine `\trivlist`
       in the prehead hook and restore original definition in posthead.
-- [ ] Make margin theorems work with tagging code
+- [x] Make margin theorems work with tagging code
 - [x] Manual label after `tcolorbox-no-titlebar` theorem produces extra space
 - [x] Nested theorem inside tcolorbox theorem
 - [x] Default spacing of tcolorbox theorems
