@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-01-07}
-\def\@keythms@version{0.2.3}
+\def\@keythms@date{2025-01-13}
+\def\@keythms@version{0.2.4dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -1300,7 +1300,10 @@
       }
     \tl_if_empty:NF \l__keythms_thmuse_manualnum_tl
       {
-        \cs_set:cpn { the #1 } { \l__keythms_thmuse_manualnum_tl }
+        \cs_set:cpn { the #1 }
+          { % prevent expansion for unexpandable tokens in \the<counter>
+            \exp_not:N \exp_not:n { \l__keythms_thmuse_manualnum_tl }
+          }
         \cs_set_eq:cN { c@ #1 } \c@keythms_manualnum_dummyctr
         \cs_set_eq:cN { theH #1 } \theHkeythms_manualnum_dummyctr
       }
