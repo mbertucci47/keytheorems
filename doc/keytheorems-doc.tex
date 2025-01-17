@@ -148,6 +148,7 @@
     colbacklower=ExampleBackLower,
     breakable,
     parbox=false, % so examples match document with indent, etc.
+    minted options app={breaksymbolleft={}},
     #1
   }
 \newtcolorbox{notebox}[1][]{enhanced,
@@ -305,7 +306,7 @@ All \meta{options} are described in subsections \ref{thm-thmtools-keys} and \ref
 
 \begin{keythmscode}[withpreamble]
 \begin{theorem}
-Some text
+There are infinitely many prime numbers.
 \end{theorem}
 \end{keythmscode}
 
@@ -327,8 +328,8 @@ Sometimes a package or class defines theorems that need to be overwritten by the
 As in \pkg{amsthm}, theorems can take an optional argument that contains a note or heading.
 
 \begin{keythmscode}[]
-\begin{theorem}[some heading]
-Some text
+\begin{theorem}[Bertrand's postulate]
+For every $n\geq 1$, there is a prime number $p$ with $n<p\leq 2n$.
 \end{theorem}
 \end{keythmscode}
 
@@ -342,8 +343,10 @@ This is the key-value equivalent of the optional argument described above.
 This syntax, however, allows the argument to contain other keys.
 
 \begin{keythmscode}[]
-\begin{theorem}[note=another heading]
-Some more text
+\begin{theorem}[note=Legendre's formula]
+The number $n!$ contains the prime factor $p$ exactly
+  \[ \sum_{k\geq 1} \Bigl\lfloor\frac{n}{p^k}\Bigr\rfloor \]
+times.
 \end{theorem}
 \end{keythmscode}
 
@@ -362,10 +365,10 @@ This replaces the value of \refKey{note} when displayed in the list of theorems 
 This is the key-value equivalent of |\begin{theorem}| \cs{label}\marg{label name}.
 
 \begin{keythmscode}[]
-\begin{theorem}[label=foo]
-Some text
+\begin{theorem}[label=bezout]
+Let $a$ and $b$ be integers. Then there exist integers $x$ and $y$ such that $ax+by=\gcd(a,b)$.
 \end{theorem}
-\ref{foo}
+See \zcref{bezout}.
 \end{keythmscode}
 
 \end{docKey}
@@ -377,8 +380,8 @@ Use this to override the printed number of a theorem.
 It is useful for making ``starred'' versions of other theorems, perhaps to represent a reformulated or more difficult version.
 
 \begin{keythmscode}[]
-\begin{theorem}[manual-num=\ref*{foo}*]
-A reformulated version of \zcref[S]{foo}.
+\begin{theorem}[manual-num=\ref*{bezout}*]
+Let $a_1,\dots,a_n$ be integers. Then there exist integers $x_1,\dots,x_n$ such that $a_1x_1+\dots+a_nx_n=\gcd(a_1,\dots,a_n)$.
 \end{theorem}
 \begin{theorem}[manual-num=\faRocket] % requires fontawesome5
 Don't confuse your readers by changing the numbering without good reason.
@@ -395,8 +398,8 @@ The printed text can be customized with the \refKey{continues-code} option.
 The starred version also copies the theorem note, if it exists.
 
 \begin{keythmscode}[]
-\begin{theorem}[continues=foo]
-\dots and some more text.
+\begin{theorem}[continues=bezout]
+Moreover, the integers of the form $az+bt$ are exactly the multiples of $\gcd(a,b)$.
 \end{theorem}
 \end{keythmscode}
 
@@ -428,15 +431,16 @@ The latter issue can be averted with the \texttt{ampersand-replacement} key.
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
-\begin{lemma}[store=diagram]
-Some commutative diagram:
+\begin{lemma}[store=fiberprod]
+For any $S$-schemes $X$ and $Y$, there exists a scheme $X\times_S Y$ with morphisms to $X$ and $Y$ such that the diagram
 \[\begin{tikzcd}[ampersand replacement=\&]
     X\times_S Y \ar[r] \ar[d] \& X \ar[d] \\
     Y \ar[r] \& S
-\end{tikzcd}\]
+  \end{tikzcd}\]
+commutes and is universal with respect to this property.
 \end{lemma}
 \dots
-\getkeytheorem{diagram}
+\getkeytheorem{fiberprod}
 \end{keythmscode}
 
 \end{docKey}
@@ -451,7 +455,8 @@ At the moment this is only useful with the \refKey{note} key.
 \begin{theorem}[
   store=rktest,
   note=ORIGINAL,
-  restate-keys={note=RESTATED}]
+  restate-keys={note=RESTATED}
+  ]
 Wow, yet another theorem.
 \end{theorem}
 \getkeytheorem{rktest}
@@ -474,12 +479,14 @@ Compare:
 \begin{observation}
 \begin{enumerate}
 \item First item
+\item Second item
 \end{enumerate}
 \end{observation}
 
 \begin{observation}[listhack=true]
 \begin{enumerate}
 \item First item
+\item Second item
 \end{enumerate}
 \end{observation}
 \end{keythmscode}
@@ -577,7 +584,7 @@ Accepts any \meta{style name} defined by \refCom{newkeytheoremstyle}, as well as
 
 \begin{keythmscode}[withpreamble]
 \begin{remark}
-Some text
+It's nice to distinguish remarks from definitions and theorems.
 \end{remark}
 \end{keythmscode}
 
@@ -601,7 +608,7 @@ Details in \autoref{keythms-hooks}.
   postheadhook=POSTHEAD,
   prefoothook=PREFOOT,
   postfoothook=POSTFOOT
-]
+  ]
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
@@ -625,10 +632,10 @@ If no value is given, the symbol \qedsymbol{} is used.
 
 \begin{keythmscode}[withpreamble]
 \begin{example}
-Some text
+Some text.
 \end{example}
 \begin{solution}
-Some more text
+Some more text.
 \end{solution}
 \end{keythmscode}
 
@@ -658,14 +665,12 @@ As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} t
 
 \begin{keythmscode}[withpreamble]
 \begin{prop}[label=abc]
-Some text
+Some text.
 \end{prop}
 \begin{prop}[label=def]
-Some more text
+Some more text.
 \end{prop}
-\begin{theorem}
 Consider \zcref{abc,def}. \Autoref{abc} \dots
-\end{theorem}
 \end{keythmscode}
 
 \end{docKey}
@@ -736,10 +741,10 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
 
 \begin{keythmscode}[withpreamble]
 \begin{corollary}
-Some text
+Some text.
 \end{corollary}
 \begin{definition}[A nice definition]
-Some more text
+Some more text.
 \end{definition}
 \end{keythmscode}
 
@@ -759,7 +764,7 @@ Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not a
 
 \begin{keythmscode}[withpreamble]
 \begin{boxcor}
-Some text
+Some text.
 \end{boxcor}
 \end{keythmscode}
 
@@ -783,12 +788,13 @@ Some text
   }
 \newkeytheorem{mytheo}[
   name=My Theorem,
-  style=tcb-standard]
+  style=tcb-standard
+  ]
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
 \begin{mytheo}[This is my title]
-Some theorem text
+Some theorem text.
 \end{mytheo}
 \end{keythmscode}
 
@@ -1263,7 +1269,6 @@ An example invocation might look like
 \end{dispListing}
 
 At a minimum, the |testphase| modules |phase-III| and |firstaid| are required.
-The GitHub tests folder contains an example of a tagged PDF using \pkg{keytheorems}: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
 
 \subsection{Public coding interfaces}
 
@@ -1289,7 +1294,7 @@ They can be useful with \cs{AddToHookNext} or the kernel's label mechanism for h
 \section{Further examples}
 
 More examples will be added soon -- rather, eventually\dots{}
-For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic file \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in the Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}.
+For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in the Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}. There is also a version for tagged PDF: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
 
 %\section{Implementation}
 %\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}

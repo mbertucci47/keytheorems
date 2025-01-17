@@ -132,3 +132,4 @@
 - [ ] `continues*` does not work with manual `\label` and nameref not loaded
 - [x] theorem option to manually override label
 - [ ] full example in doc, including restating theorem in intro before stated
+- [ ] allow customization of listhack skip
