@@ -1401,11 +1401,11 @@
 
 \keys_define:nn { keytheorems/storeatbegin }
   {
-    restate  .meta:n      = { store = {#1} },
-    restate* .meta:n      = { store* = {#1} },
-    store    .tl_set:N    = \l__keythms_storeatbegin_store_tl,
-    store*   .tl_set:N    = \l__keythms_storeatbegin_storereversed_tl,
-    unknown  .code:n      = { } % do nothing with unknown keys
+    restate  .meta:n   = { store = {#1} },
+    restate* .meta:n   = { store* = {#1} },
+    store    .tl_set:N = \l__keythms_storeatbegin_store_tl,
+    store*   .tl_set:N = \l__keythms_storeatbegin_storereversed_tl,
+    unknown  .code:n   = { } % do nothing with unknown keys
   }
 
 \cs_new_protected:Npn \KeyThmsContentsLine #1 { }
