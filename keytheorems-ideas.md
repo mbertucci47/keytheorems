@@ -53,7 +53,7 @@
       Just setting `\tcbset{after=\par\@endpetrue}` doesn't work since there is code in between but
       `\AddToHook{keytheorems/<env>/postfoot}[keythms_hook_keys]{\par\@endpetrue}` seems to work
       Answer: I say no, since it's not suppressed after regular theorems.
-- [ ] (partial) `break` + `tcolorbox-no-titlebar` adds too much space if theorem starts with list
+- [x] (partial) `break` + `tcolorbox-no-titlebar` adds too much space if theorem starts with list
       listhack fixes this.
 - [x] rename package to "keytheorems"?
 - [x] should all code added to hooks have the "keytheorems" label as opposed to "."?
@@ -69,7 +69,7 @@
 - [x] Beamer issues:
     - [x] tcolorbox theorems not compatible with beamer
     - [x] cannot give action spec to theorems
-- [ ] Idea: delay making hooks until begindocument to avoid using internal cmd
+- [x] Idea: delay making hooks until begindocument to avoid using internal cmd
 - [x] fix acmart defaults
 - [x] use different dummy counters for unnumbered, continues, and restate
 - [x] seq for custom lists of theorems
