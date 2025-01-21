@@ -106,7 +106,7 @@
 - [x] `\KeyThmsContentsLine`, etc. should be default be no-ops, redefined to do things, not reverse as now
 - [ ] amsbook and `no-title`...
 - [ ] hook order with `\addtotheoremhook` and qed is wrong (or is it?)
-- [ ] `\getkeytheorem[body]{foo}` needs to use theorem-specific restated hook
+- [x] `\getkeytheorem[body]{foo}` needs to use theorem-specific restated hook
       This means getthm_body needs to take three arguments...
 - [x] `qed={}` in style does not do the right thing
 - [ ] lots of code duplication, for example in beamer support file

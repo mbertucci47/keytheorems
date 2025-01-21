@@ -1212,10 +1212,10 @@
                   \cs_new:cpe
                     { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
                     {
-                      \exp_not:N \__keythms_getthm_body:nn
+                      \exp_not:N \__keythms_getthm_body:nnn
                       \exp_args:No \exp_not:o
                         {
-                          \exp_after:wN \__keythms_use_iii_v_braced:nnnnn
+                          \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
                             \g__keythms_thmuse_temprestatedata_tl
                         }
                     }
@@ -1243,7 +1243,7 @@
             }
         }
   }
-\cs_new:Npn \__keythms_use_iii_v_braced:nnnnn #1#2#3#4#5 { {#3}{#5} }
+\cs_new:Npn \__keythms_use_i_iii_v_braced:nnnnn #1#2#3#4#5 { {#1}{#3}{#5} }
 
 % withhooks_begin does not include prehead hook because we want to be able to access note
 \cs_new_protected:Npn \__keythms_withhooks_begin:nnn #1#2#3
@@ -1447,7 +1447,7 @@
             \cs_new_protected:cpn
               { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _body }
               {
-                \__keythms_getthm_body:nn {#5}{#7}
+                \__keythms_getthm_body:nnn {#1}{#5}{#7}
               }
           }
         \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
@@ -1461,7 +1461,7 @@
             \cs_new_protected:cpn
               { __keythms_getthm_ \l__keythms_storeatbegin_storereversed_tl _body }
               {
-                \__keythms_getthm_body:nn {#5}{#7}
+                \__keythms_getthm_body:nnn {#1}{#5}{#7}
               }
           }
         \group_end:
@@ -1552,11 +1552,11 @@
     \group_end:
   }
 
-\cs_new_protected:Npn \__keythms_getthm_body:nn #1#2
-  { % #1 = restate counters, #2 = theorem body
+\cs_new_protected:Npn \__keythms_getthm_body:nnn #1#2#3
+  { % #1 = name, #2 = restate counters, #3 = theorem body
     \group_begin:
     \bool_set_true:N \l__keythms_thmuse_restating_bool
-    \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #1 }
+    \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #2 }
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
         \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
@@ -1568,9 +1568,9 @@
           { \use:c { the ##1 } . \theHkeythms_restate_dummyctr }
       }
     \refstepcounter{keythms_restate_dummyctr}
-    % \hook_use:n { keytheorems/#1/restated } % FIX!
+    \hook_use:n { keytheorems/#1/restated }
     \hook_use:n { keytheorems/allthms/restated }
-    #2
+    #3
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
         \exp_args:Nnc \setcounter { ##1 }
@@ -1609,10 +1609,10 @@
         \cs_new:cpe
           { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
           {
-            \exp_not:N \__keythms_getthm_body:nn
+            \exp_not:N \__keythms_getthm_body:nnn
             \exp_args:No \exp_not:o
               {
-                \exp_after:wN \__keythms_use_iii_v_braced:nnnnn
+                \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
                   \g__keythms_thmuse_temprestatedata_tl
               }
           }

@@ -2,6 +2,7 @@
 
 ## [v0.2.4]
 - fixed issue with too much expansion in `manual-num`
+- fix [\#14](https://github.com/mbertucci47/keytheorems/issues/14)
 
 ## [v0.2.3]
 - add many translations; some missing translation of "continuing from p."
