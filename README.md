@@ -640,10 +640,5 @@ blub
 \end{document}
 ```
 
-## Things to do
-
-- Clean up the code. Things are out of order, poorly named, etc.
-- For a complete list, see [`keytheorems-ideas.md`](https://github.com/mbertucci47/keytheorems/blob/develop/keytheorems-ideas.md)
-
 ## License
 Released under the LaTeX Project Public License v1.3c or later. See https://www.latex-project.org/lppl.txt.
