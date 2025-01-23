@@ -1196,7 +1196,7 @@ This can be useful for disabling commands such as \cs{footnote} in the restated 
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
 \end{dispListing}
 
-By default, \pkg{keytheorems} disables the \cs{label} and \cs{RecordProperties} commands in restated theorems.
+By default, \pkg{keytheorems} disables the \cs{glossary}, \cs{index}, \cs{label}, and \cs{RecordProperties} commands in restated theorems.
 
 In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e. the code
 \begin{dispListing}

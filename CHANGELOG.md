@@ -1,5 +1,8 @@
 # Changelog for keytheorems package
 
+## [v0.2.5]
+- disable `\index` and `\glossary` in restated theorems
+
 ## [v0.2.4]
 - fixed issue with too much expansion in `manual-num`
 - fix [\#14](https://github.com/mbertucci47/keytheorems/issues/14)
@@ -62,6 +65,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.2.5]: https://github.com/mbertucci47/keytheorems/compare/v0.2.4...HEAD
 [v0.2.4]: https://github.com/mbertucci47/keytheorems/compare/v0.2.3...v0.2.4
 [v0.2.3]: https://github.com/mbertucci47/keytheorems/compare/v0.2.2...v0.2.3
 [v0.2.2]: https://github.com/mbertucci47/keytheorems/compare/v0.2.1...v0.2.2
