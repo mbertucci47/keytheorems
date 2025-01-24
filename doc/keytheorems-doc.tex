@@ -66,7 +66,7 @@
   notefont=\bfseries,
   bodyfont=\normalfont,
   }
-\newkeytheorem{mytheo}[name=My Theorem,style=tcb-standard]
+\newkeytheorem{mytheo}[name=Theorem,style=tcb-standard]
 \newkeytheorem{corollary}[tcolorbox]
 \newkeytheorem{definition}[
   style=definition,
@@ -741,10 +741,10 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
 
 \begin{keythmscode}[withpreamble]
 \begin{corollary}
-Some text.
+Products exist in the category of schemes over $S$.
 \end{corollary}
-\begin{definition}[A nice definition]
-Some more text.
+\begin{definition}[Dedekind domains]
+A \emph{Dedekind domain} is an integrally closed, Noetherian domain of dimension one.
 \end{definition}
 \end{keythmscode}
 
@@ -763,8 +763,8 @@ Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not a
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
-\begin{boxcor}
-Some text.
+\begin{boxcor}[Cauchy's theorem]
+Let $G$ be a finite group and $p$ a prime dividing the order of $G$. Then $G$ contains an element of order $p$.
 \end{boxcor}
 \end{keythmscode}
 
@@ -787,14 +787,14 @@ Some text.
   bodyfont=\normalfont,
   }
 \newkeytheorem{mytheo}[
-  name=My Theorem,
+  name=Theorem,
   style=tcb-standard
   ]
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
-\begin{mytheo}[This is my title]
-Some theorem text.
+\begin{mytheo}[Quillen-Suslin]
+Every finitely generated projective module over a polynomial ring is free.
 \end{mytheo}
 \end{keythmscode}
 
@@ -1196,7 +1196,7 @@ This can be useful for disabling commands such as \cs{footnote} in the restated 
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
 \end{dispListing}
 
-By default, \pkg{keytheorems} disables the \cs{glossary}, \cs{index}, \cs{label}, and \cs{RecordProperties} commands in restated theorems.
+By default, the \hook{restated} hook disables the \cs{glossary}, \cs{index}, \cs{label}, and \cs{RecordProperties} commands.
 
 In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e. the code
 \begin{dispListing}
