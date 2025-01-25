@@ -79,6 +79,10 @@
     No~theorem~hook~'#1'.~Check~the~spelling.~
     Should~be~one~of~'prehead',~'posthead',~'prefoot',~'postfoot',~or'restated'.
   }
+\msg_new:nnn { keytheorems } { refname-argcount }
+  {
+    '#1'~accepts~either~one~or~two~comma-separated~items.
+  }
 \msg_new:nnn { keytheorems } { hyperref-Autoref }
   {
     You~have~not~loaded~hyperref.~The~\protect\Autoref\space command~needs~
@@ -132,6 +136,7 @@
 
 \dim_new:N \l__keythms_tmpa_dim
 \iow_new:N \g__keythms_tmpa_iow
+\seq_new:N \l__keythms_tmpa_seq
 \tl_new:N \l__keythms_tmpa_tl
 
 \bool_new:N \g__keythms_listof_writefile_bool
@@ -447,48 +452,97 @@
 %%% Defining Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-% FIX: reimplement these without \NewDocumentCommand and \SplitArgument
-\NewDocumentCommand \keythms_thm_setrefnames:nn
-  { m >{\SplitArgument{1}{,}} m } % #1 = envname, #2 = <refname> or <sing,plural>
-  { \__keythms_thm_setrefnames_aux:nnn{#1}#2 }
-\cs_new_protected:Npn \__keythms_thm_setrefnames_aux:nnn #1#2#3
+\cs_new_protected:Npn \__keythms_thm_setrefnames:nn #1#2
+  { % use \seq_set_split instead of clist functions to preserve empty entries
+    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #2 }
+    \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 2 }
+      {
+        \__keythms_thm_setrefnames_auxII:nee { #1 }
+          { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+          { \seq_item:Nn \l__keythms_tmpa_seq { 2 } }
+      }
+      {
+        \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 1 }
+          {
+            \__keythms_thm_setrefnames_auxI:ne { #1 }
+              { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+          }
+          { \msg_error:nnn { keytheorems } { refname-argcount } { refname } }
+      }
+  }
+\cs_generate_variant:Nn \__keythms_thm_setrefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setrefnames_auxI:nn #1#2
   {
     \cs_set:cpn { #1 autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
       { 
-        \tl_if_novalue:nTF { #3 }
-          { \crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
-          { \crefname{#1}{#2}{#3} }
+        \crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
       {
-        \tl_if_novalue:nTF { #3 }
-          { \zcRefTypeSetup{#1}{ name-sg=#2 } }
-          { \zcRefTypeSetup{#1}{ name-sg=#2, name-pl=#3 } }
+        \zcRefTypeSetup{#1}{ name-sg=#2 }
       }
   }
-\cs_generate_variant:Nn \keythms_thm_setrefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setrefnames_auxII:nnn #1#2#3
+  {
+    \cs_set:cpn { #1 autorefname } { #2 }
+    \IfPackageLoadedT { cleveref }
+      { 
+        \crefname{#1}{#2}{#3}
+      }
+    \IfPackageLoadedT { zref-clever }
+      {
+        \zcRefTypeSetup{#1}{ name-sg=#2, name-pl=#3 }
+      }
+  }
+\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxI:nn { ne }
+\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxII:nnn { nee }
 
-\NewDocumentCommand \keythms_thm_setRefnames:nn
-  { m >{\SplitArgument{1}{,}} m } % #1 = envname, #2 = <refname> or <sing,plural>
-  { \__keythms_thm_setRefnames_aux:nnn{#1}#2 }
-\cs_new_protected:Npn \__keythms_thm_setRefnames_aux:nnn #1#2#3
+\cs_new_protected:Npn \__keythms_thm_setRefnames:nn #1#2
+  { % use \seq_set_split instead of clist functions to preserve empty entries
+    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #2 }
+    \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 2 }
+      {
+        \__keythms_thm_setRefnames_auxII:nee { #1 }
+          { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+          { \seq_item:Nn \l__keythms_tmpa_seq { 2 } }
+      }
+      {
+        \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 1 }
+          {
+            \__keythms_thm_setRefnames_auxI:ne { #1 }
+              { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+          }
+          { \msg_error:nnn { keytheorems } { refname-argcount } { Refname } }
+      }
+  }
+\cs_generate_variant:Nn \__keythms_thm_setRefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setRefnames_auxI:nn #1#2
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
       { 
-        \tl_if_novalue:nTF { #3 }
-          { \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}} }
-          { \Crefname{#1}{#2}{#3} }
+        \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
       {
-        \tl_if_novalue:nTF { #3 }
-          { \zcRefTypeSetup{#1}{ Name-sg=#2 } }
-          { \zcRefTypeSetup{#1}{ Name-sg=#2, Name-pl=#3 } }
+        \zcRefTypeSetup{#1}{ Name-sg=#2 }
       }
   }
-\cs_generate_variant:Nn \keythms_thm_setRefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setRefnames_auxII:nnn #1#2#3
+  {
+    \cs_set:cpn { #1 Autorefname } { #2 }
+    \IfPackageLoadedT { cleveref }
+      { 
+        \Crefname{#1}{#2}{#3}
+      }
+    \IfPackageLoadedT { zref-clever }
+      {
+        \zcRefTypeSetup{#1}{ Name-sg=#2, Name-pl=#3 }
+      }
+  }
+\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxI:nn { ne }
+\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxII:nnn { nee }
 
 \keys_define:nn { keytheorems/thm }
   {
@@ -724,9 +778,9 @@
     \exp_args:NnV \cs_set:cpn { #1 Autorefname } \l__keythms_thm_name_tl
     % Set ref names
     \quark_if_no_value:NF \l__keythms_thm_refname_tl
-      { \keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
+      { \__keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
     \quark_if_no_value:NF \l__keythms_thm_Refname_tl 
-      { \keythms_thm_setRefnames:nV { #1 } \l__keythms_thm_Refname_tl }
+      { \__keythms_thm_setRefnames:nV { #1 } \l__keythms_thm_Refname_tl }
     % Set margins if needed
     \bool_lazy_or:nnT
       { ! \dim_compare_p:nNn { \l__keythms_thm_leftmargin_dim } = { 0pt } }
@@ -1114,7 +1168,7 @@
         \end{keythms_orig_#1}
         \__keythms_thm_postfoot_code:n { #1 }
       }
-      {}
+      { }
     \DeclareDocumentEnvironment { keythms_grabreversed_#1 } { m m +b }
       { % ##1 = keys, ##2 = note, ##3 = theorem body
         \tl_if_exist:cTF
@@ -1405,7 +1459,7 @@
     restate* .meta:n   = { store* = {#1} },
     store    .tl_set:N = \l__keythms_storeatbegin_store_tl,
     store*   .tl_set:N = \l__keythms_storeatbegin_storereversed_tl,
-    unknown  .code:n   = { } % do nothing with unknown keys
+    unknown  .code:n   = {} % do nothing with unknown keys
   }
 
 \cs_new_protected:Npn \KeyThmsContentsLine #1 { }
@@ -1795,8 +1849,7 @@
   }
 \cs_new_protected:Npn \__keythms_listof_ignore_aux:n #1
   {
-    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnn } ##1##2##3##4##5##6
-      { }
+    \cs_set_protected:cpn { __keythms_thmitem_#1:nnnnnn } ##1##2##3##4##5##6 { }
   }
 
 \cs_new_protected:Npn \keythms_listof_show:n #1
@@ -1917,7 +1970,7 @@
       {
         \bool_set_true:N \l__keythms_listofheading_storereversed_bool
       },
-    unknown      .code:n      = { } % do nothing with unknown keys
+    unknown      .code:n      = {} % do nothing with unknown keys
   }
 
 \cs_new:Npn \__keythms_listof_printnote:
@@ -2374,7 +2427,7 @@
             % FIX: surely a better way to do this
             \RequirePackage{tcolorbox}
             \pgfkeysifdefined{/tcb/keythms_tcbshaded_default/.@cmd} % even worth it?
-              {}
+              { }
               {
                 \tcbset % wish I could do this outside of key but can't assume tcb loaded
                   {
@@ -2405,7 +2458,7 @@
             \RequirePackage{tcolorbox}
             \tcbuselibrary{skins,breakable}
             \pgfkeysifdefined{/tcb/keythms_tcbthmbox_default/.@cmd} % even worth it?
-              {}
+              { }
               {
                 \tcbset{
                   keythms_tcbthmbox_default/.style={
