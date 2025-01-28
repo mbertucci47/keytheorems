@@ -365,7 +365,7 @@ This replaces the value of \refKey{note} when displayed in the list of theorems 
 This is the key-value equivalent of |\begin{theorem}| \cs{label}\marg{label name}.
 
 \begin{keythmscode}[]
-\begin{theorem}[label=bezout]
+\begin{theorem}[label=bezout,note=Bézout's identity]
 Let $a$ and $b$ be integers. Then there exist integers $x$ and $y$ such that $ax+by=\gcd(a,b)$.
 \end{theorem}
 See \zcref{bezout}.
@@ -395,10 +395,13 @@ Don't confuse your readers by changing the numbering without good reason.
 Pick up a theorem where you left off.
 The theorem number remains the same.
 The printed text can be customized with the \refKey{continues-code} option.
-The starred version also copies the theorem note, if it exists.
+The starred version also copies the theorem \refKey{note} and \refKey{short-note} if they are nonempty.
 
 \begin{keythmscode}[]
 \begin{theorem}[continues=bezout]
+Moreover, the integers of the form $az+bt$ are exactly the multiples of $\gcd(a,b)$.
+\end{theorem}
+\begin{theorem}[continues*=bezout]
 Moreover, the integers of the form $az+bt$ are exactly the multiples of $\gcd(a,b)$.
 \end{theorem}
 \end{keythmscode}

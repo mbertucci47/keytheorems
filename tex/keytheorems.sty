@@ -138,6 +138,7 @@
 \iow_new:N \g__keythms_tmpa_iow
 \seq_new:N \l__keythms_tmpa_seq
 \tl_new:N \l__keythms_tmpa_tl
+\tl_new:N \l__keythms_tmpb_tl
 
 \bool_new:N \g__keythms_listof_writefile_bool
 \bool_gset_false:N \g__keythms_listof_writefile_bool
@@ -1109,6 +1110,23 @@
               { keytheorems/recordednote }
           }
       }
+    % short-note has to be recorded manually even with nameref loaded
+    \property_new:nnnn { keytheorems/recordedshortnote } { now } { }
+      { \l__keythms_thmuse_shortnote_tl }
+    \cs_new:Npn \__keythms_thmuse_recordshortnote:
+      {
+        \tl_if_empty:NF \l__keythms_thmuse_shortnote_tl
+          {
+            \RecordProperties
+              { keythms_recordedshortnote_\l__keythms_thmuse_label_tl }
+              { keytheorems/recordedshortnote }
+          }
+      }
+    \cs_new:Npn \__keythms_getrecordedshortnote:n #1
+      {
+        \property_ref:nn { keythms_recordedshortnote_#1 }
+          { keytheorems/recordedshortnote }
+      }
   }
 
 \keys_define:nn { keytheorems/thmuse }
@@ -1138,7 +1156,7 @@
     restate*   .meta:n   = { store* = {#1} },
     restate-keys .clist_set:N = \l__keythms_thmuse_restatekeys_clist,
     seq        .code:n   = {},
-    short-note .code:n   = {}, % these do nothing at point of use
+    short-note .tl_set:N = \l__keythms_thmuse_shortnote_tl,
     short-name .code:n   = {},
     store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
@@ -1374,6 +1392,7 @@
       {
         \label{ \l__keythms_thmuse_label_tl }
         \__keythms_thmuse_recordnote:
+        \__keythms_thmuse_recordshortnote:
       }
     \bool_if:NT \l__keythms_thmuse_listhack_bool
       { % straight from thm-amsthm.sty
@@ -1958,6 +1977,12 @@
             \keys_set:nn { keytheorems/listofheading }
               { note = \l__keythms_tmpa_tl }
           }
+        \protected@edef \l__keythms_tmpb_tl { \__keythms_getrecordedshortnote:n{#1} }
+        \tl_if_empty:NF \l__keythms_tmpb_tl
+          {
+            \keys_set:nn { keytheorems/listofheading }
+              { short-note = \l__keythms_tmpb_tl }
+          }
       },
     name         .meta:n      = { note = {#1} },
     note         .tl_set:N    = \l__keythms_listofheading_note_tl,
@@ -2015,13 +2040,25 @@
       {
         \bool_if:NF \l__keythms_listof_nocont_bool
           {
-            \tl_if_empty:NF \l__keythms_listofheading_note_tl
+            \tl_if_empty:NTF \l__keythms_listofheading_shortnote_tl
               {
-                \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ }
+                \tl_if_empty:NF \l__keythms_listofheading_note_tl
+                  {
+                    \tl_put_right:Nn \l__keythms_listofheading_note_tl { , ~ }
+                  }
+                \tl_put_right:Nn \l__keythms_listofheading_note_tl
+                  {
+                    \__keythms_thmuse_continues:V
+                      \l__keythms_listofheading_contlabel_tl
+                  }
               }
-            \tl_put_right:Nn \l__keythms_listofheading_note_tl
               {
-                \__keythms_thmuse_continues:V \l__keythms_listofheading_contlabel_tl
+                \tl_put_right:Nn \l__keythms_listofheading_shortnote_tl
+                  {
+                    , ~
+                    \__keythms_thmuse_continues:V
+                      \l__keythms_listofheading_contlabel_tl
+                  }
               }
             \cs_set_eq:NN \pageref \__keythms_listof_pagerefnolink:w % always no link
             #2

@@ -35,9 +35,8 @@
 - [x] Interface for adding entries to list of theorems. In fact, should
       benchmark the "add to seq then write at end of file" approach vs.
       traditional `\addcontentsline` approach
-- [ ] (partial) `short name` key for theorems to replace thmtools'
-      `name={[short name]name}`. Should we also support this syntax?
-      Progress: key implemented but not yet compat with continues
+- [x] `short name` key for theorems to replace thmtools'
+      `name={[short name]name}`. Should we also support this syntax? No.
 - [x] (see restate-keys) And what about `restate={[options]foo}` syntax? How useful is this?
 - [x] Should `continues(*)` theorems appear in list of theorems? Decide and add option to
       change default.
@@ -133,3 +132,4 @@
 - [x] theorem option to manually override label
 - [ ] full example in doc, including restating theorem in intro before stated
 - [ ] allow customization of listhack skip
+- [ ] `onlynamed` and `continues`
