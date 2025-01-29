@@ -975,7 +975,8 @@
         \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \pushQED{\qed}
       }
-    \tl_gput_left:cn { g__keythms_thm_prefootfromkeys_#1_tl }
+    \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
+    \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
       {
         \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
         \popQED
@@ -994,15 +995,7 @@
   { % #1 = name, #2 = keys
     \cs_if_exist:cTF { #1 }
       {
-        \cs_undefine:c { #1 }
-        \cs_undefine:c { c@ #1 }
-        \cs_undefine:c { the #1 }
-        \tl_if_exist:cT { g__keythms_thm_#1_parent_tl }
-          { % remove parent counter binding
-            \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
-          }
-        \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
-        \keythms_thm_newkeythm:nn { #1 } { #2 }
+        \keythms_thm_declarekeythm:nn { #1 } { #2 }
       }
       { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
   }
@@ -1023,6 +1016,10 @@
         \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
       }
     \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
+    \cs_undefine:c { g__keythms_thm_QEDprefoot_#1_tl } % These are only
+    \cs_undefine:c { g__keythms_thm_tcbpatch_#1_tl } % conditionally defined
+    \cs_undefine:c { g__keythms_thm_#1_tcbprehead_tl } % Need to undefine
+    \cs_undefine:c { g__keythms_thm_#1_tcbpostfoot_tl } % so old defs not used
     \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
@@ -1415,6 +1412,7 @@
   }
 \cs_new_protected:Npn \__keythms_thm_prefoot_code:n #1
   { % #1 = theorem name
+    \use:c { g__keythms_thm_QEDprefoot_#1_tl }
     \hook_use:n { keytheorems/allthms/prefoot }
     \hook_use:n { keytheorems/#1/prefoot }
   }

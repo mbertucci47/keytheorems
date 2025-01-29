@@ -1215,7 +1215,7 @@ With \pkg{keytheorems}, code is added in the order declared, meaning
 results in |AB| after the theorem.
 This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses under the hood.
 
-Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
+Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
 \end{docCommand}
 
 \section{Miscellaneous notes}
