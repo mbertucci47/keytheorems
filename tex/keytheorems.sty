@@ -134,6 +134,7 @@
 %%% Declare Variables %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\clist_new:N \l__keythms_tmpa_clist
 \dim_new:N \l__keythms_tmpa_dim
 \iow_new:N \g__keythms_tmpa_iow
 \seq_new:N \l__keythms_tmpa_seq
@@ -1085,8 +1086,16 @@
 \hook_gput_code:nnn { begindocument } { . }
   {
     \IfPackageLoadedTF { nameref }
-      {
-        \cs_new:Npn \__keythms_thmuse_recordnote: { } % nameref takes care of this
+      { % only need to record short-note if nameref loaded
+        \cs_new:Npn \__keythms_thmuse_recordnote:
+          {
+            \tl_if_empty:NF \l__keythms_thmuse_shortnote_tl
+              {
+                \RecordProperties
+                  { keythms_recordednote_\l__keythms_thmuse_label_tl }
+                  { keytheorems/recordedshortnote }
+              }
+          }
         \cs_new:Npn \__keythms_getrecordednote:n #1
           {
             \getrefbykeydefault{ #1 }{ name }{ }
@@ -1097,11 +1106,22 @@
           { \l__keythms_thmuse_note_tl }
         \cs_new:Npn \__keythms_thmuse_recordnote:
           {
+            \clist_clear:N \l__keythms_tmpa_clist
             \tl_if_empty:NF \l__keythms_thmuse_note_tl
+              {
+                \clist_put_right:Nn \l__keythms_tmpa_clist
+                  { keytheorems/recordednote }
+              }
+            \tl_if_empty:NF \l__keythms_thmuse_shortnote_tl
+              {
+                \clist_put_right:Nn \l__keythms_tmpa_clist
+                  { keytheorems/recordedshortnote }
+              }
+            \clist_if_empty:NF \l__keythms_tmpa_clist
               {
                 \RecordProperties
                   { keythms_recordednote_\l__keythms_thmuse_label_tl }
-                  { keytheorems/recordednote }
+                  { \l__keythms_tmpa_clist }
               }
           }
         \cs_new:Npn \__keythms_getrecordednote:n #1
@@ -1110,23 +1130,15 @@
               { keytheorems/recordednote }
           }
       }
-    % short-note has to be recorded manually even with nameref loaded
-    \property_new:nnnn { keytheorems/recordedshortnote } { now } { }
-      { \l__keythms_thmuse_shortnote_tl }
-    \cs_new:Npn \__keythms_thmuse_recordshortnote:
-      {
-        \tl_if_empty:NF \l__keythms_thmuse_shortnote_tl
-          {
-            \RecordProperties
-              { keythms_recordedshortnote_\l__keythms_thmuse_label_tl }
-              { keytheorems/recordedshortnote }
-          }
-      }
-    \cs_new:Npn \__keythms_getrecordedshortnote:n #1
-      {
-        \property_ref:nn { keythms_recordedshortnote_#1 }
-          { keytheorems/recordedshortnote }
-      }
+  }
+
+% this doesn't need to be at begindocument because doesn't depend on nameref
+\property_new:nnnn { keytheorems/recordedshortnote } { now } { }
+  { \l__keythms_thmuse_shortnote_tl }
+\cs_new:Npn \__keythms_getrecordedshortnote:n #1
+  {
+    \property_ref:nn { keythms_recordednote_#1 }
+      { keytheorems/recordedshortnote }
   }
 
 \keys_define:nn { keytheorems/thmuse }
@@ -1135,7 +1147,7 @@
     continues* .code:n   =
       {
         \keys_set:nn { keytheorems/thmuse } { continues = #1 }
-        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n{#1} }
+        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n {#1} }
         \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { keytheorems/thmuse }
@@ -1392,7 +1404,6 @@
       {
         \label{ \l__keythms_thmuse_label_tl }
         \__keythms_thmuse_recordnote:
-        \__keythms_thmuse_recordshortnote:
       }
     \bool_if:NT \l__keythms_thmuse_listhack_bool
       { % straight from thm-amsthm.sty
@@ -1971,13 +1982,13 @@
     continues*   .code:n      =
       {
         \keys_set:nn { keytheorems/listofheading } { continues = #1 }
-        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n{#1} }
+        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n {#1} }
         \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { keytheorems/listofheading }
               { note = \l__keythms_tmpa_tl }
           }
-        \protected@edef \l__keythms_tmpb_tl { \__keythms_getrecordedshortnote:n{#1} }
+        \protected@edef \l__keythms_tmpb_tl { \__keythms_getrecordedshortnote:n {#1} }
         \tl_if_empty:NF \l__keythms_tmpb_tl
           {
             \keys_set:nn { keytheorems/listofheading }
