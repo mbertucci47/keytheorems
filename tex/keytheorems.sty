@@ -994,17 +994,12 @@
 \cs_new_protected:Npn \keythms_thm_renewkeythm:nn #1#2
   { % #1 = name, #2 = keys
     \cs_if_exist:cTF { #1 }
-      {
-        \keythms_thm_declarekeythm:nn { #1 } { #2 }
-      }
+      { \keythms_thm_declarekeythm:nn { #1 } { #2 } }
       { \msg_error:nnn { keytheorems } { thm-undefined} { #1 } }
   }
 \cs_new_protected:Npn \keythms_thm_providekeythm:nn #1#2
   { % #1 = name, #2 = keys
-    \cs_if_free:cT { #1 }
-      {
-        \keythms_thm_newkeythm:nn { #1 } { #2 }
-      }
+    \cs_if_free:cT { #1 } { \keythms_thm_newkeythm:nn { #1 } { #2 } }
   }
 \cs_new_protected:Npn \keythms_thm_declarekeythm:nn #1#2
   { % #1 = name, #2 = keys
@@ -1783,6 +1778,7 @@
               { \__keythms_listof_ignore_aux:n { ##1 } }
           }
       },
+    ignoreall           .value_forbidden:n = true,
     indent              .dim_set:N  = \l__keythms_listof_indent_dim,
     indent              .initial:n  = 1.5em,
     no-chapter-skip     .bool_set:N = \l__keythms_listof_nochapskip_bool,
@@ -1817,6 +1813,7 @@
               { \__keythms_getthm_theorem:nnnnn {##1}{##2}{##5}{##6}{##7} }
           }
       },
+    print-body          .value_forbidden:n = true,
     seq                 .code:n     = 
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1835,6 +1832,7 @@
               { \__keythms_listof_show_aux:n { ##1 } }
           }
       },
+    showall             .value_forbidden:n = true,
     swapnumber          .bool_set:N = \l__keythms_listof_swapnumber_bool,
     swapnumber          .initial:n  = false,
     title               .tl_set:N   = \l__keythms_listof_title_tl,
