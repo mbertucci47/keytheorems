@@ -2863,22 +2863,30 @@
                   { tcolorbox-no-titlebar }
               },
           }
-        \keys_define:nn { keytheorems/listof }
+        \bool_lazy_any:nF
           {
-            print-body .code:n =
+            { \__keythms_if_classloaded_p:n { amsart } }
+            { \__keythms_if_classloaded_p:n { amsbook } }
+            { \__keythms_if_classloaded_p:n { amsproc } }
+          }
+          { % only redefine \@starttoc with print-body when AMS class not loaded
+            \keys_define:nn { keytheorems/listof }
               {
-                \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
+                print-body .code:n =
                   {
-                    \tl_if_empty:nF { ##7 }
+                    \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
                       {
-                        \__keythms_getthm_theorem:nnnnn
-                          {##1}{##2}{##5}{##6}{##7}
+                        \tl_if_empty:nF { ##7 }
+                          {
+                            \__keythms_getthm_theorem:nnnnn
+                              {##1}{##2}{##5}{##6}{##7}
+                          }
                       }
-                  }
-                % with tagging, make \@starttoc same as input
-                \cs_set_protected:Npn \@starttoc ##1
-                  { \makeatletter \@input { \jobname.##1 } }
-              },
+                    % with tagging, make \@starttoc same as input
+                    \cs_set_protected:Npn \@starttoc ##1
+                      { \makeatletter \@input { \jobname.##1 } }
+                  },
+              }
           }
         \IfFormatAtLeastTF { 2025-06-01 }
           { % dev formats use theoremblock instance
