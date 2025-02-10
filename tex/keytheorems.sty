@@ -908,11 +908,11 @@
 \cs_new_protected:Npn \__keythms_thm_tcbnotitlebarcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
     \__keythms_thm_tcbshared:nn { #1 } { #2 }
-    \tl_gclear_new:c { g__keythms_thm_#1_tcbprehead_tl }
-    \tl_gset:cn { g__keythms_thm_#1_tcbprehead_tl }
+    \tl_gclear_new:c { g__keythms_thm_tcbprehead_#1_tl }
+    \tl_gset:cn { g__keythms_thm_tcbprehead_#1_tl }
       { \begin{tcolorbox}[keythms_tcb_#1] }
-    \tl_gclear_new:c { g__keythms_thm_#1_tcbpostfoot_tl }
-    \tl_gset:cn { g__keythms_thm_#1_tcbpostfoot_tl }
+    \tl_gclear_new:c { g__keythms_thm_tcbpostfoot_#1_tl }
+    \tl_gset:cn { g__keythms_thm_tcbpostfoot_#1_tl }
       { \end{tcolorbox} }
   }
 \cs_new_protected:Npn \__keythms_thm_tcbshared:nn #1#2
@@ -1013,8 +1013,8 @@
     \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
     \cs_undefine:c { g__keythms_thm_QEDprefoot_#1_tl } % These are only
     \cs_undefine:c { g__keythms_thm_tcbpatch_#1_tl } % conditionally defined
-    \cs_undefine:c { g__keythms_thm_#1_tcbprehead_tl } % Need to undefine
-    \cs_undefine:c { g__keythms_thm_#1_tcbpostfoot_tl } % so old defs not used
+    \cs_undefine:c { g__keythms_thm_tcbprehead_#1_tl } % Need to undefine
+    \cs_undefine:c { g__keythms_thm_tcbpostfoot_#1_tl } % so old defs not used
     \keythms_thm_newkeythm:nn { #1 } { #2 }
   }
 
@@ -1387,7 +1387,7 @@
     \hook_use:n { keytheorems/#1/prehead }
     \hook_use:n { keytheorems/allthms/prehead }
     % \use:c instead of \tl_use:c so doesn't error if tl doesn't exist
-    \use:c { g__keythms_thm_#1_tcbprehead_tl }
+    \use:c { g__keythms_thm_tcbprehead_#1_tl }
   }
 \cs_new_protected:Npn \__keythms_thm_posthead_code:n #1
   { % #1 = theorem name
@@ -1414,7 +1414,7 @@
   }
 \cs_new_protected:Npn \__keythms_thm_postfoot_code:n #1
   { % #1 = theorem name
-    \use:c { g__keythms_thm_#1_tcbpostfoot_tl }
+    \use:c { g__keythms_thm_tcbpostfoot_#1_tl }
     \hook_use:n { keytheorems/allthms/postfoot }
     \hook_use:n { keytheorems/#1/postfoot }
   }
