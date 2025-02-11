@@ -77,7 +77,7 @@
 \msg_new:nnn { keytheorems } { undefined-thm-hook }
   {
     No~theorem~hook~'#1'.~Check~the~spelling.~
-    Should~be~one~of~'prehead',~'posthead',~'prefoot',~'postfoot',~or'restated'.
+    Should~be~one~of~'prehead',~'posthead',~'prefoot',~'postfoot',~or~'restated'.
   }
 \msg_new:nnn { keytheorems } { refname-argcount }
   {
@@ -92,6 +92,10 @@
   {
     No~Autoref~name~for~'#1'.~
     Please~define~\c_backslash_str #1Autorefname.
+  }
+\msg_new:nnn { keytheorems } { ctrfmt-unnumbered }
+  {
+    Theorem~'#1'~is~not~numbered.~Using~'counter-format'~does~not~make~sense.
   }
 \msg_new:nnn { keytheorems } { thmstyle-undefined }
   {
@@ -269,6 +273,7 @@
     spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
     spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     % thm keys that are saved for later
+    counter-format        .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     leftmargin            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     numbered              .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
     numberlike            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
@@ -548,6 +553,7 @@
 
 \keys_define:nn { keytheorems/thm }
   {
+    counter-format .tl_set:N  = \l__keythms_thm_ctrfmt_tl,
     heading        .meta:n    = { name = {#1} },
     leftmargin     .dim_set:N = \l__keythms_thm_leftmargin_dim,
     name           .tl_set:N  = \l__keythms_thm_name_tl,
@@ -597,20 +603,21 @@
 
 \keys_precompile:nnN { keytheorems/thm }
   {
-    leftmargin   = 0pt,
-    name         = \q_no_value,
-    numbered     = true,
-    parent       = {},
-    postfoothook = {},
-    postheadhook = {},
-    prefoothook  = {},
-    preheadhook  = {},
-    qed          = \q_no_value,
-    refname      = \q_no_value,
-    Refname      = \q_no_value,
-    rightmargin  = 0pt,
-    sibling      = {},
-    style        = {},
+    counter-format = \q_no_value,
+    leftmargin     = 0pt,
+    name           = \q_no_value,
+    numbered       = true,
+    parent         = {},
+    postfoothook   = {},
+    postheadhook   = {},
+    prefoothook    = {},
+    preheadhook    = {},
+    qed            = \q_no_value,
+    refname        = \q_no_value,
+    Refname        = \q_no_value,
+    rightmargin    = 0pt,
+    sibling        = {},
+    style          = {},
   }
   \l__keythms_thm_defaultkeys_tl
 
@@ -809,6 +816,13 @@
               { \l__keythms_thm_tcbkeys_tl }
           }
       }
+    % Set counter format if needed
+    \quark_if_no_value:NF \l__keythms_thm_ctrfmt_tl
+      {
+        \bool_if:NTF \l__keythms_thm_numbered_bool
+          { \exp_args:NnV \cs_set:cpn { the #1 } \l__keythms_thm_ctrfmt_tl }
+          { \msg_warning:nnn { keytheorems } { ctrfmt-unnumbered } { #1 } }
+      }
     % Set up list-of definition
     \cs_set_eq:cN { l@ #1 } \keythms_listof_tocline:
     % Set default list-of display command
@@ -972,13 +986,13 @@
   { % #1 = name, #2 = symbol
     \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:nF { #2 } { \protected@edef \qedsymbol { #2 } }
         \pushQED{\qed}
       }
     \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
     \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
       {
-        \tl_if_novalue:nF { #2 } { \protected@edef\qedsymbol{#2} }
+        \tl_if_novalue:nF { #2 } { \protected@edef \qedsymbol { #2 } }
         \popQED
       }
   }
@@ -986,8 +1000,8 @@
 \cs_new_protected:Npn \__keythms_nocheck_removefromreset:nn #1#2
   { % need to fake @ckpt counter
     \group_begin:
-    \cs_if_exist:cF { c@#2 } { \cs_set:cpn { c@#2 } { } }
-    \@removefromreset{#1}{#2}
+    \cs_if_exist:cF { c@ #2 } { \cs_set:cpn { c@ #2 } { } }
+    \@removefromreset{ #1 }{ #2 }
     \group_end:
   }
 
@@ -1139,7 +1153,8 @@
     continues* .code:n   =
       {
         \keys_set:nn { keytheorems/thmuse } { continues = #1 }
-        \protected@edef \l__keythms_tmpa_tl { \__keythms_getrecordednote:n {#1} }
+        \protected@edef \l__keythms_tmpa_tl
+          { \__keythms_getrecordednote:n { #1 } }
         \tl_if_empty:NF \l__keythms_tmpa_tl
           {
             \keys_set:nn { keytheorems/thmuse }

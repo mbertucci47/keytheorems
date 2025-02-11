@@ -5,6 +5,7 @@
 - fix [\#11](https://github.com/mbertucci47/keytheorems/issues/11)
 - fix [\#13](https://github.com/mbertucci47/keytheorems/issues/13)
 - avoid printing `note={}` to thlist file for theorems without a note
+- add `counter-format` key
 
 ## [v0.2.4]
 - fixed issue with too much expansion in `manual-num`

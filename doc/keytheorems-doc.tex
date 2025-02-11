@@ -80,6 +80,10 @@
 \newkeytheorem{observation}[style=breaksty]
 \newkeytheorem{quotethm}[name=Quote Theorem,leftmargin=1cm,rightmargin=1cm]
 \newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
+\newkeytheorem{mainthm}[
+  name=Theorem,
+  counter-format=\Alph{mainthm},
+  ]
 
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
@@ -686,6 +690,34 @@ It offers all the same features as \pkg{cleveref} and is actively maintained.
 \end{notebox}
 
 \subsection{Keys added by \pkg{keytheorems}} \label{thm-added-keys}
+
+\begin{docKey}{counter-format}
+  {=\meta{code}}
+  {initially unset}
+Syntactic sugar that essentially does \cs{renewcommand}\ttbraces{\cs{the}\meta{counter}}\marg{code}.
+The \meta{code} should not contain any unexpandable tokens such as formatting commands.
+Formatting should be taken care of in the style keys \refKey{headfont} and \refKey{numberfont}.
+If used with an unnumbered theorem, a warning is issued.
+
+\begin{codepreamble}
+\newkeytheorem{mainthm}[
+  name=Theorem,
+  counter-format=\Alph{mainthm},
+  ]
+\end{codepreamble}
+
+\begin{keythmscode}[withpreamble]
+\begin{mainthm}
+The first main result, distinguished by using letters.
+\end{mainthm}
+\begin{mainthm}
+And here is the second main result.
+\end{mainthm}
+\end{keythmscode}
+
+Eventually \LaTeX{} will allow syntax of the form \cs{Alph*} similar to \pkg{enumitem}'s |label| key, where the |*| means ``use the current counter'' (see \href{https://github.com/latex3/latex2e/issues/1632}{\texttt{latex2e\#1632}}).
+Then the above example could be written as |counter-format=\Alph*|.
+\end{docKey}
 
 \begin{docKeys}[doc parameter={=\meta{length}}]
   {
