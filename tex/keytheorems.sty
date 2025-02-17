@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-01-22}
-\def\@keythms@version{0.2.5}
+\def\@keythms@date{2025-02-16}
+\def\@keythms@version{0.2.6dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -226,12 +226,17 @@
 \keys_define:nn { keytheorems/thmstyle }
   {
     bodyfont      .tl_set:N = \l__keythms_thmstyle_bodyfont_tl,
+    bodyfont      .value_required:n = true,
     break         .meta:n   = { postheadspace = \newline }, % add error if postheadspace set
     break         .value_forbidden:n = true,
     headfont      .tl_set:N = \l__keythms_thmstyle_headfont_tl,
+    headfont      .value_required:n = true,
     headformat    .meta:n   = { headstyle = {#1} }, % extra braces are necessary! Otherwise breaks if #1 contains comma
+    headformat    .value_required:n = true,
     headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
+    headindent    .value_required:n = true,
     headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
+    headpunct     .value_required:n = true,
     headstyle     .choice:,
     headstyle / margin .code:n =
       {
@@ -256,6 +261,7 @@
           }
       },
     headstyle / unknown .cs_set:Np = \keythms_thmstyle_headcmd:nnn #1#2#3,
+    headstyle     .value_required:n = true,
     inherit-style .code:n =
       {
         \tl_if_exist:cTF { g__keythms_thmstyle_#1_metakeys_tl }
@@ -265,24 +271,41 @@
           }
           { \msg_error:nnn { keytheorems } { inherit-thmstyle-undefined } { #1 } }
       },
+    inherit-style .value_required:n = true,
     notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
+    notebraces    .value_required:n = true,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
+    notefont      .value_required:n = true,
     noteseparator .tl_set:N = \l__keythms_thmstyle_noteseparator_tl,
+    noteseparator .value_required:n = true,
     numberfont    .tl_set:N = \l__keythms_thmstyle_numberfont_tl,
+    numberfont    .value_required:n = true,
     postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
+    postheadspace .value_required:n = true,
     spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
+    spaceabove    .value_required:n = true,
     spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
+    spacebelow    .value_required:n = true,
     % thm keys that are saved for later
     counter-format        .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    counter-format        .value_required:n = true,
     leftmargin            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    leftmargin            .value_required:n = true,
     numbered              .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
     numberlike            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    numberlike            .value_required:n = true,
     numberwithin          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    numberwithin          .value_required:n = true,
     parent                .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    parent                .value_required:n = true,
     postfoothook          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    postfoothook          .value_required:n = true,
     postheadhook          .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    postheadhook          .value_required:n = true,
     prefoothook           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    prefoothook           .value_required:n = true,
     preheadhook           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    preheadhook           .value_required:n = true,
     qed                   .code:n =
       { % qed needs special treatment to distinguish qed from qed={}
         \tl_if_novalue:nTF { #1 }
@@ -297,11 +320,15 @@
       },
     qed                   .default:o = \c_novalue_tl,
     rightmargin           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    rightmargin           .value_required:n = true,
     sharenumber           .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    sharenumber           .value_required:n = true,
     sibling               .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    sibling               .value_required:n = true,
     tcolorbox             .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
     tcolorbox-no-titlebar .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
     within                .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    within                .value_required:n = true,
   }
 
 \cs_new_protected:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
@@ -554,9 +581,13 @@
 \keys_define:nn { keytheorems/thm }
   {
     counter-format .tl_set:N  = \l__keythms_thm_ctrfmt_tl,
+    counter-format .value_required:n = true,
     heading        .meta:n    = { name = {#1} },
+    heading        .value_required:n = true,
     leftmargin     .dim_set:N = \l__keythms_thm_leftmargin_dim,
+    leftmargin     .value_required:n = true,
     name           .tl_set:N  = \l__keythms_thm_name_tl,
+    name           .value_required:n = true,
     numbered       .choice:,
     numbered       .default:n = true,
     numbered / false .code:n  = \bool_set_false:N \l__keythms_thm_numbered_bool,
@@ -569,21 +600,34 @@
     numbered / unless~unique .meta:n = { numbered = unless-unique },
     numbered / yes .meta:n    = { numbered = true },
     numberlike     .meta:n    = { sibling = {#1} },
+    numberlike     .value_required:n = true,
     numberwithin   .meta:n    = { parent = {#1} },
+    numberwithin   .value_required:n = true,
     parent         .tl_set:N  = \l__keythms_thm_parent_tl,
+    parent         .value_required:n = true,
     postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
+    postfoothook   .value_required:n = true,
     postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
+    postheadhook   .value_required:n = true,
     prefoothook    .tl_set:N  = \l__keythms_thm_prefoothook_tl,
+    prefoothook    .value_required:n = true,
     preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
+    preheadhook    .value_required:n = true,
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
     qed            .default:o = \c_novalue_tl,
     % ^ distinguish between 'qed' and 'qed={}'
     refname        .tl_set:N  = \l__keythms_thm_refname_tl,
+    refname        .value_required:n = true,
     Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    Refname        .value_required:n = true,
     rightmargin    .dim_set:N = \l__keythms_thm_rightmargin_dim,
+    rightmargin    .value_required:n = true,
     sharenumber    .meta:n    = { sibling = {#1} },
+    sharenumber    .value_required:n = true,
     sibling        .tl_set:N  = \l__keythms_thm_sibling_tl,
+    sibling        .value_required:n = true,
     style          .tl_set:N  = \l__keythms_thm_style_tl,
+    style          .value_required:n = true,
     style          .groups:n  = { style-comes-first },
     tcolorbox      .code:n    =
       {
@@ -598,7 +642,9 @@
       },
     tcolorbox-no-titlebar .default:n = {},
     title          .meta:n    = { name = {#1} },
+    title          .value_required:n = true,
     within         .meta:n    = { parent = {#1} },
+    within         .value_required:n = true,
   }
 
 \keys_precompile:nnN { keytheorems/thm }
@@ -1779,13 +1825,16 @@
   {
     chapter-skip-length .dim_set:N  = \keythms@listof@chaptervspace@dim,
     chapter-skip-length .initial:n  = 10pt,
+    chapter-skip-length .value_required:n = true,
     format-code         .cs_set:Np  = \__keythms_listof_misdirect:nnn #1#2#3,
     format-code         .initial:n  = \numberline{#2}#1#3,
+    format-code         .value_required:n = true,
     ignore              .code:n     =
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_ignore:n { #1 } }
       },
+    ignore              .value_required:n = true,
     ignoreall           .code:n     =
       { % in case called before theorem defined
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1797,6 +1846,7 @@
     ignoreall           .value_forbidden:n = true,
     indent              .dim_set:N  = \l__keythms_listof_indent_dim,
     indent              .initial:n  = 1.5em,
+    indent              .value_required:n = true,
     no-chapter-skip     .bool_set:N = \l__keythms_listof_nochapskip_bool,
     no-chapter-skip     .initial:n  = false,
     no-continues        .bool_set:N = \l__keythms_listof_nocont_bool, 
@@ -1807,8 +1857,10 @@
     no-toc              .initial:n  = false, % false does not mean "to-toc" for standard classes
     note-code           .cs_set:Np  = \__keythms_listof_notecmd:n #1,
     note-code           .initial:n  = { ~ (#1) },
+    note-code           .value_required:n = true,
     numwidth            .dim_set:N  = \l__keythms_listof_numwidth_dim,
     numwidth            .initial:n  = 2.3em,
+    numwidth            .value_required:n = true,
     onlynamed           .code:n     =
       {
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1840,6 +1892,7 @@
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
           { \keythms_listof_show:n { #1 } }
       },
+    show                .value_required:n = true,
     showall             .code:n     =
       { % in case called before theorem defined
         \hook_gput_code:nnn { begindocument/before } { keytheorems }
@@ -1853,7 +1906,9 @@
     swapnumber          .initial:n  = false,
     title               .tl_set:N   = \l__keythms_listof_title_tl,
     title               .initial:n  = \GetTranslation{keythms_listof_title},
+    title               .value_required:n = true,
     title-code          .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
+    title-code          .value_required:n = true,
   }
 
 \hook_gput_code:nnn { begindocument } { . }
@@ -2215,10 +2270,12 @@
       { % not sure how best to handle this translation
         \GetTranslation{keythms_continues}\pageref{#1}
       },
+    continues-code   .value_required:n    = true,
     overload         .code:n              = \__keythms_overload_code:,
     overload         .value_forbidden:n   = true,
     overload         .usage:n             = preamble,
     qed-symbol       .cs_set_protected:Np = \qedsymbol,
+    qed-symbol       .value_required:n    = true,
     restate-counters .code:n              =
       {
         \clist_map_inline:nn { #1 }
@@ -2226,6 +2283,7 @@
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
     restate-counters .initial:n           = equation,
+    restate-counters .value_required:n    = true,
     store-all        .code:n              = \__keythms_storeall_code:,
     store-all        .value_forbidden:n   = true,
     store-all        .usage:n             = preamble,
@@ -2395,19 +2453,27 @@
       {
         textwidth   .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { width=##1 },
+        textwidth   .value_required:n = true,
         bgcolor     .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colback=##1 },
+        bgcolor     .value_required:n = true,
         rulewidth   .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxrule=##1 },
+        rulewidth   .value_required:n = true,
         rulecolor   .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { colframe=##1 },
+        rulecolor   .value_required:n = true,
         margin      .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { boxsep=##1 },
+        margin      .value_required:n = true,
         padding     .meta:n = { margin=##1 },
+        padding     .value_required:n = true,
         leftmargin  .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { left~skip=##1 },
+        leftmargin  .value_required:n = true,
         rightmargin .code:n =
           \clist_put_right:Nn \l__keythms_tcbshaded_keys_clist { right~skip=##1 },
+        rightmargin .value_required:n = true,
       }
     \keys_define:nn { keytheorems/thm/thmbox }
       {
@@ -2416,16 +2482,19 @@
             \clist_put_right:Nn \l__keythms_tcbthmbox_keys_clist
               { keythms_tcbthmbox_L }
           },
+        L .value_forbidden:n = true,
         M .code:n =
           {
             \clist_put_right:Nn \l__keythms_tcbthmbox_keys_clist
               { keythms_tcbthmbox_M }
           },
+        M .value_forbidden:n = true,
         S .code:n =
           {
             \clist_put_right:Nn \l__keythms_tcbthmbox_keys_clist
               { keythms_tcbthmbox_S }
           },
+        S .value_forbidden:n = true,
         underline .choice:,
         underline / true .code:n = {},
         underline / false .code:n =
@@ -2435,6 +2504,7 @@
           },
         underline .default:n = true,
         nounderline .meta:n = { underline=false },
+        nounderline .value_forbidden:n = true,
         cut .choice:,
         cut / true .code:n = {},
         cut / false .code:n =
@@ -2443,31 +2513,37 @@
           },
         cut .default:n = true,
         nocut .meta:n = { cut=false },
+        nocut .value_forbidden:n = true,
         thickness .code:n =
           { % could also add keys to clist with changed dimens; which is better?
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { ##1 } }
           },
+        thickness .value_required:n = true,
         leftmargin .code:n =
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { ##1 } }
           },
+        leftmargin .value_required:n = true,
         rightmargin .code:n =
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { ##1 } }
           },
+        rightmargin .value_required:n = true,
         hskip .code:n =
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { ##1 } }
           },
+        hskip .value_required:n = true,
         vskip .code:n =
           {
             \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_ \l__keythms_thm_envname_tl _tl }
               { \dim_set:Nn \l_keythms_tcbthmbox_vskip_dim { ##1 } }
           },
+        vskip .value_required:n = true,
       }
     \dim_new:N \l_keythms_tcbthmbox_thickness_dim
     \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { 0.6pt }
