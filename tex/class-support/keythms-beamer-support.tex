@@ -119,7 +119,7 @@
     \tl_if_novalue:nF { #2 } { \end{actionenv} }
   }
 
-\cs_set_protected:Npn \keythms_keyify_theorem:n #1
+\cs_set_protected:Npn \__keythms_keyify_theorem:n #1
   { % #1 = theorem name
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
     \DeclareDocumentEnvironment { keythms_beamer_grab_#1 } { m m m +b }

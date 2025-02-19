@@ -827,7 +827,7 @@
           }
       }
     % Store theorem def and redefine it with keys
-    \keythms_keyify_theorem:n { #1 }
+    \__keythms_keyify_theorem:n { #1 }
     % define \<env>autorefname and \<env>Autorefname, might be redefined next
     \exp_args:NnV \cs_set:cpn { #1 autorefname } \l__keythms_thm_name_tl
     \exp_args:NnV \cs_set:cpn { #1 Autorefname } \l__keythms_thm_name_tl
@@ -1227,7 +1227,7 @@
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
   }
 
-\cs_new_protected:Npn \keythms_keyify_theorem:n #1
+\cs_new_protected:Npn \__keythms_keyify_theorem:n #1
   { % #1 = theorem name
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
     \DeclareDocumentEnvironment { keythms_grab_#1 } { m m +b }
