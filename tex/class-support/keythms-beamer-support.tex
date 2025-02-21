@@ -96,7 +96,7 @@
   {
     \tl_if_novalue:nF { #2 } { \begin{actionenv}<#2> }
     \begin{tcolorbox}[
-      title={\usebeamerfont*{block title} #1},
+      title={\usebeamerfont*{block~title} #1},
       keythms_tcb_\l_keythms_thmuse_envname_tl
       ]
   }
@@ -109,7 +109,7 @@
     \tl_if_novalue:nF { #2 } { \begin{actionenv}<#2> }
     \begin{tcolorbox}[ keythms_tcb_\l_keythms_thmuse_envname_tl ]
       \group_begin:
-      \usebeamerfont*{block title} #1
+      \usebeamerfont*{block~title} #1
       \thmheadnl
       \hskip\thm@headsep
       \group_end:
