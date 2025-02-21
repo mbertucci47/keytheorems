@@ -27,6 +27,12 @@
     \ProvideDocumentCommand \IfPackageLoadedWithOptionsT { m m +m }
       { \IfPackageLoadedWithOptionsTF{#1}{#2}{#3}{ } }
   }
+\cs_if_exist:NF \@gobble@som
+  { % defined in ltsect.dtx 1.1g
+    \DeclareExpandableDocumentCommand\@gobble@om{+o+m}{}
+    \DeclareExpandableDocumentCommand\@gobble@som{s+o+m}{}
+  }
+
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
 \RequirePackage{refcount}
@@ -1636,11 +1642,6 @@
 \NewDocumentCommand \IfRestatingT { } { \keythms_if_restating:T }
 \NewDocumentCommand \IfRestatingF { } { \keythms_if_restating:F }
 
-\cs_if_exist:NF \@gobble@som
-  { % defined in ltsect.dtx 1.1g
-    \DeclareExpandableDocumentCommand\@gobble@om{+o+m}{}
-    \DeclareExpandableDocumentCommand\@gobble@som{s+o+m}{}
-  }
 \hook_gput_code:nnn { keytheorems/allthms/restated } { . }
   { % code to disable things in restated theorems
     \cs_set_eq:NN \label \@gobble@om % opt arg in case cleveref loaded
