@@ -1200,15 +1200,21 @@
               { keytheorems/recordednote }
           }
       }
-  }
-
-% this doesn't need to be at begindocument because doesn't depend on nameref
-\property_new:nnnn { keytheorems/recordedshortnote } { now } { }
-  { \l__keythms_thmuse_shortnote_tl }
-\cs_new:Npn \__keythms_getrecordedshortnote:n #1
-  {
-    \property_ref:nn { keythms_recordednote_#1 }
-      { keytheorems/recordedshortnote }
+    \IfFormatAtLeastTF { 2024-06-01 }
+      {
+        \property_new:nnnn { keytheorems/recordedshortnote } { now } { }
+          { \l__keythms_thmuse_shortnote_tl }
+        \cs_new:Npn \__keythms_getrecordedshortnote:n #1
+          {
+            \property_ref:nn { keythms_recordednote_#1 }
+              { keytheorems/recordedshortnote }
+          }
+      }
+      { % if format not new enough, just don't support continues* and short-note
+        \cs_new:Npn \__keythms_getrecordedshortnote:n #1 { }
+        % also need to cancel this definition
+        \cs_set:Npn \__keythms_thmuse_recordnote: { }
+      }
   }
 
 \keys_define:nn { keytheorems/thmuse }
