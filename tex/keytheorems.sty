@@ -1880,6 +1880,7 @@
           }
         \group_end:
       }
+    % ignore \KeyThmsSavedTheoremReversed from external file
     \cs_set_protected:Npn \KeyThmsSavedTheoremReversed ##1##2##3##4 { }
     \file_if_exist_input:nF { #2.thlist }
       {

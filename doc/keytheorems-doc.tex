@@ -124,6 +124,12 @@
   mark document/.style={
     before verbatim write app={\@percentchar\space document},
   },
+  comment mark/.style={
+    before verbatim write app={\@percentchar\space #1},
+    before upper={%
+      \setminted{listparameters={\topsep=0pt \partopsep=0pt}}%
+      },
+  },
 }
 \tcbset{
   listing engine=minted,
@@ -146,7 +152,7 @@
 }
 \makeatother
 
-\NewTCBListing{keythmscode}{ O{} }
+\NewTCBListing{keythmscode}{ !O{} }
   {
     colback=ExampleBack,
     arc=0pt,
@@ -334,7 +340,7 @@ Sometimes a package or class defines theorems that need to be overwritten by the
 
 As in \pkg{amsthm}, theorems can take an optional argument that contains a note or heading.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[Bertrand's postulate]
 For every $n\geq 1$, there is a prime number $p$ with $n<p\leq 2n$.
 \end{theorem}
@@ -349,7 +355,7 @@ Alias \docAuxKey[][doc label=thmuse/name]{name}.
 This is the key-value equivalent of the optional argument described above.
 This syntax, however, allows the argument to contain other keys.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[note=Legendre's formula]
 The number $n!$ contains the prime factor $p$ exactly
   \[ \sum_{k\geq 1} \Bigl\lfloor\frac{n}{p^k}\Bigr\rfloor \]
@@ -371,7 +377,7 @@ This replaces the value of \refKey{note} when displayed in the list of theorems 
   {initially unset}
 This is the key-value equivalent of |\begin{theorem}| \cs{label}\marg{label name}.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[label=bezout,note=Bézout's identity]
 Let $a$ and $b$ be integers. Then there exist integers $x$ and $y$ such that $ax+by=\gcd(a,b)$.
 \end{theorem}
@@ -386,7 +392,7 @@ See \zcref{bezout}.
 Use this to override the printed number of a theorem.
 It is useful for making ``starred'' versions of other theorems, perhaps to represent a reformulated or more difficult version.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[manual-num=\ref*{bezout}*]
 Let $a_1,\dots,a_n$ be integers. Then there exist integers $x_1,\dots,x_n$ such that $a_1x_1+\dots+a_nx_n=\gcd(a_1,\dots,a_n)$.
 \end{theorem}
@@ -404,7 +410,7 @@ The theorem number remains the same.
 The printed text can be customized with the \refKey{continues-code} option.
 The starred version also copies the theorem \refKey{note} and \refKey{short-note} if they are nonempty.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[continues=bezout]
 Moreover, the integers of the form $az+bt$ are exactly the multiples of $\gcd(a,b)$.
 \end{theorem}
@@ -424,7 +430,7 @@ With the starred version, counters and labels are taken from the copy called wit
 This allows you, for example, to write all theorems and proofs in the appendix and call \cs{getkeytheorem} at the appropriate time mid-document.
 For the numbering to be correct, the unstarred key will need at most two runs and the starred key at most three runs.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[store=blub]
 A theorem worth restating.
 \end{theorem}
@@ -461,7 +467,7 @@ commutes and is universal with respect to this property.
 Allows passing different keys to the restated theorem.
 At the moment this is only useful with the \refKey{note} key.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{theorem}[
   store=rktest,
   note=Original,
@@ -965,7 +971,7 @@ Retrieves the theorem given the key |store=|\meta{tag} or |store*=|\meta{tag}.
 An optional \meta{property} can be given to retrieve only the corresponding part of the theorem.
 Currently only the property |body| is implemented, which retrieves the (unformatted) body of the theorem.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \getkeytheorem{mytag}
 
 \begin{example}[store=mytag]
@@ -994,7 +1000,7 @@ Fascinating example.
   }
 Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem. This is reversed if \texttt{store*} is used.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \begin{example}[store=hmm]
 I am the \IfRestatingTF{restated}{original} example!
 \end{example}
@@ -1008,7 +1014,33 @@ I am the \IfRestatingTF{restated}{original} example!
 
 \begin{docCommand}{externaltheorems}
   {\oarg{prefix}\marg{file name}}
-\textcolor{red}{To do}
+This is \pkg{keytheorems}' version of the \pkg{xr} package's \cs{externaldocument}.
+It allows the user to restate theorems from another document's |.thlist| file.
+Say you have a file |mycoolpaper.tex|,
+\begin{dispListing*}{comment mark=mycoolpaper.tex}
+\documentclass{article}
+\usepackage{keytheorems}
+\newkeytheorem{theorem}
+\begin{document}
+\begin{theorem}[store=cooltheorem]
+My cool theorem.
+\end{theorem}
+\end{document}
+\end{dispListing*}
+and you'd like to restate the theorem with tag |cooltheorem| in another file |myothercoolpaper.tex| with the same numbering as in the original paper.
+Since your new paper probably also has cool theorems that you may want to tag as |cooltheorem|, you'd like to give all restatable theorems from |mycoolpaper.tex| a prefix when retrieved with \refCom{getkeytheorem}, say ``|orig:|''.
+Just call |\externaltheorems[orig:]{mycoolpaper}| after loading \pkg{keytheorems} in the new document.
+Then any stored theorem from |mycoolpaper.tex| can be retrieved with \cs{getkeytheorem}\ttbraces{orig:\meta{tag}}.
+\begin{dispListing*}{comment mark=myothercoolpaper.tex}
+\documentclass{article}
+\usepackage{keytheorems}
+\externaltheorems[orig:]{mycoolpaper}
+\newkeytheorem{theorem}
+\begin{document}
+\getkeytheorem{orig:cooltheorem}
+\end{document}
+\end{dispListing*}
+It is important that the |theorem| environment is defined in both documents. 
 \end{docCommand}
 
 \section{Listing theorems}
@@ -1026,7 +1058,7 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
 
 \end{docCommand}
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \listofkeytheorems
 \end{keythmscode}
 
@@ -1042,7 +1074,7 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
   {}
   {initially unset}
   
-\begin{keythmscode}[]
+\begin{keythmscode}
 \listofkeytheorems[ignoreall,show=theorem]
 \listofkeytheorems[
   ignoreall, show=conjecture,
@@ -1134,7 +1166,7 @@ Suppresses the printing of theorems given the \refKey{continues} key in the list
 Suppresses the title of the list of theorems.
 Useful for custom ordering of the list.
 
-\begin{keythmscode}[]
+\begin{keythmscode}
 \keytheoremlistset{ignoreall}
 \listofkeytheorems[show=example]
 \listofkeytheorems[show=solution, no-title]
