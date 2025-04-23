@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-02-16}
+\def\@keythms@date{2025-04-22}
 \def\@keythms@version{0.2.6dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
@@ -63,7 +63,12 @@
   }
 \msg_new:nnn { keytheorems } { no-prop-for-stored-theorem }
   {
-    No~property~'#1'~found~for~stored~theorem~'#2'.
+    No~property~'#1'~found~for~stored~theorem~'#2'~\msg_line_context:.
+  }
+\msg_new:nnn { keytheorems } { stored-tag-taken }
+  {
+    The~tag~'#1'~has~already~been~used!~
+    Each~value~of~the~'store'~key~must~be~unique.
   }
 \msg_new:nnn { keytheorems } { store-reversed-not-got }
   {
@@ -82,45 +87,52 @@
   }
 \msg_new:nnn { keytheorems } { undefined-thm-hook }
   {
-    No~theorem~hook~'#1'.~Check~the~spelling.~
+    No~theorem~hook~'#1'~\msg_line_context:. \\
+    Check~the~spelling. \\
     Should~be~one~of~'prehead',~'posthead',~'prefoot',~'postfoot',~or~'restated'.
   }
 \msg_new:nnn { keytheorems } { refname-argcount }
   {
-    '#1'~accepts~either~one~or~two~comma-separated~items.
+    '#1'~accepts~either~one~or~two~comma-separated~items~\msg_line_context:.
   }
 \msg_new:nnn { keytheorems } { hyperref-Autoref }
   {
     You~have~not~loaded~hyperref.~The~\protect\Autoref\space command~needs~
-    hyperref~to~work.
+    hyperref~to~work~\msg_line_context:.
   }
 \msg_new:nnn { keytheorems } { no-Autorefname }
   {
-    No~Autoref~name~for~'#1'.~
+    No~Autoref~name~for~'#1'~\msg_line_context:. \\
     Please~define~\c_backslash_str #1Autorefname.
   }
 \msg_new:nnn { keytheorems } { ctrfmt-unnumbered }
   {
-    Theorem~'#1'~is~not~numbered.~Using~'counter-format'~does~not~make~sense.
+    Theorem~'#1'~is~not~numbered~\msg_line_context:. \\
+    Using~'counter-format'~does~not~make~sense.
   }
 \msg_new:nnn { keytheorems } { thmstyle-undefined }
   {
-    Theorem~style~'#1'~undefined.~
+    Theorem~style~'#1'~undefined~\msg_line_context:. \\
     Use~\protect\newkeytheoremstyle\space instead.
   }
 \msg_new:nnn { keytheorems } { thmstyle-defined }
   {
-    Theorem~style~'#1'~already~defined.~
+    Theorem~style~'#1'~already~defined~\msg_line_context:. \\
     Use~\protect\renewkeytheoremstyle\space instead.
   }
 \msg_new:nnn { keytheorems } { inherit-thmstyle-undefined }
   {
-    Theorem~style~'#1'~undefined.
+    Theorem~style~'#1'~undefined~\msg_line_context:.
   }
 \msg_new:nnn { keytheorems } { thm-undefined }
   {
-    Command~\c_backslash_str #1~undefined.~
+    Command~\c_backslash_str #1~undefined~\msg_line_context:.~
     Use~\protect\newkeytheorem\space instead.
+  }
+\msg_new:nnn { keytheorems } { missing-ext-thlist }
+  {
+    File~'#1.thlist'~not~found~\msg_line_context:. \\
+    Theorems~will~not~be~imported.
   }
 \msg_new:nnn { keytheorems } { title-code-with-AMS }
   {
@@ -1268,7 +1280,7 @@
               { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
             \prop_map_inline:Nn \l__keythms_restate_counters_prop
               {
-                \tl_set:ce { l_keythms_restate_current_####1_tl }
+                \tl_set:ce { l__keythms_restate_current_####1_tl }
                   { \the\value{####1} }
                 \setcounter { ####1 } { ####2 }
                 % ^ FIX: what if eq's numbered by section, theorem, etc.? The
@@ -1311,7 +1323,7 @@
         \prop_map_inline:Nn \l__keythms_restate_counters_prop
           {
             \exp_args:Nnc \setcounter { ####1 }
-              { l_keythms_restate_current_####1_tl }
+              { l__keythms_restate_current_####1_tl }
           }
       }
       { }
@@ -1583,16 +1595,23 @@
         \keys_set:nn { keytheorems/storeatbegin } { #6 }
         \tl_if_empty:NF \l__keythms_storeatbegin_store_tl
           {
-            \cs_new_protected:cpn
-              { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _theorem }
+            \cs_if_exist:cTF { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _theorem }
               {
-                \__keythms_getthm_theorem:nnnnn
-                  {#1}{#2}{#5}{#6}{#7}
+                \msg_error:nnV { keytheorems } { stored-tag-taken }
+                  \l__keythms_storeatbegin_store_tl
               }
-            \cs_new_protected:cpn
-              { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _body }
               {
-                \__keythms_getthm_body:nnn {#1}{#5}{#7}
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _theorem }
+                  {
+                    \__keythms_getthm_theorem:nnnnn
+                      {#1}{#2}{#5}{#6}{#7}
+                  }
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ \l__keythms_storeatbegin_store_tl _body }
+                  {
+                    \__keythms_getthm_body:nnn {#1}{#5}{#7}
+                  }
               }
           }
         \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
@@ -1614,8 +1633,16 @@
     \cs_set_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4
       {
         \bool_new:c { g__keythms_restate_#1_called_bool }
-        \cs_gset:cpn { __keythms_getthm_#1_theorem }
-          { \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 } }
+        \cs_if_exist:cTF { __keythms_getthm_#1_theorem }
+          {
+            \msg_error:nnn { keytheorems } { stored-tag-taken } { #1 }
+          }
+          {
+            \cs_gset:cpn { __keythms_getthm_#1_theorem }
+              {
+                \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 }
+              }
+          }
         \hook_gput_code:nnn { begindocument/end } { . }
           {
             \cs_if_exist:cF { __keythms_getthm_#1_body }
@@ -1660,7 +1687,7 @@
     \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #3 }
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
-        \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
+        \tl_set:ce { l__keythms_restate_current_##1_tl } { \the\value{##1} }
         \setcounter { ##1 } { ##2 }
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
@@ -1694,7 +1721,7 @@
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
         \exp_args:Nnc \setcounter { ##1 }
-          { l_keythms_restate_current_##1_tl }
+          { l__keythms_restate_current_##1_tl }
       }
     \group_end:
   }
@@ -1706,7 +1733,7 @@
     \prop_set_from_keyval:Nn \l__keythms_restate_counters_prop { #2 }
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
-        \tl_set:ce { l_keythms_restate_current_##1_tl } { \the\value{##1} }
+        \tl_set:ce { l__keythms_restate_current_##1_tl } { \the\value{##1} }
         \setcounter { ##1 } { ##2 }
         % ^ FIX: what if eq's numbered by section, theorem, etc.? The
         %        thmtools code is opaque.... Or maybe should be up to the
@@ -1721,7 +1748,7 @@
     \prop_map_inline:Nn \l__keythms_restate_counters_prop
       {
         \exp_args:Nnc \setcounter { ##1 }
-          { l_keythms_restate_current_##1_tl }
+          { l__keythms_restate_current_##1_tl }
       }
     \group_end:
   }
@@ -1798,6 +1825,67 @@
           }
           { \msg_warning:nnn { keytheorems } { no-stored-theorem } { #2 } }
       }
+  }
+
+\NewDocumentCommand { \externaltheorems } { O{} m }
+  {
+    \group_begin:
+    \cs_set_protected:Npn \KeyThmsSavedTheorem ##1##2##3##4##5##6##7
+      {
+        \group_begin:
+        \keys_set:nn { keytheorems/storeatbegin } { ##6 }
+        \tl_if_empty:NF \l__keythms_storeatbegin_store_tl
+          {
+            \cs_if_exist:cTF
+              { __keythms_getthm_ #1 \l__keythms_storeatbegin_store_tl _theorem }
+              {
+                \msg_error:nne { keytheorems } { stored-tag-taken }
+                  { #1 \l__keythms_storeatbegin_store_tl }
+              }
+              {
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ #1 \l__keythms_storeatbegin_store_tl _theorem }
+                  {
+                    \__keythms_getthm_theorem:nnnnn
+                      {##1}{##2}{##5}{##6}{##7}
+                  }
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ #1 \l__keythms_storeatbegin_store_tl _body }
+                  {
+                    \__keythms_getthm_body:nnn {##1}{##5}{##7}
+                  }
+              }
+          }
+        \tl_if_empty:NF \l__keythms_storeatbegin_storereversed_tl
+          { % store* should behave just like store in an external document
+            \cs_if_exist:cTF
+              { __keythms_getthm_ #1 \l__keythms_storeatbegin_storereversed_tl _theorem }
+              {
+                \msg_error:nne { keytheorems } { stored-tag-taken }
+                  { #1 \l__keythms_storeatbegin_storereversed_tl }
+              }
+              {
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ #1 \l__keythms_storeatbegin_storereversed_tl _theorem }
+                  {
+                    \__keythms_getthm_theorem:nnnnn
+                      {##1}{##2}{##5}{##6}{##7}
+                  }
+                \cs_new_protected:cpn
+                  { __keythms_getthm_ #1 \l__keythms_storeatbegin_storereversed_tl _body }
+                  {
+                    \__keythms_getthm_body:nnn {##1}{##5}{##7}
+                  }
+              }
+          }
+        \group_end:
+      }
+    \cs_set_protected:Npn \KeyThmsSavedTheoremReversed ##1##2##3##4 { }
+    \file_if_exist_input:nF { #2.thlist }
+      {
+        \msg_warning:nnn { keytheorems } { missing-ext-thlist } { #2 }
+      }
+    \group_end:
   }
 
 %%%%%%%%%%%%%%%%%%%%%
@@ -2280,7 +2368,7 @@
     restate-counters .code:n              =
       {
         \clist_map_inline:nn { #1 }
-          { \tl_new:c { l_keythms_restate_current_##1_tl } }
+          { \tl_new:c { l__keythms_restate_current_##1_tl } }
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
     restate-counters .initial:n           = equation,

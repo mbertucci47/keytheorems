@@ -156,7 +156,7 @@
               { \tl_use:c { c__keythms_storeatbegin_ \l__keythms_thmuse_storereversed_tl _restatecounters_tl } }
             \prop_map_inline:Nn \l__keythms_restate_counters_prop
               {
-                \tl_set:ce { l_keythms_restate_current_####1_tl }
+                \tl_set:ce { l__keythms_restate_current_####1_tl }
                   { \the\value{####1} }
                 \setcounter { ####1 } { ####2 }
                 % ^ FIX: what if eq's numbered by section, theorem, etc.? The
@@ -201,7 +201,7 @@
         \prop_map_inline:Nn \l__keythms_restate_counters_prop
           {
             \exp_args:Nnc \setcounter { ####1 }
-              { l_keythms_restate_current_####1_tl }
+              { l__keythms_restate_current_####1_tl }
           }
       }
       { }

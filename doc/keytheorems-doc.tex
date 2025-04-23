@@ -1,4 +1,7 @@
-% !TeX program = txs:///lualatex-dev | txs:///makeindex | txs:///lualatex-dev | txs:///view-pdf
+% !TeX TXS-program:compile = txs:///arara
+% arara: lualatex: { synctex:yes }
+% arara: makeindex
+% arara: lualatex: { synctex:yes } if found('log', 'Rerun to get')
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
@@ -1000,6 +1003,13 @@ I am the \IfRestatingTF{restated}{original} example!
 \end{keythmscode}
 
 \end{docCommands}
+
+\subsection{Restating theorems from an external file}
+
+\begin{docCommand}{externaltheorems}
+  {\oarg{prefix}\marg{file name}}
+\textcolor{red}{To do}
+\end{docCommand}
 
 \section{Listing theorems}
 \label{listingthms}
