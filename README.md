@@ -261,6 +261,30 @@ Hello!
 \end{document}
 ```
 
+### [Anyway to restate theorem in external file? #23](https://github.com/muzimuzhi/thmtools/issues/23)
+Use the `\externaltheorems` command.
+```tex
+% mycoolpaper.tex
+\documentclass{article}
+\usepackage{keytheorems}
+\newkeytheorem{theorem}
+\begin{document}
+\begin{theorem}[store=cooltheorem]
+My cool theorem.
+\end{theorem}
+\end{document}
+```
+```tex
+% myothercoolpaper.tex
+\documentclass{article}
+\usepackage{keytheorems}
+\externaltheorems[orig:]{mycoolpaper}
+\newkeytheorem{theorem}
+\begin{document}
+\getkeytheorem{orig:cooltheorem}
+\end{document}
+```
+
 ### [Option clash: numbered=no and thmbox #25](https://github.com/muzimuzhi/thmtools/issues/25)
 Fixed with keytheorem's implementation of the `thmbox` key with `thmtools-compat`.
 ```tex

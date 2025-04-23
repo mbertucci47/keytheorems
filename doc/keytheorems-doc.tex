@@ -124,12 +124,6 @@
   mark document/.style={
     before verbatim write app={\@percentchar\space document},
   },
-  comment mark/.style={
-    before verbatim write app={\@percentchar\space #1},
-    before upper={%
-      \setminted{listparameters={\topsep=0pt \partopsep=0pt}}%
-      },
-  },
 }
 \tcbset{
   listing engine=minted,
@@ -1017,7 +1011,8 @@ I am the \IfRestatingTF{restated}{original} example!
 This is \pkg{keytheorems}' version of the \pkg{xr} package's \cs{externaldocument}.
 It allows the user to restate theorems from another document's |.thlist| file.
 Say you have a file |mycoolpaper.tex|,
-\begin{dispListing*}{comment mark=mycoolpaper.tex}
+\begin{dispListing}
+% mycoolpaper.tex
 \documentclass{article}
 \usepackage{keytheorems}
 \newkeytheorem{theorem}
@@ -1026,12 +1021,13 @@ Say you have a file |mycoolpaper.tex|,
 My cool theorem.
 \end{theorem}
 \end{document}
-\end{dispListing*}
+\end{dispListing}
 and you'd like to restate the theorem with tag |cooltheorem| in another file |myothercoolpaper.tex| with the same numbering as in the original paper.
 Since your new paper probably also has cool theorems that you may want to tag as |cooltheorem|, you'd like to give all restatable theorems from |mycoolpaper.tex| a prefix when retrieved with \refCom{getkeytheorem}, say ``|orig:|''.
 Just call |\externaltheorems[orig:]{mycoolpaper}| after loading \pkg{keytheorems} in the new document.
 Then any stored theorem from |mycoolpaper.tex| can be retrieved with \cs{getkeytheorem}\ttbraces{orig:\meta{tag}}.
-\begin{dispListing*}{comment mark=myothercoolpaper.tex}
+\begin{dispListing}
+% myothercoolpaper.tex
 \documentclass{article}
 \usepackage{keytheorems}
 \externaltheorems[orig:]{mycoolpaper}
@@ -1039,7 +1035,7 @@ Then any stored theorem from |mycoolpaper.tex| can be retrieved with \cs{getkeyt
 \begin{document}
 \getkeytheorem{orig:cooltheorem}
 \end{document}
-\end{dispListing*}
+\end{dispListing}
 It is important that the |theorem| environment is defined in both documents. 
 \end{docCommand}
 
