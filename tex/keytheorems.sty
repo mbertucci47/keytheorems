@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-04-22}
-\def\@keythms@version{0.2.6}
+\def\@keythms@date{2025-05-07}
+\def\@keythms@version{0.2.7dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -888,7 +888,7 @@
           { \msg_warning:nnn { keytheorems } { ctrfmt-unnumbered } { #1 } }
       }
     % Set up list-of definition
-    \cs_set_eq:cN { l@ #1 } \keythms_listof_tocline:
+    \cs_gset:cpn { l@ #1 } { \keythms_listof_tocline: }
     % Set default list-of display command
     \__keythms_listof_show_aux:n { #1 }
     % Set theorem style back to original state if needed
