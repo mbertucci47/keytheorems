@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-05-07}
+\def\@keythms@date{2025-05-11}
 \def\@keythms@version{0.2.7dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
@@ -190,6 +190,7 @@
 \tl_new:N \l__keythms_thmstyle_lnotebrace_tl
 \tl_new:N \l__keythms_thmstyle_rnotebrace_tl
 \tl_new:N \l_keythms_thmuse_envname_tl
+\tl_new:N \l__keythms_thmuse_defaultkeys_tl
 \tl_new:N \g__keythms_thmuse_temprestatedata_tl
 \tl_new:N \g__keythms_thmuse_temprestatedatareversed_tl
 
@@ -1251,6 +1252,19 @@
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
   }
 
+\keys_precompile:nnN { keytheorems/thmuse }
+  { % this is needed in case of nested theorems
+    continues={},
+    label={},
+    listhack=false,
+    note={},
+    manual-num={},
+    short-note={},
+    store={},
+    store*={},
+  }
+  \l__keythms_thmuse_defaultkeys_tl
+
 \cs_new_protected:Npn \__keythms_keyify_theorem:n #1
   { % #1 = theorem name
     \DeclareEnvironmentCopy { keythms_orig_#1 } { #1 }
@@ -1339,12 +1353,17 @@
     \RenewDocumentEnvironment { #1 } { ={note} o }
       {
         \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
+        \tl_use:N \l__keythms_thmuse_defaultkeys_tl
         \tl_if_novalue:nF { ##1 }
-          { \keys_set:nn { keytheorems/thmuse } { ##1 } }
+          {
+            \keys_set:nn { keytheorems/thmuse } { ##1 }
+          }
         \tl_if_empty:NTF \l__keythms_thmuse_store_tl
           {
             \tl_if_empty:NTF \l__keythms_thmuse_storereversed_tl
-              { \__keythms_thm_prehead_code:n { #1 } }
+              {
+                \__keythms_thm_prehead_code:n { #1 }
+              }
               {
                 \bool_gset_true:N \g__keythms_listof_writefile_bool
                 \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
@@ -1510,7 +1529,7 @@
       {
         \token_to_str:N \@writefile { thlist }
           {
-            \token_to_str:N \KeyThmsSavedTheorem{ #1 }
+            \token_to_str:N \KeyThmsSavedTheorem { #1 }
               { \@currentlabel }
               { \@currentHref }
               { \thepage }
@@ -1713,6 +1732,7 @@
         % not sure about theH. <- this is needed to prevent duplicate anchors
       }
     \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
+    \tl_use:N \l__keythms_thmuse_defaultkeys_tl
     \keys_set:nn { keytheorems/thmuse } { #4 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \__keythms_thm_prehead_code:n { #1 }
@@ -1764,6 +1784,7 @@
     \group_begin:
     \bool_set_false:N \l__keythms_thmuse_restating_bool
     \tl_set:Nn \l_keythms_thmuse_envname_tl { #1 }
+    \tl_use:N \l__keythms_thmuse_defaultkeys_tl
     \keys_set:nn { keytheorems/thmuse } { #2 }
     \keys_set:no { keytheorems/thmuse } { \l__keythms_thmuse_restatekeys_clist }
     \__keythms_thm_prehead_code:n { #1 }
@@ -2445,31 +2466,15 @@
       {
         \newkeytheorem { ##2 } [ ##1 ]
       }
-    \ProvideDocumentEnvironment { restatable } { o m m }
-      { % need to redefine this to add store to thlist since we set it outside env
-        \cs_set_protected:Npn \__keythms_thm_addcontentsdata:nnnn ####1####2####3####4
-          { % ####1 = theorem name, ####2 = stored counters, ####3 = keys, ####4 = body
-            \keythms_listof_chaptervspacehack:
-            \iow_shipout:Ne \@auxout
-              {
-                \token_to_str:N \@writefile { thlist }
-                  {
-                    \token_to_str:N \KeyThmsSavedTheorem{ ####1 }
-                      { \@currentlabel }
-                      { \@currentHref }
-                      { \thepage }
-                      { ####2 }
-                      { % this argument is changed
-                        store=\l__keythms_thmuse_store_tl
-                        \tl_if_novalue:nF { ####3 } { ,\exp_not:n { ####3 } }
-                      }
-                      { \exp_not:n { ####4 } }
-                  }
-              }
+    \ProvideDocumentEnvironment { restatable } { ={note} o m m }
+      {
+        \tl_if_novalue:nTF { ##1 }
+          {
+            \begin{##2}[store=##3]
           }
-        % set store outside [] so keyless note is recognized
-        \keys_set:nn { keytheorems/thmuse } { store=##3 }
-        \begin{##2}[##1]
+          {
+            \begin{##2}[##1,store=##3]
+          }
       }
       {
         \end{##2}
@@ -2480,36 +2485,15 @@
               { \getkeytheorem{ ##3 } }
           }
       }
-    \ProvideDocumentEnvironment { restatable* } { o m m }
-      { % need to redefine this to add store* to thlist since we set it outside env
-        \cs_set_protected:Npn \__keythms_thm_addstoredreverseddata:nnn ####1####2####3
-          { % ####1 = theorem name, ####2 = keys, ####3 = body
-            \iow_shipout:Ne \@auxout
-              {
-                \token_to_str:N \@writefile { thlist }
-                  {
-                    \token_to_str:N \KeyThmsSavedTheoremReversed { \l__keythms_thmuse_storereversed_tl }
-                      { ####1 }
-                      { % this argument is changed
-                        store*=\l__keythms_thmuse_storereversed_tl
-                        \tl_if_novalue:nF { ####2 } { ,\exp_not:n { ####2 } }
-                      }
-                      { \exp_not:n { ####3 } }
-                  }
-              }
-          } % and this because otherwise adds an extra run; not needed for unstarred
-        \cs_set_protected:Npn \__keythms_thm_tempstorerestatedatareversed:nnn ####1####2####3
+    \ProvideDocumentEnvironment { restatable* } { ={note} o m m }
+      {
+        \tl_if_novalue:nTF { ##1 }
           {
-            \tl_gset:Ne \g__keythms_thmuse_temprestatedatareversed_tl % needs to be global to get out of env
-              {
-                { ####1 }
-                {  store*=\l__keythms_thmuse_storereversed_tl,\exp_not:n { ####2 } }
-                { \exp_not:n { ####3 } }
-              }
+            \begin{##2}[store*=##3]
           }
-        % set store* outside [] so keyless note is recognized
-        \keys_set:nn { keytheorems/thmuse } { store*=##3 }
-        \begin{##2}[##1]
+          {
+            \begin{##2}[##1,store*=##3]
+          }
       }
       {
         \end{##2}

@@ -1,5 +1,8 @@
 # Changelog for keytheorems package
 
+## [v0.2.7dev]
+- fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)
+
 ## [v0.2.6]
 - add `\externaltheorems` command to restate theorems from an external file
 
