@@ -2,6 +2,8 @@
 
 ## [v0.2.7dev]
 - fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)
+- fix [\#21](https://github.com/mbertucci47/keytheorems/issues/21)
+- define `\<env>autorefname` using `\MakeLowercase` and `\<env>Autorefname` using `\MakeUppercase`
 
 ## [v0.2.6]
 - add `\externaltheorems` command to restate theorems from an external file
@@ -75,7 +77,8 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.2.6]: https://github.com/mbertucci47/keytheorems/compare/v0.2.5...HEAD
+[v0.2.7dev]: https://github.com/mbertucci47/keytheorems/compare/v0.2.6...HEAD
+[v0.2.6]: https://github.com/mbertucci47/keytheorems/compare/v0.2.5...v0.2.6
 [v0.2.5]: https://github.com/mbertucci47/keytheorems/compare/v0.2.4...v0.2.5
 [v0.2.4]: https://github.com/mbertucci47/keytheorems/compare/v0.2.3...v0.2.4
 [v0.2.3]: https://github.com/mbertucci47/keytheorems/compare/v0.2.2...v0.2.3

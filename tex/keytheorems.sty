@@ -528,7 +528,7 @@
   {
     \cs_set:cpn { #1 autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      { 
+      {
         \crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
@@ -540,7 +540,7 @@
   {
     \cs_set:cpn { #1 autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      { 
+      {
         \crefname{#1}{#2}{#3}
       }
     \IfPackageLoadedT { zref-clever }
@@ -574,7 +574,7 @@
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      { 
+      {
         \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
@@ -586,7 +586,7 @@
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      { 
+      {
         \Crefname{#1}{#2}{#3}
       }
     \IfPackageLoadedT { zref-clever }
@@ -596,6 +596,24 @@
   }
 \cs_generate_variant:Nn \__keythms_thm_setRefnames_auxI:nn { ne }
 \cs_generate_variant:Nn \__keythms_thm_setRefnames_auxII:nnn { nee }
+
+% this step is separate from above because we don't want to clobber cleveref's
+% plural/capitalization defaults by unnecessarily calling \crefname
+\cs_new_protected:Npn \__keythms_thm_setrefnamedefaults:nn #1#2
+  { % \autoref and \Autoref
+    \cs_set:cpn { #1 autorefname } { \MakeLowercase #2 }
+    \cs_set:cpn { #1 Autorefname } { \MakeUppercase #2 }
+    % zref-clever
+    \IfPackageLoadedT { zref-clever }
+      {
+        \zcRefTypeSetup { #1 }
+          {
+            name-sg = \MakeLowercase #2,
+            Name-sg = \MakeUppercase #2,
+          }
+      }
+  }
+\cs_generate_variant:Nn \__keythms_thm_setrefnamedefaults:nn { nV }
 
 \keys_define:nn { keytheorems/thm }
   {
@@ -847,9 +865,8 @@
       }
     % Store theorem def and redefine it with keys
     \__keythms_keyify_theorem:n { #1 }
-    % define \<env>autorefname and \<env>Autorefname, might be redefined next
-    \exp_args:NnV \cs_set:cpn { #1 autorefname } \l__keythms_thm_name_tl
-    \exp_args:NnV \cs_set:cpn { #1 Autorefname } \l__keythms_thm_name_tl
+    % Set ref name defaults; may be overwritten in next step
+    \__keythms_thm_setrefnamedefaults:nV { #1 } \l__keythms_thm_name_tl
     % Set ref names
     \quark_if_no_value:NF \l__keythms_thm_refname_tl
       { \__keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
