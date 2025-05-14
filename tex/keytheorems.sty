@@ -310,6 +310,8 @@
     counter-format        .value_required:n = true,
     leftmargin            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     leftmargin            .value_required:n = true,
+    margin                .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
+    margin                .value_required:n = true,
     numbered              .code:n = \__keythms_thmstyle_savethmkey_optval:n { #1 },
     numberlike            .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     numberlike            .value_required:n = true,
@@ -623,6 +625,8 @@
     heading        .value_required:n = true,
     leftmargin     .dim_set:N = \l__keythms_thm_leftmargin_dim,
     leftmargin     .value_required:n = true,
+    margin         .meta:n    = { leftmargin=#1, rightmargin=#1 },
+    margin         .value_required:n = true,
     name           .tl_set:N  = \l__keythms_thm_name_tl,
     name           .value_required:n = true,
     numbered       .choice:,
@@ -687,7 +691,7 @@
 \keys_precompile:nnN { keytheorems/thm }
   {
     counter-format = \q_no_value,
-    leftmargin     = 0pt,
+    margin         = 0pt,
     name           = \q_no_value,
     numbered       = true,
     parent         = {},
@@ -698,7 +702,6 @@
     qed            = \q_no_value,
     refname        = \q_no_value,
     Refname        = \q_no_value,
-    rightmargin    = 0pt,
     sibling        = {},
     style          = {},
   }

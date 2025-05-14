@@ -4,6 +4,7 @@
 - fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)
 - fix [\#21](https://github.com/mbertucci47/keytheorems/issues/21)
 - define `\<env>autorefname` using `\MakeLowercase` and `\<env>Autorefname` using `\MakeUppercase`
+- add `margin` key as shortcut for setting both `leftmargin` and `rightmargin`
 
 ## [v0.2.6]
 - add `\externaltheorems` command to restate theorems from an external file

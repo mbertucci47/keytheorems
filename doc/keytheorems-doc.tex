@@ -81,7 +81,7 @@
   sibling=corollary,
   ]
 \newkeytheorem{observation}[style=breaksty]
-\newkeytheorem{quotethm}[name=Quote Theorem,leftmargin=1cm,rightmargin=1cm]
+\newkeytheorem{quotethm}[name=Quote Theorem,margin=1cm]
 \newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
 \newkeytheorem{mainthm}[
   name=Theorem,
@@ -728,8 +728,10 @@ Then the above example could be written as |counter-format=\Alph*|.
   {
     { doc name=leftmargin },
     { doc name=rightmargin },
+    { doc name=margin },
   }
 Sets the left (respectively, right) margin of the theorem relative to the text width.
+The |margin| key sets both simultaneously.
 This sets the theorem apart from the text, similar to a block quote. The code was adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
 \begin{itemize}
 	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
@@ -738,9 +740,7 @@ This sets the theorem apart from the text, similar to a block quote. The code wa
 \begin{codepreamble}
 \newcommand{\marginthmtext}{%
   We need some text to show off theorems with margins. }
-\newkeytheorem{quotethm}[
-  name=Quote Theorem,
-  leftmargin=1cm, rightmargin=1cm]
+\newkeytheorem{quotethm}[name=Quote Theorem, margin=1cm]
 \newkeytheorem{indentedthm}[name=Indented Theorem, leftmargin=1cm]
 \end{codepreamble}
 
@@ -1026,7 +1026,7 @@ My cool theorem.
 \end{dispListing}
 and you'd like to restate the theorem with tag |cooltheorem| in another file |myothercoolpaper.tex| with the same numbering as in the original paper.
 Since your new paper probably also has cool theorems that you may want to tag as |cooltheorem|, you'd like to give all restatable theorems from |mycoolpaper.tex| a prefix when retrieved with \refCom{getkeytheorem}, say ``|orig:|''.
-Just call |\externaltheorems[orig:]{mycoolpaper}| after loading \pkg{keytheorems} in the new document.
+\sloppy Just call \cs{externaltheorems}|[orig:]{mycoolpaper}| after loading \pkg{keytheorems} in the new document.
 Then any stored theorem from |mycoolpaper.tex| can be retrieved with \cs{getkeytheorem}\ttbraces{orig:\meta{tag}}.
 \begin{dispListing}
 % myothercoolpaper.tex
@@ -1337,11 +1337,9 @@ An example invocation might look like
     lang=en-US,
     pdfversion=2.0,
     pdfstandard=ua-2,
-    testphase={phase-III,math,table,title,firstaid}
+    testphase=latest,
   }
 \end{dispListing}
-With the current |dev| formats, the last key-value can be replaced with |testphase=latest|.
-At a minimum, the |testphase| modules |phase-III| and |firstaid| are required.
 
 \subsection{Public coding interfaces}
 
