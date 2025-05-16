@@ -728,7 +728,7 @@ Then the above example could be written as |counter-format=\Alph*|.
   {
     { doc name=leftmargin },
     { doc name=rightmargin },
-    { doc name=margin },
+    { doc name=margin, doc description=initially |0pt| },
   }
 Sets the left (respectively, right) margin of the theorem relative to the text width.
 The |margin| key sets both simultaneously.
@@ -1174,7 +1174,7 @@ Useful for custom ordering of the list.
 
 \begin{docKey}{no-toc}
   {\colOpt{=true\textbar false}}
-  {initially false}
+  {initially |false|}
 With the standard classes, lists of figures/tables are not added to the table of contents by default. The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing. However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents. With these classes, this key suppresses the addition of the list of theorems to the table of contents.
 \end{docKey}
 
