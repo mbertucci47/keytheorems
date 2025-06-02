@@ -655,7 +655,7 @@
     preheadhook    .tl_set:N  = \l__keythms_thm_preheadhook_tl,
     preheadhook    .value_required:n = true,
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
-    qed            .default:o = \c_novalue_tl,
+    qed            .default:n = { \qedsymbol },
     % ^ distinguish between 'qed' and 'qed={}'
     refname        .tl_set:N  = \l__keythms_thm_refname_tl,
     refname        .value_required:n = true,
@@ -886,7 +886,7 @@
     % Set up qed if needed
     \quark_if_no_value:NF \l__keythms_thm_qed_tl
       {
-        \exp_args:Nno \__keythms_thm_qedcode:nn { #1 } { \l__keythms_thm_qed_tl }
+        \exp_args:NnV \__keythms_thm_qedcode:nn { #1 } \l__keythms_thm_qed_tl
       }
     % Set up tcolorbox if needed
     \int_compare:nNnTF { \l__keythms_thm_tcbstate_int } = { 1 }
@@ -1071,13 +1071,13 @@
   { % #1 = name, #2 = symbol
     \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \tl_if_novalue:nF { #2 } { \protected@edef \qedsymbol { #2 } }
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
         \pushQED{\qed}
       }
     \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
     \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
       {
-        \tl_if_novalue:nF { #2 } { \protected@edef \qedsymbol { #2 } }
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
         \popQED
       }
   }

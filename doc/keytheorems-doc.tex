@@ -1,4 +1,4 @@
-% !TeX TXS-program:compile = txs:///arara
+% !TeX TXS-program:compile = txs:///arara/[-v]
 % arara: lualatex: { synctex:yes }
 % arara: makeindex
 % arara: lualatex: { synctex:yes } if found('log', 'Rerun to get')
@@ -633,7 +633,8 @@ Some text
   {\colOpt{=\meta{symbol}}}
   {default \cs{qedsymbol}, initially unset}
 Adds \colOpt{\meta{symbol}} to the end of the theorem body.
-If no value is given, the symbol \qedsymbol{} is used.
+If no value is given, current value of |\qedsymbol| is used (one can redefine this or set it with \refKey{qed-symbol}).
+By default, this is \qedsymbol.
 
 \begin{codepreamble}
 \newkeytheorem{example}[qed]
