@@ -2,7 +2,7 @@
 
 A LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface.
-Provides most of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools) (and a lot more!) but written in expl3.
+Provides all of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools) (and a lot more!) but written in expl3.
 If you find a bug please open an issue or pull request.
 
 The package is maintained by Matthew Bertucci.
@@ -108,7 +108,7 @@ Some of the code is a direct translation from thmtools but a few things are chan
 - With thmtools, the command `\newtheorem{<envname>}{<heading>}` is changed to behave like
   `\declaretheorem[name=<heading>]{<envname>}`. This is not the default here. Instead either
   only use the new interface or load the package with option `overload`.
-- Adds several new keys (see doc for details).
+- Adds many new keys and commands &mdash; see the documentation for details.
 
 ## thmtools issues resolved by keytheorems
 Issues from the thmtools [github page](https://github.com/muzimuzhi/thmtools),
