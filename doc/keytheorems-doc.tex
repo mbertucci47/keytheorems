@@ -2,6 +2,7 @@
 % arara: lualatex: { synctex:yes }
 % arara: makeindex
 % arara: lualatex: { synctex:yes } if found('log', 'Rerun to get')
+\DocumentMetadata{lang=en-US}
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
@@ -36,6 +37,11 @@
     {\texttt{github.com/mbertucci47/keytheorems}}
   }
 \author{Matthew Bertucci}
+
+\hypersetup{
+  pdftitle={keytheorems package},
+  pdfauthor={Matthew Bertucci},
+  }
 
 \newkeytheoremstyle{breaksty}{break}
 \newkeytheorem{theorem}
@@ -1248,7 +1254,7 @@ As in \pkg{thmtools}, the order of hooks is as follows:
     width=1.85cm,
     tcbox raise=-0.4cm,
     size=fbox,
-    after=\;$\rightarrow$
+    after=\;\textrightarrow,
     }
   \tcbox{\meta{env name}\\ \hook{prehead}}
   \tcbox{generic\\ \hook{prehead}}
@@ -1338,7 +1344,8 @@ An example invocation might look like
     lang=en-US,
     pdfversion=2.0,
     pdfstandard=ua-2,
-    testphase=latest,
+    tagging=on,
+    % tagging-setup={math/setup=mathml-SE}, % optional
   }
 \end{dispListing}
 
