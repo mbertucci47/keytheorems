@@ -239,18 +239,18 @@ The right column lists the corresponding \pkg{keytheorems} replacement that shou
 \begin{tabular}{rcl}
 \multicolumn{1}{c}{\pkg{thmtools} command} & & \multicolumn{1}{c}{\pkg{keytheorems} replacement} \\
 \toprule
-\docAuxCommand*{declaretheorem} & $\rightarrow$ & \refCom{newkeytheorem} \\
-\docAuxCommand*{declaretheoremstyle} & $\rightarrow$ & \refCom{newkeytheoremstyle} \\
-\docAuxCommand*{listoftheorems} & $\rightarrow$ & \refCom{listofkeytheorems} \\
-\docAuxCommand*{listtheoremname} & $\rightarrow$ & \refKey{title} key \\
+\docAuxCommand*{declaretheorem} & \textrightarrow & \refCom{newkeytheorem} \\
+\docAuxCommand*{declaretheoremstyle} & \textrightarrow & \refCom{newkeytheoremstyle} \\
+\docAuxCommand*{listoftheorems} & \textrightarrow & \refCom{listofkeytheorems} \\
+\docAuxCommand*{listtheoremname} & \textrightarrow & \refKey{title} key \\
 \begin{tabular}{r@{}}
 \docAuxCommand*{addtotheorempreheadhook}\\
 \docAuxCommand*{addtotheorempostheadhook}\\
 \docAuxCommand*{addtotheoremprefoothook}\\
 \docAuxCommand*{addtotheorempostfoothook}\\
-\end{tabular} & $\rightarrow$ & \refCom{addtotheoremhook} \\
-\docAuxEnvironment*{restatable} environment & $\rightarrow$ & \refKey{store} key \\
-\docAuxEnvironment*{restatable*} environment & $\rightarrow$ & \refKey[store*]{store} key
+\end{tabular} & \textrightarrow & \refCom{addtotheoremhook} \\
+\docAuxEnvironment*{restatable} environment & \textrightarrow & \refKey{store} key \\
+\docAuxEnvironment*{restatable*} environment & \textrightarrow & \refKey[store*]{store} key
 \end{tabular}
 \end{center}
 Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
@@ -852,18 +852,24 @@ Every finitely generated projective module over a polynomial ring is free.
   {\marg{name}\marg{options}}
 This is \pkg{keytheorems}' version of \pkg{thmtools}' \cs{declaretheoremstyle}.
 Since it makes little sense to define a style with no keys, we've made the \meta{options} argument mandatory.
-Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if a style has already been defined.
-To overwrite an existing style, there is the analogous \docAuxCommand{renewkeytheoremstyle}.
-For completeness, there are also \docAuxCommand{providekeytheoremstyle} and \docAuxCommand{declarekeytheoremstyle}.
-
 The defined style can be used with either the \refKey{style} key or the traditional \cs{theoremstyle}.
+Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if a style has already been defined.
 \end{docCommand}
 
-\begin{notebox}
-For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart} and \cls{aomart}, the initial key values are slightly different than what's below in order to match those class's defaults. See \autoref{class-support} for details.
-\end{notebox}
+\begin{docCommands}[
+  doc parameter=\marg{env name}\marg{options}
+  ]
+  {
+    {doc name = renewkeytheoremstyle},
+    {doc name = providekeytheoremstyle},
+    {doc name = declarekeytheoremstyle},
+  }
+To overwrite an existing style, there is the analogous \cs{renewkeytheoremstyle}.
+For completeness, also provided are \cs{providekeytheoremstyle} and \cs{declarekeytheoremstyle}.
+\end{docCommands}
 
 \subsection{Keys also defined in \pkg{thmtools}}
+\label{stylekeys:thmtools}
 
 The following keys have the same meaning and syntax as the corresponding \pkg{thmtools} keys.
 In addition to the list below, most of the keys available to \refCom{newkeytheorem} can be used in \cs{newkeytheoremstyle}.
@@ -943,6 +949,7 @@ With \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar}, the \refKey{spaceabo
 \end{notebox}
 
 \subsection{Keys added by \pkg{keytheorems}}
+\label{stylekeys:new}
 
 \begin{docKey}{inherit-style}
   {=\meta{style name}}
@@ -962,6 +969,10 @@ The code inserted before the note, and printed only if there is a note. This is 
   {initially \cs{upshape}}
 For almost all theorem styles, it is recommended that you \emph{do not} change this setting.
 \end{docKey}
+
+\begin{notebox}
+For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart} and \cls{aomart}, the initial key values are slightly different those listed in \zcref{stylekeys:new,stylekeys:thmtools} in order to match those class's defaults. See \autoref{class-support} for details.
+\end{notebox}
 
 \section{Restating theorems}
 
@@ -1262,7 +1273,7 @@ As in \pkg{thmtools}, the order of hooks is as follows:
   \tcbox{\meta{env name}\\ \hook{posthead}}
   \tcbox[after={}]{generic\\ \hook{posthead}}
   \\[2ex]
-  \tcbset{before=$\rightarrow$\;}
+  \tcbset{before=\textrightarrow\;}
   \tcbox[width=2.25cm,tcbox raise=-0.2cm]{\meta{theorem body}}
   \\[2ex]
   \tcbset{after={}}
