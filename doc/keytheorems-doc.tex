@@ -200,7 +200,10 @@ An \pkg{expl3}-implementation of a key-value interface to \pkg{amsthm}, implemen
 Several issues encountered with \pkg{thmtools} are avoided (see the README for a list) and a few new features are added.
 \end{abstract}
 
+\begingroup
+\hypersetup{linkcolor=black}
 \tableofcontents
+\endgroup
 
 \section{Dependencies}
 
@@ -271,6 +274,12 @@ These texts can be manually customized with the \refKey{title} and \refKey{conti
 The code used to typeset the note produced by the \refKey{continues} key.
 If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}.
 Currently (likely inaccurate!) translations exist for several European languages.
+\end{docKey}
+
+\begin{docKey}{predefined}
+  {\colOpt{=\marg{options}}}
+  { initially unset }
+TODO: Finish documentation.
 \end{docKey}
 
 \begin{docKey}{qed-symbol}

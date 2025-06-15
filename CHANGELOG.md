@@ -1,5 +1,8 @@
 # Changelog for keytheorems package
 
+## [v0.3.0dev]
+- add `predefined` option (still needs documentation)
+
 ## [v0.2.7]
 - fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)
 - fix [\#21](https://github.com/mbertucci47/keytheorems/issues/21)
@@ -78,7 +81,8 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.2.7]: https://github.com/mbertucci47/keytheorems/compare/v0.2.6...HEAD
+[v0.3.0dev]: https://github.com/mbertucci47/keytheorems/compare/v0.2.7...HEAD
+[v0.2.7]: https://github.com/mbertucci47/keytheorems/compare/v0.2.6...v0.2.7
 [v0.2.6]: https://github.com/mbertucci47/keytheorems/compare/v0.2.5...v0.2.6
 [v0.2.5]: https://github.com/mbertucci47/keytheorems/compare/v0.2.4...v0.2.5
 [v0.2.4]: https://github.com/mbertucci47/keytheorems/compare/v0.2.3...v0.2.4

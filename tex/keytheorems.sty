@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-05-18}
-\def\@keythms@version{0.2.7}
+\def\@keythms@date{2025-06-14}
+\def\@keythms@version{0.3.0dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -138,6 +138,11 @@
   {
     The~'title-code'~key~has~no~effect~with~an~AMS~class.
   }
+\msg_new:nnn { keytheorems } { no-predefined-translations }
+  {
+    Language~'#1'~does~not~have~predefined~translations.~
+    Defaulting~to~English.
+  }
 
 % Error if thmtools loaded since compilation hangs.
 % If thmtools loaded after, produce warning.
@@ -164,10 +169,9 @@
 \tl_new:N \l__keythms_tmpb_tl
 
 \bool_new:N \g__keythms_listof_writefile_bool
-\bool_gset_false:N \g__keythms_listof_writefile_bool
 \bool_new:N \g__keythms_thmtoolscompat_bool
-\bool_gset_false:N \g__keythms_thmtoolscompat_bool
 \bool_new:N \l__keythms_listofheading_storereversed_bool
+\bool_new:N \g__keythms_predefined_bool
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
 \bool_new:N \l__keythms_thmuse_listhack_bool
@@ -917,8 +921,8 @@
       { \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl }
   }
 
-\hook_gput_code:nnn { begindocument } { . }
-  {
+\hook_gput_code:nnn { begindocument/end } { . }
+  { % /end for 'predefined'
     \prop_map_inline:Nn \g__keythms_thmnames_prop
       {
         \__keythms_thm_makethmhooks:n { #1 }
@@ -1968,13 +1972,13 @@
     format-code         .value_required:n = true,
     ignore              .code:n     =
       {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_ignore:n { #1 } }
       },
     ignore              .value_required:n = true,
     ignoreall           .code:n     =
       { % in case called before theorem defined
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_ignore_aux:n { ##1 } }
@@ -2000,13 +2004,13 @@
     numwidth            .value_required:n = true,
     onlynamed           .code:n     =
       {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_onlynamed:n { #1 } }
       },
     onlynamed           .default:n  = \q_no_value,
     onlynumbered        .code:n     =
       {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_onlynumbered:n { #1 } }
       },
     onlynumbered        .default:n  = \q_no_value,
@@ -2021,18 +2025,18 @@
     print-body          .value_forbidden:n = true,
     seq                 .code:n     = 
       {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_showseq:n { #1 } }
       },
     show                .code:n     =
       {
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_show:n { #1 } }
       },
     show                .value_required:n = true,
     showall             .code:n     =
       { % in case called before theorem defined
-        \hook_gput_code:nnn { begindocument/before } { keytheorems }
+        \hook_gput_code:nnn { begindocument } { keytheorems }
           {
             \prop_map_inline:Nn \g__keythms_thmnames_prop
               { \__keythms_listof_show_aux:n { ##1 } }
@@ -2048,8 +2052,8 @@
     title-code          .value_required:n = true,
   }
 
-\hook_gput_code:nnn { begindocument } { . }
-  { % redefine these keys at begindocument
+\hook_gput_code:nnn { begindocument/end } { . }
+  { % redefine these keys at begindocument/end for reasons above
     \keys_define:nn { keytheorems/listof }
       {
         ignore       .code:n       = \keythms_listof_ignore:n { #1 },
@@ -2369,7 +2373,7 @@
 %%% \Autoref %%%
 %%%%%%%%%%%%%%%%
 
-\ProvideDocumentCommand { \Autoref } { s m }
+\DeclareDocumentCommand { \Autoref } { s m }
   {
     \IfPackageLoadedTF { hyperref }
       {
@@ -2400,31 +2404,39 @@
 
 \keys_define:nn { keytheorems }
   {
-    auto-translate   .bool_gset:N         = \g__keythms_autotranslate_bool,
-    auto-translate   .initial:n           = true,
-    continues-code   .cs_set:Np           = \__keythms_thmuse_continues:n #1,
-    continues-code   .initial:n           =
+    auto-translate    .bool_gset:N         = \g__keythms_autotranslate_bool,
+    auto-translate    .initial:n           = true,
+    auto-translate    .usage:n             = preamble,
+    continues-code    .cs_set:Np           = \__keythms_thmuse_continues:n #1,
+    continues-code    .initial:n           =
       { % not sure how best to handle this translation
         \GetTranslation{keythms_continues}\pageref{#1}
       },
-    continues-code   .value_required:n    = true,
-    overload         .code:n              = \__keythms_overload_code:,
-    overload         .value_forbidden:n   = true,
-    overload         .usage:n             = preamble,
-    qed-symbol       .cs_set_protected:Np = \qedsymbol,
-    qed-symbol       .value_required:n    = true,
-    restate-counters .code:n              =
+    continues-code    .value_required:n    = true,
+    overload          .code:n              = \__keythms_overload_code:,
+    overload          .value_forbidden:n   = true,
+    overload          .usage:n             = preamble,
+    predefined        .code:n              =
+      {
+        \bool_gset_true:N \g__keythms_predefined_bool
+        \keys_set:nn { keytheorems/predefined } { #1 }
+      },
+    predefined        .default:n           = { },
+    predefined        .usage:n             = preamble,
+    qed-symbol        .cs_set_protected:Np = \qedsymbol,
+    qed-symbol        .value_required:n    = true,
+    restate-counters  .code:n              =
       {
         \clist_map_inline:nn { #1 }
           { \tl_new:c { l__keythms_restate_current_##1_tl } }
         \clist_gput_right:Nn \g__keythms_restatecounters_clist { #1 }
       },
-    restate-counters .initial:n           = equation,
-    restate-counters .value_required:n    = true,
-    store-all        .code:n              = \__keythms_storeall_code:,
-    store-all        .value_forbidden:n   = true,
-    store-all        .usage:n             = preamble,
-    store-sets-label .code:n              =
+    restate-counters  .initial:n           = equation,
+    restate-counters  .value_required:n    = true,
+    store-all         .code:n              = \__keythms_storeall_code:,
+    store-all         .value_forbidden:n   = true,
+    store-all         .usage:n             = preamble,
+    store-sets-label  .code:n              =
       {
         \keys_define:nn { keytheorems/thmuse }
           {
@@ -2440,13 +2452,13 @@
               },
           }
       },
-    thmtools-compat  .code:n              =
+    thmtools-compat   .code:n              =
       { % prevent loading the code again if key called twice
         \bool_if:NF \g__keythms_thmtoolscompat_bool
           { \__keythms_thmtoolscompat_code: }
       },
-    thmtools-compat  .value_forbidden:n   = true,
-    thmtools-compat  .usage:n             = preamble,
+    thmtools-compat   .value_forbidden:n   = true,
+    thmtools-compat   .usage:n             = preamble,
   }
 
 \cs_generate_variant:Nn \__keythms_thmuse_continues:n { V }
@@ -2865,60 +2877,232 @@
 \hook_gput_code:nnn { begindocument/before } { . }
   { % use 'provide' in case user defines their own translation in preamble
     \ProvideTranslationFallback { keythms_listof_title } { List~of~Theorems }
-    \ProvideTranslationFallback { keythms_continues } { continuing~from~p.\, }
+    \ProvideTranslationFallback { keythms_continues }    { continuing~from~p.\, }
+    \ProvideTranslationFallback { keythms_axiom }        { Axiom }
+    \ProvideTranslationFallback { keythms_conjecture }   { Conjecture }
+    \ProvideTranslationFallback { keythms_corollary }    { Corollary }
+    \ProvideTranslationFallback { keythms_definition }   { Definition }
+    \ProvideTranslationFallback { keythms_example }      { Example }
+    \ProvideTranslationFallback { keythms_lemma }        { Lemma }
+    \ProvideTranslationFallback { keythms_proposition }  { Proposition }
+    \ProvideTranslationFallback { keythms_remark }       { Remark }
+    \ProvideTranslationFallback { keythms_theorem }      { Theorem }
     \bool_if:NT \g__keythms_autotranslate_bool
       {
-        \ProvideTranslation { English } { keythms_listof_title } { List~of~Theorems }
-        \ProvideTranslation { English } { keythms_continues } { continuing~from~p.\, }
+        \ProvideTranslation { English }    { keythms_listof_title } { List~of~Theorems }
+        \ProvideTranslation { English }    { keythms_continues }    { continuing~from~p.\, }
+        \ProvideTranslation { English }    { keythms_axiom }        { Axiom }
+        \ProvideTranslation { English }    { keythms_conjecture }   { Conjecture }
+        \ProvideTranslation { English }    { keythms_corollary }    { Corollary }
+        \ProvideTranslation { English }    { keythms_definition }   { Definition }
+        \ProvideTranslation { English }    { keythms_example }      { Example }
+        \ProvideTranslation { English }    { keythms_lemma }        { Lemma }
+        \ProvideTranslation { English }    { keythms_proposition }  { Proposition }
+        \ProvideTranslation { English }    { keythms_remark }       { Remark }
+        \ProvideTranslation { English }    { keythms_theorem }      { Theorem }
         % from DeepL; I don't know these languages!
-        \ProvideTranslation { Albanian } { keythms_listof_title } { Lista~e~teoremave }
-        \ProvideTranslation { Bulgarian } { keythms_listof_title } { Списък~на~теоремите }
-        \ProvideTranslation { Czech } { keythms_listof_title } { Seznam~teorémů }
-        \ProvideTranslation { Czech } { keythms_continues } { pokračování~ze~strany~ }
-        \ProvideTranslation { Croatian } { keythms_listof_title } { Popis~teorema }
-        \ProvideTranslation { Croatian } { keythms_continues } { nastavak~od~stranice~ }
-        \ProvideTranslation { Danish } { keythms_listof_title } { Liste~over~sætninger }
-        \ProvideTranslation { Danish } { keythms_continues } { fortsætter~fra~side~ }
-        \ProvideTranslation { Dutch } { keythms_listof_title } { Liste~over~sætninger }
-        \ProvideTranslation { Dutch } { keythms_continues } { fortsætter~fra~side~ }
-        \ProvideTranslation { Estonian } { keythms_listof_title } { Teoreemide~loetelu }
-        \ProvideTranslation { Estonian } { keythms_continues } { jätkub~leheküljelt~ }
-        \ProvideTranslation { Finnish } { keythms_listof_title } { Luettelo~teoreemoista }
-        \ProvideTranslation { Finnish } { keythms_continues } { jatkuu~sivulta~ }
-        \ProvideTranslation { French } { keythms_listof_title } { Liste~des~théorèmes }
-        \ProvideTranslation { French } { keythms_continues } { suite~de~la~p.\, }
-        \ProvideTranslation { German } { keythms_listof_title } { Liste~der~Theoreme }
-        \ProvideTranslation { German } { keythms_continues } { weiter~von~Seite~ }
-        \ProvideTranslation { Greek } { keythms_listof_title } { Κατάλογος~θεωρημάτων }
-        \ProvideTranslation { Hungarian } { keythms_listof_title } { A~tételek~listája }
-        \ProvideTranslation { Icelandic } { keythms_listof_title } { Listi~yfir~setningar }
+        \ProvideTranslation { Albanian }   { keythms_listof_title } { Lista~e~teoremave }
+        \ProvideTranslation { Bulgarian }  { keythms_listof_title } { Списък~на~теоремите }
+        \ProvideTranslation { Czech }      { keythms_listof_title } { Seznam~teorémů }
+        \ProvideTranslation { Czech }      { keythms_continues }    { pokračování~ze~strany~ }
+        \ProvideTranslation { Croatian }   { keythms_listof_title } { Popis~teorema }
+        \ProvideTranslation { Croatian }   { keythms_continues }    { nastavak~od~stranice~ }
+        \ProvideTranslation { Danish }     { keythms_listof_title } { Liste~over~sætninger }
+        \ProvideTranslation { Danish }     { keythms_continues }    { fortsætter~fra~side~ }
+        \ProvideTranslation { Danish }     { keythms_axiom }        { Aksiom  }
+        \ProvideTranslation { Danish }     { keythms_conjecture }   { Formodning }
+        \ProvideTranslation { Danish }     { keythms_corollary }    { Følgeslutning }
+        \ProvideTranslation { Danish }     { keythms_definition }   { Definition }
+        \ProvideTranslation { Danish }     { keythms_example }      { Eksempel }
+        \ProvideTranslation { Danish }     { keythms_lemma }        { Lemma }
+        \ProvideTranslation { Danish }     { keythms_proposition }  { Udsagn }
+        \ProvideTranslation { Danish }     { keythms_remark }       { Bemærkning }
+        \ProvideTranslation { Danish }     { keythms_theorem }      { Teorem }
+        \ProvideTranslation { Dutch }      { keythms_listof_title } { Liste~over~sætninger }
+        \ProvideTranslation { Dutch }      { keythms_continues }    { fortsætter~fra~side~ }
+        \ProvideTranslation { Dutch }      { keythms_axiom }        { Axioma }
+        \ProvideTranslation { Dutch }      { keythms_conjecture }   { Conjectuur }
+        \ProvideTranslation { Dutch }      { keythms_corollary }    { Gevolg }
+        \ProvideTranslation { Dutch }      { keythms_definition }   { Definitie }
+        \ProvideTranslation { Dutch }      { keythms_example }      { Voorbeeld }
+        \ProvideTranslation { Dutch }      { keythms_lemma }        { Lemma }
+        \ProvideTranslation { Dutch }      { keythms_proposition }  { Propositie }
+        \ProvideTranslation { Dutch }      { keythms_remark }       { Opmerking }
+        \ProvideTranslation { Dutch }      { keythms_theorem }      { Stelling }
+        \ProvideTranslation { Estonian }   { keythms_listof_title } { Teoreemide~loetelu }
+        \ProvideTranslation { Estonian }   { keythms_continues }    { jätkub~leheküljelt~ }
+        \ProvideTranslation { Finnish }    { keythms_listof_title } { Luettelo~teoreemoista }
+        \ProvideTranslation { Finnish }    { keythms_continues }    { jatkuu~sivulta~ }
+        \ProvideTranslation { French }     { keythms_listof_title } { Liste~des~théorèmes }
+        \ProvideTranslation { French }     { keythms_continues }    { suite~de~la~p.\, }
+        \ProvideTranslation { French }     { keythms_axiom }        { Axiome }
+        \ProvideTranslation { French }     { keythms_conjecture }   { Conjecture }
+        \ProvideTranslation { French }     { keythms_corollary }    { Corollaire }
+        \ProvideTranslation { French }     { keythms_definition }   { Définition }
+        \ProvideTranslation { French }     { keythms_example }      { Exemple }
+        \ProvideTranslation { French }     { keythms_lemma }        { Lemme }
+        \ProvideTranslation { French }     { keythms_proposition }  { Proposition }
+        \ProvideTranslation { French }     { keythms_remark }       { Remarque }
+        \ProvideTranslation { French }     { keythms_theorem }      { Théorème }
+        \ProvideTranslation { German }     { keythms_listof_title } { Liste~der~Theoreme }
+        \ProvideTranslation { German }     { keythms_continues }    { weiter~von~Seite~ }
+        \ProvideTranslation { German }     { keythms_axiom }        { Axiom }
+        \ProvideTranslation { German }     { keythms_conjecture }   { Vermutung }
+        \ProvideTranslation { German }     { keythms_corollary }    { Korollar }
+        \ProvideTranslation { German }     { keythms_definition }   { Definition }
+        \ProvideTranslation { German }     { keythms_example }      { Beispiel }
+        \ProvideTranslation { German }     { keythms_lemma }        { Lemma }
+        \ProvideTranslation { German }     { keythms_proposition }  { Satz }
+        \ProvideTranslation { German }     { keythms_remark }       { Bemerkung }
+        \ProvideTranslation { German }     { keythms_theorem }      { Theorem }
+        \ProvideTranslation { Greek }      { keythms_listof_title } { Κατάλογος~θεωρημάτων }
+        \ProvideTranslation { Hungarian }  { keythms_listof_title } { A~tételek~listája }
+        \ProvideTranslation { Icelandic }  { keythms_listof_title } { Listi~yfir~setningar }
         \ProvideTranslation { Indonesian } { keythms_listof_title } { Daftar~Teorema }
-        \ProvideTranslation { Italian } { keythms_listof_title } { Elenco~dei~teoremi }
-        \ProvideTranslation { Italian } { keythms_continues } { continua~da~p.\, }
-        \ProvideTranslation { Latvian } { keythms_listof_title } { Teorēmu~saraksts }
+        \ProvideTranslation { Italian }    { keythms_listof_title } { Elenco~dei~teoremi }
+        \ProvideTranslation { Italian }    { keythms_continues }    { continua~da~p.\, }
+        \ProvideTranslation { Italian }    { keythms_axiom }        { Assioma }
+        \ProvideTranslation { Italian }    { keythms_conjecture }   { Congettura }
+        \ProvideTranslation { Italian }    { keythms_corollary }    { Corollario }
+        \ProvideTranslation { Italian }    { keythms_definition }   { Definizione }
+        \ProvideTranslation { Italian }    { keythms_example }      { Esempio }
+        \ProvideTranslation { Italian }    { keythms_lemma }        { Lemma }
+        \ProvideTranslation { Italian }    { keythms_proposition }  { Proposizione }
+        \ProvideTranslation { Italian }    { keythms_remark }       { Osservazione }
+        \ProvideTranslation { Italian }    { keythms_theorem }      { Teorema }
+        \ProvideTranslation { Latvian }    { keythms_listof_title } { Teorēmu~saraksts }
         \ProvideTranslation { Lithuanian } { keythms_listof_title } { Teoremų~sąrašas }
         \ProvideTranslation { Macedonian } { keythms_listof_title } { Список~на~теореми }
-        \ProvideTranslation { Norwegian } { keythms_listof_title } { Liste~over~teoremer }
-        \ProvideTranslation { Norwegian } { keythms_continues } { fortsetter~fra~side~ }
-        \ProvideTranslation { Spanish } { keythms_listof_title } { Lista~de~teoremas }
-        \ProvideTranslation { Spanish } { keythms_continues } { continúa~de~la~p.\, }
-        \ProvideTranslation { Polish } { keythms_listof_title } { Lista~twierdzeń }
-        \ProvideTranslation { Polish } { keythms_continues } { ciąg~dalszy~ze~strony~ }
+        \ProvideTranslation { Norwegian }  { keythms_listof_title } { Liste~over~teoremer }
+        \ProvideTranslation { Norwegian }  { keythms_continues }    { fortsetter~fra~side~ }
+        \ProvideTranslation { Norwegian }  { keythms_axiom }        { Aksiom }
+        \ProvideTranslation { Norwegian }  { keythms_conjecture }   { Formodning }
+        \ProvideTranslation { Norwegian }  { keythms_corollary }    { Korollar }
+        \ProvideTranslation { Norwegian }  { keythms_definition }   { Definisjon }
+        \ProvideTranslation { Norwegian }  { keythms_example }      { Eksempel }
+        \ProvideTranslation { Norwegian }  { keythms_lemma }        { Lemma }
+        \ProvideTranslation { Norwegian }  { keythms_proposition }  { Påstand }
+        \ProvideTranslation { Norwegian }  { keythms_remark }       { Bemerkning }
+        \ProvideTranslation { Norwegian }  { keythms_theorem }      { Teorem }
+        \ProvideTranslation { Polish }     { keythms_listof_title } { Lista~twierdzeń }
+        \ProvideTranslation { Polish }     { keythms_continues }    { ciąg~dalszy~ze~strony~ }
         \ProvideTranslation { Portuguese } { keythms_listof_title } { Lista~de~teoremas }
-        \ProvideTranslation { Portuguese } { keythms_continues } { continua~da~p.\, }
-        \ProvideTranslation { Romanian } { keythms_listof_title } { Lista~teoremelor }
-        \ProvideTranslation { Romanian } { keythms_continues } { continuare~de~la~p.\, }
-        \ProvideTranslation { Russian } { keythms_listof_title } { Список~теорем }
-        \ProvideTranslation { Slovak } { keythms_listof_title } { Zoznam~teorém }
-        \ProvideTranslation { Slovak } { keythms_continues } { pokračovanie~zo~strany~ }
-        \ProvideTranslation { Slovenian } { keythms_listof_title } { Seznam~trditev }
-        \ProvideTranslation { Slovenian } { keythms_continues } { nadaljevanje~s~strani~ }
-        \ProvideTranslation { Swedish } { keythms_listof_title } { Lista~över~teorem }
-        \ProvideTranslation { Swedish } { keythms_continues } { fortsättning~från~sidan~ }
-        \ProvideTranslation { Turkish } { keythms_listof_title } { Teoremler~Listesi }
-        \ProvideTranslation { Ukrainian } { keythms_listof_title } { Список~теорем }
-        \ProvideTranslation { Welsh } { keythms_listof_title } { Rhestr~o~Theoremau }
-        \ProvideTranslation { Welsh } { keythms_continues } { yn~parhau~o~dudalen~ }
+        \ProvideTranslation { Portuguese } { keythms_continues }    { continua~da~p.\, }
+        \ProvideTranslation { Portuguese } { keythms_axiom }        { Axioma }
+        \ProvideTranslation { Portuguese } { keythms_conjecture }   { Conjetura }
+        \ProvideTranslation { Portuguese } { keythms_corollary }    { Corolário }
+        \ProvideTranslation { Portuguese } { keythms_definition }   { Definição }
+        \ProvideTranslation { Portuguese } { keythms_example }      { Exemplo }
+        \ProvideTranslation { Portuguese } { keythms_lemma }        { Lema }
+        \ProvideTranslation { Portuguese } { keythms_proposition }  { Proposição }
+        \ProvideTranslation { Portuguese } { keythms_remark }       { Observação }
+        \ProvideTranslation { Portuguese } { keythms_theorem }      { Teorema }
+        \ProvideTranslation { Romanian }   { keythms_listof_title } { Lista~teoremelor }
+        \ProvideTranslation { Romanian }   { keythms_continues }    { continuare~de~la~p.\, }
+        \ProvideTranslation { Russian }    { keythms_listof_title } { Список~теорем }
+        \ProvideTranslation { Slovak }     { keythms_listof_title } { Zoznam~teorém }
+        \ProvideTranslation { Slovak }     { keythms_continues }    { pokračovanie~zo~strany~ }
+        \ProvideTranslation { Slovenian }  { keythms_listof_title } { Seznam~trditev }
+        \ProvideTranslation { Slovenian }  { keythms_continues }    { nadaljevanje~s~strani~ }
+        \ProvideTranslation { Spanish }    { keythms_listof_title } { Lista~de~teoremas }
+        \ProvideTranslation { Spanish }    { keythms_continues }    { continúa~de~la~p.\, }
+        \ProvideTranslation { Spanish }    { keythms_axiom }        { Axioma }
+        \ProvideTranslation { Spanish }    { keythms_conjecture }   { Conjetura }
+        \ProvideTranslation { Spanish }    { keythms_corollary }    { Corolario }
+        \ProvideTranslation { Spanish }    { keythms_definition }   { Definición }
+        \ProvideTranslation { Spanish }    { keythms_example }      { Ejemplo }
+        \ProvideTranslation { Spanish }    { keythms_lemma }        { Lema }
+        \ProvideTranslation { Spanish }    { keythms_proposition }  { Proposición }
+        \ProvideTranslation { Spanish }    { keythms_remark }       { Observación }
+        \ProvideTranslation { Spanish }    { keythms_theorem }      { Teorema }
+        \ProvideTranslation { Swedish }    { keythms_listof_title } { Lista~över~teorem }
+        \ProvideTranslation { Swedish }    { keythms_continues }    { fortsättning~från~sidan~ }
+        \ProvideTranslation { Swedish }    { keythms_axiom }        { Axiom }
+        \ProvideTranslation { Swedish }    { keythms_conjecture }   { Förmodan }
+        \ProvideTranslation { Swedish }    { keythms_corollary }    { Följdsats }
+        \ProvideTranslation { Swedish }    { keythms_definition }   { Definition }
+        \ProvideTranslation { Swedish }    { keythms_example }      { Exempel }
+        \ProvideTranslation { Swedish }    { keythms_lemma }        { Hjälpsats }
+        \ProvideTranslation { Swedish }    { keythms_proposition }  { Påstående }
+        \ProvideTranslation { Swedish }    { keythms_remark }       { Anmärkning }
+        \ProvideTranslation { Swedish }    { keythms_theorem }      { Sats }
+        \ProvideTranslation { Turkish }    { keythms_listof_title } { Teoremler~Listesi }
+        \ProvideTranslation { Ukrainian }  { keythms_listof_title } { Список~теорем }
+        \ProvideTranslation { Welsh }      { keythms_listof_title } { Rhestr~o~Theoremau }
+        \ProvideTranslation { Welsh }      { keythms_continues }    { yn~parhau~o~dudalen~ }
+      }
+  }
+
+\keys_define:nn { keytheorems/predefined }
+  {
+    parent      .tl_gset:N        = \g__keythms_predefined_parent_tl,
+    parent      .value_required:n = true,
+    parent      .usage:n          = preamble,
+    siblings    .bool_gset:N      = \g__keythms_predefined_siblings_bool,
+    siblings    .initial:n        = true,
+    siblings    .usage:n          = preamble,
+  }
+\cs_generate_variant:Nn \keythms_thm_providekeythm:nn { ne }
+\hook_gput_code:nnn { begindocument } { . }
+  { % ^ translations doesn't set current lang until begindocument/before
+    \bool_if:NT \g__keythms_predefined_bool
+      {
+        \bool_if:NT \g__keythms_autotranslate_bool
+          { % nil lang treated same as english
+            \str_if_eq:VnF \languagename { nil }
+              { % ^ need str test, not tl; see babel note about \languagename
+                \IfTranslation { \languagename } { keythms_theorem } { }
+                  {
+                    \msg_warning:nne { keytheorems }
+                      { no-predefined-translations } { \languagename }
+                  }
+              }
+          }
+        \tl_clear:N \l__keythms_tmpa_tl
+        \tl_clear:N \l__keythms_tmpb_tl
+        \tl_if_empty:NF \g__keythms_predefined_parent_tl
+          {
+            \tl_set:Nn \l__keythms_tmpa_tl
+              { parent = \g__keythms_predefined_parent_tl, }
+            % this might be overwritten in next step
+            \tl_set_eq:NN \l__keythms_tmpb_tl \l__keythms_tmpa_tl
+          }
+        \bool_if:NT \g__keythms_predefined_siblings_bool
+          {
+            \tl_set:Nn \l__keythms_tmpb_tl
+              { sibling=theorem, }
+          }
+        % explicit style=plain necessary so we don't pick up \theoremstyle
+        \keythms_thm_providekeythm:ne { theorem }
+          {
+            name  = \GetTranslation{keythms_theorem},
+            style = plain,
+            \l__keythms_tmpa_tl
+          }
+        \clist_map_inline:nn { conjecture, corollary, lemma, proposition }
+          {
+            \keythms_thm_providekeythm:ne { #1 }
+              {
+                name  = \GetTranslation{keythms_#1},
+                style = plain,
+                \l__keythms_tmpb_tl
+              }
+          }
+        \clist_map_inline:nn { axiom, definition, example }
+          {
+            \keythms_thm_providekeythm:ne { #1 }
+              {
+                name  = \GetTranslation{keythms_#1},
+                style = definition,
+                \l__keythms_tmpb_tl
+              }
+          }
+        \keythms_thm_providekeythm:ne { remark }
+          {
+            name  = \GetTranslation{keythms_remark},
+            style = remark,
+            \l__keythms_tmpb_tl
+          }
       }
   }
 
