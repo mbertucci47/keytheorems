@@ -1,7 +1,8 @@
 # Changelog for keytheorems package
 
 ## [v0.3.0dev]
-- add `predefined` option (still needs documentation)
+- no longer `\edef` qed symbol (https://tex.stackexchange.com/q/745584/208544)
+- add `predefined` option
 
 ## [v0.2.7]
 - fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)

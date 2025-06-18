@@ -278,8 +278,26 @@ Currently (likely inaccurate!) translations exist for several European languages
 
 \begin{docKey}{predefined}
   {\colOpt{=\marg{options}}}
-  { initially unset }
-TODO: Finish documentation.
+  {initially unset}
+This is a convenience key, similar to \pkg{ntheorem}'s |standard| option, that predefines a set of theorems that, unless \refKey{auto-translate} is set to |false|, are translated into the current language if translations exist. The predefined theorems are
+\begin{itemize}
+  \item |plain| style: \docAuxEnvironment{conjecture}, \docAuxEnvironment{corollary}, \docAuxEnvironment{lemma}, \docAuxEnvironment{proposition}, \docAuxEnvironment{theorem};
+  \item |definition| style: \docAuxEnvironment{axiom}, \docAuxEnvironment{definition}, \docAuxEnvironment{example};
+  \item |remark| style: \docAuxEnvironment{remark}.
+\end{itemize}
+If your language does not have translations, please feel free to open a GitHub pull request.
+
+These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name. By default, the predefined theorems share a counter and do not have a parent counter. These settings can be changed by calling |siblings=false| and |parent=|\meta{counter}, respectively, in \meta{options}.
+
+\begin{dispListing}
+\usepackage[
+  predefined={parent=section}
+  ]{keytheorems}
+  
+% or equivalently
+\usepackage{keytheorems}
+\keytheoremset{predefined={parent=section}}
+\end{dispListing}
 \end{docKey}
 
 \begin{docKey}{qed-symbol}
