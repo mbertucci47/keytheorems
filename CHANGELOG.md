@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [v0.3.0dev]
+## [v0.3.0]
 - no longer `\edef` qed symbol (https://tex.stackexchange.com/q/745584/208544)
 - add `predefined` option
 - make `\keythms_getthm_theorem:nnnnn`, `\keythms_getthm_body:nnn`, and
@@ -84,7 +84,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.3.0dev]: https://github.com/mbertucci47/keytheorems/compare/v0.2.7...HEAD
+[v0.3.0]: https://github.com/mbertucci47/keytheorems/compare/v0.2.7...HEAD
 [v0.2.7]: https://github.com/mbertucci47/keytheorems/compare/v0.2.6...v0.2.7
 [v0.2.6]: https://github.com/mbertucci47/keytheorems/compare/v0.2.5...v0.2.6
 [v0.2.5]: https://github.com/mbertucci47/keytheorems/compare/v0.2.4...v0.2.5
