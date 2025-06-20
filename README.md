@@ -337,6 +337,24 @@ Fixed in keytheorems.
 \end{document}
 ```
 
+### [FR: Predefined theorems #31](https://github.com/muzimuzhi/thmtools/issues/31)
+See the `predefined` option of keytheorems.
+```tex
+\documentclass{article}
+\usepackage[predefined]{keytheorems}
+
+\begin{document}
+
+\begin{lemma}
+Some lemma.
+\end{lemma}
+\begin{theorem}
+Some theorem.
+\end{theorem}
+
+\end{document}
+```
+
 ### [too much space with restatable #40](https://github.com/muzimuzhi/thmtools/issues/40)
 Fixed in keytheorems.
 ```tex
