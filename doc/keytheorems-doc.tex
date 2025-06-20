@@ -1393,6 +1393,33 @@ An example invocation might look like
 Inside theorem environments and in all theorem hooks, you have access to the theorem's environment and counter name in this token list variable.
 \end{docCommand}
 
+\begin{docCommands}
+  {
+    {
+      doc name=keythms_getthm_theorem:nnnnn,
+      doc parameter={%
+        \ \marg{name} \marg{number} \marg{restate counters}\\
+        \hspace*{1cm}%
+        \marg{keys} \marg{body text}%
+        },
+    },
+    {
+      doc name=keythms_getthm_body:nnn,
+      doc parameter=\ \marg{name} \marg{restate counters} \marg{body text},
+    },
+  }
+Documentation coming soon.
+\end{docCommands}
+
+\begin{docCommand}{keythms_listof_listcmd:nnnnnnn}
+  {%
+    \ \marg{name} \marg{number} \marg{Href} \marg{page}\\
+    \hspace*{1cm}%
+    \marg{restate counters} \marg{keys} \marg{body text}%
+  }
+Documentation coming soon.
+\end{docCommand}
+
 \begin{docKeys}[doc no index,color key=black]
   {
     {

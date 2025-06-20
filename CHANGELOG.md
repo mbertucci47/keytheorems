@@ -3,6 +3,8 @@
 ## [v0.3.0dev]
 - no longer `\edef` qed symbol (https://tex.stackexchange.com/q/745584/208544)
 - add `predefined` option
+- make `\keythms_getthm_theorem:nnnnn`, `\keythms_getthm_body:nnn`, and
+  `\keythms_listof_listcmd:nnnnnnn` public ([\#23](https://github.com/mbertucci47/keytheorems/issues/23))
 
 ## [v0.2.7]
 - fix [\#20](https://github.com/mbertucci47/keytheorems/issues/20)
