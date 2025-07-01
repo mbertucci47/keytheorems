@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-06-20}
-\def\@keythms@version{0.3.0}
+\def\@keythms@date{2025-07-01}
+\def\@keythms@version{0.3.1dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -3035,12 +3035,15 @@
 
 \keys_define:nn { keytheorems/predefined }
   {
-    parent      .tl_gset:N        = \g__keythms_predefined_parent_tl,
-    parent      .value_required:n = true,
-    parent      .usage:n          = preamble,
-    siblings    .bool_gset:N      = \g__keythms_predefined_siblings_bool,
-    siblings    .initial:n        = true,
-    siblings    .usage:n          = preamble,
+    parent       .tl_gset:N        = \g__keythms_predefined_parent_tl,
+    parent       .value_required:n = true,
+    parent       .usage:n          = preamble,
+    siblings     .bool_gset:N      = \g__keythms_predefined_siblings_bool,
+    siblings     .initial:n        = true,
+    siblings     .usage:n          = preamble,
+    sharenumbers .bool_gset:N      = \g__keythms_predefined_siblings_bool,
+    sharenumbers .initial:n        = true,
+    sharenumbers .usage:n          = preamble,
   }
 \cs_generate_variant:Nn \keythms_thm_providekeythm:nn { ne }
 \hook_gput_code:nnn { begindocument } { . }

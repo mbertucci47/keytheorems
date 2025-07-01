@@ -287,7 +287,7 @@ This is a convenience key, similar to \pkg{ntheorem}'s |standard| option, that p
 \end{itemize}
 If your language does not have translations, please feel free to open a GitHub pull request.
 
-These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name. By default, the predefined theorems share a counter and do not have a parent counter. These settings can be changed by calling |siblings=false| and |parent=|\meta{counter}, respectively, in \meta{options}.
+These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name. By default, the predefined theorems share a counter and do not have a parent counter. These settings can be changed by calling |siblings=false| (alias |sharenumbers=false|) and/or |parent=|\meta{counter}, respectively, in \meta{options}.
 
 \begin{dispListing}
 \usepackage[
