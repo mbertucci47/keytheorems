@@ -1,0 +1,32 @@
+% Maintained by Matthew Bertucci, 2024-present
+% Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
+% This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
+\ProvidesExplFile{keythms-ltx-talk-support}{\@keythms@date}{\@keythms@version}
+  {keytheorems~support~for~the~ltx-talk~class}
+
+\cs_new_eq:NN \__keythms_ltxtalk_orignewkeythm:nn \keythms_thm_newkeythm:nn
+\cs_set_protected:Npn \keythms_thm_newkeythm:nn #1#2
+  {
+    \__keythms_ltxtalk_orignewkeythm:nn { #1 } { #2 }
+    \NewEnvironmentCopy { keythms_ltxtalk_orig_#1 } { #1 }
+    \RenewDocumentEnvironment { #1 } { D<>{all} ={note} O{} }
+      {
+        \begin{actionenv}<##1>
+        \begin{keythms_ltxtalk_orig_#1}[##2]
+      }
+      {
+        \end{keythms_ltxtalk_orig_#1}
+        \end{actionenv}
+      }
+  }
+
+% We don't want to write to the thlist file on every overlay.
+% For now use ltx-talk internal boolean.
+\cs_new_eq:NN \__keythms_ltxtalk_origaddcontentsdata:nnnn \__keythms_thm_addcontentsdata:nnnn
+\cs_set_protected:Npn \__keythms_thm_addcontentsdata:nnnn #1#2#3#4
+  {
+    \bool_if:NF \g__talk_slide_continue_bool
+      {
+        \__keythms_ltxtalk_origaddcontentsdata:nnnn { #1 } { #2 } { #3 } { #4 }
+      }
+  }
