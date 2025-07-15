@@ -1516,6 +1516,49 @@ You may use \pkg{keytheorems} exactly as you would in a normal tagged document, 
 The syntax for overlays is the same as for \cls{beamer}, shown in \zcref{subsubsec:noamsthm}.
 Also as for \cls{beamer}, the \refCom{listofkeytheorems} command is disabled.
 
+\subsection{\pkg{subfiles} compatibility}
+
+Because of how the \pkg{subfiles} package works, it is not possible to restate theorems from one subfile in another without an extra step.
+The issue boils down to the same reason the \pkg{xr} package is needed for labels and references to work between subfiles.
+Thankfully, the fix is fairly easy with \refCom{externaltheorems}.
+Just add \cs{externaltheorems}\bracks{\meta{prefix}}\marg{main file name} to the preamble of your main file.
+Then, after compiling your main file at least once, theorems can be restated in subfiles with \cs{getkeytheorem}\braces{\meta{prefix}\meta{tag}}.
+
+Here is a complete example.
+\begin{dispListing*}{breakable}
+% mainfile.tex
+\documentclass{article}
+\usepackage{keytheorems} 
+\usepackage{subfiles}
+
+\externaltheorems[main:]{mainfile}
+\newkeytheorem{theorem}
+
+\begin{document}
+\subfile{subfile1.tex}
+\subfile{subfile2.tex}
+\end{document}
+
+% subfile1.tex
+\documentclass[mainfile.tex]{subfiles}
+\begin{document}
+\section{subfile1}
+\begin{theorem}
+Some theorem from the first subfile.
+\end{theorem}
+\getkeytheorem{main:secondthm}
+\end{document}
+
+% subfile2.tex
+\documentclass[mainfile.tex]{subfiles}
+\begin{document}
+\section{subfile2}
+\begin{theorem}[store=secondthm]
+Some theorem from the second subfile.
+\end{theorem}
+\end{document}
+\end{dispListing*}
+
 \subsection{Public coding interfaces}
 
 \begin{docCommand}{l_keythms_thmuse_envname_tl}{}

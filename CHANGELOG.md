@@ -6,6 +6,10 @@
 - allow for beamer overlays with `noamsthm` option
   ([\#16](https://github.com/mbertucci47/keytheorems/issues/16))
 - add ltx-talk class support
+- documentation improvements
+  ([\#30](https://github.com/mbertucci47/keytheorems/issues/30))
+- give subfiles example in the documentation
+  ([\#32](https://github.com/mbertucci47/keytheorems/issues/32))
 
 ## [v0.3.0]
 - no longer `\edef` qed symbol (https://tex.stackexchange.com/q/745584/208544)
