@@ -93,6 +93,10 @@
   name=Theorem,
   counter-format=\Alph{mainthm},
   ]
+\newkeytheoremstyle{marginstyle}{headformat=margin}
+\newkeytheoremstyle{swapnumberstyle}{headformat=swapnumber}
+\newkeytheorem{marginthm}[name=Margin Theorem,style=marginstyle]
+\newkeytheorem{swapnumberthm}[name=Swapnumber Theorem,style=swapnumberstyle]
 
 \MakeShortVerb{\|}
 \newcommand{\env}{\texttt}
@@ -188,6 +192,13 @@
       \,\kvtcb@text@pageshort\,\pageref*{#1:#4}}%
     \fi}}%
 }
+\newcommand{\TCBdescnewline}{%
+  \def\tcb@doc@do@description{%
+    \ifx\kvtcb@doc@description\@empty\else\tcblower\raggedleft\strut
+    \\[1ex]% added
+    (\kvtcb@doc@description)\strut\fi%
+  }%
+}
 \makeatother
 \makeindex
 
@@ -223,7 +234,8 @@ Every key in this section can be given as an option to \cs{usepackage} or in \cs
 \begin{docKey}{overload}
   {}
   {initially unset}
-Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery. The syntax remains the same.
+Redefines \cs{newtheorem} to internally use the \pkg{keytheorems} machinery.
+The syntax remains the same.
 This is automatically set by \refKey{thmtools-compat}.
 \end{docKey}
 
@@ -268,9 +280,9 @@ If |false|, \pkg{keytheorems} does not automatically translate the title text us
 These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
-\begin{docKey}{continues-code}
+\begin{docKey}[][before upper=\TCBdescnewline]{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially\\ \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
+  {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
 The code used to typeset the note produced by the \refKey{continues} key.
 If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}.
 Currently (likely inaccurate!) translations exist for several European languages.
@@ -279,7 +291,8 @@ Currently (likely inaccurate!) translations exist for several European languages
 \begin{docKey}{predefined}
   {\colOpt{=\marg{options}}}
   {initially unset}
-This is a convenience key, similar to \pkg{ntheorem}'s |standard| option, that predefines a set of theorems that, unless \refKey{auto-translate} is set to |false|, are translated into the current language if translations exist. The predefined theorems are
+This is a convenience key, similar to \pkg{ntheorem}'s |standard| option, that predefines a set of theorems that, unless \refKey{auto-translate} is set to |false|, are translated into the current language if translations exist.
+The predefined theorems are
 \begin{itemize}
   \item |plain| style: \docAuxEnvironment{conjecture}, \docAuxEnvironment{corollary}, \docAuxEnvironment{lemma}, \docAuxEnvironment{proposition}, \docAuxEnvironment{theorem};
   \item |definition| style: \docAuxEnvironment{axiom}, \docAuxEnvironment{definition}, \docAuxEnvironment{example};
@@ -287,7 +300,9 @@ This is a convenience key, similar to \pkg{ntheorem}'s |standard| option, that p
 \end{itemize}
 If your language does not have translations, please feel free to open a GitHub pull request.
 
-These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name. By default, the predefined theorems share a counter and do not have a parent counter. These settings can be changed by calling |siblings=false| (alias |sharenumbers=false|) and/or |parent=|\meta{counter}, respectively, in \meta{options}.
+These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name.
+By default, the predefined theorems share a counter and do not have a parent counter.
+These settings can be changed by calling |siblings=false| (alias |sharenumbers=false|) and/or |parent=|\meta{counter}, respectively, in \meta{options}.
 
 \begin{dispListing}
 \usepackage[
@@ -323,7 +338,8 @@ Note that this means a theorem body \emph{cannot} contain verbatim material.
 \begin{docKey}{store-sets-label}
   {}
   {initially unset}
-Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}. Similarly for \refKey[store*]{store}.
+Defines the \refKey{store} key to also set \refKey{label}, i.e., it makes |store=|\meta{tag} equivalent to |store=|\meta{tag}|,label=|\meta{tag}.
+Similarly for \refKey[store*]{store}.
 \end{docKey}
 
 \section{Defining theorems}
@@ -331,7 +347,7 @@ Defines the \refKey{store} key to also set \refKey{label}, i.e. it makes |store=
 \begin{docCommand}{newkeytheorem}
   {\marg{env name}\oarg{options}}
 Defines a theorem environment \meta{env name} which itself takes a few options (see \autoref{in-doc-keys}).
-You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g.
+You can also declare multiple theorems at once by replacing \meta{env name} with a comma-list of names, e.g.,
 \begin{center}
 \cs{newkeytheorem}\ttbraces{theorem,lemma,proposition}\bracks{\meta{options}}.
 \end{center}
@@ -360,7 +376,10 @@ There are infinitely many prime numbers.
     {doc name = providekeytheorem},
     {doc name = declarekeytheorem},
   }
-Sometimes a package or class defines theorems that need to be overwritten by the user. For this case, \pkg{keytheorems} provides \cs{renewkeytheorem} which redefines \meta{env name} or errors if it is not defined. For completeness, also provided are \cs{providekeytheorem} and \cs{declarekeytheorem}. The former only defines \meta{env name} if it is not already defined; the latter always overwrites \meta{env name}.
+Sometimes a package or class defines theorems that need to be overwritten by the user.
+For this case, \pkg{keytheorems} provides \cs{renewkeytheorem} which redefines \meta{env name} or errors if it is not defined.
+For completeness, also provided are \cs{providekeytheorem} and \cs{declarekeytheorem}.
+The former only defines \meta{env name} if it is not already defined; the latter always overwrites \meta{env name}.
 \end{docCommands}
 
 \subsection{Keys available to theorem environments} \label{in-doc-keys}
@@ -554,6 +573,7 @@ For more description, see the \href{https://ctan.org/pkg/thmtools}{\pkg{thmtools
   {=\meta{display name}}
   {initially title-cased \meta{env name}}
 Aliases \docAuxKey{heading} and \docAuxKey{title}.
+Sets the displayed name of the theorem.
 
 \begin{codepreamble}
 \newkeytheorem{mythm}[name=Some Name]
@@ -570,10 +590,15 @@ Some text
 \begin{docKey}{numbered}
   {=\docValue*{true}\textbar\docValue*{false}\textbar \docValue{unless-unique}}
   {default |true|, initially |true|}
-For compatibility with \pkg{thmtools}, also accepts the values \docValue*{yes}, \docValue*{no}, and \docValue*{unless unique}.
+Determines if the theorem is numbered.
+With the value |unless-unique|, there are two cases.
+If no \refKey{parent} is given, a theorem is not numbered if it is the only theorem of its type and numbered otherwise.
+If a \refKey{parent} is given, the same is true but considered within a single value of the parent counter.
+
+For compatibility with \pkg{thmtools}, |numbered| also accepts the values \docValue*{yes}, \docValue*{no}, and \docValue*{unless unique}.
 
 \begin{codepreamble}
-\newkeytheorem{theorem*}[name=Theorem, numbered=false]
+\newkeytheorem{theorem*}[name=Theorem,numbered=false]
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
@@ -588,6 +613,7 @@ An unnumbered theorem.
   {=\meta{counter}}
   {initially unset}
 Aliases \docAuxKey{numberwithin} and \docAuxKey{within}.
+Sets the parent counter for the theorem counter, i.e., the displayed theorem number is of the form \meta{parent counter}\textbf{.}\meta{theorem counter} and the theorem counter is reset to 1 whenever the parent counter is incremented.
 
 \begin{codepreamble}
 \newkeytheorem{conjecture}[parent=section]
@@ -603,6 +629,7 @@ The first number is the section.
 
 \begin{docKey}{sibling}{=\meta{counter}}{initially unset}
 Aliases \docAuxKey{numberlike} and \docAuxKey{sharenumber}.
+Sets the sibling counter for the theorem counter, i.e., the sibling and theorem counters are incremented and reset simultaneously.
 
 \begin{codepreamble}
 \newkeytheorem{lemma}[sibling=theorem]
@@ -666,7 +693,7 @@ Some text
   {\colOpt{=\meta{symbol}}}
   {default \cs{qedsymbol}, initially unset}
 Adds \colOpt{\meta{symbol}} to the end of the theorem body.
-If no value is given, current value of |\qedsymbol| is used (one can redefine this or set it with \refKey{qed-symbol}).
+If no value is given, the current value of |\qedsymbol| is used (one can redefine this or set it with \refKey{qed-symbol}).
 By default, this is \qedsymbol.
 
 \begin{codepreamble}
@@ -685,16 +712,16 @@ Some more text.
 
 \end{docKey}
 
-\begin{docKey}{refname}
+\begin{docKey}[][before upper=\TCBdescnewline]{refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
-  {initially\\ \cs{MakeLowercase} \meta{display name}}
+  {initially \cs{MakeLowercase} \meta{display name}}
 If a single string, then the name used by \pkg{hyperref}'s \cs{autoref}, \pkg{cleveref}'s \cs{cref}, and \pkg{zref-clever}'s \cs{zcref}.
-If two strings separated by a comma, then the second string is the plural form used by \cs{cref}.
+If two strings separated by a comma, then the second string is the plural form used by \cs{cref} and \cs{zcref}.
 \end{docKey}
 
-\begin{docKey}{Refname}
+\begin{docKey}[][before upper=\TCBdescnewline]{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
-  {initially\\ \cs{MakeUppercase} \meta{display name}}
+  {initially \cs{MakeUppercase} \meta{display name}}
 Same as \refKey{refname} but for \docAuxCommand{Autoref}, \cs{Cref}, and \cs{zcref} with any of its capitalizing options.
 Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
 As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} that suppresses the hyperlink.
@@ -719,7 +746,9 @@ Consider \zcref{abc,def}. \Autoref{abc} \dots
 
 \end{docKey}
 
-Both \pkg{cleveref} and \pkg{zref-clever} define default reference names for some commonly used counters like |theorem|, |lemma|, etc. For technical reasons, unless explicit values for \refKey{refname} and \refKey{Refname} are given, \pkg{keytheorems} does not try to change these defaults at all in the case of \pkg{cleveref} and only the singular name in the case of \pkg{zref-clever}. The easiest way to get exactly the output you want is to just explicitly set \refKey{refname} and \refKey{Refname}.
+Both \pkg{cleveref} and \pkg{zref-clever} define default reference names for some commonly used counters like |theorem|, |lemma|, etc.
+For technical reasons, unless explicit values for \refKey{refname} and \refKey{Refname} are given, \pkg{keytheorems} does not try to change these defaults at all in the case of \pkg{cleveref} and only the singular name in the case of \pkg{zref-clever}.
+The easiest way to get exactly the output you want is to just explicitly set \refKey{refname} and \refKey{Refname}.
 
 \begin{notebox}
 The \refPkg{cleveref} package has not been updated since 2018 and contains several incompatibilities with the \LaTeX{} kernel.
@@ -766,7 +795,8 @@ Then the above example could be written as |counter-format=\Alph*|.
   }
 Sets the left (respectively, right) margin of the theorem relative to the text width.
 The |margin| key sets both simultaneously.
-This sets the theorem apart from the text, similar to a block quote. The code was adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
+This sets the theorem apart from the text, similar to a block quote.
+The code was adapted from Enrico Gregorio's \TeX{} Stack Exchange answers:
 \begin{itemize}
 	\item \href{https://tex.stackexchange.com/a/67251/208544}{How to change margins in enunciation (theorem-like environment)?}
 	\item \href{https://tex.stackexchange.com/a/236407/208544}{A theoremstyle with complete indentation using amsthm}
@@ -774,8 +804,8 @@ This sets the theorem apart from the text, similar to a block quote. The code wa
 \begin{codepreamble}
 \newcommand{\marginthmtext}{%
   We need some text to show off theorems with margins. }
-\newkeytheorem{quotethm}[name=Quote Theorem, margin=1cm]
-\newkeytheorem{indentedthm}[name=Indented Theorem, leftmargin=1cm]
+\newkeytheorem{quotethm}[name=Quote Theorem,margin=1cm]
+\newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
 \end{codepreamble}
 
 \newcommand{\marginthmtext}{We need some text to show off theorems with margins. }
@@ -798,8 +828,8 @@ This sets the theorem apart from the text, similar to a block quote. The code wa
 \begin{docKey}{tcolorbox}
   {\colOpt{=\marg{tcolorbox options}}}
   {initially unset}
-This key specifies that the theorem be placed inside a tcolorbox environment with \colOpt{\meta{options}}.
-The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcolorbox-no-titlebar}.
+This key specifies that the theorem be placed inside a |tcolorbox| environment with \colOpt{\meta{options}}.
+The theorem head is typeset as a |tcolorbox| title; to avoid this see \refKey{tcolorbox-no-titlebar}.
 
 \begin{codepreamble}
 \tcbset{
@@ -810,7 +840,7 @@ The theorem head is typeset as a tcolorbox title; to avoid this see \refKey{tcol
     },
   }
 \newkeytheorem{corollary}[tcolorbox]
-\newkeytheorem{definition}[style=definition, tcolorbox={defstyle}]
+\newkeytheorem{definition}[style=definition,tcolorbox={defstyle}]
 \end{codepreamble}
 
 \begin{keythmscode}[withpreamble]
@@ -827,12 +857,13 @@ A \emph{Dedekind domain} is an integrally closed, Noetherian domain of dimension
 \begin{docKey}{tcolorbox-no-titlebar}
   {\colOpt{=\marg{tcolorbox options}}}
   {initially unset}
-Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not as a tcolorbox title.
+Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not as a |tcolorbox| title.
 
 \begin{codepreamble}
 \newkeytheorem{boxcor}[
   tcolorbox-no-titlebar={colback=red!10},
-  name=Corollary, sibling=corollary
+  name=Corollary,
+  sibling=corollary
   ]
 \end{codepreamble}
 
@@ -844,7 +875,9 @@ Let $G$ be a finite group and $p$ a prime dividing the order of $G$. Then $G$ co
 
 \end{docKey}
 
-\pkg{tcolorbox} offers its own comprehensive \texttt{theorems} library. If all of your theorems are to be tcolorboxes, I highly recommend using it instead of this package! However, if only some of your theorems will use a tcolorbox, you may want to replicate the styles of \cs{NewTcbTheorem}. Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem style.
+\pkg{tcolorbox} offers its own comprehensive \texttt{theorems} library.
+If all of your theorems are to be tcolorboxes, I highly recommend using it instead of this package! However, if only some of your theorems will use a tcolorbox, you may want to replicate the styles of \cs{NewTcbTheorem}.
+Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem style.
 
 \begin{codepreamble}
 \tcbset{
@@ -891,6 +924,7 @@ Note that unlike \pkg{amsthm}'s \cs{newtheoremstyle}, this command will error if
     {doc name = providekeytheoremstyle},
     {doc name = declarekeytheoremstyle},
   }
+\sloppy
 To overwrite an existing style, there is the analogous \cs{renewkeytheoremstyle}.
 For completeness, also provided are \cs{providekeytheoremstyle} and \cs{declarekeytheoremstyle}.
 \end{docCommands}
@@ -904,75 +938,115 @@ In addition to the list below, most of the keys available to \refCom{newkeytheor
 \begin{docKey}{bodyfont}
   {=\meta{font declarations}}
   {initially \cs{itshape}}
-
+Sets the font declarations for the theorem body.
+This does not affect the theorem heading; see \refKey{headfont}.
 \end{docKey}
 
 \begin{docKey}{break}
   {}
   {initially unset}
+Causes the theorem body to be typeset on a new line after the heading.
 Do not use this with the \refKey{postheadspace} key.
 \end{docKey}
 
 \begin{docKey}{headfont}
   {=\meta{font declarations}}
   {initially \cs{bfseries}}
-
+Sets the font declarations for the theorem heading, which includes the theorem name, number, and note.
+The heading is typeset in a \TeX\ group, so these declarations will not affect the body of the theorem.
+Note, however, that the declarations in the \refKey{numberfont} and \refKey{notefont} keys may reset some font features set in |headfont|.
+By default, the number is typeset in upright shape and the note in both upright shape and medium weight.
 \end{docKey}
 
-\begin{docKey}{headformat}
+\begin{docKey}[][before upper=\TCBdescnewline]{headformat}
   {=\docValue{margin}\textbar\docValue{swapnumber}\textbar\meta{code using \cs{NAME}, \cs{NUMBER}, and \cs{NOTE}\,}}
-  {}
-Alias \docAuxKey{headstyle}. Within \meta{code}, the commands \docAuxCommand{NAME}, \docAuxCommand{NUMBER}, and \docAuxCommand{NOTE} correspond to the formatted parts of the theorem head.
+  {initially \cs{NAME}\cs{\textvisiblespace}\cs{NUMBER}\cs{NOTE}}
+Alias \docAuxKey{headstyle}.
+Allows the user to completely control the appearance of the theorem heading.
+Within \meta{code}, the commands \docAuxCommand{NAME}, \docAuxCommand{NUMBER}, and \docAuxCommand{NOTE} correspond to the formatted parts of the theorem head.
+For compatibility with \pkg{thmtools}, the user is in charge of specifying the separator (usually a space) preceding \cs{NUMBER}; the separator preceding \cs{NOTE} is controlled by \refKey{noteseparator}.
+
+The special values |margin| and |swapnumber| are demonstrated below.
+
+\begin{codepreamble}
+\newkeytheoremstyle{marginstyle}{headformat=margin}
+\newkeytheoremstyle{swapnumberstyle}{headformat=swapnumber}
+\newkeytheorem{marginthm}[
+  name=Margin Theorem,
+  style=marginstyle,
+  ]
+\newkeytheorem{swapnumberthm}[
+  name=Swapnumber Theorem,
+  style=swapnumberstyle,
+  ]
+\end{codepreamble}
+
+\begin{keythmscode}[withpreamble]
+\begin{marginthm}
+A theorem whose number juts into the margin.
+\end{marginthm}
+\begin{swapnumberthm}
+A theorem whose name and number are swapped.
+\end{swapnumberthm}
+\end{keythmscode}
+
 \end{docKey}
 
 \begin{notebox}
-In \refKey{headformat}, you may also use the traditional \pkg{amsthm} commands \cs{thmname}, \cs{thmnumber}, and \cs{thmnote}, where |#1| is the theorem name, |#2| the number, and |#3| the note. \pkg{keytheorems} expands the head spec inside |\text_expand:n| so for these commands to work properly, the package adds them to |\l_text_expand_exclude_tl|. Note also that if you use these lower-level commands, the style keys \refKey{notebraces}, \refKey{notefont}, \refKey{noteseparator}, and \refKey{numberfont} will have no effect (of course, you can manually control these things inside the commands' arguments).
+In \refKey{headformat}, you may also use the traditional \pkg{amsthm} commands \cs{thmname}, \cs{thmnumber}, and \cs{thmnote}, where |#1| is the theorem name, |#2| the number, and |#3| the note.
+\pkg{keytheorems} expands the head spec inside |\text_expand:n| so for these commands to work properly, the package adds them to |\l_text_expand_exclude_tl|.
+Note also that if you use these lower-level commands, the style keys \refKey{notebraces}, \refKey{notefont}, \refKey{noteseparator}, and \refKey{numberfont} will have no effect (of course, you can manually control these things inside the commands' arguments).
 \end{notebox}
+
+
 
 \begin{docKey}{headindent}
   {=\meta{length}}
   {initially |0pt|}
-
+Sets the distance between the left margin and the theorem heading.
 \end{docKey}
 
 \begin{docKey}{headpunct}
   {=\meta{code}}
   {initially \ttbraces{.}}
-
+Sets the punctuation that ends the theorem heading.
 \end{docKey}
 
 \begin{docKey}{notebraces}
   {=\marg{left brace}\marg{right brace}}
   {initially \ttbraces{(}\ttbraces{)}}
-
+Sets the delimiters surrounding the theorem note if present.
 \end{docKey}
 
 \begin{docKey}{notefont}
   {=\meta{font declarations}}
   {initially \cs{fontseries}\cs{mddefault}\cs{upshape}}
-
+Sets the font declarations for the theorem note.
+The note is also affected by \refKey{headfont}; the initial value of |notefont| happens to negate the initial value of |headfont| by resetting the font weight to medium, however any other settings in |headfont| will propagate to the note.
 \end{docKey}
 
 \begin{docKey}{postheadspace}
   {=\meta{skip expr}}
   {initially |5pt plus 1pt minus 1pt|}
+Sets the distance between the theorem heading and body.
 Do not use this with the \refKey{break} key.
 \end{docKey}
 
 \begin{docKey}{spaceabove}
   {=\meta{skip expr}}
   {initially \cs{topsep}}
-
+Sets the vertical space before the theorem.
 \end{docKey}
 
 \begin{docKey}{spacebelow}
   {=\meta{skip expr}}
   {initially \cs{topsep}}
-
+Sets the vertical space after the theorem.
 \end{docKey}
 
 \begin{notebox}
-With \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar}, the \refKey{spaceabove} and \refKey{spacebelow} keys are internally passed to \pkg{tcolorbox}'s \texttt{before skip} and \texttt{after skip}. When no explicit \texttt{spaceabove} or \texttt{spacebelow} values are given, \pkg{tcolorbox} defaults are used instead of \cs{topsep}.
+With \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar}, the \refKey{spaceabove} and \refKey{spacebelow} keys are internally passed to \pkg{tcolorbox}'s \texttt{before skip} and \texttt{after skip}.
+When no explicit \texttt{spaceabove} or \texttt{spacebelow} values are given, \pkg{tcolorbox} defaults are used instead of \cs{topsep}.
 \end{notebox}
 
 \subsection{Keys added by \pkg{keytheorems}}
@@ -988,17 +1062,21 @@ Additionally, the three styles predefined by \pkg{amsthm} are possible values: \
 \begin{docKey}{noteseparator}
   {=\meta{code}}
   {initially \textvisiblespace}
-The code inserted before the note, and printed only if there is a note. This is executed \emph{before} the font commands set by \refKey{notefont} take effect.
+The code inserted before the note, and printed only if there is a note.
+This is executed \emph{before} the font commands set by \refKey{notefont} take effect.
 \end{docKey}
 
 \begin{docKey}{numberfont}
   {=\meta{font declarations}}
   {initially \cs{upshape}}
+Sets the font declarations for the theorem number.
 For almost all theorem styles, it is recommended that you \emph{do not} change this setting.
+As with \refKey{notefont}, the number font is affect by \refKey{headfont}, though here the initial value only changes the shape to upright.
 \end{docKey}
 
 \begin{notebox}
-For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart} and \cls{aomart}, the initial key values are slightly different those listed in \zcref{stylekeys:new,stylekeys:thmtools} in order to match those class's defaults. See \autoref{class-support} for details.
+For the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, as well as the \cls{amsart}-based \cls{acmart} and \cls{aomart}, the initial key values are slightly different those listed in \zcref{stylekeys:new,stylekeys:thmtools} in order to match those class's defaults.
+See \autoref{class-support} for details.
 \end{notebox}
 
 \section{Restating theorems}
@@ -1039,7 +1117,8 @@ Fascinating example.
       doc parameter=\marg{false code}
     }
   }
-Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem. This is reversed if \texttt{store*} is used.
+Executes \meta{true code} if being retrieved with \refCom{getkeytheorem} and \meta{false code} if in the original theorem.
+This is reversed if \texttt{store*} is used.
 
 \begin{keythmscode}
 \begin{example}[store=hmm]
@@ -1083,7 +1162,7 @@ Then any stored theorem from |mycoolpaper.tex| can be retrieved with \cs{getkeyt
 \getkeytheorem{orig:cooltheorem}
 \end{document}
 \end{dispListing}
-It is important that the |theorem| environment is defined in both documents. 
+It is important that the |theorem| environment is defined in both documents.
 \end{docCommand}
 
 \section{Listing theorems}
@@ -1098,7 +1177,7 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
 
 \begin{docCommand}{keytheoremlistset}
   {\marg{options}}
-
+The \meta{options} of \refCom{listofkeytheorems} may also be set globally with this command.
 \end{docCommand}
 
 \begin{keythmscode}
@@ -1110,13 +1189,15 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
 \begin{docKey}{ignore}
   {=\marg{comma-list of env names}}
   {initially unset}
-
+Environments in \meta{comma-list} are filtered out from the list of theorems.
 \end{docKey}
 
 \begin{docKey}{ignoreall}
   {}
   {initially unset}
-  
+Applies \refKey{ignore} to all theorems.
+This is usually followed by the keys \refKey{show}, \refKey{onlynamed}, and/or \refKey{onlynumbered}.
+ 
 \begin{keythmscode}
 \listofkeytheorems[ignoreall,show=theorem]
 \listofkeytheorems[
@@ -1130,30 +1211,41 @@ For other classes, manual adjustments to \refKey{numwidth} and \refKey{indent} m
 \begin{docKey}{numwidth}
   {=\meta{length}}
   {initially |2.3em|}
+Sets the width that theorem numbers occupy in the list of theorems.
+This is needed when theorems have long parent counter representations, e.g., Theorem 3.7.4.1.
 For the AMS classes, this is initially |1.5pc|.
 \end{docKey}
 
 \begin{docKey}{onlynamed}
   {\colOpt{=\marg{comma-list of env names}}}
   {initially unset}
-
+Environments in \meta{comma-list} are only printed if the theorem was given an optional note.
+If no value is given, then this applies to all theorems.
 \end{docKey}
 
 \begin{docKey}{show}
   {=\marg{comma-list of env names}}
   {initially all theorems}
-
+The counterpart to \refKey{ignore}.
+Environments in \meta{comma-list} are shown in the list of theorems.
+Note that this is only needed if a theorem type was previously ignored, usually with \refKey{ignoreall}.
 \end{docKey}
 
 \begin{docKey}{showall}
   {}
   {initially set}
-
+Applies \refKey{show} to all theorems.
 \end{docKey}
 
 \begin{docKey}{swapnumber}
   {\colOpt{=true\textbar false}}
   {initially |false|}
+Swaps the position of the theorem name and number in the list of theorems.
+
+\begin{keythmscode}
+\listofkeytheorems[ignoreall,show=lemma]
+\listofkeytheorems[ignoreall,show=lemma,swapnumber]
+\end{keythmscode}
 
 \end{docKey}
 
@@ -1173,7 +1265,9 @@ A translation can be added with a GitHub pull request or manually with
 \begin{docKey}{format-code}
   {=\meta{code with \textup{\texttt{\#1}}, \textup{\texttt{\#2}}, and \textup{\texttt{\#3}}}}
   {initially \cs{numberline}\texttt{\{\#2\}\#1\#3}}
-Allows full control over the format for list entries. The theorem name is |#1|, the number is |#2|, and the (formatted) note is |#3|. The note formatting is still controlled by \refKey{note-code}.
+Allows full control over the format for list entries.
+The theorem name is |#1|, the number is |#2|, and the (formatted) note is |#3|.
+The note formatting is still controlled by \refKey{note-code}.
 \end{docKey}
 
 \begin{docKey}{indent}
@@ -1194,7 +1288,7 @@ Setting this key to |true| removes this space.
 \begin{docKey}{chapter-skip-length}
   {=\meta{length}}
   {initially |10pt|}
-Controls the amount of space inserted between chunks.
+Controls the amount of space inserted between chunks of theorems belonging to each chapter.
 \end{docKey}
 
 \begin{docKey}{no-continues}
@@ -1207,12 +1301,12 @@ Suppresses the printing of theorems given the \refKey{continues} key in the list
   {\colOpt{=true\textbar false}}
   {initially |false|}
 Suppresses the title of the list of theorems.
-Useful for custom ordering of the list.
+This is useful for custom ordering of the list.
 
 \begin{keythmscode}
 \keytheoremlistset{ignoreall}
 \listofkeytheorems[show=example]
-\listofkeytheorems[show=solution, no-title]
+\listofkeytheorems[show=solution,no-title]
 \end{keythmscode}
 
 \end{docKey}
@@ -1220,12 +1314,15 @@ Useful for custom ordering of the list.
 \begin{docKey}{no-toc}
   {\colOpt{=true\textbar false}}
   {initially |false|}
-With the standard classes, lists of figures/tables are not added to the table of contents by default. The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing. However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents. With these classes, this key suppresses the addition of the list of theorems to the table of contents.
+With the standard classes, lists of figures/tables are not added to the table of contents by default.
+The same is true for \cs{listofkeytheorems}, and with those classes this key does nothing.
+However some classes, notably \cls{memoir} and the AMS classes, do add lists to the table of contents.
+With these classes, this key suppresses the addition of the list of theorems to the table of contents.
 \end{docKey}
 
 \begin{docKey}{note-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially \ttbraces{ (\#1)}}
+  {initially \ttbraces{\textvisiblespace(\#1)}}
 Formats the optional note in the list of theorems.
 \end{docKey}
 
@@ -1254,33 +1351,32 @@ Unlike with \refKey{show}, you do not need to use \refKey{ignoreall} to prevent 
 \begin{docKey}{title-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
   {initially \cs{section*}\ttbraces{\#1}}
-If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbraces{\#1}. This key has no effect if used with an AMS class because these classes hard-code the section heading into \cs{@starttoc}.
+If \cs{chapter} is defined, then initially this is instead \cs{chapter*}\ttbraces{\#1}.
+This key has no effect if used with an AMS class because these classes hard-code the section heading into \cs{@starttoc}.
 \end{docKey}
 
 \subsection{Adding code to list of theorems}
 
-There are analogous commands to \cs{addcontentsline} and \cs{addtocontents} for adding entries or arbitrary code to the list of theorems.
-
-\begin{notebox}
-You \emph{must} use these commands rather than the aforementioned because the |.thlist| file is also used to define restated theorems and cannot contain unexpected code.
-\end{notebox}
-
 \begin{docCommand}{addtheoremcontentsline}
   {\marg{level}\marg{text}}
-
+This command is analogous to \cs{addcontentsline} and has the same usage, that is, manually adding entries to the list of theorems.
 \end{docCommand}
 
 \begin{docCommand}{addtotheoremcontents}
   {\marg{code}}
-
+This command is analogous to \cs{addtocontents} and has the same usage, that is, manually adding arbitrary code to the list of theorems.
 \end{docCommand}
+
+\begin{notebox}
+You \emph{must} use these commands rather than the analogous ones mentioned because the |.thlist| file is also used to define restated theorems and cannot contain unexpected code.
+\end{notebox}
 
 \section{Theorem hooks} \label{keythms-hooks}
 
 \begin{docCommand}{addtotheoremhook}
   {\oarg{env name}\marg{hook name}\marg{code}}
 The \meta{hook name} can be \hook{prehead}, \hook{posthead}, \hook{prefoot}, \hook{postfoot}, or \hook{restated}.
-If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e. applied to all theorems.
+If no \meta{env name} is given, the \meta{code} is added to the ``generic'' hook, i.e., applied to all theorems.
 As in \pkg{thmtools}, the order of hooks is as follows:
 
 \begin{center}
@@ -1310,15 +1406,15 @@ As in \pkg{thmtools}, the order of hooks is as follows:
   \tcbox{generic\\ \hook{postfoot}}
   \tcbox{\meta{env name}\\ \hook{postfoot}}
 \end{center}
-The \hook{restated} hook is applied at the start of theorems retrieved with the command \cs{getkeytheorem}, after the \hook{prehead} hook. 
-This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.
+The \hook{restated} hook is applied at the start of theorems retrieved with the command \cs{getkeytheorem}, after the \hook{prehead} hook.
+This can be useful for disabling commands such as \cs{footnote} in the restated theorems, e.g.,
 \begin{dispListing}
 \addtotheoremhook{restated}{\renewcommand\footnote[2][]{}}
 \end{dispListing}
 
 By default, the \hook{restated} hook disables the \cs{glossary}, \cs{index}, \cs{label}, and \cs{RecordProperties} commands.
 
-In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e. the code
+In \pkg{thmtools}, the \hook{prefoot} and \hook{postfoot} hooks always prepend code, i.e., the code
 \begin{dispListing}
 \addtotheorempostfoothook{A}
 \addtotheorempostfoothook{B}
@@ -1332,7 +1428,8 @@ With \pkg{keytheorems}, code is added in the order declared, meaning
 results in |AB| after the theorem.
 This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses under the hood.
 
-Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}. Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
+Code added using the hook keys \refKey{preheadhook}, etc.\@ is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
+Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
 \end{docCommand}
 
 \section{Miscellaneous notes}
@@ -1340,9 +1437,11 @@ Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning 
 \subsection{\cls{beamer} support}
 \label{subsec:beamer}
 
-The package contains some \emph{highly experimental} code to support theorems with \cls{beamer}, including overlays. The support differs based on whether or not the \cls{beamer} class option |noamsthm| is used.
+The package contains some \emph{highly experimental} code to support theorems with \cls{beamer}, including overlays.
+The support differs based on whether or not the \cls{beamer} class option |noamsthm| is used.
 
-User feedback is necessary to make this code fully compatible. Please report issues on the \href{https://github.com/mbertucci47/keytheorems/issues}{Github page}!
+User feedback is necessary to make this code fully compatible.
+Please report issues on the \href{https://github.com/mbertucci47/keytheorems/issues}{Github page}!
 
 \subsubsection{Without \texttt{noamsthm}}
 Most style keys are disabled by the |default| \cls{beamer} theorem template.
@@ -1356,12 +1455,15 @@ For full control of theorems, load the class option |noamsthm| and see \zcref{su
 Note that by default \cls{beamer} defines a set of theorems when the class is loaded.
 These can be overwritten with \refCom{renewkeytheorem} or disabled entirely with the |notheorems| class option.
 
-Due to complications with overlays, writing contents of theorems to the |thlist| file is disabled. This means theorems can only be restated \emph{after} their original statement. Furthermore, \refCom{listofkeytheorems} is disabled and a warning issued if used.
+Due to complications with overlays, writing contents of theorems to the |thlist| file is disabled.
+This means theorems can only be restated \emph{after} their original statement.
+Furthermore, \refCom{listofkeytheorems} is disabled and a warning issued if used.
 
 \subsubsection{With \texttt{noamsthm}}
 \label{subsubsec:noamsthm}
 
-If |noamsthm| is loaded, you can use keytheorems exactly as you would in any other document except that \refCom{listofkeytheorems} is disabled. This includes no limitations on storing and restating theorems that exist without |noamsthm|.
+If |noamsthm| is loaded, you can use keytheorems exactly as you would in any other document except that \refCom{listofkeytheorems} is disabled.
+This includes no limitations on storing and restating theorems that exist without |noamsthm|.
 
 With or without |noamsthm|, overlays are supported with syntax
 \begin{tcolorbox}[blankest]
@@ -1373,15 +1475,19 @@ With or without |noamsthm|, overlays are supported with syntax
 \subsection{Support for other classes}
 \label{class-support}
 
-As mentioned in \autoref{thmstyles}, the initial style key values set by \pkg{keytheorems} are adjusted for the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, the \cls{amsart}-based \cls{acmart} and \cls{aomart}, and \cls{jlreq}. You can find the exact changed values in the support files \texttt{keythms-\meta{class}-support.tex}.
+As mentioned in \autoref{thmstyles}, the initial style key values set by \pkg{keytheorems} are adjusted for the AMS classes \cls{amsart}, \cls{amsbook}, and \cls{amsproc}, the \cls{amsart}-based \cls{acmart} and \cls{aomart}, and \cls{jlreq}.
+You can find the exact changed values in the support files \texttt{keythms-\meta{class}-support.tex}.
 
 These class support files also contain code to adapt to class' formatting of lists-of as mentioned in \autoref{listingthms}; changes are made for the AMS classes, \cls{memoir}, \cls{IEEEtran}, and \cls{jlreq}.
 
-Lastly, in addition to the \cls{beamer} support outlined in \zcref{subsec:beamer}, support is provided for overlays in the experimental tagging-compatible presentation class \cls{ltx-talk}. See \zcref{subsec:tagging} for more details.
+Lastly, in addition to the \cls{beamer} support outlined in \zcref{subsec:beamer}, support is provided for overlays in the experimental tagging-compatible presentation class \cls{ltx-talk}.
+See \zcref{subsec:tagging} for more details.
 
 \subsection{Support for font packages}
 
-Some font packages, all by Michael Sharpe, offer a |theoremfont| option that redefines the |plain| style body font to have italic text with upright figures, punctuation, and delimiters. \pkg{keytheorems} detects this option and sets its initial style values accordingly. The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust1math}, \pkg{newpxtext}, \pkg{newtxtext}, \pkg{scholax}, and \pkg{XCharter}.
+Some font packages, all by Michael Sharpe, offer a |theoremfont| option that redefines the |plain| style body font to have italic text with upright figures, punctuation, and delimiters.
+\pkg{keytheorems} detects this option and sets its initial style values accordingly.
+The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust1math}, \pkg{newpxtext}, \pkg{newtxtext}, \pkg{scholax}, and \pkg{XCharter}.
 
 \subsection{Support for tagged PDF}
 \label{subsec:tagging}
@@ -1405,7 +1511,10 @@ An example invocation might look like
   }
 \end{dispListing}
 
-As mentioned above, support is also provided for the tagging-compatible \cls{ltx-talk} presentation class. You may use \pkg{keytheorems} exactly as you would in a normal tagged document, with the added support of overlays. The syntax for overlays is the same as for \cls{beamer}, shown in \zcref{subsubsec:noamsthm}. Also as for \cls{beamer}, the \refCom{listofkeytheorems} command is disabled.
+As mentioned above, support is also provided for the tagging-compatible \cls{ltx-talk} presentation class.
+You may use \pkg{keytheorems} exactly as you would in a normal tagged document, with the added support of overlays.
+The syntax for overlays is the same as for \cls{beamer}, shown in \zcref{subsubsec:noamsthm}.
+Also as for \cls{beamer}, the \refCom{listofkeytheorems} command is disabled.
 
 \subsection{Public coding interfaces}
 
@@ -1458,7 +1567,8 @@ They can be useful with \cs{AddToHookNext} or the kernel's label mechanism for h
 \section{Further examples}
 
 More examples will be added soon -- rather, eventually\dots{}
-For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in the Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}. There is also a version for tagged PDF: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
+For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in the Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}.
+There is also a version for tagged PDF: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
 
 %\section{Implementation}
 %\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}
