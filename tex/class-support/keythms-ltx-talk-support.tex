@@ -4,6 +4,17 @@
 \ProvidesExplFile{keythms-ltx-talk-support}{\@keythms@date}{\@keythms@version}
   {keytheorems~support~for~the~ltx-talk~class}
 
+% disable \listofkeytheorems, add warning
+\msg_new:nnn { keytheorems } { beamer-listof }
+  {
+    \protect\listofkeytheorems\space not~supported~with~beamer
+  }
+\RenewDocumentCommand \listofkeytheorems { +o }
+  {
+    \msg_warning:nn { keytheorems } { beamer-listof }
+  }
+
+% enable overlays for theorems
 \cs_new_eq:NN \__keythms_ltxtalk_orignewkeythm:nn \keythms_thm_newkeythm:nn
 \cs_set_protected:Npn \keythms_thm_newkeythm:nn #1#2
   {
@@ -28,5 +39,13 @@
     \bool_if:NF \g__talk_slide_continue_bool
       {
         \__keythms_ltxtalk_origaddcontentsdata:nnnn { #1 } { #2 } { #3 } { #4 }
+      }
+  }
+\cs_new_eq:NN \__keythms_ltxtalk_origaddstoredreverseddata:nnn \__keythms_thm_addstoredreverseddata:nnn
+\cs_set_protected:Npn \__keythms_thm_addstoredreverseddata:nnn #1#2#3
+  {
+    \bool_if:NF \g__talk_slide_continue_bool
+      {
+        \__keythms_ltxtalk_origaddstoredreverseddata:nnn { #1 } { #2 } { #3 }
       }
   }

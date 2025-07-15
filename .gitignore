@@ -8,7 +8,9 @@
 *.loe
 *.log
 *.minted
+*.nav
 *.out
+*.snm
 *.synctex.gz
 *.tcbtemp
 *.thlist

@@ -1,7 +1,7 @@
 % !TeX TXS-program:compile = txs:///arara/[-v]
-% arara: lualatex: { synctex:yes }
+% arara: lualatex: { synctex:yes, interaction:nonstopmode }
 % arara: makeindex
-% arara: lualatex: { synctex:yes } if found('log', 'Rerun to get')
+% arara: lualatex: { synctex:yes, interaction:nonstopmode } if found('log', 'Rerun to get')
 \DocumentMetadata{lang=en-US}
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
@@ -1338,22 +1338,37 @@ Code added using the hook keys \refKey{preheadhook}, etc. is outermost, meaning 
 \section{Miscellaneous notes}
 
 \subsection{\cls{beamer} support}
+\label{subsec:beamer}
 
-The package contains some \emph{highly experimental} code to support theorems with \cls{beamer}, including overlays.
+The package contains some \emph{highly experimental} code to support theorems with \cls{beamer}, including overlays. The support differs based on whether or not the \cls{beamer} class option |noamsthm| is used.
+
+User feedback is necessary to make this code fully compatible. Please report issues on the \href{https://github.com/mbertucci47/keytheorems/issues}{Github page}!
+
+\subsubsection{Without \texttt{noamsthm}}
 Most style keys are disabled by the |default| \cls{beamer} theorem template.
 More become functional by setting
 \begin{dispListing}
 \setbeamertemplate{theorems}[ams style]
 \end{dispListing}
 in the preamble.
-Alternatively, you have full control of theorems by setting the class option |noamsthm|.
+For full control of theorems, load the class option |noamsthm| and see \zcref{subsubsec:noamsthm}.
 
 Note that by default \cls{beamer} defines a set of theorems when the class is loaded.
 These can be overwritten with \refCom{renewkeytheorem} or disabled entirely with the |notheorems| class option.
 
 Due to complications with overlays, writing contents of theorems to the |thlist| file is disabled. This means theorems can only be restated \emph{after} their original statement. Furthermore, \refCom{listofkeytheorems} is disabled and a warning issued if used.
 
-User feedback is necessary to make this code fully compatible. Please report issues on the \href{https://github.com/mbertucci47/keytheorems/issues}{Github page}!
+\subsubsection{With \texttt{noamsthm}}
+\label{subsubsec:noamsthm}
+
+If |noamsthm| is loaded, you can use keytheorems exactly as you would in any other document except that \refCom{listofkeytheorems} is disabled. This includes no limitations on storing and restating theorems that exist without |noamsthm|.
+
+With or without |noamsthm|, overlays are supported with syntax
+\begin{tcolorbox}[blankest]
+\cs{begin}\braces{\meta{theorem name}}\colOpt{\pbarg{overlay spec}}\colOpt{\oarg{options}} \\
+\hspace*{2ex}\meta{contents} \\
+\cs{end}\braces{\meta{theorem name}}
+\end{tcolorbox}
 
 \subsection{Support for other classes}
 \label{class-support}
@@ -1362,11 +1377,14 @@ As mentioned in \autoref{thmstyles}, the initial style key values set by \pkg{ke
 
 These class support files also contain code to adapt to class' formatting of lists-of as mentioned in \autoref{listingthms}; changes are made for the AMS classes, \cls{memoir}, \cls{IEEEtran}, and \cls{jlreq}.
 
+Lastly, in addition to the \cls{beamer} support outlined in \zcref{subsec:beamer}, support is provided for overlays in the experimental tagging-compatible presentation class \cls{ltx-talk}. See \zcref{subsec:tagging} for more details.
+
 \subsection{Support for font packages}
 
 Some font packages, all by Michael Sharpe, offer a |theoremfont| option that redefines the |plain| style body font to have italic text with upright figures, punctuation, and delimiters. \pkg{keytheorems} detects this option and sets its initial style values accordingly. The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust1math}, \pkg{newpxtext}, \pkg{newtxtext}, \pkg{scholax}, and \pkg{XCharter}.
 
 \subsection{Support for tagged PDF}
+\label{subsec:tagging}
 
 The \LaTeX{} team has been working hard to support the creation of tagged PDFs (see \url{https://latex3.github.io/tagging-project/}).
 The current |dev| formats make \pkg{amsthm} compatible with the kernel tagging code.
@@ -1386,6 +1404,8 @@ An example invocation might look like
     % tagging-setup={math/setup=mathml-SE}, % optional
   }
 \end{dispListing}
+
+As mentioned above, support is also provided for the tagging-compatible \cls{ltx-talk} presentation class. You may use \pkg{keytheorems} exactly as you would in a normal tagged document, with the added support of overlays. The syntax for overlays is the same as for \cls{beamer}, shown in \zcref{subsubsec:noamsthm}. Also as for \cls{beamer}, the \refCom{listofkeytheorems} command is disabled.
 
 \subsection{Public coding interfaces}
 

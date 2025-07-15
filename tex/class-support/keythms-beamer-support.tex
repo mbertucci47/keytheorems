@@ -14,8 +14,43 @@
     \msg_warning:nn { keytheorems } { beamer-listof }
   }
 
-% besides above, do nothing if noamsthm loaded
-\IfClassLoadedWithOptionsT{ beamer }{ noamsthm }{ \file_input_stop: }
+% support overlays with noamsthm option, then end input
+\IfClassLoadedWithOptionsT{ beamer }{ noamsthm }
+  {
+    \cs_new_eq:NN \__keythms_beamer_orignewkeythm:nn \keythms_thm_newkeythm:nn
+    \cs_set_protected:Npn \keythms_thm_newkeythm:nn #1#2
+      {
+        \__keythms_beamer_orignewkeythm:nn { #1 } { #2 }
+        \NewEnvironmentCopy { keythms_beamer_orig_#1 } { #1 }
+        \RenewDocumentEnvironment { #1 } { d<> ={note} O{} }
+          {
+            \tl_if_novalue:nTF { ##1 }
+              { % if on all slides, write to file for first then disable
+                \int_compare:nNnT { 1 } < { \beamer@slideinframe }
+                  {
+                    \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
+                    \cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
+                  }
+              }
+              {
+                \begin{actionenv}<##1>
+                \legacy_if:nT { beamer@anotherslide }
+                  { % prevent writing to file except on last slide for overlays
+                    \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
+                    \cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
+                  }
+              }
+            \begin{keythms_beamer_orig_#1}[##2]
+          }
+          {
+            \end{keythms_beamer_orig_#1}
+            \tl_if_novalue:nF { ##1 } { \end{actionenv} }
+          }
+        \bool_if:NT \l__keythms_thm_numbered_bool
+          { \resetcounteronoverlays{ #1 } }
+      }
+    \file_input_stop:
+  }
 
 \tl_new:N \g__keythms_thmstyle_example_metakeys_tl
 \tl_gset:Nn \g__keythms_thmstyle_example_metakeys_tl

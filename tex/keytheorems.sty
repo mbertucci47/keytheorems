@@ -3221,25 +3221,31 @@
 %%% Tagging Support %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
+\prg_new_conditional:Npnn \__keythms_if_formatatleast:n #1 { p }
+  {
+    \IfFormatAtLeastTF { #1 } { \prg_return_true: } { \prg_return_false: }
+  }
 \IfDocumentMetadataTF
   {
-    \tag_if_active:T
+    \bool_lazy_or:nnT
+      { \tag_if_active_p: }
+      { \__keythms_if_formatatleast_p:n { 2025-11-01 } }
       {
         \msg_new:nnn { keytheorems } { tag-incompat-key }
           {
             The~key~'#1'~does~not~currently~work~with~
-            tagging.~Ignoring~this~key.
+            tagging.~Ignoring~this~key~\msg_line_context:.
           }
         \keys_define:nn { keytheorems/thm }
           {
             tcolorbox .code:n =
               {
-                \msg_warning:nn { keytheorems } { tag-incompat-key }
+                \msg_warning:nnn { keytheorems } { tag-incompat-key }
                   { tcolorbox }
               },
             tcolorbox-no-titlebar .code:n =
               {
-                \msg_warning:nn { keytheorems } { tag-incompat-key }
+                \msg_warning:nnn { keytheorems } { tag-incompat-key }
                   { tcolorbox-no-titlebar }
               },
           }
@@ -3275,18 +3281,37 @@
           { % current format uses displayblock instance
             \tl_const:Nn \c__keythms_tagging_instance_tl { displayblock-0 }
           }
-        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
-          { % tagging code does not define theorems with lists
-            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
-              {
-                \exp_args:Nne \EditInstance { block }
-                  { \c__keythms_tagging_instance_tl }
+        \IfFormatAtLeastTF { 2025-11-01 }
+          { % dev formats changed the name of the keys to left-margin, etc.
+            \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+              { % tagging code does not define theorems with lists
+                \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
                   {
-                    leftmargin = #2,
-                    rightmargin = #3,
+                    \exp_args:Nne \EditInstance { block }
+                      { \c__keythms_tagging_instance_tl }
+                      {
+                        left-margin = #2,
+                        right-margin = #3,
+                      }
+                    % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+                    \EditInstance { block } { listblock-1 } { right-margin = 0pt }
                   }
-                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
-                \EditInstance { block } { list-1 } { rightmargin = 0pt }
+              }
+          }
+          {
+            \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+              { % tagging code does not define theorems with lists
+                \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+                  {
+                    \exp_args:Nne \EditInstance { block }
+                      { \c__keythms_tagging_instance_tl }
+                      {
+                        leftmargin = #2,
+                        rightmargin = #3,
+                      }
+                    % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+                    \EditInstance { block } { list-1 } { rightmargin = 0pt }
+                  }
               }
           }
       }

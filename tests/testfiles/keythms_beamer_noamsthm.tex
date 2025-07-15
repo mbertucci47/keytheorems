@@ -1,0 +1,37 @@
+\documentclass[noamsthm]{beamer}
+\usepackage{keytheorems}
+
+\makeatletter
+\ExplSyntaxOn
+\def\IfAnotherSlide#1#2{\ifbeamer@anotherslide #1\else #2\fi}
+\def\slideinframe{\beamer@slideinframe}
+\ExplSyntaxOff
+\makeatother
+
+\declarekeytheorem{theorem}%[tcolorbox]
+
+\begin{document}
+
+\begin{frame}
+\getkeytheorem{foo}
+\getkeytheorem{abc}
+\end{frame}
+
+\begin{frame}
+Some text
+\begin{theorem}[store=abc]
+\the\slideinframe
+\IfAnotherSlide{TRUE}{FALSE}
+\end{theorem}
+\begin{theorem}<2-3>[note=Some note,store*=foo]
+\the\slideinframe
+\IfAnotherSlide{TRUE}{FALSE}
+\end{theorem}
+\begin{theorem}[last]
+\the\slideinframe
+\IfAnotherSlide{TRUE}{FALSE}
+\end{theorem}
+Some more text
+\end{frame}
+
+\end{document}
