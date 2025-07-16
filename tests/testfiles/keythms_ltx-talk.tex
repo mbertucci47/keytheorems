@@ -1,0 +1,36 @@
+% !TeX program = txs:///lualatex-dev | txs:///view-pdf
+\DocumentMetadata
+  {
+    lang=en-US,
+    pdfversion=2.0,
+    pdfstandard=ua-2,
+    tagging=on,
+%    tagging-setup={math/setup=mathml-SE},
+  }
+\documentclass{ltx-talk}
+\usepackage{keytheorems}
+
+\declarekeytheorem{theorem}
+
+\begin{document}
+
+\begin{frame}
+\getkeytheorem{foo}
+\getkeytheorem{abc}
+\end{frame}
+
+\begin{frame}
+Some text
+\begin{theorem}[store=abc]
+abc
+\end{theorem}
+\begin{theorem}<2-3>[note=Some note,store*=foo]
+def
+\end{theorem}
+\begin{theorem}[last]
+ghi
+\end{theorem}
+Some more text
+\end{frame}
+
+\end{document}
