@@ -1601,8 +1601,9 @@
 %%% Retrieving Theorem Data %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\cs_new_protected:Npn \KeyThmsSavedTheorem #1#2#3#4#5#6#7 % 7th arg is body
+\cs_new_protected:Npn \__keythms_listof_savedtheorem:nnnnnnn #1#2#3#4#5#6#7 % 7th arg is body
   { \use:c { __keythms_thmitem_#1:nnnnnn } {#2}{#3}{#4}{#5}{#6}{#7} }
+\cs_new_eq:NN \KeyThmsSavedTheorem \__keythms_listof_savedtheorem:nnnnnnn
 \cs_new_protected:Npn \KeyThmsSavedTheoremReversed #1#2#3#4 { } % gobble by default
 
 \keys_define:nn { keytheorems/storeatbegin }
@@ -1618,6 +1619,7 @@
 % ^ initially a no-op, redefined where needed; important it's protected!
 \NewDocumentCommand \addtheoremcontentsline { m +m }
   {
+    \keythms_listof_chaptervspacehack:
     \addtocontents { thlist }
       {
         \KeyThmsContentsLine
@@ -1629,6 +1631,7 @@
   }
 \NewDocumentCommand \addtotheoremcontents { +m }
   {
+    \keythms_listof_chaptervspacehack:
     \addtocontents { thlist }
       {
         \KeyThmsContentsLine { #1 }
