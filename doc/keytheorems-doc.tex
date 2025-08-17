@@ -43,6 +43,9 @@
   pdfauthor={Matthew Bertucci},
   }
 
+\counterwithin{equation}{section}
+\keytheoremset{restate-counters={section}}
+
 \newkeytheoremstyle{breaksty}{break}
 \newkeytheorem{theorem}
 \newkeytheorem{mythm}[name=Some Name]
@@ -998,8 +1001,6 @@ In \refKey{headformat}, you may also use the traditional \pkg{amsthm} commands \
 Note also that if you use these lower-level commands, the style keys \refKey{notebraces}, \refKey{notefont}, \refKey{noteseparator}, and \refKey{numberfont} will have no effect (of course, you can manually control these things inside the commands' arguments).
 \end{notebox}
 
-
-
 \begin{docKey}{headindent}
   {=\meta{length}}
   {initially |0pt|}
@@ -1129,6 +1130,31 @@ I am the \IfRestatingTF{restated}{original} example!
 \end{keythmscode}
 
 \end{docCommands}
+
+\subsection{Counters within a restated theorem}
+
+Counters used within a theorem can be stored and set to their original value when restated.
+By default, this is done for the |equation| counter, however more counters can be added with \refKey{restate-counters}.
+This is necessary if, as is often the case, equations use the |section| or |subsection| counter as part of their numbering.
+
+\begin{codepreamble}
+\counterwithin{equation}{section}
+\keytheoremset{restate-counters={section}}
+\end{codepreamble}
+
+\begin{keythmscode}[withpreamble]
+\begin{theorem}[store=Fermat]
+For $n\geq 3$, there are no nontrivial integer solutions to the equation
+\begin{equation}
+x^n+y^n=z^n.
+\end{equation}
+\end{theorem}
+
+\getkeytheorem{Fermat}
+\end{keythmscode}
+
+In this example, removing |\keytheoremset{restate-counters={section}}| would not change the restated equation number because it is being restated in the same section.
+If that line were removed, the restated equation number would be different (wrong) if restated in a different section.
 
 \subsection{Restating theorems from an external file}
 
