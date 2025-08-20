@@ -20,6 +20,15 @@
 \newlistof{ keythms_support_memoir_listof:w }{ thlist }
   { \l__keythms_listof_title_tl }
 
+% small hack to use the same marks as \listoffigures
+\cs_set:Npn \thlistmark
+  {
+    \group_begin:
+    \cs_set_eq:NN \listfigurename \l__keythms_listof_title_tl
+    \lofmark
+    \group_end:
+  }
+
 \RenewDocumentCommand \listofkeytheorems { +O{} }
   {
     \bool_gset_true:N \g__keythms_listof_writefile_bool
@@ -29,6 +38,11 @@
     \bool_if:NF \l__keythms_listof_nochapskip_bool
       {
         \cs_set_eq:NN \KeyThmsAddvspace \addvspace
+      }
+    \bool_if:NT \l__keythms_listof_swapnumber_bool
+      {
+        \cs_set:Npn \__keythms_listof_misdirect:nnn ##1##2##3
+          { ##1 ~ ##2##3 }
       }
     \bool_if:NTF \l__keythms_listof_notitle_bool
       {

@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [v0.3.2dev]
+- fix marks in memoir class to match `\listoffigures`
+- add `swapnumber` functionality for `\listofkeytheorems` in memoir and AMS classes
+
 ## [v0.3.1]
 - add `sharenumbers` alias for `siblings` key of the `predefined` option
   ([\#28](https://github.com/mbertucci47/keytheorems/issues/28))
@@ -95,6 +99,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.3.2dev]: https://github.com/mbertucci47/keytheorems/compare/v0.3.1...HEAD
 [v0.3.1]: https://github.com/mbertucci47/keytheorems/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/mbertucci47/keytheorems/compare/v0.2.7...v0.3.0
 [v0.2.7]: https://github.com/mbertucci47/keytheorems/compare/v0.2.6...v0.2.7

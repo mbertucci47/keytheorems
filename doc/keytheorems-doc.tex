@@ -94,7 +94,7 @@
 \newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
 \newkeytheorem{mainthm}[
   name=Theorem,
-  counter-format=\Alph{mainthm},
+  counter-format=\Alph*,
   ]
 \newkeytheoremstyle{marginstyle}{headformat=margin}
 \newkeytheoremstyle{swapnumberstyle}{headformat=swapnumber}
@@ -773,7 +773,7 @@ If used with an unnumbered theorem, a warning is issued.
 \begin{codepreamble}
 \newkeytheorem{mainthm}[
   name=Theorem,
-  counter-format=\Alph{mainthm},
+  counter-format=\Alph*,
   ]
 \end{codepreamble}
 
@@ -786,8 +786,9 @@ And here is the second main result.
 \end{mainthm}
 \end{keythmscode}
 
-Eventually \LaTeX{} will allow syntax of the form \cs{Alph*} similar to \pkg{enumitem}'s |label| key, where the |*| means ``use the current counter'' (see \href{https://github.com/latex3/latex2e/issues/1632}{\texttt{latex2e\#1632}}).
-Then the above example could be written as |counter-format=\Alph*|.
+The |*| following |\Alph| means ``use the current counter'', a syntax originally introduced in \pkg{enumitem}'s |label| key.
+This is available with a \LaTeX{} kernel 2025-06-01 or later.
+For older kernels, the above example could be implemented equivalently with |counter-format=\Alph{mainthm}|.
 \end{docKey}
 
 \begin{docKeys}[doc parameter={=\meta{length}}]
@@ -1267,6 +1268,7 @@ Applies \refKey{show} to all theorems.
   {\colOpt{=true\textbar false}}
   {initially |false|}
 Swaps the position of the theorem name and number in the list of theorems.
+This will override \refKey{format-code} if true.
 
 \begin{keythmscode}
 \listofkeytheorems[ignoreall,show=lemma]

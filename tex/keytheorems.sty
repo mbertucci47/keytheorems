@@ -3140,6 +3140,11 @@
           {
             \cs_set_protected:Npn \KeyThmsAddvspace { \addvspace }
           }
+        \bool_if:NT \l__keythms_listof_swapnumber_bool
+          {
+            \cs_set:Npn \__keythms_listof_misdirect:nnn ####1####2####3
+              { ####1 ~ ####2####3 }
+          }
         \legacy_if_set_false:n { @filesw }
         \bool_if:NTF \l__keythms_listof_notitle_bool
           { % hacky!
