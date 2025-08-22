@@ -1707,6 +1707,7 @@
               }
           }
       }
+    \makeatletter % guard against @; \@starttoc already does this
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
   }
@@ -1936,6 +1937,7 @@
       }
     % ignore \KeyThmsSavedTheoremReversed from external file
     \cs_set_protected:Npn \KeyThmsSavedTheoremReversed ##1##2##3##4 { }
+    \makeatletter
     \file_if_exist_input:nF { #2.thlist }
       {
         \msg_warning:nnn { keytheorems } { missing-ext-thlist } { #2 }
