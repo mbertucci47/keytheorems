@@ -1354,6 +1354,23 @@ With these classes, this key suppresses the addition of the list of theorems to 
 Formats the optional note in the list of theorems.
 \end{docKey}
 
+\begin{docKey}{one-col}
+  {\colOpt{=true\textbar false}}
+  {initially |false|}
+In |twocolumn| mode, some classes such as the standard \cls{book} typeset lists of figures, etc., in one column.
+\pkg{keytheorems} does not do this by default; this key forces the list into |onecolumn| mode.
+Note that this is \emph{not} compatible with the application mentioned under \refKey{no-title} since switching between \cs{onecolumn} and \cs{twocolumn} starts a new page.
+You can, however, achieve the same effect manually:
+\begin{dispListing}
+\keytheoremlistset{ignoreall}
+\onecolumn
+\listofkeytheorems[show=example]
+\listofkeytheorems[show=solution,no-title]
+\twocolumn
+\end{dispListing}
+If \refKey{no-chapter-skip} is false (the default), you may want to add some vertical space between the two lists.
+\end{docKey}
+
 \begin{docKey}{onlynumbered}
   {\colOpt{=\marg{comma-list of env names}}}
   {initially unset}

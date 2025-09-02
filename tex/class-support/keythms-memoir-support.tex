@@ -39,6 +39,9 @@
       {
         \cs_set_eq:NN \KeyThmsAddvspace \addvspace
       }
+    \bool_if:NTF \l__keythms_listof_onecol_bool
+      { \onecoltocetc }
+      { \doccoltocetc } % I guess this is what we want?
     \bool_if:NT \l__keythms_listof_swapnumber_bool
       {
         \cs_set:Npn \__keythms_listof_misdirect:nnn ##1##2##3

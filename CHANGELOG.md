@@ -3,6 +3,7 @@
 ## [v0.3.2dev]
 - fix marks in memoir class to match `\listoffigures`
 - add `swapnumber` functionality for `\listofkeytheorems` in memoir and AMS classes
+- add `one-col` list key
 
 ## [v0.3.1]
 - add `sharenumbers` alias for `siblings` key of the `predefined` option

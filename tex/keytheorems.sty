@@ -2007,6 +2007,8 @@
     numwidth            .dim_set:N  = \l__keythms_listof_numwidth_dim,
     numwidth            .initial:n  = 2.3em,
     numwidth            .value_required:n = true,
+    one-col             .bool_set:N = \l__keythms_listof_onecol_bool,
+    one-col             .initial:n  = false,
     onlynamed           .code:n     =
       {
         \hook_gput_code:nnn { begindocument } { keytheorems }
@@ -2302,6 +2304,7 @@
    }
 \cs_new_eq:NN \keythms_listof_tocline: \__keythms_listof_default_tocline:
 
+\cs_new_protected:Npn \__keythms_listof_twocolreset: { } % empty by default
 \NewDocumentCommand \listofkeytheorems { +O{} }
   {
     \bool_gset_true:N \g__keythms_listof_writefile_bool
@@ -2311,6 +2314,14 @@
     \bool_if:NF \l__keythms_listof_nochapskip_bool
       {
         \cs_set_protected:Npn \KeyThmsAddvspace { \addvspace }
+      }
+    \bool_if:NT \l__keythms_listof_onecol_bool
+      { % actually check if setting \onecolumn is necessary
+        \legacy_if:nT { @twocolumn }
+          {
+            \onecolumn
+            \cs_set_protected:Npn \__keythms_listof_twocolreset: { \twocolumn }
+          }
       }
     \bool_if:NF \l__keythms_listof_notitle_bool
       {
@@ -2325,6 +2336,7 @@
       }
     \legacy_if_set_false:n { @filesw }
     \@starttoc{ thlist }
+    \__keythms_listof_twocolreset:
     \group_end:
   }
 % ^ unlike thmtools we don't use the class's style of \listoffigures because
@@ -2352,13 +2364,17 @@
 
 % chaptervspacehack (code translated from thmtools)
 \cs_new_protected:Npn \KeyThmsAddvspace #1 { } % initially no-op, redefined where needed
+% We need to not add space immediately after the title-code, but do add space
+% after theorem entries that come before the first chapter. How to detect that?
+% Answer: only set prevchapter int at the first theorem
 \int_new:N \g_keythms_listof_prevchapter_int
-\int_gset:Nn \g_keythms_listof_prevchapter_int { 1 }
-% ^ if this is zero, bad things happen if title-code is changed;
-%   anyways don't need addvspace at top
 \cs_new_protected:Npn \keythms_listof_chaptervspacehack: { }
 \cs_if_exist:cT { c@chapter }
   {
+    \hook_gput_next_code:nn { keytheorems/allthms/prehead }
+      {
+        \int_gset:Nn \g_keythms_listof_prevchapter_int { \value{chapter} }
+      }
     \cs_set_protected:Npn \keythms_listof_chaptervspacehack:
       {
         \int_compare:nNnF
@@ -3142,6 +3158,14 @@
           {
             \cs_set_protected:Npn \KeyThmsAddvspace { \addvspace }
           }
+        \bool_if:NT \l__keythms_listof_onecol_bool
+          { % actually check if setting \onecolumn is necessary
+            \legacy_if:nT { @twocolumn }
+              {
+                \onecolumn
+                \cs_set_protected:Npn \__keythms_listof_twocolreset: { \twocolumn }
+              }
+          }
         \bool_if:NT \l__keythms_listof_swapnumber_bool
           {
             \cs_set:Npn \__keythms_listof_misdirect:nnn ####1####2####3
@@ -3159,6 +3183,7 @@
               { \cs_set_eq:NN \addcontentsline \use_none:nnn } % hacky!
             \@starttoc{ thlist }{ \l__keythms_tmpa_tl }
           }
+        \__keythms_listof_twocolreset:
         \group_end:
       }
     \cs_new:Npn \__keythms_listof_ams_tocline:
