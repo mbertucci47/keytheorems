@@ -799,7 +799,7 @@
           { \text_titlecase_first:n { #1 } }
       }
     % associate formatted name with envname in prop list
-    \prop_gput:NnV \g__keythms_thmnames_prop { #1 } \l__keythms_thm_name_tl
+    \prop_gput:NeV \g__keythms_thmnames_prop { #1 } \l__keythms_thm_name_tl
     % Call correct \newtheorem variant
     \bool_if:NTF \l__keythms_thm_unlessunique_bool
       {
