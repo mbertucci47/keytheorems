@@ -520,7 +520,7 @@ At the moment this is only useful with the \refKey{note} key.
 \begin{theorem}[
   store=rktest,
   note=Original,
-  restate-keys={note=Restated}
+  restate-keys={note=Restated},
   ]
 Wow, yet another theorem.
 \end{theorem}
@@ -680,7 +680,7 @@ Details in \autoref{keythms-hooks}.
   preheadhook=PREHEAD,
   postheadhook=POSTHEAD,
   prefoothook=PREFOOT,
-  postfoothook=POSTFOOT
+  postfoothook=POSTFOOT,
   ]
 \end{codepreamble}
 
@@ -717,14 +717,14 @@ Some more text.
 
 \begin{docKey}[][before upper=\TCBdescnewline]{refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
-  {initially \cs{MakeLowercase} \meta{display name}}
+  {initially \cs{text\string_lowercase:n} \marg{display name}}
 If a single string, then the name used by \pkg{hyperref}'s \cs{autoref}, \pkg{cleveref}'s \cs{cref}, and \pkg{zref-clever}'s \cs{zcref}.
 If two strings separated by a comma, then the second string is the plural form used by \cs{cref} and \cs{zcref}.
 \end{docKey}
 
 \begin{docKey}[][before upper=\TCBdescnewline]{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
-  {initially \cs{MakeUppercase} \meta{display name}}
+  {initially \cs{text\string_titlecase\string_first:n} \marg{display name}}
 Same as \refKey{refname} but for \docAuxCommand{Autoref}, \cs{Cref}, and \cs{zcref} with any of its capitalizing options.
 Note that \cs{Autoref} is defined by \pkg{keytheorems}, but requires \pkg{hyperref} to work.
 As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} that suppresses the hyperlink.
@@ -733,7 +733,7 @@ As with \cs{autoref}, there is also a starred version \docAuxCommand{Autoref*} t
 \newkeytheorem{prop}[
   name=Proposition,
   refname={proposition,propositions},
-  Refname={Proposition,Propositions}
+  Refname={Proposition,Propositions},
   ]
 \end{codepreamble}
 
@@ -867,7 +867,7 @@ Same usage as \refKey{tcolorbox} but the theorem head is typeset as usual, not a
 \newkeytheorem{boxcor}[
   tcolorbox-no-titlebar={colback=red!10},
   name=Corollary,
-  sibling=corollary
+  sibling=corollary,
   ]
 \end{codepreamble}
 
@@ -899,7 +899,7 @@ Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem sty
   }
 \newkeytheorem{mytheo}[
   name=Theorem,
-  style=tcb-standard
+  style=tcb-standard,
   ]
 \end{codepreamble}
 

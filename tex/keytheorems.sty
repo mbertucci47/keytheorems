@@ -607,15 +607,15 @@
 % plural/capitalization defaults by unnecessarily calling \crefname
 \cs_new_protected:Npn \__keythms_thm_setrefnamedefaults:nn #1#2
   { % \autoref and \Autoref
-    \cs_set:cpn { #1 autorefname } { \MakeLowercase #2 }
-    \cs_set:cpn { #1 Autorefname } { \MakeUppercase #2 }
+    \cs_set:cpe { #1 autorefname } { \text_lowercase:n { #2 } }
+    \cs_set:cpe { #1 Autorefname } { \text_titlecase_first:n { #2 } }
     % zref-clever
     \IfPackageLoadedT { zref-clever }
       {
-        \zcRefTypeSetup { #1 }
+        \exp_args:Nne \zcRefTypeSetup { #1 }
           {
-            name-sg = \MakeLowercase #2,
-            Name-sg = \MakeUppercase #2,
+            name-sg = \exp_not:v { #1 autorefname },
+            Name-sg = \exp_not:v { #1 Autorefname },
           }
       }
   }

@@ -4,6 +4,7 @@
 - fix marks in memoir class to match `\listoffigures`
 - add `swapnumber` functionality for `\listofkeytheorems` in memoir and AMS classes
 - add `one-col` list key
+- change initial values for `refname` and `Refname`
 
 ## [v0.3.1]
 - add `sharenumbers` alias for `siblings` key of the `predefined` option
