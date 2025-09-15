@@ -162,7 +162,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 \clist_new:N \l__keythms_tmpa_clist
-\dim_new:N \l__keythms_tmpa_dim
 \iow_new:N \g__keythms_tmpa_iow
 \seq_new:N \l__keythms_tmpa_seq
 \tl_new:N \l__keythms_tmpa_tl
@@ -921,8 +920,8 @@
       { \__keythms_theoremstyle:V \l__keythms_thm_currentthmstyle_tl }
   }
 
-\hook_gput_code:nnn { begindocument/end } { . }
-  { % /end for 'predefined'
+\tl_const:Nn \c__keythms_hooksetup_tl
+  {
     \prop_map_inline:Nn \g__keythms_thmnames_prop
       {
         \__keythms_thm_makethmhooks:n { #1 }
@@ -937,6 +936,10 @@
         \use:c { g__keythms_thm_tcbpatch_#1_tl }
       }
     \cs_set_eq:NN \__keythms_thm_origtrivlist: \trivlist % for margin code below
+  }
+\hook_gput_code:nnn { begindocument/end } { . }
+  { % /end for 'predefined'
+    \tl_use:N \c__keythms_hooksetup_tl
   }
 
 \cs_new_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
@@ -963,11 +966,14 @@
       { \cs_set_eq:NN \trivlist \__keythms_thm_origtrivlist: }
   }
 
-\hook_gput_code:nnn { begindocument/end } { . }
+\tl_const:Nn \c__keythms_savedcmdssetup_tl
   { % use /end because hyperref redefines \Hy@theorem@makelinktarget in begindocument
     \cs_new_eq:NN \__keythms_thm_origdeferred@thm@head:n \deferred@thm@head
     \cs_new_eq:NN \__keythms_thm_origHy@theorem@makelinktarget:n \Hy@theorem@makelinktarget
   }
+\hook_gput_code:nnn { begindocument/end } { . }
+  { \tl_use:N \c__keythms_savedcmdssetup_tl }
+
 \cs_new_protected:Npn \__keythms_thm_tcbcode:nn #1#2
   { % #1 = name, #2 = tcolorbox keys
     \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
@@ -1178,7 +1184,7 @@
 \cs_generate_variant:Nn \__keythms_thm_new_uuwithparent:nnn { nVV }
 
 % for getting notes with continues*, use nameref if available, otherwise ltproperties
-\hook_gput_code:nnn { begindocument } { . }
+\tl_const:Nn \c__keythms_notesetup_tl
   {
     \IfPackageLoadedTF { nameref }
       { % only need to record short-note if nameref loaded
@@ -1241,6 +1247,8 @@
         \cs_set:Npn \__keythms_thmuse_recordnote: { }
       }
   }
+\hook_gput_code:nnn { begindocument } { . }
+  { \tl_use:N \c__keythms_notesetup_tl }
 
 \keys_define:nn { keytheorems/thmuse }
   {
@@ -1469,14 +1477,12 @@
   { % #1 = theorem name, #2 = keys, #3 = note
     \begin{keythms_grab_#1}{#2}{#3}
   }
-\cs_generate_variant:Nn \__keythms_grab_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grab_end:n #1 { \end{keythms_grab_#1} }
 
 \cs_new_protected:Npn \__keythms_grabreversed_begin:nnn #1#2#3
   { % #1 = theorem name, #2 = keys, #3 = note
     \begin{keythms_grabreversed_#1}{#2}{#3}
   }
-\cs_generate_variant:Nn \__keythms_grabreversed_begin:nnn { nnV }
 \cs_new_protected:Npn \__keythms_grabreversed_end:n #1
   { \end{keythms_grabreversed_#1} }
 
@@ -1638,7 +1644,7 @@
       }
   }
 
-\hook_gput_code:nnn { begindocument } { . }
+\tl_const:Nn \c__keythms_thlistsetup_tl
   {
     \group_begin:
     \cs_set_protected:Npn \KeyThmsSavedTheorem #1#2#3#4#5#6#7
@@ -1711,6 +1717,8 @@
     \file_if_exist_input:n { \c_sys_jobname_str.thlist }
     \group_end:
   }
+\hook_gput_code:nnn { begindocument } { . }
+  { \tl_use:N \c__keythms_thlistsetup_tl }
 
 \prg_new_conditional:Npnn \keythms_if_restating: { T, F, TF }
   {
@@ -2059,7 +2067,7 @@
     title-code          .value_required:n = true,
   }
 
-\hook_gput_code:nnn { begindocument/end } { . }
+\tl_const:Nn \c__keythms_redeflistkeys_tl
   { % redefine these keys at begindocument/end for reasons above
     \keys_define:nn { keytheorems/listof }
       {
@@ -2082,6 +2090,8 @@
           },
       }
   }
+\hook_gput_code:nnn { begindocument/end } { . }
+  { \tl_use:N \c__keythms_redeflistkeys_tl }
 
 \NewDocumentCommand \keytheoremlistset { +m }
   {
@@ -2343,7 +2353,7 @@
 %   we want control over title-code, no-title, etc. But this means we have to guess
 %   things like marks, sectioning command, etc.
 
-\hook_gput_code:nnn { enddocument } { . }
+\tl_const:Nn \c__keythms_openthlist_tl
   {
     \bool_if:NTF \g__keythms_listof_writefile_bool
       {
@@ -2361,6 +2371,8 @@
           }
       }
   }
+\hook_gput_code:nnn { enddocument } { . }
+  { \tl_use:N \c__keythms_openthlist_tl }
 
 % chaptervspacehack (code translated from thmtools)
 \cs_new_protected:Npn \KeyThmsAddvspace #1 { } % initially no-op, redefined where needed
@@ -2895,7 +2907,7 @@
     \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
   }
 
-\hook_gput_code:nnn { begindocument/before } { . }
+\tl_const:Nn \c__keythms_translationsetup_tl
   { % use 'provide' in case user defines their own translation in preamble
     \ProvideTranslationFallback { keythms_listof_title } { List~of~Theorems }
     \ProvideTranslationFallback { keythms_continues }    { continuing~from~p.\, }
@@ -3053,6 +3065,8 @@
         \ProvideTranslation { Welsh }      { keythms_continues }    { yn~parhau~o~dudalen~ }
       }
   }
+\hook_gput_code:nnn { begindocument/before } { . }
+  { \tl_use:N \c__keythms_translationsetup_tl }
 
 \keys_define:nn { keytheorems/predefined }
   {
@@ -3067,7 +3081,7 @@
     sharenumbers .usage:n          = preamble,
   }
 \cs_generate_variant:Nn \keythms_thm_providekeythm:nn { ne }
-\hook_gput_code:nnn { begindocument } { . }
+\tl_const:Nn \c__keythms_predefinedsetup_tl
   { % ^ translations doesn't set current lang until begindocument/before
     \bool_if:NT \g__keythms_predefined_bool
       {
@@ -3129,6 +3143,8 @@
           }
       }
   }
+\hook_gput_code:nnn { begindocument } { . }
+  { \tl_use:N \c__keythms_predefinedsetup_tl }
 
 \ProcessKeyOptions[keytheorems]
 

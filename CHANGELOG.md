@@ -5,6 +5,7 @@
 - add `swapnumber` functionality for `\listofkeytheorems` in memoir and AMS classes
 - add `one-col` list key
 - change initial values for `refname` and `Refname`
+- speed up package loading (https://tex.stackexchange.com/a/751122/208544)
 
 ## [v0.3.1]
 - add `sharenumbers` alias for `siblings` key of the `predefined` option

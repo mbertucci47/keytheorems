@@ -339,14 +339,12 @@
   { % #1 = theorem name, #2 = keys, #3 = note
     \begin{keythms_beamer_grab_#1}{#2}{#3}{#4}
   }
-\cs_generate_variant:Nn \__keythms_beamer_grab_begin:nnnn { nnV }
 \cs_new_protected:Npn \__keythms_beamer_grab_end:n #1 { \end{keythms_beamer_grab_#1} }
 
 \cs_new_protected:Npn \__keythms_beamer_grabreversed_begin:nnnn #1#2#3#4
   { % #1 = theorem name, #2 = keys, #3 = note
     \begin{keythms_beamer_grabreversed_#1}{#2}{#3}{#4}
   }
-\cs_generate_variant:Nn \__keythms_beamer_grabreversed_begin:nnnn { nnV }
 \cs_new_protected:Npn \__keythms_beamer_grabreversed_end:n #1
   { \end{keythms_beamer_grabreversed_#1} }
   
