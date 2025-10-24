@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-09-16}
-\def\@keythms@version{0.3.2}
+\def\@keythms@date{2025-10-23}
+\def\@keythms@version{0.3.3dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -1726,9 +1726,9 @@
       { \prg_return_true: }
       { \prg_return_false: }
   }
-\NewDocumentCommand \IfRestatingTF { } { \keythms_if_restating:TF }
-\NewDocumentCommand \IfRestatingT { } { \keythms_if_restating:T }
-\NewDocumentCommand \IfRestatingF { } { \keythms_if_restating:F }
+\NewExpandableDocumentCommand \IfRestatingTF { } { \keythms_if_restating:TF }
+\NewExpandableDocumentCommand \IfRestatingT { } { \keythms_if_restating:T }
+\NewExpandableDocumentCommand \IfRestatingF { } { \keythms_if_restating:F }
 
 \hook_gput_code:nnn { keytheorems/allthms/restated } { . }
   { % code to disable things in restated theorems
