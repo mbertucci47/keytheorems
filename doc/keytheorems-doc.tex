@@ -2,7 +2,8 @@
 % arara: lualatex: { synctex:yes, interaction:nonstopmode }
 % arara: makeindex
 % arara: lualatex: { synctex:yes, interaction:nonstopmode } if found('log', 'Rerun to get')
-\DocumentMetadata{lang=en-US}
+\RequirePackage{pdfmanagement}
+\SetKeys[document/metadata]{lang=en-US}
 \PassOptionsToPackage{hyperindex}{hyperref}
 \PassOptionsToPackage{dvipsnames}{xcolor}
 \documentclass{ltxdoc}
@@ -226,7 +227,7 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 
 The package depends on the \pkg{aliascnt}, \pkg{amsthm}, \pkg{refcount}, and \pkg{translations} packages.
 The \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package.
-A \LaTeX{} kernel no older than 2023-06-01 is required; if older than 2024-06-01, \pkg{nameref} is required.
+A \LaTeX{} kernel no older than 2025-06-01 is required.
     
 \section{Global options}
 
@@ -1541,11 +1542,11 @@ The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust
 \label{subsec:tagging}
 
 The \LaTeX{} team has been working hard to support the creation of tagged PDFs (see \url{https://latex3.github.io/tagging-project/}).
-The current |dev| formats make \pkg{amsthm} compatible with the kernel tagging code.
+In the current format, \pkg{amsthm} is compatible with the kernel tagging code.
 Most of \pkg{keytheorems} is supported too, and anything that doesn't work should be reported.
 Explicitly not supported are the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys.
 
-To produce a tagged PDF, add \cs{DocumentMetadata} in the first line of your document (additional instructions are found on the Tagging Project \href{https://latex3.github.io/tagging-project/documentation/prototype-usage-instructions.html}{website}).
+To produce a tagged PDF, add \cs{DocumentMetadata} in the first line of your document (additional instructions are found on the Tagging Project \href{https://latex3.github.io/tagging-project/documentation/usage-instructions}{website}).
 An example invocation might look like
 
 \begin{dispListing}

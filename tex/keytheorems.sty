@@ -1,37 +1,11 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\NeedsTeXFormat{LaTeX2e}[2023-06-01]
-\def\@keythms@date{2025-10-23}
+\NeedsTeXFormat{LaTeX2e}[2025-06-01]
+\def\@keythms@date{2025-11-10}
 \def\@keythms@version{0.3.3dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
-
-\IfFormatAtLeastTF { 2024-06-01 } { }
-  {
-    \RequirePackage{nameref} % to avoid ltproperties in code below
-    \cs_generate_variant:Nn \cs_set:Npn { Npe }
-    \cs_generate_variant:Nn \iow_shipout:Nn { Ne }
-    \cs_generate_variant:Nn \keys_set:nn { ne }
-    \cs_generate_variant:Nn \msg_warning:nnn { nne }
-    \cs_generate_variant:Nn \tl_put_right:Nn { Ne }
-    \cs_generate_variant:Nn \tl_gput_right:Nn { ce }
-    \ProvideDocumentCommand \IfPackageLoadedT { m +m }
-      { \IfPackageLoadedTF{#1}{#2}{ } }
-    \ProvideDocumentCommand \IfPackageLoadedF { m +m }
-      { \IfPackageLoadedTF{#1}{ }{#2} }
-    \ProvideDocumentCommand \IfClassLoadedT { m +m }
-      { \IfClassLoadedTF{#1}{#2}{ } }
-    \ProvideDocumentCommand \IfClassLoadedWithOptionsT { m m +m }
-      { \IfClassLoadedWithOptionsTF{#1}{#2}{#3}{ } }
-    \ProvideDocumentCommand \IfPackageLoadedWithOptionsT { m m +m }
-      { \IfPackageLoadedWithOptionsTF{#1}{#2}{#3}{ } }
-  }
-\cs_if_exist:NF \@gobble@som
-  { % defined in ltsect.dtx 1.1g
-    \DeclareExpandableDocumentCommand\@gobble@om{+o+m}{}
-    \DeclareExpandableDocumentCommand\@gobble@som{s+o+m}{}
-  }
 
 \RequirePackage{aliascnt}
 \RequirePackage{amsthm} % ams classes have way of ignoring this
@@ -1231,20 +1205,12 @@
               { keytheorems/recordednote }
           }
       }
-    \IfFormatAtLeastTF { 2024-06-01 }
+    \property_new:nnnn { keytheorems/recordedshortnote } { now } { }
+      { \l__keythms_thmuse_shortnote_tl }
+    \cs_new:Npn \__keythms_getrecordedshortnote:n #1
       {
-        \property_new:nnnn { keytheorems/recordedshortnote } { now } { }
-          { \l__keythms_thmuse_shortnote_tl }
-        \cs_new:Npn \__keythms_getrecordedshortnote:n #1
-          {
-            \property_ref:nn { keythms_recordednote_#1 }
-              { keytheorems/recordedshortnote }
-          }
-      }
-      { % if format not new enough, just don't support continues* and short-note
-        \cs_new:Npn \__keythms_getrecordedshortnote:n #1 { }
-        % also need to cancel this definition
-        \cs_set:Npn \__keythms_thmuse_recordnote: { }
+        \property_ref:nn { keythms_recordednote_#1 }
+          { keytheorems/recordedshortnote }
       }
   }
 \hook_gput_code:nnn { begindocument } { . }
@@ -3276,7 +3242,7 @@
   {
     \IfFormatAtLeastTF { #1 } { \prg_return_true: } { \prg_return_false: }
   }
-\IfDocumentMetadataTF
+\IfDocumentMetadataT
   {
     \bool_lazy_or:nnT
       { \tag_if_active_p: }
@@ -3325,13 +3291,7 @@
                   },
               }
           }
-        \IfFormatAtLeastTF { 2025-06-01 }
-          { % dev formats use theoremblock instance
-            \tl_const:Nn \c__keythms_tagging_instance_tl { theoremblock-0 }
-          }
-          { % current format uses displayblock instance
-            \tl_const:Nn \c__keythms_tagging_instance_tl { displayblock-0 }
-          }
+        \tl_const:Nn \c__keythms_tagging_instance_tl { theoremblock-0 }
         \IfFormatAtLeastTF { 2025-11-01 }
           { % dev formats changed the name of the keys to left-margin, etc.
             \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
@@ -3367,6 +3327,5 @@
           }
       }
   }
-  { }
 
 \file_input_stop:
