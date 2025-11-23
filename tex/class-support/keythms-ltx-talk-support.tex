@@ -20,14 +20,29 @@
   {
     \__keythms_ltxtalk_orignewkeythm:nn { #1 } { #2 }
     \NewEnvironmentCopy { keythms_ltxtalk_orig_#1 } { #1 }
-    \RenewDocumentEnvironment { #1 } { D<>{all} ={note} O{} }
+    \RenewDocumentEnvironment { #1 } { d<> ={note} O{} }
       {
-        \begin{actionenv}<##1>
+        \tl_if_novalue:nTF { ##1 }
+          { % if on all slides, write to file for first then disable
+            \int_compare:nNnT { 1 } < { \g__talk_slide_int }
+              {
+                \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
+                \cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
+              }
+          }
+          {
+            \begin{actionenv}<##1>
+            \bool_if:NT \g__talk_slide_continue_bool
+              { % prevent writing to file except on last slide for overlays
+                \cs_set_eq:NN \__keythms_thm_addcontentsdata:nnnn \use_none:nnnn
+                \cs_set_eq:NN \__keythms_thm_addstoredreverseddata:nnn \use_none:nnn
+              }
+          }
         \begin{keythms_ltxtalk_orig_#1}[##2]
       }
       {
         \end{keythms_ltxtalk_orig_#1}
-        \end{actionenv}
+        \tl_if_novalue:nF { ##1 } { \end{actionenv} }
       }
   }
 
