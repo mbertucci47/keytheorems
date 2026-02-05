@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2025-06-01]
-\def\@keythms@date{2025-12-11}
-\def\@keythms@version{0.3.3}
+\def\@keythms@date{2026-02-05}
+\def\@keythms@version{0.3.4dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -724,6 +724,10 @@
 \tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
 \tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
+% to be redefined as \l__block_thmstyle_tl if new block code loaded
+\tl_new:N \l__keythms_thm_thestyle_tl
+\tl_set:Nn \l__keythms_thm_thestyle_tl { \the\thm@style }
+
 \cs_new_protected:Npn \keythms_thm_newkeythm:nn #1#2
   { % #1 = name, #2 = keys
     % Store envname
@@ -742,7 +746,7 @@
     % First set style so we can pick up additional thm keys, then overwrite if necessary
     \keys_set_groups:nnn { keytheorems/thm } { style-comes-first } { #2 }
     % Store theorem style
-    \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \the\thm@style }
+    \tl_set:Ne \l__keythms_thm_currentthmstyle_tl { \l__keythms_thm_thestyle_tl }
     \tl_if_empty:NTF \l__keythms_thm_style_tl
       { % if \theoremstyle set, also use saved thm keys
         \tl_if_exist:cT {l__keythms_thmstyle_ \l__keythms_thm_currentthmstyle_tl _savedthmkeys_tl}
@@ -793,10 +797,7 @@
                     \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
-                    \__keythms_thm_new_sibling:nVn { #1 }
-                      \l__keythms_thm_name_tl { #1 }
-                    \aliascntresetthe { #1 }
+                    \__keythms_thm_siblingcode:n { #1 }
                   }
               }
               {
@@ -823,10 +824,7 @@
                     \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
-                    \__keythms_thm_new_sibling:nVn { #1 }
-                      \l__keythms_thm_name_tl { #1 }
-                    \aliascntresetthe { #1 }
+                    \__keythms_thm_siblingcode:n { #1 }
                   }
               }
               {
@@ -1125,8 +1123,15 @@
 
 \cs_new_protected:Npn \__keythms_thm_new_sibling:nnn #1#2#3
   { \__keythms_thm_new:w { #1 } [ #3 ] { #2 } }
-\cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV }
+\cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV, nVV }
 
+% to be redefined later if 2026 block code detected
+\cs_new_protected:Npn \__keythms_thm_siblingcode:n #1
+  {
+    \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
+    \__keythms_thm_new_sibling:nVn { #1 } \l__keythms_thm_name_tl { #1 }
+    \aliascntresetthe { #1 }
+  }
 \cs_new_protected:Npn \__keythms_thm_new_uuwithparent:nnn #1#2#3
   {
     \cs_undefine:c { keythms_orig_nonumber_#1 } % for renew, declare
@@ -3238,94 +3243,95 @@
 %%% Tagging Support %%%
 %%%%%%%%%%%%%%%%%%%%%%%
 
-\prg_new_conditional:Npnn \__keythms_if_formatatleast:n #1 { p }
-  {
-    \IfFormatAtLeastTF { #1 } { \prg_return_true: } { \prg_return_false: }
-  }
 \IfDocumentMetadataT
   {
-    \bool_lazy_or:nnT
-      { \tag_if_active_p: }
-      { \__keythms_if_formatatleast_p:n { 2025-11-01 } }
+    \msg_new:nnn { keytheorems } { tag-incompat-key }
       {
-        \msg_new:nnn { keytheorems } { tag-incompat-key }
+        The~key~'#1'~does~not~currently~work~with~
+        tagging.~Ignoring~this~key~\msg_line_context:.
+      }
+    \keys_define:nn { keytheorems/thm }
+      {
+        tcolorbox .code:n =
           {
-            The~key~'#1'~does~not~currently~work~with~
-            tagging.~Ignoring~this~key~\msg_line_context:.
-          }
-        \keys_define:nn { keytheorems/thm }
+            \msg_warning:nnn { keytheorems } { tag-incompat-key }
+              { tcolorbox }
+          },
+        tcolorbox-no-titlebar .code:n =
           {
-            tcolorbox .code:n =
-              {
-                \msg_warning:nnn { keytheorems } { tag-incompat-key }
-                  { tcolorbox }
-              },
-            tcolorbox-no-titlebar .code:n =
-              {
-                \msg_warning:nnn { keytheorems } { tag-incompat-key }
-                  { tcolorbox-no-titlebar }
-              },
-          }
-        \bool_lazy_any:nF
+            \msg_warning:nnn { keytheorems } { tag-incompat-key }
+              { tcolorbox-no-titlebar }
+          },
+      }
+    \bool_lazy_any:nF
+      {
+        { \__keythms_if_classloaded_p:n { amsart } }
+        { \__keythms_if_classloaded_p:n { amsbook } }
+        { \__keythms_if_classloaded_p:n { amsproc } }
+      }
+      { % only redefine \@starttoc with print-body when AMS class not loaded
+        \keys_define:nn { keytheorems/listof }
           {
-            { \__keythms_if_classloaded_p:n { amsart } }
-            { \__keythms_if_classloaded_p:n { amsbook } }
-            { \__keythms_if_classloaded_p:n { amsproc } }
-          }
-          { % only redefine \@starttoc with print-body when AMS class not loaded
-            \keys_define:nn { keytheorems/listof }
+            print-body .code:n =
               {
-                print-body .code:n =
+                \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
                   {
-                    \cs_set_protected:Nn \keythms_listof_listcmd:nnnnnnn
+                    \tl_if_empty:nF { ##7 }
                       {
-                        \tl_if_empty:nF { ##7 }
-                          {
-                            \keythms_getthm_theorem:nnnnn
-                              {##1}{##2}{##5}{##6}{##7}
-                          }
+                        \keythms_getthm_theorem:nnnnn
+                          {##1}{##2}{##5}{##6}{##7}
                       }
-                    % with tagging, make \@starttoc same as input
-                    \cs_set_protected:Npn \@starttoc ##1
-                      { \makeatletter \@input { \jobname.##1 } }
-                  },
-              }
-          }
-        \tl_const:Nn \c__keythms_tagging_instance_tl { theoremblock-0 }
-        \IfFormatAtLeastTF { 2025-11-01 }
-          { % dev formats changed the name of the keys to left-margin, etc.
-            \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
-              { % tagging code does not define theorems with lists
-                \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
-                  {
-                    \exp_args:Nne \EditInstance { block }
-                      { \c__keythms_tagging_instance_tl }
-                      {
-                        left-margin = #2,
-                        right-margin = #3,
-                      }
-                    % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
-                    \EditInstance { block } { listblock-1 } { right-margin = 0pt }
                   }
-              }
+                % with tagging, make \@starttoc same as input
+                \cs_set_protected:Npn \@starttoc ##1
+                  { \makeatletter \@input { \jobname.##1 } }
+              },
           }
+      }
+    \IfFormatAtLeastTF { 2026-06-01 }
+      {
+        \cs_set_protected:Npn \__keythms_thm_siblingcode:n #1
+          { % don't need aliascnt with 2026 dev formats
+            \__keythms_thm_new_sibling:nVV { #1 }
+              \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
+          }
+        \tl_set:Nn \l__keythms_thm_thestyle_tl { \l__block_thmstyle_tl }
+        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
           {
-            \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
-              { % tagging code does not define theorems with lists
-                \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+            \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
+              {
+                \exp_not:N \EditInstance { block }
+                  { thm- \l__block_thmstyle_tl -1 }
                   {
-                    \exp_args:Nne \EditInstance { block }
-                      { \c__keythms_tagging_instance_tl }
-                      {
-                        leftmargin = #2,
-                        rightmargin = #3,
-                      }
-                    % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
-                    \EditInstance { block } { list-1 } { rightmargin = 0pt }
+                    left-margin=#2,
+                    right-margin=#3,
                   }
+                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+                \exp_not:N \EditInstance { block }
+                  { std-list-1 }
+                  { right-margin=0pt }
               }
           }
       }
+      {
+        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+          { % tagging code does not define theorems with lists
+            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+              {
+                \EditInstance { block }
+                  { theoremblock-0 }
+                  {
+                    left-margin=#2,
+                    right-margin=#3,
+                  }
+                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+                \EditInstance { block }
+                  { listblock-1 }
+                  { right-margin=0pt }
+              }
+          }
+      }
+
   }
 
 \file_input_stop:
