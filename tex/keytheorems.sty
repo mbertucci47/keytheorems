@@ -2,7 +2,7 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2025-06-01]
-\def\@keythms@date{2026-02-05}
+\def\@keythms@date{2026-02-06}
 \def\@keythms@version{0.3.4dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
@@ -484,31 +484,55 @@
 %%% Defining Theorems %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
-\cs_new_protected:Npn \__keythms_thm_setrefnames:nn #1#2
+\cs_new_protected:Npn \__keythms_thm_parserefnames:n #1
   { % use \seq_set_split instead of clist functions to preserve empty entries
-    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #2 }
+    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #1 }
     \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 2 }
       {
-        \__keythms_thm_setrefnames_auxII:nee { #1 }
+        \tl_set:Ne \l__keythms_thm_refname_tl
           { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+        \tl_set:Ne \l__keythms_thm_pluralrefname_tl
           { \seq_item:Nn \l__keythms_tmpa_seq { 2 } }
       }
       {
         \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 1 }
           {
-            \__keythms_thm_setrefnames_auxI:ne { #1 }
+            \tl_set:Ne \l__keythms_thm_refname_tl
               { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
           }
           { \msg_error:nnn { keytheorems } { refname-argcount } { refname } }
       }
   }
-\cs_generate_variant:Nn \__keythms_thm_setrefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setrefnames:n #1
+  { 
+    \quark_if_no_value:NTF \l__keythms_thm_pluralrefname_tl
+      {
+        \quark_if_no_value:NF \l__keythms_thm_refname_tl
+          {
+            \__keythms_thm_setrefnames_auxI:nV { #1 } \l__keythms_thm_refname_tl
+          }
+      }
+      {
+        \quark_if_no_value:NTF \l__keythms_thm_refname_tl
+          {
+            \__keythms_thm_setrefnames_auxII:nvV { #1 }
+              { #1 autorefname }
+              \l__keythms_thm_pluralrefname_tl
+          }
+          {
+            \__keythms_thm_setrefnames_auxII:nVV { #1 }
+              \l__keythms_thm_refname_tl
+              \l__keythms_thm_pluralrefname_tl
+          }
+      }
+  }
 \cs_new_protected:Npn \__keythms_thm_setrefnames_auxI:nn #1#2
   {
     \cs_set:cpn { #1 autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      {
-        \crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
+      { % \protect is needed because of what cleveref does if only one of
+        % \crefname or \Crefname are given
+        \crefname{#1}{#2}{\protect\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
       {
@@ -527,34 +551,58 @@
         \zcRefTypeSetup{#1}{ name-sg=#2, name-pl=#3 }
       }
   }
-\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxI:nn { ne }
-\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxII:nnn { nee }
+\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxI:nn { nV }
+\cs_generate_variant:Nn \__keythms_thm_setrefnames_auxII:nnn { nVV, nvV }
 
-\cs_new_protected:Npn \__keythms_thm_setRefnames:nn #1#2
+\cs_new_protected:Npn \__keythms_thm_parseRefnames:n #1
   { % use \seq_set_split instead of clist functions to preserve empty entries
-    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #2 }
+    \seq_set_split:Nnn \l__keythms_tmpa_seq { , } { #1 }
     \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 2 }
       {
-        \__keythms_thm_setRefnames_auxII:nee { #1 }
+        \tl_set:Ne \l__keythms_thm_Refname_tl
           { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
+        \tl_set:Ne \l__keythms_thm_pluralRefname_tl
           { \seq_item:Nn \l__keythms_tmpa_seq { 2 } }
       }
       {
         \int_compare:nNnTF { \seq_count:N \l__keythms_tmpa_seq } = { 1 }
           {
-            \__keythms_thm_setRefnames_auxI:ne { #1 }
+            \tl_set:Ne \l__keythms_thm_Refname_tl
               { \seq_item:Nn \l__keythms_tmpa_seq { 1 } }
           }
           { \msg_error:nnn { keytheorems } { refname-argcount } { Refname } }
       }
   }
-\cs_generate_variant:Nn \__keythms_thm_setRefnames:nn { nV }
+\cs_new_protected:Npn \__keythms_thm_setRefnames:n #1
+  {
+    \quark_if_no_value:NTF \l__keythms_thm_pluralRefname_tl
+      {
+        \quark_if_no_value:NF \l__keythms_thm_Refname_tl
+          {
+            \__keythms_thm_setRefnames_auxI:nV { #1 } \l__keythms_thm_Refname_tl
+          }
+      }
+      {
+        \quark_if_no_value:NTF \l__keythms_thm_Refname_tl
+          {
+            \__keythms_thm_setRefnames_auxII:nvV { #1 }
+              { #1 Autorefname }
+              \l__keythms_thm_pluralRefname_tl
+          }
+          {
+            \__keythms_thm_setRefnames_auxII:nVV { #1 }
+              \l__keythms_thm_Refname_tl
+              \l__keythms_thm_pluralRefname_tl
+          }
+      }
+  }
 \cs_new_protected:Npn \__keythms_thm_setRefnames_auxI:nn #1#2
   {
     \cs_set:cpn { #1 Autorefname } { #2 }
     \IfPackageLoadedT { cleveref }
-      {
-        \Crefname{#1}{#2}{\textbf{??~(pl.~#2)}}
+      { % \protect is needed because of what cleveref does if only one of
+        % \crefname or \Crefname are given
+        \Crefname{#1}{#2}{\protect\textbf{??~(pl.~#2)}}
       }
     \IfPackageLoadedT { zref-clever }
       {
@@ -573,8 +621,8 @@
         \zcRefTypeSetup{#1}{ Name-sg=#2, Name-pl=#3 }
       }
   }
-\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxI:nn { ne }
-\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxII:nnn { nee }
+\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxI:nn { nV }
+\cs_generate_variant:Nn \__keythms_thm_setRefnames_auxII:nnn { nVV,nvV }
 
 % this step is separate from above because we don't want to clobber cleveref's
 % plural/capitalization defaults by unnecessarily calling \crefname
@@ -623,6 +671,10 @@
     numberwithin   .value_required:n = true,
     parent         .tl_set:N  = \l__keythms_thm_parent_tl,
     parent         .value_required:n = true,
+    plural-refname .tl_set:N  = \l__keythms_thm_pluralrefname_tl,
+    plural-refname .value_required:n = true,
+    plural-Refname .tl_set:N  = \l__keythms_thm_pluralRefname_tl,
+    plural-Refname .value_required:n = true,
     postfoothook   .tl_set:N  = \l__keythms_thm_postfoothook_tl,
     postfoothook   .value_required:n = true,
     postheadhook   .tl_set:N  = \l__keythms_thm_postheadhook_tl,
@@ -634,9 +686,9 @@
     qed            .tl_set:N  = \l__keythms_thm_qed_tl,
     qed            .default:n = { \qedsymbol },
     % ^ distinguish between 'qed' and 'qed={}'
-    refname        .tl_set:N  = \l__keythms_thm_refname_tl,
+    refname        .code:n    = \__keythms_thm_parserefnames:n { #1 },
     refname        .value_required:n = true,
-    Refname        .tl_set:N  = \l__keythms_thm_Refname_tl,
+    Refname        .code:n    = \__keythms_thm_parseRefnames:n { #1 },
     Refname        .value_required:n = true,
     rightmargin    .dim_set:N = \l__keythms_thm_rightmargin_dim,
     rightmargin    .value_required:n = true,
@@ -677,8 +729,6 @@
     prefoothook    = {},
     preheadhook    = {},
     qed            = \q_no_value,
-    refname        = \q_no_value,
-    Refname        = \q_no_value,
     sibling        = {},
     style          = {},
   }
@@ -739,6 +789,11 @@
     \tl_gclear_new:c { g__keythms_thm_postfootfromkeys_#1_tl }
     % Make unless-unique false by default (can't precompile this)
     \bool_set_false:N \l__keythms_thm_unlessunique_bool
+    % Clear refnames
+    \tl_set_eq:NN \l__keythms_thm_refname_tl \q_no_value
+    \tl_set_eq:NN \l__keythms_thm_pluralrefname_tl \q_no_value
+    \tl_set_eq:NN \l__keythms_thm_Refname_tl \q_no_value
+    \tl_set_eq:NN \l__keythms_thm_pluralRefname_tl \q_no_value
     % Set default keys
     \tl_use:N \l__keythms_thm_defaultkeys_tl
     % Initialize tcb state to zero (1 is with title bar, 2 is without title bar)
@@ -846,10 +901,8 @@
     % Set ref name defaults; may be overwritten in next step
     \__keythms_thm_setrefnamedefaults:nV { #1 } \l__keythms_thm_name_tl
     % Set ref names
-    \quark_if_no_value:NF \l__keythms_thm_refname_tl
-      { \__keythms_thm_setrefnames:nV { #1 } \l__keythms_thm_refname_tl }
-    \quark_if_no_value:NF \l__keythms_thm_Refname_tl 
-      { \__keythms_thm_setRefnames:nV { #1 } \l__keythms_thm_Refname_tl }
+    \__keythms_thm_setrefnames:n { #1 }
+    \__keythms_thm_setRefnames:n { #1 }
     % Set margins if needed
     \bool_lazy_or:nnT
       { ! \dim_compare_p:nNn { \l__keythms_thm_leftmargin_dim } = { 0pt } }

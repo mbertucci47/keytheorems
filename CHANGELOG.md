@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [v0.3.4dev]
+- add `plural-refname` and `plural-Refname` theorem keys
+  ([\#50](https://github.com/mbertucci47/keytheorems/issues/50))
+
 ## [v0.3.3]
 - make `\IfRestating(TF)` expandable
 - update required LaTeX to 2025-06-01
@@ -106,7 +110,8 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.3.3]: https://github.com/mbertucci47/keytheorems/compare/v0.3.2...HEAD
+[v0.3.4dev]: https://github.com/mbertucci47/keytheorems/compare/v0.3.3...HEAD
+[v0.3.3]: https://github.com/mbertucci47/keytheorems/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/mbertucci47/keytheorems/compare/v0.3.1...v0.3.2
 [v0.3.1]: https://github.com/mbertucci47/keytheorems/compare/v0.3.0...v0.3.1
 [v0.3.0]: https://github.com/mbertucci47/keytheorems/compare/v0.2.7...v0.3.0

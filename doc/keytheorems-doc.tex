@@ -764,6 +764,15 @@ For this reason, I recommend moving to \refPkg{zref-clever}.
 It offers all the same features as \pkg{cleveref} and is actively maintained.
 \end{notebox}
 
+\begin{docKeys}[doc parameter={=\meta{plural name}}]
+  {
+    { doc name=plural-refname, doc description=initially unset },
+    { doc name=plural-Refname, doc description=initially unset },
+  }
+For convenience, you can also just specify the \meta{plural name} with these keys.
+Since \pkg{keytheorems} uses the \meta{display name} to form the defaults for the \meta{singular name} but does not try to guess the \meta{plural name}, it's often the case that the user only needs to specify values for these keys and not \refKey{refname} or \refKey{Refname}.
+\end{docKeys}
+
 \subsection{Keys added by \pkg{keytheorems}} \label{thm-added-keys}
 
 \begin{docKey}{counter-format}
