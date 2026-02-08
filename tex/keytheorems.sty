@@ -3365,6 +3365,10 @@
                   { right-margin=0pt }
               }
           }
+        % is this the right fix?
+        \cs_set:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
+        \cs_set:Nn \keythms_thmstyle_thmnumber:n { \thmnumber{#1} }
+        \cs_set:Nn \keythms_thmstyle_thmnote:n { \thmnote{#1} }
       }
       {
         \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
