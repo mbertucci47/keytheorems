@@ -1178,12 +1178,22 @@
   { \__keythms_thm_new:w { #1 } [ #3 ] { #2 } }
 \cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV, nVV }
 
-% to be redefined later if 2026 block code detected
-\cs_new_protected:Npn \__keythms_thm_siblingcode:n #1
+% new enough kernels don't need aliascnt
+\cs_if_exist:NTF \newcounteralias
   {
-    \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
-    \__keythms_thm_new_sibling:nVn { #1 } \l__keythms_thm_name_tl { #1 }
-    \aliascntresetthe { #1 }
+    \cs_set_protected:Npn \__keythms_thm_siblingcode:n #1
+      { % don't need aliascnt with 2026 dev formats
+        \__keythms_thm_new_sibling:nVV { #1 }
+          \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
+      }
+  }
+  {
+    \cs_new_protected:Npn \__keythms_thm_siblingcode:n #1
+      {
+        \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
+        \__keythms_thm_new_sibling:nVn { #1 } \l__keythms_thm_name_tl { #1 }
+        \aliascntresetthe { #1 }
+      }
   }
 \cs_new_protected:Npn \__keythms_thm_new_uuwithparent:nnn #1#2#3
   {
@@ -3343,11 +3353,6 @@
       }
     \IfFormatAtLeastTF { 2026-06-01 }
       {
-        \cs_set_protected:Npn \__keythms_thm_siblingcode:n #1
-          { % don't need aliascnt with 2026 dev formats
-            \__keythms_thm_new_sibling:nVV { #1 }
-              \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
-          }
         \tl_set:Nn \l__keythms_thm_thestyle_tl { \l__block_thmstyle_tl }
         \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
           {
