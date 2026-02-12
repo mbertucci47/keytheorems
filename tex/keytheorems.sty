@@ -453,7 +453,7 @@
     \tl_if_empty:NF \l__keythms_thmstyle_spaceabove_tl
       {
         \skip_zero_new:c { g__keythms_thmstyle_#1_tcbspaceabove_skip }
-        \skip_set_eq:cN { g__keythms_thmstyle_#1_tcbspaceabove_skip }
+        \skip_gset_eq:cN { g__keythms_thmstyle_#1_tcbspaceabove_skip }
           \l__keythms_thmstyle_spaceabove_tl
       }
     \tl_if_empty:NF \l__keythms_thmstyle_spacebelow_tl
