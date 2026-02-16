@@ -16,15 +16,107 @@
   }{minted}
 \tcbuselibrary{documentation,minted,breakable,hooks}
 
-\ifTUTeX
-\usepackage{newcomputermodern}
-\else
-\usepackage{lmodern}
-\usepackage[T1]{fontenc}
-\usepackage{amssymb}
-\fi
+\usepackage{fontspec}
+\setmainfont{NewCM10-Book.otf}[
+  IgnoreFontspecFile,
+    % Copied from NewCM-Book.fontspec
+    % Needed to change BoldFont to LM demibold
+    UprightFont={NewCM10-Book.otf},%
+    UprightFeatures={%
+      SizeFeatures={%
+        {%
+          Size={-8},%
+          Font={NewCM08-Book.otf}%
+        },%
+        {%
+          Size={8-},%
+          Font={NewCM10-Book.otf}%
+        }%
+      }%
+    },%
+    ItalicFont={NewCM10-BookItalic.otf},%
+    ItalicFeatures={%
+      SizeFeatures={%
+        {%
+          Size={-8},%
+          Font={NewCM08-BookItalic.otf}%
+        },%
+        {%
+          Size={8-},%
+          Font={NewCM10-BookItalic.otf}%
+        }%
+      }%
+    },%
+    BoldFont={lmromandemi10-regular.otf},%
+    BoldFeatures={%
+      SizeFeatures={%
+        {%
+          Size={0-},%
+          Font={lmromandemi10-regular.otf}%
+        }%
+      }%
+    },%
+    BoldItalicFont={NewCM10-BoldItalic.otf},%
+    BoldItalicFeatures={%
+      SizeFeatures={%
+        {%
+          Size={0-},%
+          Font={NewCM10-BoldItalic.otf}%
+        }%
+      }%
+    },%
+    SlantedFont={NewCM10-Book.otf},%
+    SlantedFeatures={%
+      SizeFeatures={%
+        {%
+          Size={-8},%
+          Font={NewCM08-Book.otf}%
+        },%
+        {%
+          Size={8-},%
+          Font={NewCM10-Book.otf}%
+        }%
+      }%
+    },%
+    BoldSlantedFont={lmromandemi10-oblique.otf},%
+    BoldSlantedFeatures={%
+      SizeFeatures={%
+        {%
+          Size={0-},%
+          Font={lmromandemi10-oblique.otf}%
+        }%
+      }%
+    },%
+    SwashFont={NewCM10-Book.otf},%
+    SwashFeatures={%
+      SizeFeatures={%
+        {%
+          Size={-8},%
+          Font={NewCM08-Book.otf}%
+        },%
+        {%
+          Size={8-},%
+          Font={NewCM10-Book.otf}%
+        }%
+      }%
+    },%
+    BoldSwashFont={NewCM10-Bold.otf},%
+    BoldSwashFeatures={%
+      SizeFeatures={%
+        {%
+          Size={0-},%
+          Font={NewCM10-Bold.otf}%
+        }%
+      }%
+    }%
+  ]
+\setsansfont{NewCMSans10-Book.otf}
+\setmonofont{NewCMMono10-Book.otf}
+\usepackage{lum-newcomputermodern}
+
 \usetikzlibrary{cd}
 \usepackage{fontawesome5}
+\usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{keytheorems}
 \usepackage{zref-clever}
@@ -257,8 +349,7 @@ For most documents,
 should be a drop-in replacement for \cs{usepackage}\ttbraces{amsthm,thmtools}.
 The option defines the commands in the left column below.
 The right column lists the corresponding \pkg{keytheorems} replacement that should be used in new documents.
-\begin{center}
-\begin{tabular}{rcl}
+\begin{longtable}{rcl}
 \multicolumn{1}{c}{\pkg{thmtools} command} & & \multicolumn{1}{c}{\pkg{keytheorems} replacement} \\
 \toprule
 \docAuxCommand*{declaretheorem} & \textrightarrow & \refCom{newkeytheorem} \\
@@ -273,8 +364,7 @@ The right column lists the corresponding \pkg{keytheorems} replacement that shou
 \end{tabular} & \textrightarrow & \refCom{addtotheoremhook} \\
 \docAuxEnvironment*{restatable} environment & \textrightarrow & \refKey{store} key \\
 \docAuxEnvironment*{restatable*} environment & \textrightarrow & \refKey[store*]{store} key
-\end{tabular}
-\end{center}
+\end{longtable}
 Also defined are the \docAuxKey*{shaded} and \docAuxKey*{thmbox} keys, implemented internally with \pkg{tcolorbox} rather than the \pkg{shadethm} and \pkg{thmbox} packages, respectively.
 \end{docKey}
 
@@ -654,6 +744,8 @@ This shares its counter with \texttt{theorem}.
   {=\meta{style name}}
   {initially unset}
 Accepts any \meta{style name} defined by \refCom{newkeytheoremstyle}, as well as any of the predefined \pkg{amsthm} styles: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
+To emulate the appearance of theorems defined with the kernel \cs{newtheorem}, you may also use the predefined \docValue{legacy2e} style.
+See \zcref{predefsty} for more on the predefined styles.
 
 \begin{codepreamble}
 \newkeytheorem{remark}[style=remark]
@@ -946,6 +1038,18 @@ To overwrite an existing style, there is the analogous \cs{renewkeytheoremstyle}
 For completeness, also provided are \cs{providekeytheoremstyle} and \cs{declarekeytheoremstyle}.
 \end{docCommands}
 
+\subsection{Predefined styles}
+\label{predefsty}
+
+\pkg{amsthm} defines the styles |plain|, |definition|, and |remark|. These, along with a |legacy2e| style meant to emulate the style of the kernel \cs{newtheorem}, are supported in both the \refKey{style} theorem key and the \refKey{inherit-style} style key.
+The initial values changed by each style are described below.
+\begin{itemize}
+  \item \docValue*{plain}: This is the default.
+  \item \docValue*{definition}: |bodyfont=\normalfont|
+  \item \docValue*{remark}: |bodyfont=\normalfont|, |headfont=\itshape|, |spaceabove=0.5\topsep|, |spacebelow=0.5\topsep|
+  \item \docValue*{legacy2e}: |notefont=\bfseries|, |headpunct={}|
+\end{itemize}
+
 \subsection{Keys also defined in \pkg{thmtools}}
 \label{stylekeys:thmtools}
 
@@ -1071,7 +1175,7 @@ When no explicit \texttt{spaceabove} or \texttt{spacebelow} values are given, \p
   {=\meta{style name}}
   {initially unset}
 Inherit the keys of any style declared with \refCom{newkeytheoremstyle}.
-Additionally, the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
+Additionally, \docValue{legacy2e} and the three styles predefined by \pkg{amsthm} are possible values: \docValue{plain}, \docValue{definition}, and \docValue{remark}.
 \end{docKey}
 
 \begin{docKey}{noteseparator}

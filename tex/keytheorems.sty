@@ -372,23 +372,32 @@
     \keys_precompile:neN { keytheorems/thmstyle }
       { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
       \l__keythms_thmstyle_defaultkeys_tl
+    % define legacy2e style
+    \keythms_thmstyle_declarestyle:nn { legacy2e }
+      { notefont=\bfseries, headpunct= }
+  }
+
+% conditional that will be redefined later if new block code loaded
+\prg_new_conditional:Npnn \__keythms_thmstyle_if_free:n #1 { T, F, TF }
+  {
+    \cs_if_free:cTF { th@ #1 } { \prg_return_true: } { \prg_return_false: }
   }
 
 \NewDocumentCommand \newkeytheoremstyle { m +m }
   {
-    \cs_if_free:cTF { th@ #1 }
+    \__keythms_thmstyle_if_free:nTF { #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
       { \msg_error:nnn { keytheorems } { thmstyle-defined } { #1 } }
   }
 \NewDocumentCommand \renewkeytheoremstyle { m +m }
   {
-    \cs_if_free:cTF { th@ #1 }
+    \__keythms_thmstyle_if_free:nTF { #1 }
       { \msg_error:nnn { keytheorems } { thmstyle-undefined } { #1 } }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
 \NewDocumentCommand \providekeytheoremstyle { m +m }
   {
-    \cs_if_free:cT { th@ #1 }
+    \__keythms_thmstyle_if_free:nT { #1 }
       { \keythms_thmstyle_declarestyle:nn { #1 } { #2 } }
   }
 \NewDocumentCommand \declarekeytheoremstyle { m +m }
@@ -1144,7 +1153,10 @@
       { % remove parent counter binding
         \exp_args:Nnv \@removefromreset { #1 } { g__keythms_thm_#1_parent_tl }
       }
-    \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
+    \cs_if_exist:cF { alias@ctr@ #1 }
+      { % ^ 2026 formats produce warning without this check
+        \__keythms_nocheck_removefromreset:nn { #1 } { @ckpt }
+      }
     \cs_undefine:c { g__keythms_thm_QEDprefoot_#1_tl } % These are only
     \cs_undefine:c { g__keythms_thm_tcbpatch_#1_tl } % conditionally defined
     \cs_undefine:c { g__keythms_thm_tcbprehead_#1_tl } % Need to undefine
@@ -3354,6 +3366,11 @@
     \IfFormatAtLeastTF { 2026-06-01 }
       {
         \tl_set:Nn \l__keythms_thm_thestyle_tl { \l__block_thmstyle_tl }
+        \prg_set_conditional:Npnn \__keythms_thmstyle_if_free:n #1 { T, F, TF }
+          { % block code uses templates, not th@<name>
+            \IfInstanceExistsTF { thmstyle } { #1 }
+              { \prg_return_false: } { \prg_return_true: }
+          }
         \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
           {
             \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
@@ -3393,7 +3410,6 @@
               }
           }
       }
-
   }
 
 \file_input_stop:

@@ -3,6 +3,7 @@
 ## [v0.3.4dev]
 - add `plural-refname` and `plural-Refname` theorem keys
   ([\#50](https://github.com/mbertucci47/keytheorems/issues/50))
+- add `legacy2e` theorem style
 
 ## [v0.3.3]
 - make `\IfRestating(TF)` expandable
