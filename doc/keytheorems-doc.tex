@@ -660,6 +660,13 @@ Adds the theorem to a custom sequence \meta{name} that can then be listed with \
 See \refKey{listof/seq} for more details.
 \end{docKey}
 
+\begin{docKey}{tcb-append}
+  {=\marg{list of \pkg{tcolorbox} keys}}
+  {initially unset}
+Appends the given \pkg{tcolorbox} keys to the |keythms_tcb_|\meta{env name} style for theorems defined with the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} keys.
+Note that it is not recommended to frequently change the appearance of theorems throughout a document so use this key sparingly.
+\end{docKey}
+
 \subsection{Keys also defined in \pkg{thmtools}} \label{thm-thmtools-keys}
 
 These are the \oarg{options} available to \cs{newkeytheorem}.
@@ -984,6 +991,11 @@ Let $G$ be a finite group and $p$ a prime dividing the order of $G$. Then $G$ co
 
 \end{docKey}
 
+\sloppy
+Both \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} set up a \pkg{tcolorbox} style |keythms_tcb_|\meta{env name} that can be accessed by the user if needed.
+For convenience, one can also adjust the style for a specific theorem with the \refKey{tcb-append} key.
+
+\fussy
 \pkg{tcolorbox} offers its own comprehensive \texttt{theorems} library.
 If all of your theorems are to be tcolorboxes, I highly recommend using it instead of this package! However, if only some of your theorems will use a tcolorbox, you may want to replicate the styles of \cs{NewTcbTheorem}.
 Here is an example that emulates \pkg{tcolorbox}'s \texttt{standard} theorem style.
@@ -1654,11 +1666,13 @@ The supported packages are \pkg{baskervillef}, \pkg{cochineal}, \pkg{libertinust
 \subsection{Support for tagged PDF}
 \label{subsec:tagging}
 
+\sloppy
 The \LaTeX{} team has been working hard to support the creation of tagged PDFs (see \url{https://latex3.github.io/tagging-project/}).
 In the current format, \pkg{amsthm} is compatible with the kernel tagging code.
 Most of \pkg{keytheorems} is supported too, and anything that doesn't work should be reported.
 Explicitly not supported are the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys.
 
+\fussy
 To produce a tagged PDF, add \cs{DocumentMetadata} in the first line of your document (additional instructions are found on the Tagging Project \href{https://latex3.github.io/tagging-project/documentation/usage-instructions}{website}).
 An example invocation might look like
 
@@ -1680,12 +1694,14 @@ Also as for \cls{beamer}, the \refCom{listofkeytheorems} command is disabled.
 
 \subsection{\pkg{subfiles} compatibility}
 
+\sloppy
 Because of how the \pkg{subfiles} package works, it is not possible to restate theorems from one subfile in another without an extra step.
 The issue boils down to the same reason the \pkg{xr} package is needed for labels and references to work between subfiles.
 Thankfully, the fix is fairly easy with \refCom{externaltheorems}.
 Just add \cs{externaltheorems}\bracks{\meta{prefix}}\marg{main file name} to the preamble of your main file.
 Then, after compiling your main file at least once, theorems can be restated in subfiles with \cs{getkeytheorem}\braces{\meta{prefix}\meta{tag}}.
 
+\fussy
 Here is a complete example.
 \begin{dispListing*}{breakable}
 % mainfile.tex
@@ -1771,10 +1787,12 @@ They can be useful with \cs{AddToHookNext} or the kernel's label mechanism for h
 
 \section{Further examples}
 
+\sloppy
 More examples will be added soon -- rather, eventually\dots{}
 For now, you can find a \pkg{keytheorems} adaptation of \pkg{amsthm}'s classic \href{https://mirrors.ctan.org/macros/latex/required/amscls/doc/thmtest.tex}{\texttt{thmtest.tex}} in the Github \texttt{tests} folder: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/keytheorems-amsthmtest.tex}{\texttt{keytheorems-amsthmtest.tex}}.
 There is also a version for tagged PDF: \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/tagged-keytheorems-amsthmtest.tex}{\texttt{tagged-keytheorems-amsthmtest.tex}}.
 
+\fussy
 %\section{Implementation}
 %\inputminted[linenos,style=bw]{latex}{../keytheorems.sty}
 

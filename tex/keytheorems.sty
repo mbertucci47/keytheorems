@@ -117,6 +117,11 @@
     Language~'#1'~does~not~have~predefined~translations.~
     Defaulting~to~English.
   }
+\msg_new:nnn { keytheorems } { not-tcb-theorem }
+  {
+    Theorem~environment~'#1'~not~defined~with~the~'tcolorbox'~key~
+    \msg_line_context:.~Ignoring~'tcb-append'.
+  }
 
 % Error if thmtools loaded since compilation hangs.
 % If thmtools loaded after, produce warning.
@@ -1328,6 +1333,16 @@
     short-name .code:n   = {},
     store      .tl_set:N = \l__keythms_thmuse_store_tl, % should this be .tl_set_e:N ?
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
+    tcb-append .code:n   =
+      {
+        \tl_if_exist:cTF
+          { g__keythms_thm_tcbpatch_ \l_keythms_thmuse_envname_tl _tl }
+          { \tcbset{keythms_tcb_\l_keythms_thmuse_envname_tl /.append~style={#1}} }
+          {
+            \msg_warning:nnV { keytheorems } { not-tcb-theorem }
+              \l_keythms_thmuse_envname_tl
+          }
+      },
   }
 
 \keys_precompile:nnN { keytheorems/thmuse }
