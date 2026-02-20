@@ -653,7 +653,7 @@ Compare:
 Note that the value |true| must be explicitly set so that |listhack| is not interpreted as the note text.
 \end{docKey}
 
-\begin{docKey}[][doc label=thm/seq]{seq}
+\begin{docKey}[][doc label=thmuse/seq]{seq}
   {=\meta{name}}
   {initially unset}
 Adds the theorem to a custom sequence \meta{name} that can then be listed with \cs{listofkeytheorems}\bracks{seq=\meta{name}}.
@@ -665,6 +665,21 @@ See \refKey{listof/seq} for more details.
   {initially unset}
 Appends the given \pkg{tcolorbox} keys to the |keythms_tcb_|\meta{env name} style for theorems defined with the \refKey{tcolorbox} or \refKey{tcolorbox-no-titlebar} keys.
 Note that it is not recommended to frequently change the appearance of theorems throughout a document so use this key sparingly.
+\end{docKey}
+
+\begin{docKey}[][doc label=thmuse/ignore]{ignore}
+  {=\docValue*{true}\textbar\docValue*{false}}
+  {initially |false|}
+If set to |true|, the theorem is completely ignored.
+
+\begin{keythmscode}
+Some text.
+\begin{theorem}[ignore=true]
+A theorem I want to ignore.
+\end{theorem}
+Some more text.
+\end{keythmscode}
+
 \end{docKey}
 
 \subsection{Keys also defined in \pkg{thmtools}} \label{thm-thmtools-keys}
@@ -1517,7 +1532,7 @@ Not very useful without the \refKey{store-all} load-time option.
 \begin{docKey}[][doc label=listof/seq]{seq}
   {=\meta{name}}
   {initially unset}
-Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thm/seq} theorem key.
+Used to list only the theorems added to the custom sequence \meta{name} with the \refKey{thmuse/seq} theorem key.
 This is the only way to fully customize which theorems appear in the list of theorems.
 Unlike with \refKey{show}, you do not need to use \refKey{ignoreall} to prevent theorems not in \meta{name} from being printed.
 \end{docKey}

@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2025-06-01]
-\def\@keythms@date{2026-02-17}
-\def\@keythms@version{0.3.4}
+\def\@keythms@date{2026-02-20}
+\def\@keythms@version{0.3.5dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -152,6 +152,7 @@
 \bool_new:N \g__keythms_predefined_bool
 \bool_new:N \l__keythms_thm_numbered_bool
 \bool_new:N \l__keythms_thm_unlessunique_bool
+\bool_new:N \l__keythms_thmuse_ignore_bool
 \bool_new:N \l__keythms_thmuse_listhack_bool
 \bool_new:N \l__keythms_thmuse_restating_bool
 \clist_new:N \g__keythms_restatecounters_clist
@@ -1315,6 +1316,10 @@
               { note = \l__keythms_tmpa_tl }
           }
       },
+    ignore         .choice:,
+    ignore / true  .code:n = \bool_set_true:N \l__keythms_thmuse_ignore_bool,
+    ignore / false .code:n = \bool_set_false:N \l__keythms_thmuse_ignore_bool,
+    ignore     .initial:n = false,
     label      .tl_set:N = \l__keythms_thmuse_label_tl,
     listhack   .choice:, % needs equals sign
     listhack / true .code:n = \bool_set_true:N \l__keythms_thmuse_listhack_bool,
@@ -1335,9 +1340,17 @@
     store*     .tl_set:N = \l__keythms_thmuse_storereversed_tl,
     tcb-append .code:n   =
       {
-        \tl_if_exist:cTF
-          { g__keythms_thm_tcbpatch_ \l_keythms_thmuse_envname_tl _tl }
-          { \tcbset{keythms_tcb_\l_keythms_thmuse_envname_tl /.append~style={#1}} }
+        \IfPackageLoadedTF { tcolorbox }
+          {
+            \pgfkeysifdefined{/tcb/keythms_tcb_\l_keythms_thmuse_envname_tl/.@cmd}
+              {
+                \tcbset{keythms_tcb_\l_keythms_thmuse_envname_tl /.append~style={#1}}
+              }
+              {
+                \msg_warning:nnV { keytheorems } { not-tcb-theorem }
+                  \l_keythms_thmuse_envname_tl
+              }
+          }
           {
             \msg_warning:nnV { keytheorems } { not-tcb-theorem }
               \l_keythms_thmuse_envname_tl
@@ -1451,67 +1464,78 @@
           {
             \keys_set:nn { keytheorems/thmuse } { ##1 }
           }
-        \tl_if_empty:NTF \l__keythms_thmuse_store_tl
+        \bool_if:NTF \l__keythms_thmuse_ignore_bool
+          { \begin{__keythms_ignoreenv} }
           {
-            \tl_if_empty:NTF \l__keythms_thmuse_storereversed_tl
+            \tl_if_empty:NTF \l__keythms_thmuse_store_tl
               {
-                \__keythms_thm_prehead_code:n { #1 }
+                \tl_if_empty:NTF \l__keythms_thmuse_storereversed_tl
+                  {
+                    \__keythms_thm_prehead_code:n { #1 }
+                  }
+                  {
+                    \bool_gset_true:N \g__keythms_listof_writefile_bool
+                    \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
+                    \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
+                  }
               }
               {
                 \bool_gset_true:N \g__keythms_listof_writefile_bool
-                \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grabreversed_begin:nnn
-                \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grabreversed_end:n
+                \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
+                \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
               }
-          }
-          {
-            \bool_gset_true:N \g__keythms_listof_writefile_bool
-            \cs_set_eq:NN \__keythms_withhooks_begin:nnn \__keythms_grab_begin:nnn
-            \cs_set_eq:NN \__keythms_withhooks_end:n \__keythms_grab_end:n
-          }
-        \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl
+            \__keythms_withhooks_begin:nnV { #1 } { ##1 } \l__keythms_thmuse_note_tl
+            }
       }
       {
-        \__keythms_withhooks_end:n { #1 }
-        \tl_if_empty:NF \l__keythms_thmuse_store_tl
+        \bool_if:NTF \l__keythms_thmuse_ignore_bool
           {
-            \cs_if_exist:cF
-              { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
+            \end{__keythms_ignoreenv}
+            \ignorespacesafterend % prevent extra space
+          }
+          {
+            \__keythms_withhooks_end:n { #1 }
+            \tl_if_empty:NF \l__keythms_thmuse_store_tl
               {
-                \cs_new:cpe
+                \cs_if_exist:cF
                   { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                   {
-                    \exp_not:N \keythms_getthm_theorem:nnnnn
-                    \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
-                  }
-                \cs_new:cpe
-                  { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
-                  {
-                    \exp_not:N \keythms_getthm_body:nnn
-                    \exp_args:No \exp_not:o
+                    \cs_new:cpe
+                      { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                       {
-                        \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
-                          \g__keythms_thmuse_temprestatedata_tl
+                        \exp_not:N \keythms_getthm_theorem:nnnnn
+                        \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
+                      }
+                    \cs_new:cpe
+                      { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
+                      {
+                        \exp_not:N \keythms_getthm_body:nnn
+                        \exp_args:No \exp_not:o
+                          {
+                            \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
+                              \g__keythms_thmuse_temprestatedata_tl
+                          }
                       }
                   }
               }
-          }
-        \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
-          {
-            \cs_if_exist:cF
-              { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+            \tl_if_empty:NF \l__keythms_thmuse_storereversed_tl
               {
-                \cs_new:cpe
+                \cs_if_exist:cF
                   { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
                   {
-                    \exp_not:N \__keythms_getthmreversed_theorem:nnn
-                    \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
-                  }
-                \cs_new:cpn
-                  { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
-                  {
-                    \textbf{??}
-                    \msg_warning:nnn { keytheorems } { restate-body-never-got }
-                      { #1 }
+                    \cs_new:cpe
+                      { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
+                      {
+                        \exp_not:N \__keythms_getthmreversed_theorem:nnn
+                        \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
+                      }
+                    \cs_new:cpn
+                      { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
+                      {
+                        \textbf{??}
+                        \msg_warning:nnn { keytheorems } { restate-body-never-got }
+                          { #1 }
+                      }
                   }
               }
           }
@@ -1663,6 +1687,8 @@
         { \exp_not:n { #3 } }
       }
   }
+
+\NewDocumentEnvironment { __keythms_ignoreenv } { +b } { } { }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Retrieving Theorem Data %%%
