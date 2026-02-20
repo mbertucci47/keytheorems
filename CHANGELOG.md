@@ -1,7 +1,8 @@
 # Changelog for keytheorems package
 
-## [v0.3.5dev]
+## [v0.3.5]
 - add `ignore` key
+- fix bug when `tcb-append` is used with `tcolorbox-no-titlebar`
 
 ## [v0.3.4]
 - add `plural-refname` and `plural-Refname` theorem keys
@@ -115,7 +116,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
-[v0.3.5dev]: https://github.com/mbertucci47/keytheorems/compare/v0.3.4...HEAD
+[v0.3.5]: https://github.com/mbertucci47/keytheorems/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/mbertucci47/keytheorems/compare/v0.3.3...v0.3.4
 [v0.3.3]: https://github.com/mbertucci47/keytheorems/compare/v0.3.2...v0.3.3
 [v0.3.2]: https://github.com/mbertucci47/keytheorems/compare/v0.3.1...v0.3.2
