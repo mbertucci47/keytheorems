@@ -1,7 +1,7 @@
 # Changelog for keytheorems package
 
 ## [v0.3.5]
-- add `ignore` key
+- add `ignore` key ([\#46](https://github.com/mbertucci47/keytheorems/issues/46))
 - fix bug when `tcb-append` is used with `tcolorbox-no-titlebar`
 
 ## [v0.3.4]
