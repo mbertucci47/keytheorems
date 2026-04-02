@@ -66,7 +66,6 @@ smooth is a Zariski dense open subset of $(\mathbb{P}_k^n)^*$.
 ## Documentation
 There is a list of commands and keys offered by the package
 [here](https://github.com/mbertucci47/keytheorems/blob/develop/doc/keytheorems-doc.pdf).
-More of a reference document than documentation.
 
 ## Differences with thmtools
 
