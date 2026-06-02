@@ -1,5 +1,8 @@
 # Changelog for keytheorems package
 
+## [v0.3.7]
+- adapt support for tagged PDF with June 2026 LaTeX release
+
 ## [v0.3.6]
 - add Hungarian translations
   ([\#53](https://github.com/mbertucci47/keytheorems/pull/53); thanks Lóránt Hadnagy!)
@@ -120,6 +123,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.3.7]: https://github.com/mbertucci47/keytheorems/compare/v0.3.6...v0.3.7
 [v0.3.6]: https://github.com/mbertucci47/keytheorems/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/mbertucci47/keytheorems/compare/v0.3.4...v0.3.5
 [v0.3.4]: https://github.com/mbertucci47/keytheorems/compare/v0.3.3...v0.3.4

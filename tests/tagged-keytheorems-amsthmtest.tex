@@ -12,7 +12,7 @@
 \AtEndDocument { \benchmark_toc: }
 \benchmark_tic:
 \ExplSyntaxOff
-\documentclass{article}
+\documentclass{amsart}
 \usepackage{unicode-math} % for tagging
 \title{\texttt{\char`\\ newkeytheorem} and \texttt{\char`\\ newkeytheoremstyle} test with tagging}
 \author{%
@@ -94,7 +94,7 @@
 \newkeytheoremstyle{break}{
   spaceabove=9pt,
   spacebelow=9pt,
-  break 
+%  break 
   }
 
 %\newtheoremstyle{break}% name
