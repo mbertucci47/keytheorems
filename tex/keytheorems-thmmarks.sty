@@ -1,0 +1,133 @@
+\RequirePackage{amsmath} % so \[...\] is equation*
+% ^ needs to be loaded before amsthm!!!
+\RequirePackage{keytheorems}
+\ProvidesExplPackage{keytheorems-thmmarks}{\@keythms@date}{\@keythms@version}
+  {EXPERIMENTAL: automatic placing of endmarks for keytheorems}
+
+\bool_new:N \l__keythms_thmmarks_qedthm_bool
+\int_new:N \g__keythms_thmmarks_absthm_int
+\int_new:N \g__keythms_thmmarks_envwithin_int
+\tl_new:N \l__keythms_thmmarks_markcode_tl
+
+\cs_new_protected:Npn \KeythmsDeclareEndmark #1#2
+  {
+    \cs_gset:cpn { keythms_thmmark_#1_#2 }
+      { } % doesn't actually need to be anything
+  }
+\cs_new_protected:Npn \__keythms_thmmarks_record:
+  {
+    \iow_now:Ne \@auxout
+      {
+        \token_to_str:N \KeythmsDeclareEndmark
+          { \int_use:N \g__keythms_thmmarks_absthm_int }
+          { \int_use:N \g__keythms_thmmarks_envwithin_int }
+      }
+  }
+
+\cs_new_protected:Npn \__keythms_thmmarks_checkend:
+  {
+    \mode_if_horizontal:TF
+      {
+        \dim_compare:nNnF { \lastskip } > { 0pt }
+          {
+            \__keythms_thmmarks_record:
+          }
+      }
+      {
+        \__keythms_thmmarks_record:
+      }
+  }
+
+% redefine this command to step counter and set boolean
+\cs_set_protected:Npn \__keythms_thm_qedcode:nn #1#2
+  { % #1 = name, #2 = symbol
+    \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+      {
+        \bool_set_true:N \l__keythms_thmmarks_qedthm_bool
+        \int_gincr:N \g__keythms_thmmarks_absthm_int
+        \int_gset:Nn \g__keythms_thmmarks_envwithin_int { 0 }
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+        \pushQED{\qed}
+      }
+    \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
+    \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
+      {
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+        \__keythms_thmmarks_checkend:
+        \popQED
+      }
+  }
+
+% special treatment for proof
+\hook_gput_code:nnn { env/proof/begin } { . }
+  {
+    \bool_set_true:N \l__keythms_thmmarks_qedthm_bool
+    \int_gincr:N \g__keythms_thmmarks_absthm_int
+    \int_gset:Nn \g__keythms_thmmarks_envwithin_int { 0 }
+  }
+\hook_gput_code:nnn { env/proof/end } { . }
+  {
+    \__keythms_thmmarks_checkend:
+  }
+
+% TODO: add warning for numbered equations
+\clist_map_inline:nn { equation,equation*,align,align* }
+  {
+    \hook_gput_code:nnn {env/#1/end} { . }
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+          {
+            \int_gincr:N \g__keythms_thmmarks_envwithin_int
+            \cs_if_exist:cT
+              {
+                keythms_thmmark
+                _ \int_use:N \g__keythms_thmmarks_absthm_int
+                _ \int_use:N \g__keythms_thmmarks_envwithin_int
+              }
+              { \qedhere }
+          }
+      }
+  }
+
+% list environments
+\clist_map_inline:nn { enumerate,description,itemize }
+  {
+    \hook_gput_code:nnn {env/#1/end} { . }
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+          {
+            \mode_if_horizontal:T
+              {
+                \dim_compare:nNnT { \lastskip } > { 0pt }
+                  { \int_gincr:N \g__keythms_thmmarks_envwithin_int }
+              }
+            \cs_if_exist:cT
+              {
+                keythms_thmmark
+                _ \int_use:N \g__keythms_thmmarks_absthm_int
+                _ \int_use:N \g__keythms_thmmarks_envwithin_int
+              }
+              { \qedhere }
+          }
+      }
+  }
+
+% now handle nested theorems (but not recommended)
+\addtotheoremhook{prefoot}
+  {
+    \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+      {
+        \mode_if_horizontal:T
+          {
+            \dim_compare:nNnT { \lastskip } > { 0pt }
+              { \int_gincr:N \g__keythms_thmmarks_envwithin_int }
+          }
+        \cs_if_exist:cT
+          {
+            keythms_thmmark
+            _ \int_use:N \g__keythms_thmmarks_absthm_int
+            _ \int_use:N \g__keythms_thmmarks_envwithin_int
+          }
+          { \qedhere }
+      }
+  }
