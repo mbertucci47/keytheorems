@@ -1,18 +1,138 @@
-\documentclass{article}
+\documentclass[leqno]{article}
+%%
+%% test leqno
+%%
 \usepackage{amssymb}
 \usepackage{keytheorems-thmmarks}
 
-\newkeytheoremstyle{mystyle}{
+\newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
     }
+\newkeytheoremstyle{diamondstyle}{
+    qed=\ensuremath{\diamond},
+    bodyfont=\normalfont
+    }
+\newkeytheoremstyle{bulletstyle}{
+    qed=\ensuremath{\bullet},
+    bodyfont=\normalfont
+    }
+
 \newkeytheorem{theorem}[
-    style=mystyle,
+    style=heartstyle,
     parent=section,
     ]
-\newkeytheorem{lemma}
+\newkeytheorem{lemma}[ % not endmarked
+    parent=section
+    ]
+\newkeytheorem{remark}[
+    style=diamondstyle,
+    parent=section,
+    ]
+\newkeytheorem{note}[
+    style=bulletstyle,
+    parent=section,
+    ]
+
+
 
 \begin{document}
 
+\section{Basic tests}
+\begin{theorem}
+  Case 1: Environment ends with simple text.
+\end{theorem}
+\begin{theorem}
+  Case 2: Environment ends with display
+  \[
+    1 + 1 = 2.
+  \]
+\end{theorem}
+\begin{theorem}
+  Case 3: Environment ends with equationlike (numbered)
+  \begin{equation}
+    1 + 1 = 2.
+  \end{equation}
+\end{theorem}
+\begin{theorem}
+  Case 4: Environment ends with
+  \begin{itemize}
+  \item a
+  \item list.
+  \end{itemize}
+\end{theorem}
+
+
+
+\section{Other simple tests}
+
+These test multiple or nested boxes inside of theoremlike environments.
+
+\begin{remark}
+  Case 1: Environment ends with simple text.
+  But first there is an equation
+  \begin{equation}
+    1+1 = 2
+  \end{equation}
+  and then the simple text.
+\end{remark}
+\begin{remark}
+  Case 2: Environment ends with display
+  \begin{enumerate}
+  \item but first
+  \item a list
+  \end{enumerate}
+  \[
+    1 + 1 = 2.
+  \]
+\end{remark}
+\begin{remark}
+  Case 3: Environment ends with align
+  following
+  \begin{itemize}
+  \item a
+  \item list
+  \end{itemize}
+  and
+  \[
+    \texttt{ display math }
+  \]
+  \[
+    \texttt{ again }
+  \]
+  \begin{align}
+    x & = 2\\
+    y & = 3. \quad \text{this is a very wide box that uses many words to fill the line}
+  \end{align}
+\end{remark}
+
+\begin{remark}
+  Case 4: Environment ends with
+  \begin{itemize}
+  \item a
+  \item list.
+  \item that is nested
+    \begin{enumerate}
+    \item inside another
+    \item list
+    \end{enumerate}
+  \end{itemize}
+\end{remark}
+
+\begin{note}
+  Case 4: Environment ends with
+  \begin{itemize}
+  \item a
+  \item list.
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \end{enumerate}
+  \item but the outer list has
+  \item the final item 
+  \end{itemize}
+\end{note}
+
+\section{some other messy tests}
 \begin{theorem}
 regular text
 \end{theorem}
@@ -27,13 +147,13 @@ regular text
 \begin{theorem}
   This ends in a display
   \[
-    3^2 + 4^2 = 5^2.
+    3^2 + 4^2 = 5^2
   \]
-more text
-\begin{align}
-a&=b \\
-c&=d
-\end{align}
+  more text
+  \begin{align}
+    a&=b \\
+    c&=d
+  \end{align}
 %\[a=b\]
 \end{theorem}
 
@@ -97,10 +217,12 @@ abc
   \end{enumerate}
 \end{theorem}
 
+\subsection{tests of nested theoremlike environments}
+
 \begin{theorem}
 regular text
 \begin{lemma}
-blub
+blub; lemma is not endmarked
 \end{lemma}
 \begin{lemma}
 abc
@@ -117,7 +239,40 @@ abc
 \end{lemma}
 \end{theorem}
 
+\begin{theorem}
+regular text
+\begin{remark}
+blub; remark \emph{is} endmarked
+\end{remark}
+\end{theorem}
+
+
+\begin{theorem}
+regular text
+\begin{remark}
+blub; remark \emph{is} endmarked
+\end{remark}
+\begin{lemma}
+abc; lemma is not endmarked
+\begin{equation*}
+abc
+\end{equation*}
+\begin{enumerate}
+\item abc
+\begin{itemize}
+\item blub
+\end{itemize}
+\item jhdgd
+\end{enumerate}
+\end{lemma}
+\end{theorem}
+
+
+
+
 \clearpage
+
+\subsection{proof tests}
 
 \begin{proof}
 regular text
