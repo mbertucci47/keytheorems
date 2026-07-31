@@ -2,11 +2,83 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2025-06-01]
-\def\@keythms@date{2026-07-26}
+\def\@keythms@date{2026-07-31}
 \def\@keythms@version{0.3.8dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
+% Need two sets of global keys because thmmarks requires amsmath loaded
+% before amsthm, but several keys use code not yet defined at this point.
+% So the 'keytheorems/usepackage' keys beside thmmarks just defer calling the
+% 'keytheorems' keys until the end of the package.
+\clist_new:N \l__keythms_savedglobalkeys_clist
+\cs_new_protected:Npn \__keythms_saveglobalkey_noval:
+  { % #1 = key value
+    \clist_put_right:No \l__keythms_savedglobalkeys_clist
+      { \l_keys_key_str }
+  }
+\cs_new_protected:Npn \__keythms_saveglobalkey_reqval:n #1
+  { % #1 = key value
+    \clist_put_right:No \l__keythms_savedglobalkeys_clist
+      { \l_keys_key_str = { #1 } }
+  }
+\cs_new_protected:Npn \__keythms_saveglobalkey_optval:n #1
+  { % #1 = key value
+    \tl_if_empty:NTF \l_keys_value_tl
+      {
+        \clist_put_right:No \l__keythms_savedglobalkeys_clist
+          { \l_keys_key_str }
+      }
+      {
+        \clist_put_right:No \l__keythms_savedglobalkeys_clist
+          { \l_keys_key_str = { #1 } }
+      }
+  }
+\msg_new:nnn { keytheorems } { continues-code-at-load }
+  {
+    'continues-code'~cannot~be~set~in~\protect\usepackage.~
+    Set~it~in~\protect\keytheoremset\space instead.
+  }
+\keys_define:nn { keytheorems/usepackage }
+  {
+    thmmarks          .bool_gset:N         = \g__keythms_thmmarks_bool,
+    thmmarks          .value_forbidden:n   = true,
+    thmmarks          .usage:n             = load,
+    % all these are just saved to be called in \keytheoremset later
+    auto-translate    .code:n              = \__keythms_saveglobalkey_optval:n { #1 },
+    auto-translate    .usage:n             = load,
+    continues-code    .code:n              =
+      { % this can't be set in \usepackage
+        \msg_error:nn { keytheorems } { continues-code-at-load }
+      },
+    overload          .code:n              = \__keythms_saveglobalkey_noval:,
+    overload          .value_forbidden:n   = true,
+    overload          .usage:n             = load,
+    predefined        .code:n              = \__keythms_saveglobalkey_optval:n { #1 },
+    predefined        .usage:n             = load,
+    qed-symbol        .code:n              = \__keythms_saveglobalkey_reqval:n { #1 },
+    qed-symbol        .value_required:n    = true,
+    qed-symbol        .usage:n             = load,
+    restate-counters  .code:n              = \__keythms_saveglobalkey_reqval:n { #1 },
+    restate-counters  .value_required:n    = true,
+    restate-counters  .usage:n             = load,
+    store-all         .code:n              = \__keythms_saveglobalkey_noval:,
+    store-all         .value_forbidden:n   = true,
+    store-all         .usage:n             = load,
+    store-sets-label  .code:n              = \__keythms_saveglobalkey_noval:,
+    store-sets-label  .value_forbidden:n   = true,
+    store-sets-label  .usage:n             = load,
+    thmtools-compat   .code:n              = \__keythms_saveglobalkey_noval:,
+    thmtools-compat   .value_forbidden:n   = true,
+    thmtools-compat   .usage:n             = load,
+  }
+
+\ProcessKeyOptions[keytheorems/usepackage]
+
+\bool_if:NT \g__keythms_thmmarks_bool
+  {
+    \RequirePackage{amsmath} % must be loaded before amsthm!
+  }
 \RequirePackage{amsthm} % ams classes have way of ignoring this
 \RequirePackage{refcount}
 \RequirePackage{translations}
@@ -2564,7 +2636,6 @@
     restate-counters  .value_required:n    = true,
     store-all         .code:n              = \__keythms_storeall_code:,
     store-all         .value_forbidden:n   = true,
-    store-all         .usage:n             = preamble,
     store-sets-label  .code:n              =
       {
         \keys_define:nn { keytheorems/thmuse }
@@ -2581,6 +2652,7 @@
               },
           }
       },
+    store-sets-label  .value_forbidden:n   = true,
     thmtools-compat   .code:n              =
       { % prevent loading the code again if key called twice
         \bool_if:NF \g__keythms_thmtoolscompat_bool
@@ -3173,7 +3245,9 @@
       }
   }
 \hook_gput_code:nnn { begindocument/before } { . }
-  { \tl_use:N \c__keythms_translationsetup_tl }
+  {
+    \tl_use:N \c__keythms_translationsetup_tl
+  }
 
 \keys_define:nn { keytheorems/predefined }
   {
@@ -3251,9 +3325,211 @@
       }
   }
 \hook_gput_code:nnn { begindocument } { . }
-  { \tl_use:N \c__keythms_predefinedsetup_tl }
+  {
+    \tl_use:N \c__keythms_predefinedsetup_tl
+  }
 
-\ProcessKeyOptions[keytheorems]
+% now set the keys from \usepackage
+\clist_if_empty:NF \l__keythms_savedglobalkeys_clist
+  {
+    \keys_set:nV { keytheorems } \l__keythms_savedglobalkeys_clist
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Automatic theorem marks %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cs_new_protected:Npn \KeythmsDeclareEndmark #1#2 { } % define as no-op initially
+\bool_if:NT \g__keythms_thmmarks_bool
+  {
+    \bool_new:N \l__keythms_thmmarks_qedthm_bool
+    \int_new:N \g__keythms_thmmarks_absthm_int
+    \int_new:N \g__keythms_thmmarks_envwithin_int
+    \tl_new:N \l__keythms_thmmarks_markcode_tl
+    
+    \cs_set_protected:Npn \KeythmsDeclareEndmark #1#2
+      {
+        \cs_gset:cpn { keythms_thmmark_#1_#2 }
+          { } % doesn't actually need to be anything
+      }
+    \cs_new_protected:Npn \__keythms_thmmarks_record:
+      {
+        \iow_now:Ne \@auxout
+          {
+            \token_to_str:N \KeythmsDeclareEndmark
+              { \int_use:N \g__keythms_thmmarks_absthm_int }
+              { \int_use:N \g__keythms_thmmarks_envwithin_int }
+          }
+      }
+    
+    \cs_new_protected:Npn \__keythms_thmmarks_checkend:
+      {
+        \mode_if_horizontal:TF
+          {
+            \dim_compare:nNnF { \lastskip } > { 0pt }
+              {
+                \__keythms_thmmarks_record:
+              }
+          }
+          {
+            \__keythms_thmmarks_record:
+          }
+      }
+    
+    % redefine this command to step counter and set boolean
+    \cs_set_protected:Npn \__keythms_thm_qedcode:nn #1#2
+      { % #1 = name, #2 = symbol
+        \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
+          {
+            \bool_set_true:N \l__keythms_thmmarks_qedthm_bool
+            \int_gincr:N \g__keythms_thmmarks_absthm_int
+            \int_gset:Nn \g__keythms_thmmarks_envwithin_int { 0 }
+            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+            \pushQED{\qed}
+          }
+        \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
+        \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
+          {
+            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+            \__keythms_thmmarks_checkend:
+            \popQED
+          }
+      }
+    
+    % special treatment for proof
+    \hook_gput_code:nnn { env/proof/begin } { . }
+      {
+        \bool_set_true:N \l__keythms_thmmarks_qedthm_bool
+        \int_gincr:N \g__keythms_thmmarks_absthm_int
+        \int_gset:Nn \g__keythms_thmmarks_envwithin_int { 0 }
+      }
+    \hook_gput_code:nnn { env/proof/end } { . }
+      {
+        \__keythms_thmmarks_checkend:
+      }
+    
+    % TODO: add warning for numbered equations
+    \clist_map_inline:nn { equation*,align* }
+      {
+        \hook_gput_code:nnn {env/#1/end} { . }
+          {
+            \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+              {
+                \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                \cs_if_exist:cT
+                  {
+                    keythms_thmmark
+                    _ \int_use:N \g__keythms_thmmarks_absthm_int
+                    _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                  }
+                  { \qedhere }
+              }
+          }
+      }
+    \msg_new:nnn { keytheorems } { thmmarks-numbered-eq-right }
+      {
+        QED~symbol~will~clash~with~equation~number~\msg_line_context:.~
+        Aborting~automatic~QED~placement.~Use~the~'leqno'~class~option~or~
+        rephrase~to~not~end~with~a~displayed~equation.
+      }
+      % this doesn't really work
+    % \clist_map_inline:nn { align }
+      % {
+        % \hook_gput_code:nnn {env/#1/end} { . }
+          % {
+            % \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+              % {
+                % \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                % \legacy_if:nTF { tagsleft@ }
+                  % {
+                    % \cs_if_exist:cT
+                      % {
+                        % keythms_thmmark
+                        % _ \int_use:N \g__keythms_thmmarks_absthm_int
+                        % _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                      % }
+                      % {
+                        % \\[ \dim_eval:n { -\ht\strutbox - 2\jot } ]
+                        % & \notag\qedhere
+                      % }
+                  % }
+                  % {
+                    % \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
+                  % }
+              % }
+          % }
+      % }
+
+    \clist_map_inline:nn { equation,align }
+      {
+        \hook_gput_code:nnn {env/#1/end} { . }
+          {
+            \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+              {
+                \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                \legacy_if:nTF { tagsleft@ }
+                  {
+                    \cs_if_exist:cT
+                      {
+                        keythms_thmmark
+                        _ \int_use:N \g__keythms_thmmarks_absthm_int
+                        _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                      }
+                      { \qedhere }
+                  }
+                  {
+                    \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
+                  }
+              }
+          }
+      }
+    
+    % list environments
+    \clist_map_inline:nn { enumerate,description,itemize }
+      {
+        \hook_gput_code:nnn {env/#1/end} { . }
+          {
+            \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+              {
+                \mode_if_horizontal:T
+                  {
+                    \dim_compare:nNnT { \lastskip } > { 0pt }
+                      {
+                        \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                        \cs_if_exist:cT
+                          {
+                            keythms_thmmark
+                            _ \int_use:N \g__keythms_thmmarks_absthm_int
+                            _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                          }
+                          { \qedhere }
+                      }
+                  }
+              }
+          }
+      }
+    
+    % now handle nested theorems (but not recommended)
+    \addtotheoremhook{prefoot}
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+          {
+            \mode_if_horizontal:T
+              {
+                \dim_compare:nNnT { \lastskip } > { 0pt }
+                  {
+                    \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                    \cs_if_exist:cT
+                      {
+                        keythms_thmmark
+                        _ \int_use:N \g__keythms_thmmarks_absthm_int
+                        _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                      }
+                      { \qedhere }
+                  }
+              }
+          }
+      }
+  }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Support for non-default classes %%%
