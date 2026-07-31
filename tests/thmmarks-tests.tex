@@ -471,7 +471,7 @@ They use horizontal alignment markers (\&).
   for two or more equations; this test has just one alignment column
 }{
   \int_a^b f(x)\, dx &= 1\\
-  \int_a^b g(x) + h(x)\, dx &= a+b+c\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c
 }
 \maketest{align}{
   another test, with multiple alignment columns
@@ -481,13 +481,13 @@ They use horizontal alignment markers (\&).
   & p &= 0\\
   \int_a^b g(x) + h(x)\, dx &= a+b+c
   & x'+y' &= z'
-  & q &= 1\\
+  & q &= 1
 }
 \maketest{align*}{
   unnumbered variant; one column
 }{
   \int_a^b f(x)\, dx &= 1\\
-  \int_a^b g(x) + h(x)\, dx &= a+b+c\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c
 }
 \maketest{align*}{
   unnumbered variant; multiple columns
@@ -497,7 +497,7 @@ They use horizontal alignment markers (\&).
   & p &= 0\\
   \int_a^b g(x) + h(x)\, dx &= a+b+c
   & x'+y' &= z'
-  & q &= 1\\
+  & q &= 1
 }
 \makeoutertest{alignat}{
   allows the horizontal space between equations to be explicitly specified;
@@ -526,7 +526,7 @@ They use horizontal alignment markers (\&).
 }{
   x&=y & X&=Y\\
   x'&=y' & X'&=Y'\\
-  x+x'&=y+y' & X+X'&=Y+Y'
+  x+x'&=y+y' & X+X'&=Y+Y'% \qedhere %manual placement works correctly
 }
 \maketest{flalign*}{
   unnumbered variant
@@ -677,7 +677,8 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 }
 \makeoutertest{list}{
   This is the basic environment that others are derived from.
-  Adding thmmark support for this might either (a) automatically give it to other lists or (b) make us confused because other environments use \texttt{list} in subtle ways (e.g., trivlists).
+  Adding thmmark support for this might either (a) automatically give it to other lists or (b) make us confused because other environments use \texttt{list} in subtle ways (e.g., trivlists).\\
+  Update: I've added this, and it's fine; it doesn't change the others.  Furthermore, the hooks still have to be added for \texttt{itemize}, \texttt{enumerate}, and \texttt{description}; it's not enough to just set the hooks for \texttt{list}.
 }{
   \begin{list}{}{}
   \item first
@@ -710,7 +711,6 @@ I'm not sure whether these go with this group, or somewhere else.
 }{
   some centered text, or equation, or other environment
 }
-
 \makeoutertest{tikzpicture}{
   often used for diagrams, but of course requires tikz
 }{
