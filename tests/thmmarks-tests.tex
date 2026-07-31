@@ -4,6 +4,7 @@
 %%
 \usepackage{amssymb}
 \usepackage{keytheorems-thmmarks}
+\usepackage{hyperref}
 
 \newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
@@ -32,6 +33,31 @@
     style=bulletstyle,
     parent=section,
     ]
+
+
+    
+% style for boring tests
+\newkeytheorem{test}[
+    style=diamondstyle,
+    parent=section,
+    ]
+% maybe these definitions need to be expl3?
+% e.g.,if there are unwanted space issues
+\newcommand{\testtype}[2]{\texttt{#1}:% suppress extra spaces (linebreaks)
+  #2}
+\newcommand{\makeoutertest}[3]{
+  \begin{test}
+    \testtype{#1}{#2}
+    #3
+  \end{test}
+}
+\newcommand{\maketest}[3]{
+  \makeoutertest{#1}{#2}{
+    \begin{#1}
+      #3
+    \end{#1}
+  }
+}
 
 
 
@@ -356,5 +382,406 @@ abc
   \end{enumerate}
   \end{enumerate}
 \end{proof}
+
+\clearpage
+
+\section{Comprehensive test of endmarkable environments}
+
+[in progress] This section aims to have one simple example for every possible environment that could be endmarked, so that we can confirm support.
+
+Subsections are intended to group environment types according to how they are handled internally; revise as necessary.
+
+Many of the examples and descriptions are from  the \href{https://www.ams.org/arc/tex/amsmath/amsldoc.pdf}{amsmath documentation}: Section 3, Displayed equations.
+
+\subsection{equationlike}
+
+These environments are full line width.
+They do not use horizontal alignment markers (\&).
+
+\maketest{equation}{
+  a single equation with an automatically generated number
+}{
+  \int_a^b f(x)\, dx
+}
+\maketest{equation*}{
+  unnumbered variant
+}{
+  \int_a^b f(x)\, dx
+}
+\makeoutertest{[..]}{
+  The classic display math.
+  Internally, amsmath redefines this as equation*
+}{
+  \[
+    \int_a^b f(x)\, dx
+  \]
+}
+\makeoutertest{\$\$..\$\$}{
+  People still use this, but maybe we don't want to support it.
+  By default, it doesn't work well with \texttt{qedhere} (end mark not pushed to end of line).
+}{
+  $$ 
+    \int_a^b f(x)\, dx
+  $$
+}
+
+\maketest{multline}{
+  a variation of equation, for long equations with linebreaks.
+  The first line is aligned left, middle lines are centered, last line is aligned right.\\
+  Equation number is on the first line.
+}{
+  a+b+c+d+e+f+ a+b+c+d+e+f\\
+  +g+h+ g+h+ g+h+\\
+  +i+j+k+l+m+n
+  +i+j+k+l+m+n
+}
+\maketest{multline*}{
+  unnumbered variant
+}{
+  a+b+c+d+e+f+ a+b+c+d+e+f\\
+  +g+h+ g+h+ g+h+\\
+  +i+j+k+l+m+n
+  +i+j+k+l+m+n
+}
+
+\maketest{gather}{
+  a group of numbered equations with no horizontal alignment; each line is horizontally centered.\\
+}{
+  \int_a^b f(x)\, dx\\
+  \int_a^b f(x)g(x)h(x)\, dx
+}
+\maketest{gather*}{
+  unnumbered variant
+}{
+  \int_a^b f(x)\, dx\\
+  \int_a^b f(x)g(x)h(x)\, dx
+}
+
+\maketest{displaymath}{
+  This is an older environment, not one of the amsmath ones; the ams doc says it's functionally equivalent to equation*
+}{
+  \int_a^b f(x)\, dx
+}
+
+\subsection{alignlike}
+These environments are full line width.
+They use horizontal alignment markers (\&).
+
+\maketest{align}{
+  for two or more equations; this test has just one alignment column
+}{
+  \int_a^b f(x)\, dx &= 1\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c\\
+}
+\maketest{align}{
+  another test, with multiple alignment columns
+}{
+  \int_a^b f(x)\, dx &= 1
+  & x &= y+z
+  & p &= 0\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c
+  & x'+y' &= z'
+  & q &= 1\\
+}
+\maketest{align*}{
+  unnumbered variant; one column
+}{
+  \int_a^b f(x)\, dx &= 1\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c\\
+}
+\maketest{align*}{
+  unnumbered variant; multiple columns
+}{
+  \int_a^b f(x)\, dx &= 1
+  & x &= y+z
+  & p &= 0\\
+  \int_a^b g(x) + h(x)\, dx &= a+b+c
+  & x'+y' &= z'
+  & q &= 1\\
+}
+\makeoutertest{alignat}{
+  allows the horizontal space between equations to be explicitly specified;
+  takes an argument for number of ``equation columns''.
+}{
+  \begin{alignat}{2}
+    x& = y_1-y_2+y_3-y_5+y_8-\dots
+    &\qquad& \text{by (C)}\\
+     & = y'\circ y^* && \text{by (D)}\\
+     & = y(0) y' && \text {by Axiom 1.}
+  \end{alignat}
+}
+\makeoutertest{alignat*}{
+  unnumbered variant
+}{
+  \begin{alignat*}{2}
+    x& = y_1-y_2+y_3-y_5+y_8-\dots
+    &\qquad& \text{by (C)}\\
+     & = y'\circ y^* && \text{by (D)}\\
+     & = y(0) y' && \text {by Axiom 1.}
+  \end{alignat*}
+}
+
+\maketest{flalign}{
+  full length alignment; stretches to fill line, leaving space for equation numbers and endmark (if present)\\
+}{
+  x&=y & X&=Y\\
+  x'&=y' & X'&=Y'\\
+  x+x'&=y+y' & X+X'&=Y+Y'
+}
+\maketest{flalign*}{
+  unnumbered variant
+}{
+  x&=y & X&=Y\\
+  x'&=y' & X'&=Y'\\
+  x+x'&=y+y' & X+X'&=Y+Y'
+}
+\subsection{inner math environments}
+These environments go inside other displayed math environments.
+
+\makeoutertest{split}{
+  for a \emph{single} equation split among multiple lines, line \texttt{multiline}, but with some alignment points.\\
+  This \texttt{split} is inside \texttt{equation}.
+}{
+  \begin{equation}
+    \begin{split}
+      H_c
+      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+    \end{split}
+  \end{equation}
+}
+\makeoutertest{split}{
+  This \texttt{split} is inside \texttt{gather}, between other lines
+}{
+  \begin{gather}
+    a + b = c\\
+    \begin{split}
+      H_c
+      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+    \end{split}\\
+    \int_a^b f(x)\, dx
+  \end{gather}
+}
+
+The width of the following environments is just the width of the content.
+Therefore, maybe they should \emph{not} be endmarkable? (I'm not sure.)
+Note: there are options to set their vertical alignment; maybe that is useful?
+
+Each of these is inside \texttt{equation}.
+Each takes an optional argument for vertical positioning (baseline); demonstrated just with the first one.
+
+\makeoutertest{gathered}{
+  [c] (the default)
+}{
+  \begin{equation}
+    \begin{gathered}[c]
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      a+b+c+d = e+f+g+h+i+j+k
+    \end{gathered}
+  \end{equation}
+}
+\makeoutertest{gathered}{
+  [t] (baseline top)
+}{
+  \begin{equation}
+    \begin{gathered}[t]
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      a+b+c+d = e+f+g+h+i+j+k
+    \end{gathered}
+  \end{equation}
+}
+\makeoutertest{gathered}{
+  [b] (baseline bottom)
+}{
+  \begin{equation}
+    \begin{gathered}[b]
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      \int_a^b f(x)\, dx\\
+      a+b+c+d = e+f+g+h+i+j+k
+    \end{gathered}
+  \end{equation}
+}
+\makeoutertest{aligned}{
+}{
+  \begin{equation}
+      \begin{aligned}
+      \int_a^b f(x)\, dx & = 2 \\
+      \int_a^b f(x)\, dx & = x+y+z \\
+      \int_a^b f(x)\, dx & = 1\\
+      a+b+c+d & = e+f+g+h+i+j+k
+      \end{aligned}
+  \end{equation}
+}
+\makeoutertest{alignedat}{
+}{
+  \begin{equation}
+    \begin{alignedat}{2}
+      x& = y_1-y_2+y_3-y_5+y_8-\dots
+      &\qquad& \text{by (C)}\\
+       & = y'\circ y^* && \text{by (D)}\\
+       & = y(0) y' && \text {by Axiom 1.}
+    \end{alignedat}
+  \end{equation}
+}
+\makeoutertest{cases}{
+}{
+  \begin{equation*}
+    P_{r-j}=
+    \begin{cases}
+      0& \text{if $r-j$ is odd},\\
+      r!\,(-1)^{(r-j)/2}& \text{if $r-j$ is even}.
+    \end{cases}
+  \end{equation*}
+}
+
+\makeoutertest{dcases}{
+  This is a variant that the amsdocs mention, but is provided by the \texttt{mathtools} package.
+  It makes the case lines displaystyle instead of (the default) textstyle.
+  So, maybe we don't want to support this directly (especially not if we decide not to make \texttt{cases} endmarkable in the first place).
+}{
+  \break [\emph{no example here}]
+}
+
+\subsection{lists}
+
+\maketest{enumerate}{
+  items are counted
+}{
+\item top
+\item middle
+\item bottom
+}
+\maketest{itemize}{
+  items are not counted
+}{
+\item top
+\item middle
+\item bottom
+}
+\maketest{description}{
+  items have labels
+}{
+\item[The first one:] goes here
+\item[Another:] and this is the item content
+\item[The final one:] these are often used for defintions
+}
+\makeoutertest{list}{
+  This is the basic environment that others are derived from.
+  Adding thmmark support for this might either (a) automatically give it to other lists or (b) make us confused because other environments use \texttt{list} in subtle ways (e.g., trivlists).
+}{
+  \begin{list}{}{}
+  \item first
+  \item middle
+  \item last
+  \end{list}
+}
+
+
+\subsection{text blocks}
+
+(todo: quote, verbatim, other trivlist?)
+
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+\begin{verbatim}
+Some verbatim symbols \ & $ etc.
+\end{verbatim}
+\end{test}
+
+\maketest{quote}{}{
+  A quotation goes here.
+}
+
+\subsubsection*{some other environments}
+I'm not sure whether these go with this group, or somewhere else.
+
+\maketest{center}{
+  center the contents
+}{
+  some centered text, or equation, or other environment
+}
+
+\makeoutertest{tikzpicture}{
+  often used for diagrams, but of course requires tikz
+}{
+  \break [\emph{no example here}]
+}
+\makeoutertest{tikzcd}{
+  another popular one, also requires extra packages
+}{
+  \break [\emph{no example here}]
+}
+
+\subsection{tablelike}
+
+See \href{https://mirrors.ctan.org/macros/latex/base/source2e.pdf}{source2e}: File 41 ltab.dtx: Tabbing, Tabular, and Array Environments.
+
+Explanation and examples from \url{https://latexref.xyz}.
+
+\maketest{tabbing}{
+  manually set and use tab stops
+}{
+  row1-col1 \= row1-col2 \= this one has a longer heading  \= r1-c4 \\
+  row2-col1 \> row2-col3  \> . \> . \\
+  r3-c1 \> next field \> a \> b  \\
+}
+
+\makeoutertest{tabular}{
+  a table
+}{\\[1pc]
+\begin{tabular}{l|l}
+  \textit{Player name}  &\textit{Career home runs}  \\
+  \hline
+  Hank Aaron  &755 \\
+  Babe Ruth   &714 \\
+  Hank Aaron (repeat)  &755 \\
+  Babe Ruth (repeat)  &714
+\end{tabular}
+}
+
+\makeoutertest{array}{
+  works inside displayed math; this one is in equation*
+}{
+\begin{equation*}
+  \chi(x) =
+  \left|              % vertical bar fence
+    \begin{array}{ccc}
+      x-a  &-b  &-c  \\
+      -d   &x-e &-f  \\
+      -g   &-h  &x-i
+    \end{array}
+ \right|
+\end{equation*}
+}
+
+
+\subsection{unsupported}
+
+These environments are intentionally unsupported.
+The marks may or may not be placed as expected, depending on the surrounding environment(s).
+
+\maketest{eqnarray}{
+  not recommended, for many reasons documented in
+  \href{https://tug.org/TUGboat/tb33-1/tb103madsen.pdf}{Avoid \texttt{eqnarray}!} (TUGboat 33:1, 2012)
+}{
+  \int_a^b f(x)\, dx & = 1.
+}
+
+\makeoutertest{pmatrix}{
+  other matrix environments are likewise not (directly) supported: \texttt{smallmatrix}, \texttt{bmatrix}, \texttt{Bmatrix}, \texttt{vmatrix}, and \texttt{Vmatrix}}{
+  \[\begin{pmatrix}
+    a&b\\ c&d
+  \end{pmatrix}\]
+}
 
 \end{document}
