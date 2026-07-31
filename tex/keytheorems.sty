@@ -3374,7 +3374,7 @@
             \__keythms_thmmarks_record:
           }
       }
-    
+
     % redefine this command to step counter and set boolean
     \cs_set_protected:Npn \__keythms_thm_qedcode:nn #1#2
       { % #1 = name, #2 = symbol
@@ -3394,7 +3394,7 @@
             \popQED
           }
       }
-    
+
     % special treatment for proof
     \hook_gput_code:nnn { env/proof/begin } { . }
       {
@@ -3406,9 +3406,19 @@
       {
         \__keythms_thmmarks_checkend:
       }
-    
-    % TODO: add warning for numbered equations
-    \clist_map_inline:nn { equation*,align* }
+
+    \clist_map_inline:nn
+      { 
+        equation*,
+        multline*, % mark not at right of line
+        gather*, % mark not at right of line
+        % displaymath, % apparently not needed?
+        %% alignlike
+        align*, % seems ok?
+        alignat*, % mark not at right of line
+        % also, flalign and flalign* have endmarks that hang into the right margin
+        flalign*,
+      }
       {
         \hook_gput_code:nnn {env/#1/end} { . }
           {
@@ -3459,7 +3469,25 @@
           % }
       % }
 
-    \clist_map_inline:nn { equation,align }
+    \clist_map_inline:nn
+      {
+        equation,
+        multline, % mark not at right of line
+        gather, % mark not at right of line
+        % displaymath, % apparently not needed?
+        %% alignlike
+        align, % deletes tag
+        alignat, % mark not at right of line
+        flalign, % mark pushes content over tag; does not happen with manual \qedhere
+        % also, flalign and flalign* have endmarks that hang into the right margin
+        %% inner math
+        %% adding these didn't change anything
+        % split, % test equation (20) has no mark, and (23) has one but not at right of line
+        % gathered,
+        % aligned,
+        % alignedat,
+        % cases,
+      }
       {
         \hook_gput_code:nnn {env/#1/end} { . }
           {
@@ -3482,9 +3510,23 @@
               }
           }
       }
-    
+
     % list environments
-    \clist_map_inline:nn { enumerate,description,itemize }
+    \clist_map_inline:nn
+      {
+        enumerate,
+        description,
+        itemize,
+        list,
+        %% text/etc
+        verbatim, % adding this does not change anything
+        quote, % mark not at right of line
+        % center, % adding this uncenters the the text
+        %% tablelike
+        % tabbing, % repositions endmark to left of next line
+        % tabular, % adding this does not change anything
+        % array, % adding this does not change anything
+      }
       {
         \hook_gput_code:nnn {env/#1/end} { . }
           {
@@ -3507,7 +3549,7 @@
               }
           }
       }
-    
+
     % now handle nested theorems (but not recommended)
     \addtotheoremhook{prefoot}
       {
