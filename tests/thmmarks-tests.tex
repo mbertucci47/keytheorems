@@ -6,6 +6,7 @@
 \usepackage{amssymb}
 \usepackage[thmmarks]{keytheorems}
 \usepackage{hyperref}
+\usepackage{lipsum} % for filler text, to check spacing
 
 \newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
@@ -746,7 +747,7 @@ Explanation and examples from \url{https://latexref.xyz}.
   Hank Aaron  &755 \\
   Babe Ruth   &714 \\
   Hank Aaron (repeat)  &755 \\
-  Babe Ruth (repeat)  &714
+  Babe Ruth (repeat)  &714 
 \end{tabular}
 }
 
@@ -784,5 +785,87 @@ The marks may or may not be placed as expected, depending on the surrounding env
     a&b\\ c&d
   \end{pmatrix}\]
 }
+
+\section{Other Tests}
+
+Here are tests of two things:
+\begin{enumerate}
+\item a command to disable the thmmark for one box
+\item a command to put the thmmark on a previous line
+\end{enumerate}
+
+\newcommand{\noqed}{\renewcommand{\qedsymbol}{}}
+
+\begin{test} 
+  \verb|\noqed| 
+  \begin{equation*}
+    \chi(x) =
+    \left|              % vertical bar fence
+      \begin{array}{ccc}
+        x-a  &-b  &-c  \\
+        -d   &x-e &-f  \\
+        -g   &-h  &x-i
+      \end{array}
+    \right| \noqed 
+  \end{equation*}
+
+\end{test}
+\begin{test} 
+  \verb|\noqed| followed by \verb|\qedprev|\\
+  Combining these could be a way to manually mark the bottom of a box.\\
+  Note: an \verb|\hfill| is required here.
+  \begin{equation*}
+    \chi(x) =
+    \left|              % vertical bar fence
+      \begin{array}{ccc}
+        x-a  &-b  &-c  \\
+        -d   &x-e &-f  \\
+        -g   &-h  &x-i
+      \end{array}
+    \right| \noqed 
+  \end{equation*}\pushQED{\hfill\qedsymbol}\qedprev[1.5]
+\end{test}
+
+Paragraph after environment, to check spacing.
+\lipsum[2][1-3]
+
+\begin{test} (duplicate, with no extra commands, to check spacing)
+  \begin{equation*}
+    \chi(x) =
+    \left|              % vertical bar fence
+      \begin{array}{ccc}
+        x-a  &-b  &-c  \\
+        -d   &x-e &-f  \\
+        -g   &-h  &x-i
+      \end{array}
+    \right| %\noqed 
+  \end{equation*}%\pushQED{\hfill\qedsymbol}\qedprev[1.5]
+\end{test}
+
+Paragraph after environment, to check spacing.
+\lipsum[2][1-3]
+
+
+\begin{test} 
+  \verb|\noqed| does not work here
+  \begin{align}
+    x & = 2\\
+    y & = 3\\
+    P_{r-j} & =
+    \begin{cases}
+      0& \text{if $r-j$ is odd},\\
+      r!\,(-1)^{(r-j)/2}& \text{if $r-j$ is even}\\
+      \text{other} & \text{case, for testing.}\noqed
+    \end{cases} \noqed
+  \end{align}\noqed
+\end{test}
+
+\begin{test} 
+  \verb|\noqed| does not work here
+  \begin{align}
+    x & = 2\\
+    y & = 3\noqed
+  \end{align}
+\end{test}
 
 \end{document}
