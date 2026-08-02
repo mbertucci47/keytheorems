@@ -694,17 +694,42 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 
 (todo: quote, verbatim, other trivlist?)
 
-\begin{test} % manual, because argument expansion seems to get confused
-  \texttt{verbatim}:
-\begin{verbatim}
-Some verbatim symbols \ & $ etc.
-\end{verbatim}
-\end{test}
-
 \maketest{quote}{}{
   A quotation goes here.
   \lipsum[1][1-2]
 }
+
+\subsubsection*{verbatim}
+
+Currently this only sort of works.
+The \verb|\end{verbatim}| must be separated by a space, but not a newline, from the contents.
+This could have to do with the \texttt{hmode} v.s. \texttt{vmode} checks in the thmmark code.
+
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  Note that linebreaks are also treated verbatim.
+\begin{verbatim}
+Some verbatim symbols \ & $ etc.
+More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc.
+(The previous line intentionally runs off the page) \end{verbatim}
+\end{test}
+
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  (Another test)
+  If the last line is \emph{just a little} too long, it will push the endmark into the margin.
+\begin{verbatim}
+A123456789.B123456789.C123456789.D123456789.E123456789.F123456789 \end{verbatim}
+\end{test}
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  (Another test)
+  If the last line is \emph{a little more} too long, it will push the endmark down.
+\begin{verbatim}
+A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim}
+\end{test}
+
+
 
 \subsubsection*{some other environments}
 I'm not sure whether these go with this group, or somewhere else.
