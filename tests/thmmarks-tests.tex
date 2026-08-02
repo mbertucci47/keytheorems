@@ -538,10 +538,11 @@ They use horizontal alignment markers (\&).
   x+x'&=y+y' & X+X'&=Y+Y'
 }
 \subsection{inner math environments}
-These environments go inside other displayed math environments.
+These environments go inside other displayed math environments.\\
+Note: Maybe these should all be moved to the ``unsupported'' section, and their endmarks can be handled by the surrounding environments.
 
 \makeoutertest{split}{
-  for a \emph{single} equation split among multiple lines, line \texttt{multiline}, but with some alignment points.\\
+  for a \emph{single} equation split among multiple lines, like \texttt{multiline}, but with some alignment points.\\
   This \texttt{split} is inside \texttt{equation}.
 }{
   \begin{equation}
@@ -777,20 +778,6 @@ Explanation and examples from \url{https://latexref.xyz}.
 \end{tabular}
 }
 
-\makeoutertest{array}{
-  works inside displayed math; this one is in equation*
-}{
-\begin{equation*}
-  \chi(x) =
-  \left|              % vertical bar fence
-    \begin{array}{ccc}
-      x-a  &-b  &-c  \\
-      -d   &x-e &-f  \\
-      -g   &-h  &x-i
-    \end{array}
- \right|
-\end{equation*}
-}
 
 
 \subsection{unsupported}
@@ -806,12 +793,29 @@ The marks may or may not be placed as expected, depending on the surrounding env
 }
 
 \makeoutertest{pmatrix}{
-  other matrix environments are likewise not (directly) supported: \texttt{smallmatrix}, \texttt{bmatrix}, \texttt{Bmatrix}, \texttt{vmatrix}, and \texttt{Vmatrix}}{
+  other matrix environments are likewise not (directly) supported: \texttt{smallmatrix}, \texttt{bmatrix}, \texttt{Bmatrix}, \texttt{vmatrix}, and \texttt{Vmatrix}.
+  Just let the surrounding environment handle the end mark.
+}{
   \[\begin{pmatrix}
     a&b\\ c&d
   \end{pmatrix}\]
 }
 
+\makeoutertest{array}{
+  works inside displayed math; this one is in equation*.
+  Just let the surrounding environment handle the end mark.
+}{
+\begin{equation*}
+  \chi(x) =
+  \left|              % vertical bar fence
+    \begin{array}{ccc}
+      x-a  &-b  &-c  \\
+      -d   &x-e &-f  \\
+      -g   &-h  &x-i
+    \end{array}
+ \right|
+\end{equation*}
+}
 \section{Other Tests}
 
 Here are tests of two things:
@@ -893,5 +897,6 @@ Paragraph after environment, to check spacing.
     y & = 3\noqed
   \end{align}
 \end{test}
+
 
 \end{document}
