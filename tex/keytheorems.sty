@@ -3520,7 +3520,7 @@
         list,
         %% text/etc
         verbatim, % adding this does not change anything
-        quote, % mark not at right of line
+        %quote, % mark not at right of line
         % center, % adding this uncenters the the text
         %% tablelike
         % tabbing, % repositions endmark to left of next line
@@ -3548,6 +3548,35 @@
                   }
               }
           }
+      }
+
+      % quote
+      \hook_gput_code:nnn {env/quote/end} { . }
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+        {
+          \mode_if_horizontal:T
+          {
+            \dim_compare:nNnT { \lastskip } > { 0pt }
+            {
+              \int_gincr:N \g__keythms_thmmarks_envwithin_int
+              \cs_if_exist:cT
+              {
+                keythms_thmmark
+                _ \int_use:N \g__keythms_thmmarks_absthm_int
+                _ \int_use:N \g__keythms_thmmarks_envwithin_int
+              }
+              {
+                %%
+                %% the hskip with negative space moves the endmark
+                %% past the (nonzero) right margin
+                %% (ntheorem.sty line 119)
+                %%
+                \qedhere\hskip-\rightmargin\hbox to 0cm{}
+              }
+            }
+          }
+        }
       }
 
       % center
