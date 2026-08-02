@@ -3550,6 +3550,67 @@
           }
       }
 
+      % center
+      \hook_gput_code:nnn {env/center/end} { . }
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+        {
+          \mode_if_horizontal:T
+          {
+            \dim_compare:nNnT { \lastskip } > { 0pt }
+            {
+              \int_gincr:N \g__keythms_thmmarks_envwithin_int
+              \cs_if_exist:cT
+              {
+                keythms_thmmark
+                _ \int_use:N \g__keythms_thmmarks_absthm_int
+                _ \int_use:N \g__keythms_thmmarks_envwithin_int
+              }
+              {
+                %%
+                %% This puts an X where we would want the endmark.
+                %%
+                \rightskip0pt
+                \settowidth{\leftskip}{X}
+                \advance\leftskip\@flushglue\hskip\@flushglue X 
+              }
+            }
+          }
+        }
+      }
+      % tabbing
+      \hook_gput_code:nnn {env/tabbing/end} { . }
+      {
+        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+        {
+          \int_gincr:N \g__keythms_thmmarks_envwithin_int
+          \cs_if_exist:cT
+          {
+            keythms_thmmark
+            _ \int_use:N \g__keythms_thmmarks_absthm_int
+            _ \int_use:N \g__keythms_thmmarks_envwithin_int
+          }
+          {
+            %%
+            %% \` is a command for the tabbing environment
+            %% it pushes the following text to the right
+            %%
+            \`\qedhere
+          }
+        }
+      }
+
+      % put thmmark at end of previous line
+      \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
+      % tabular
+      \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
+      {
+        \qedprev
+      }
+
+
+
+      
     % now handle nested theorems (but not recommended)
     \addtotheoremhook{prefoot}
       {
