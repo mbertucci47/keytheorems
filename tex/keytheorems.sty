@@ -3590,7 +3590,14 @@
                 %% \` is a command for the tabbing environment
                 %% it pushes the following text to the right
                 %%
-                \`\qedhere
+                \`
+                \hbox_set:Nn \l_tmpa_box { \qedsymbol }
+                \dim_compare:nNnT % line + \quad + symbol
+                  { \box_wd:N \@curline + 1em + \box_wd:N \l_tmpa_box }
+                  > % ^ this isn't quite right but best I have now
+                  { \columnwidth }
+                  { \\ \` }
+                \qedhere
               }
           }
       }
