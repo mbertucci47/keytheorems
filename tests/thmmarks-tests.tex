@@ -962,5 +962,36 @@ Paragraph after environment, to check spacing.
   \end{align}
 \end{test}
 
+\clearpage
+\section{align and friends with tall lines}
+
+
+\maketest{align}{
+  with \texttt{cases}
+}{
+  \text{words to push this content to the right edge}\qquad\qquad x & = 2\\
+  y & =
+  \begin{cases}
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx 
+  \end{cases}
+}
+\begin{test} 
+  Similar to above, but manually reposition endmark with\\
+  \verb|  \par\vspace{-1.6\baselineskip}~|\\
+  after \verb|\end{align}|
+  \begin{align}
+    \text{words to push this content to the right edge}\qquad\qquad x & = 2\\
+    y & =
+        \begin{cases}
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx 
+        \end{cases}
+  \end{align}\par\vspace{-1.6\baselineskip}~
+\end{test}
 
 \end{document}
