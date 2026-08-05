@@ -2862,8 +2862,7 @@
     \dim_set:Nn \l_keythms_tcbthmbox_thickness_dim { 0.6pt }
     \dim_new:N \l_keythms_tcbthmbox_leftmargin_dim
     \dim_set:Nn \l_keythms_tcbthmbox_leftmargin_dim { 0.7\parindent } % use \parindent? thmbox does
-    \dim_new:N \l_keythms_tcbthmbox_rightmargin_dim
-    \dim_set:Nn \l_keythms_tcbthmbox_rightmargin_dim { 0pt }
+    \dim_zero_new:N \l_keythms_tcbthmbox_rightmargin_dim
     \dim_new:N \l_keythms_tcbthmbox_hskip_dim
     \dim_set:Nn \l_keythms_tcbthmbox_hskip_dim { 0.2em }
     \dim_new:N \l_keythms_tcbthmbox_vskip_dim
@@ -3565,8 +3564,36 @@
       % \qedprev[1.3]
       % }
 
+
+    \cs_new_protected:Npn \__keythms_thmmarks_listenv_setup:nn #1#2
+      {
+        \clist_map_inline:nn { #1 }
+          {
+            \hook_gput_code:nnn {env/##1/end} { . }
+              {
+                \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+                  {
+                    \mode_if_horizontal:T
+                      {
+                        \dim_compare:nNnT { \lastskip } > { 0pt }
+                          {
+                            \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                            \cs_if_exist:cT
+                              {
+                                keythms_thmmark
+                                _ \int_use:N \g__keythms_thmmarks_absthm_int
+                                _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                              }
+                              { #2 }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+
     % list environments
-    \clist_map_inline:nn
+    \__keythms_thmmarks_listenv_setup:nn
       {
         enumerate,
         description,
@@ -3576,39 +3603,41 @@
         verbatim, % maybe it's fine?
       }
       {
-        \hook_gput_code:nnn {env/#1/end} { . }
-          {
-            \bool_if:NT \l__keythms_thmmarks_qedthm_bool
-              {
-                \mode_if_horizontal:T
-                  {
-                    \dim_compare:nNnT { \lastskip } > { 0pt }
-                      {
-                        \int_gincr:N \g__keythms_thmmarks_envwithin_int
-                        \cs_if_exist:cT
-                          {
-                            keythms_thmmark
-                            _ \int_use:N \g__keythms_thmmarks_absthm_int
-                            _ \int_use:N \g__keythms_thmmarks_envwithin_int
-                          }
-                          { \qedhere }
-                      }
-                  }
-              }
-          }
+        \qedhere
       }
 
-      % quote
-      \hook_gput_code:nnn {env/quote/end} { . }
+    % quote
+    \__keythms_thmmarks_listenv_setup:nn { quote }
+      {
+        % the hskip with negative space moves the endmark
+        % past the (nonzero) right margin
+        % (ntheorem.sty line 119)
+        \qedhere
+        \skip_horizontal:n { -\rightmargin }
+        \hbox_to_zero:n { }
+      }
+
+    % center
+    \__keythms_thmmarks_listenv_setup:nn { center }
+      { % https://tex.stackexchange.com/a/727072/
+        % https://tex.stackexchange.com/a/765199/208544
+        % shifts content left
+        \unskip
+        \hfil
+        \hbox_set:Nn \l_tmpa_box { \quad\qedsymbol }
+        \makebox[\box_wd:N \l_tmpa_box][r]{\qedhere}
+        \hfilneg
+        \hspace{0pt}
+        \par
+      }
+
+    % tabbing
+    \hook_gput_code:nnn {env/tabbing/end} { . }
       {
         \bool_if:NT \l__keythms_thmmarks_qedthm_bool
-        {
-          \mode_if_horizontal:T
           {
-            \dim_compare:nNnT { \lastskip } > { 0pt }
-            {
-              \int_gincr:N \g__keythms_thmmarks_envwithin_int
-              \cs_if_exist:cT
+            \int_gincr:N \g__keythms_thmmarks_envwithin_int
+            \cs_if_exist:cT
               {
                 keythms_thmmark
                 _ \int_use:N \g__keythms_thmmarks_absthm_int
@@ -3616,78 +3645,30 @@
               }
               {
                 %%
-                %% the hskip with negative space moves the endmark
-                %% past the (nonzero) right margin
-                %% (ntheorem.sty line 119)
+                %% \` is a command for the tabbing environment
+                %% it pushes the following text to the right
                 %%
-                \qedhere\hskip-\rightmargin\hbox to 0cm{}
+                \unskip
+                \`
+                \hbox_set:Nn \l_tmpa_box { \qedsymbol }
+                \dim_compare:nNnT % line + \quad + qedsymbol
+                  { \box_wd:N \@curline + 1em + \box_wd:N \l_tmpa_box }
+                  >
+                  { \linewidth }
+                  { \\ \` }
+                \qedhere
               }
-            }
           }
-        }
       }
 
-      % center
-      \hook_gput_code:nnn {env/center/end} { . }
-      {
-        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
-        {
-          \mode_if_horizontal:T
-          {
-            \dim_compare:nNnT { \lastskip } > { 0pt }
-            {
-              \int_gincr:N \g__keythms_thmmarks_envwithin_int
-              \cs_if_exist:cT
-              {
-                keythms_thmmark
-                _ \int_use:N \g__keythms_thmmarks_absthm_int
-                _ \int_use:N \g__keythms_thmmarks_envwithin_int
-              }
-              {
-                %%
-                %% This puts an X where we would want the endmark.
-                %%
-                \rightskip0pt
-                \settowidth{\leftskip}{X}
-                \advance\leftskip\@flushglue\hskip\@flushglue X 
-              }
-            }
-          }
-        }
-      }
-      % tabbing
-      \hook_gput_code:nnn {env/tabbing/end} { . }
-      {
-        \bool_if:NT \l__keythms_thmmarks_qedthm_bool
-        {
-          \int_gincr:N \g__keythms_thmmarks_envwithin_int
-          \cs_if_exist:cT
-          {
-            keythms_thmmark
-            _ \int_use:N \g__keythms_thmmarks_absthm_int
-            _ \int_use:N \g__keythms_thmmarks_envwithin_int
-          }
-          {
-            %%
-            %% \` is a command for the tabbing environment
-            %% it pushes the following text to the right
-            %%
-            \`\qedhere
-          }
-        }
-      }
-
-      % put thmmark at end of previous line
-      \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
-      % tabular
-      \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
+    % put thmmark at end of previous line
+    \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
+    % tabular
+    \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
       {
         \qedprev
       }
 
-
-
-      
     % now handle nested theorems (but not recommended)
     \addtotheoremhook{prefoot}
       {

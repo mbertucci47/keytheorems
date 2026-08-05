@@ -38,8 +38,6 @@
     parent=section,
     ]
 
-
-    
 % style for boring tests
 \newkeytheorem{test}[
     style=diamondstyle,
@@ -62,8 +60,6 @@
     \end{#1}
   }
 }
-
-
 
 \begin{document}
 
@@ -800,9 +796,16 @@ A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim
 \maketest{center}{
   center the contents
 }{
-  some centered text, or equation, or other environment
+  some centered text, or equation, or other environment environment environme
 }
-
+\maketest{center}{
+  center the contents
+}{
+  some centered text, or equation, or other environment environment environment
+}
+\begin{center} % compare alignment
+environment
+\end{center}
 
 \subsection{tablelike}
 
@@ -817,6 +820,13 @@ Explanation and examples from \url{https://latexref.xyz}.
   row2-col1 \> row2-col3  \> . \> . \\
   r3-c1 \> next field \> a \> b
 }
+\maketest{tabbing}{
+  manually set and use tab stops
+}{
+  row1-col1 \= row1-col2 \= this one has a longer heading  \= r1-c4 \\
+  row2-col1 \> row2-col3  \> . \> . \\
+  r3-c1 \> next field \> a \> this one has a longer heading
+}
 
 \makeoutertest{tabular}{
   a table
@@ -827,7 +837,7 @@ Explanation and examples from \url{https://latexref.xyz}.
   Hank Aaron  &755 \\
   Babe Ruth   &714 \\
   Hank Aaron (repeat)  &755 \\
-  Babe Ruth (repeat)  &714 
+  Babe Ruth (repeat)  &714
 \end{tabular}
 }
 
