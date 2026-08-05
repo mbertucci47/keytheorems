@@ -150,7 +150,11 @@ These test multiple or nested boxes inside of theoremlike environments.
   Case 4: Environment ends with
   \begin{itemize}
   \item a
-  \item list.
+  \item list
+  \item with a display
+    \[
+      a^2 + b^2 = c^2
+    \]
     \begin{enumerate}
     \item and there is
     \item a nested list
@@ -158,6 +162,64 @@ These test multiple or nested boxes inside of theoremlike environments.
   \item but the outer list has
   \item the final item 
   \end{itemize}
+\end{note}
+
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with a display
+      \[
+        a^2 + b^2 = c^2
+      \]
+    \end{enumerate}
+  \end{itemize}
+\end{note}
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with align
+      \begin{align}
+        a^2 + b^2 & = c^2\\
+        3^2 + 4^2 & = 5^2
+      \end{align}
+    \end{enumerate}
+  \end{itemize}
+\end{note}
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with align
+      \begin{align}
+        a^2 + b^2 & = c^2\\
+        3^2 + 4^2 & = 5^2
+      \end{align}
+    \end{enumerate}
+  \end{itemize}
+  Then there is some text at the end
+\end{note}
+\begin{note} 
+  First an align
+  \begin{align}
+    a^2 + b^2 & = c^2\\
+    3^2 + 4^2 & = 5^2
+  \end{align}
+  Then some text, 
+  \begin{enumerate}
+  \item and then
+  \item a list.
+  \end{enumerate}
 \end{note}
 
 \section{some other messy tests}
@@ -452,6 +514,8 @@ They do not use horizontal alignment markers (\&).
   \int_a^b f(x)\, dx\\
   \int_a^b f(x)g(x)h(x)\, dx
 }
+Note: currently \texttt{gather} is handled the same way as \texttt{align}.
+It's unclear (to me, NGJ) whether it should be grouped with the other ``alignlike'' environments for that reason.
 \maketest{gather*}{
   unnumbered variant
 }{
