@@ -4,6 +4,8 @@
 %%
 \usepackage{amsmath} % for my editor's highlighting; loaded by thmmarks option
 \usepackage{amssymb}
+\usepackage{tikz} % for testing tikzpicture and tikzcd
+\usetikzlibrary{cd} % for testing tikzcd
 \usepackage[thmmarks]{keytheorems}
 \usepackage{hyperref}
 \usepackage{lipsum} % for filler text, to check spacing
@@ -795,25 +797,12 @@ A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim
 \end{test}
 
 
-
-\subsubsection*{some other environments}
-I'm not sure whether these go with this group, or somewhere else.
-
 \maketest{center}{
   center the contents
 }{
   some centered text, or equation, or other environment
 }
-\makeoutertest{tikzpicture}{
-  often used for diagrams, but of course requires tikz
-}{
-  \break [\emph{no example here}]
-}
-\makeoutertest{tikzcd}{
-  another popular one, also requires extra packages
-}{
-  \break [\emph{no example here}]
-}
+
 
 \subsection{tablelike}
 
@@ -880,6 +869,36 @@ The marks may or may not be placed as expected, depending on the surrounding env
  \right|
 \end{equation*}
 }
+
+\subsubsection*{tikz environments}
+If these are wrapped in other environments like \texttt{equation}, then they won't need direct support
+
+\makeoutertest{tikzpicture}{
+  often used for diagrams, but of course requires tikz\\
+}{
+  \hspace*{.7\textwidth}
+  \begin{tikzpicture}
+    \draw (0,0) -- ++(1,1) -- ++(1,-1);
+  \end{tikzpicture}
+}
+
+% doesn't work with our test macros
+\begin{test}
+  \texttt{tikzcd}:
+  another popular one, also requires extra packages\\
+  This is a \texttt{tikzcd} inside an \texttt{equation}.
+  \begin{equation}
+    \begin{tikzcd}
+      A \arrow[r, "\phi"] \arrow[d]
+      & B \arrow[d, "\psi"] \\
+      C \arrow[r, "\eta"]
+      & D
+    \end{tikzcd} 
+  \end{equation}
+\end{test}
+
+
+
 
 \clearpage
 \section{Other Tests}
@@ -951,6 +970,49 @@ Paragraph after environment, to check spacing.
   \end{align}
 \end{test}
 
+\subsection{tikzpicture}
+
+Some tests of \texttt{tikzpicture} in equations.
+This is how I (NGJ) often make numbered commutative diagrams.
+
+% like \qedprev, but without the unnecessary qedhere
+\NewDocumentCommand{\qedabove}{O{1}}{\par\vspace{-#1\baselineskip}~}
+
+\begin{test}
+  \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (0,0)
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}
+\end{test}
+\begin{test}
+  another \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (1,1)
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}[baseline={(1,1)}]
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}
+\end{test}
+\begin{test}
+  another \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (1,1); use \verb|\par| and negative \verb|\vspace| to reposition endmark
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}[baseline={(1,1)}]
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}\qedabove[1.3]
+\end{test}
+
+
+
+
+
 \clearpage
 \section{align and friends with tall lines}
 
@@ -982,5 +1044,6 @@ Paragraph after environment, to check spacing.
         \end{cases}
   \end{align}\par\vspace{-1.6\baselineskip}~
 \end{test}
+
 
 \end{document}
