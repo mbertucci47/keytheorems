@@ -1016,7 +1016,7 @@ This is how I (NGJ) often make numbered commutative diagrams.
     \begin{tikzpicture}[baseline={(1,1)}]
       \draw (0,0) -- ++(1,1) -- ++(1,-1);
     \end{tikzpicture}
-  \end{equation}\qedabove[1.3]
+  \end{equation}\qedprev[1.3]
 \end{test}
 
 
@@ -1039,6 +1039,8 @@ This is how I (NGJ) often make numbered commutative diagrams.
     \int_a^b f(x)\,dx 
   \end{cases}
 }
+Spacing test.
+\lipsum[3][1-3].
 \begin{test} 
   Similar to above, but manually reposition endmark with\\
   \verb|  \par\vspace{-1.6\baselineskip}~|\\
@@ -1052,8 +1054,26 @@ This is how I (NGJ) often make numbered commutative diagrams.
           \int_a^b f(x)\,dx \\
           \int_a^b f(x)\,dx 
         \end{cases}
-  \end{align}\par\vspace{-1.6\baselineskip}~
+  \end{align}\qedprev[1.6]\hspace{0.001pt}\par\vspace{.6\baselineskip}
+  % note: \par above and positive \vspace seem to be necessary
+  % but then next line is indented because of \par
+  What if there is another line of text?  Is the endmark placed above?
 \end{test}
+
+Spacing test.
+\lipsum[3][1-3].
+
+Notes for the previous example.
+\begin{enumerate}
+\item Ending with \verb|\qedabove| also works.
+\item Ending with \verb|\qedhere| doesn't work; the endmark is on the baseline.
+\item Ending with \verb|\qedhere| (as in \verb|\qedprev|) followed by \verb|\hspace| \emph{does} work; the endmark appears after the fourth \texttt{cases} row.\\
+  It doesn't matter how much \texttt{hspace}, as long as it's a nonzero amount.
+  This is probably something to do with \texttt{vmode} v.s.~\texttt{hmode}, and if so then there is probably a better way to handle it.
+  That's beyond what I currently understand though.
+\item Spacing after the environment doesn't seem to be affected by the negative \texttt{vspace}, but lines \emph{inside} the environment are affected.
+\item Maybe the whole negative \texttt{vspace} idea is just not great; is there a better alternative?
+\end{enumerate}
 
 
 \end{document}
