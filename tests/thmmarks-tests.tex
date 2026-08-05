@@ -733,8 +733,13 @@ I'm not sure whether these go with this group, or somewhere else.
 
 \maketest{center}{
   center the contents
+}{ % overlaps with content
+  some centered text, or equation, or other environment environment environme
+}
+\maketest{center}{
+  center the contents
 }{
-  some centered text, or equation, or other environment
+  some centered text, or equation, or other environment environment environment
 }
 \makeoutertest{tikzpicture}{
   often used for diagrams, but of course requires tikz
@@ -760,6 +765,13 @@ Explanation and examples from \url{https://latexref.xyz}.
   row2-col1 \> row2-col3  \> . \> . \\
   r3-c1 \> next field \> a \> b
 }
+\maketest{tabbing}{
+  manually set and use tab stops
+}{
+  row1-col1 \= row1-col2 \= this one has a longer heading  \= r1-c4 \\
+  row2-col1 \> row2-col3  \> . \> . \\
+  r3-c1 \> next field \> a \> this one has a longer heading
+}
 
 \makeoutertest{tabular}{
   a table
@@ -770,7 +782,7 @@ Explanation and examples from \url{https://latexref.xyz}.
   Hank Aaron  &755 \\
   Babe Ruth   &714 \\
   Hank Aaron (repeat)  &755 \\
-  Babe Ruth (repeat)  &714 
+  Babe Ruth (repeat)  &714
 \end{tabular}
 }
 

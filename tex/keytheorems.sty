@@ -3563,14 +3563,15 @@
 
     % center
     \__keythms_thmmarks_listenv_setup:nn { center }
-      {
-        % \skip_zero:N \rightskip % this messes up the centering
-        \hbox_set:Nn \l_tmpa_box { \qedsymbol }
-        \skip_set:Nn \leftskip { \box_wd:N \l_tmpa_box }
-        \skip_add:Nn \leftskip { \@flushglue }
-        \skip_horizontal:N \@flushglue
-        \hbox_overlap_left:n { \qedsymbol }
-        \cs_gset:Npn \QED@stack { } % clear stack
+      { % https://tex.stackexchange.com/a/765216/208544
+        % might overlap with content
+        \unskip
+        \hspace{\rightskip}
+        \makebox[0pt][r]{\qedhere}
+        \group_begin:
+        \skip_set:Nn \parfillskip { -\rightskip }
+        \par
+        \group_end:
       }
 
     % tabbing
@@ -3596,7 +3597,7 @@
                 \dim_compare:nNnT % line + \quad + qedsymbol
                   { \box_wd:N \@curline + 1em + \box_wd:N \l_tmpa_box }
                   >
-                  { \columnwidth }
+                  { \linewidth }
                   { \\ \` }
                 \qedhere
               }
