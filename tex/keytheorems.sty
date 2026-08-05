@@ -3563,15 +3563,16 @@
 
     % center
     \__keythms_thmmarks_listenv_setup:nn { center }
-      { % https://tex.stackexchange.com/a/765216/208544
-        % might overlap with content
+      { % https://tex.stackexchange.com/a/727072/
+        % https://tex.stackexchange.com/a/765199/208544
+        % shifts content left
         \unskip
-        \hspace{\rightskip}
-        \makebox[0pt][r]{\qedhere}
-        \group_begin:
-        \skip_set:Nn \parfillskip { -\rightskip }
+        \hfil
+        \hbox_set:Nn \l_tmpa_box { \quad\qedsymbol }
+        \makebox[\box_wd:N \l_tmpa_box][r]{\qedhere}
+        \hfilneg
+        \hspace{0pt}
         \par
-        \group_end:
       }
 
     % tabbing

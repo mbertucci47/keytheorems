@@ -733,7 +733,7 @@ I'm not sure whether these go with this group, or somewhere else.
 
 \maketest{center}{
   center the contents
-}{ % overlaps with content
+}{
   some centered text, or equation, or other environment environment environme
 }
 \maketest{center}{
@@ -741,6 +741,9 @@ I'm not sure whether these go with this group, or somewhere else.
 }{
   some centered text, or equation, or other environment environment environment
 }
+\begin{center} % compare alignment
+environment
+\end{center}
 \makeoutertest{tikzpicture}{
   often used for diagrams, but of course requires tikz
 }{
