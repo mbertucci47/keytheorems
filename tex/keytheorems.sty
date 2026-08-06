@@ -3536,6 +3536,7 @@
           \hss % from ntheorem; avoids overfull hbox
         }%
       }
+      \global\let\Old@maketag@@@=\maketag@@@ % save existing definition
       \clist_map_inline:nn
       {
         align,
@@ -3551,7 +3552,11 @@
             \int_gincr:N \g__keythms_thmmarks_envwithin_int
             \legacy_if:nTF { tagsleft@ }
             {
-              \global\let\maketag@@@\g__keythms_thmmarks_maketagaaa             
+              \global\let\maketag@@@=\g__keythms_thmmarks_maketagaaa
+              \AddToHookNext{env/#1/after}
+              { % reset the old definition
+                \global\let\maketag@@@=\Old@maketag@@@
+              }
             }
             {
               \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
