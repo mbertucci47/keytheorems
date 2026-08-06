@@ -3520,7 +3520,9 @@
         \settowidth{\tagwidth}{$#1$}%%  %% WM 17.10.2007
         \hbox to \tagwidth{%
           \hbox to \displaywidth{\m@th\normalfont#1%
-            %\hss\hss % from ntheorem; not needed?
+            \hss%\hss % from ntheorem; avoids underfull hbox
+            % second \hss not needed?
+            %
             % check whether to place endmark
             % \emk_check_whether_endmark
             \cs_if_exist:cT
@@ -3531,7 +3533,7 @@
             }
             { \qedhere }
           }
-          %\hss % from ntheorem; not needed?
+          \hss % from ntheorem; avoids overfull hbox
         }%
       }
       \clist_map_inline:nn
