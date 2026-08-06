@@ -3671,10 +3671,10 @@
     % put thmmark at end of previous line
     \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
     % tabular
-    \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
-      {
-        \qedprev
-      }
+    % \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
+    %   {
+    %     \qedprev
+    %   }
 
     % now handle nested theorems (but not recommended)
     \addtotheoremhook{prefoot}

@@ -1,6 +1,5 @@
-\documentclass[leqno,draft]{article}
+\documentclass[leqno]{article}
 %%
-%% draft option: show overfull hboxes
 %% test leqno
 %%
 \usepackage{amsmath} % for my editor's highlighting; loaded by thmmarks option
@@ -829,9 +828,16 @@ Explanation and examples from \url{https://latexref.xyz}.
   r3-c1 \> next field \> a \> this one has a longer heading
 }
 
+
+
+\subsection{unsupported}
+
+These environments are intentionally unsupported.
+The marks may or may not be placed as expected, depending on the surrounding environment(s).
+
 \makeoutertest{tabular}{
-  a table
-}{\\[1pc]
+  a table; wrap in another environment to position endmark
+}{
 \begin{tabular}{l|l}
   \textit{Player name}  &\textit{Career home runs}  \\
   \hline
@@ -841,13 +847,6 @@ Explanation and examples from \url{https://latexref.xyz}.
   Babe Ruth (repeat)  &714
 \end{tabular}
 }
-
-
-
-\subsection{unsupported}
-
-These environments are intentionally unsupported.
-The marks may or may not be placed as expected, depending on the surrounding environment(s).
 
 \maketest{eqnarray}{
   not recommended, for many reasons documented in
