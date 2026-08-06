@@ -8,7 +8,7 @@
 \usetikzlibrary{cd} % for testing tikzcd
 \usepackage[thmmarks]{keytheorems}
 \usepackage{hyperref}
-\usepackage{lipsum} % for filler text, to check spacing
+\usepackage{kantlipsum} % for filler text, to check spacing
 
 \newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
@@ -60,6 +60,21 @@
     \end{#1}
   }
 }
+
+
+
+%%
+%% potential user commands
+%%
+% put thmmark at end of previous line
+\NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
+
+% like \qedprev, but without the unnecessary qedhere
+\NewDocumentCommand{\qedabove}{O{1}}{\par\vspace{-#1\baselineskip}~}
+
+
+
+
 
 \begin{document}
 
@@ -617,19 +632,23 @@ Note: Maybe these should all be moved to the ``unsupported'' section, and their 
     \end{split}
   \end{equation}
 }
+
+Note: The endmark is missing from the previous example, but not the next one.
+This seems like a bug.
+
 \makeoutertest{split}{
-  This \texttt{split} is inside \texttt{gather}, between other lines
+  This \texttt{split} is inside \texttt{gather}.
 }{
   \begin{gather}
-    a + b = c\\
+    % a + b = c\\
     \begin{split}
       H_c
       &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
         \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
       &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
         \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
-    \end{split}\\
-    \int_a^b f(x)\, dx
+    \end{split}%\\
+    % \int_a^b f(x)\, dx
   \end{gather}
 }
 
@@ -759,7 +778,7 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 
 \maketest{quote}{}{
   A quotation goes here.
-  \lipsum[1][1-2]
+  \emph{\color{gray}\kant[1][1-2]}
 }
 
 \subsubsection*{verbatim}
@@ -847,6 +866,24 @@ The marks may or may not be placed as expected, depending on the surrounding env
   Babe Ruth (repeat)  &714
 \end{tabular}
 }
+\begin{test}
+  \texttt{tabular}: 
+  a table in a \texttt{center}, with \verb|\qedabove| to manually position the endmark
+  \begin{center}
+    \begin{tabular}{l|l}
+      \textit{Player name}  &\textit{Career home runs}  \\
+      \hline
+      Hank Aaron  &755 \\
+      Babe Ruth   &714 \\
+      Hank Aaron (repeat)  &755 \\
+      Babe Ruth (repeat)  &714
+    \end{tabular}
+  \end{center}\qedabove[1.3]
+\end{test}
+
+Note: \verb|\qedabove| can mess up spacing of the following lines, such as this one.
+\emph{\color{gray}\kant[1][1-2]}
+
 
 \maketest{eqnarray}{
   not recommended, for many reasons documented in
@@ -938,7 +975,7 @@ Here are tests of two things:
 \end{test}
 
 Paragraph after environment, to check spacing.
-\lipsum[2][1-3]
+\emph{\color{gray}\kant[2][1-3]}
 
 \begin{test} (duplicate, with no extra commands, to check spacing)
   \begin{equation*}
@@ -954,7 +991,7 @@ Paragraph after environment, to check spacing.
 \end{test}
 
 Paragraph after environment, to check spacing.
-\lipsum[2][1-3]
+\emph{\color{gray}\kant[2][1-3]}
 
 
 \begin{test} 
@@ -985,8 +1022,6 @@ Paragraph after environment, to check spacing.
 Some tests of \texttt{tikzpicture} in equations.
 This is how I (NGJ) often make numbered commutative diagrams.
 
-% like \qedprev, but without the unnecessary qedhere
-\NewDocumentCommand{\qedabove}{O{1}}{\par\vspace{-#1\baselineskip}~}
 
 \begin{test}
   \texttt{tikzpicture} in \texttt{equation}\\
@@ -1040,7 +1075,7 @@ This is how I (NGJ) often make numbered commutative diagrams.
   \end{cases}
 }
 Spacing test.
-\lipsum[3][1-3].
+\emph{\color{gray}\kant[3][1-3].}
 \begin{test} 
   Similar to above, but manually reposition endmark with\\
   \verb|  \par\vspace{-1.6\baselineskip}~|\\
@@ -1061,7 +1096,7 @@ Spacing test.
 \end{test}
 
 Spacing test.
-\lipsum[3][1-3].
+\emph{\color{gray}\kant[3][1-3].}
 
 Notes for the previous example.
 \begin{enumerate}

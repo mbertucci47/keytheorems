@@ -3509,7 +3509,7 @@
           }
       }
 
-      % align and gather
+      % gather and alignlike
       %%
       %% move the endmark check inside a function
       %% that we can force \maketag@@@ to use
@@ -3565,13 +3565,7 @@
         }
       }
 
-      % align; alternate version, puts qed on prev line; might overlap content
-      % \hook_gput_code:nnn {env/align/after} { . }
-      % {
-      % \qedprev[1.3]
-      % }
-
-
+    % list environments
     \cs_new_protected:Npn \__keythms_thmmarks_listenv_setup:nn #1#2
       {
         \clist_map_inline:nn { #1 }
@@ -3599,7 +3593,6 @@
           }
       }
 
-    % list environments
     \__keythms_thmmarks_listenv_setup:nn
       {
         enumerate,
@@ -3667,14 +3660,6 @@
               }
           }
       }
-
-    % put thmmark at end of previous line
-    \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
-    % tabular
-    % \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
-    %   {
-    %     \qedprev
-    %   }
 
     % now handle nested theorems (but not recommended)
     \addtotheoremhook{prefoot}
