@@ -3472,13 +3472,12 @@
       {
         equation,
         multline, % mark not at right of line
-        gather, % mark not at right of line
         % displaymath, % apparently not needed?
         %% alignlike
-        align, % deletes tag
-        alignat, % mark not at right of line
-        flalign, % mark pushes content over tag; does not happen with manual \qedhere
-        % also, flalign and flalign* have endmarks that hang into the right margin
+        % gather, % below
+        % align, % below
+        % alignat, % below
+        % flalign, % below
         %% inner math
         %% adding these didn't change anything
         % split, % test equation (20) has no mark, and (23) has one but not at right of line
@@ -3510,6 +3509,63 @@
           }
       }
 
+      % gather and alignlike
+      %%
+      %% move the endmark check inside a function
+      %% that we can force \maketag@@@ to use
+      %%
+      \newdimen{\tagwidth}
+      \cs_new:Npn \g__keythms_thmmarks_maketagaaa #1
+      { %#1 = the argument for \maketag@@@
+        \settowidth{\tagwidth}{$#1$}%%  %% WM 17.10.2007
+        \hbox to \tagwidth{%
+          \hbox to \displaywidth{\m@th\normalfont#1%
+            \hss%\hss % from ntheorem; avoids underfull hbox
+            % second \hss not needed?
+            %
+            % check whether to place endmark
+            % \emk_check_whether_endmark
+            \cs_if_exist:cT
+            {
+              keythms_thmmark
+              _ \int_use:N \g__keythms_thmmarks_absthm_int
+              _ \int_use:N \g__keythms_thmmarks_envwithin_int
+            }
+            { \qedhere }
+          }
+          \hss % from ntheorem; avoids overfull hbox
+        }%
+      }
+      \global\let\Old@maketag@@@=\maketag@@@ % save existing definition
+      \clist_map_inline:nn
+      {
+        align,
+        gather,
+        alignat,
+        flalign, % content overlaps endmark
+      }
+      {
+        \hook_gput_code:nnn {env/#1/end} { . }
+        {
+          \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+          {
+            \int_gincr:N \g__keythms_thmmarks_envwithin_int
+            \legacy_if:nTF { tagsleft@ }
+            {
+              \global\let\maketag@@@=\g__keythms_thmmarks_maketagaaa
+              \AddToHookNext{env/#1/after}
+              { % reset the old definition
+                \global\let\maketag@@@=\Old@maketag@@@
+              }
+            }
+            {
+              \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
+            }
+          }
+        }
+      }
+
+    % list environments
     \cs_new_protected:Npn \__keythms_thmmarks_listenv_setup:nn #1#2
       {
         \clist_map_inline:nn { #1 }
@@ -3536,7 +3592,7 @@
               }
           }
       }
-    % list environments
+
     \__keythms_thmmarks_listenv_setup:nn
       {
         enumerate,
@@ -3603,14 +3659,6 @@
                 \qedhere
               }
           }
-      }
-
-    % put thmmark at end of previous line
-    \NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
-    % tabular
-    \hook_gput_code:nnn {env/tabular/after} { . } % note AFTER
-      {
-        \qedprev
       }
 
     % now handle nested theorems (but not recommended)

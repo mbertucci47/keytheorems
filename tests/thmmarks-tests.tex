@@ -4,9 +4,11 @@
 %%
 \usepackage{amsmath} % for my editor's highlighting; loaded by thmmarks option
 \usepackage{amssymb}
+\usepackage{tikz} % for testing tikzpicture and tikzcd
+\usetikzlibrary{cd} % for testing tikzcd
 \usepackage[thmmarks]{keytheorems}
 \usepackage{hyperref}
-\usepackage{lipsum} % for filler text, to check spacing
+\usepackage{kantlipsum} % for filler text, to check spacing
 
 \newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
@@ -58,6 +60,21 @@
     \end{#1}
   }
 }
+
+
+
+%%
+%% potential user commands
+%%
+% put thmmark at end of previous line
+\NewDocumentCommand{\qedprev}{O{1}}{\par\vspace{-#1\baselineskip}\qedhere}
+
+% like \qedprev, but without the unnecessary qedhere
+\NewDocumentCommand{\qedabove}{O{1}}{\par\vspace{-#1\baselineskip}~}
+
+
+
+
 
 \begin{document}
 
@@ -146,7 +163,11 @@ These test multiple or nested boxes inside of theoremlike environments.
   Case 4: Environment ends with
   \begin{itemize}
   \item a
-  \item list.
+  \item list
+  \item with a display
+    \[
+      a^2 + b^2 = c^2
+    \]
     \begin{enumerate}
     \item and there is
     \item a nested list
@@ -154,6 +175,64 @@ These test multiple or nested boxes inside of theoremlike environments.
   \item but the outer list has
   \item the final item 
   \end{itemize}
+\end{note}
+
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with a display
+      \[
+        a^2 + b^2 = c^2
+      \]
+    \end{enumerate}
+  \end{itemize}
+\end{note}
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with align
+      \begin{align}
+        a^2 + b^2 & = c^2\\
+        3^2 + 4^2 & = 5^2
+      \end{align}
+    \end{enumerate}
+  \end{itemize}
+\end{note}
+\begin{note}\ 
+  \begin{itemize}
+  \item a
+  \item list
+    \begin{enumerate}
+    \item and there is
+    \item a nested list
+    \item with align
+      \begin{align}
+        a^2 + b^2 & = c^2\\
+        3^2 + 4^2 & = 5^2
+      \end{align}
+    \end{enumerate}
+  \end{itemize}
+  Then there is some text at the end
+\end{note}
+\begin{note} 
+  First an align
+  \begin{align}
+    a^2 + b^2 & = c^2\\
+    3^2 + 4^2 & = 5^2
+  \end{align}
+  Then some text, 
+  \begin{enumerate}
+  \item and then
+  \item a list.
+  \end{enumerate}
 \end{note}
 
 \section{some other messy tests}
@@ -448,6 +527,8 @@ They do not use horizontal alignment markers (\&).
   \int_a^b f(x)\, dx\\
   \int_a^b f(x)g(x)h(x)\, dx
 }
+Note: currently \texttt{gather} is handled the same way as \texttt{align}.
+It's unclear (to me, NGJ) whether it should be grouped with the other ``alignlike'' environments for that reason.
 \maketest{gather*}{
   unnumbered variant
 }{
@@ -551,19 +632,23 @@ Note: Maybe these should all be moved to the ``unsupported'' section, and their 
     \end{split}
   \end{equation}
 }
+
+Note: The endmark is missing from the previous example, but not the next one.
+This seems like a bug.
+
 \makeoutertest{split}{
-  This \texttt{split} is inside \texttt{gather}, between other lines
+  This \texttt{split} is inside \texttt{gather}.
 }{
   \begin{gather}
-    a + b = c\\
+    % a + b = c\\
     \begin{split}
       H_c
       &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
         \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
       &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
         \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
-    \end{split}\\
-    \int_a^b f(x)\, dx
+    \end{split}%\\
+    % \int_a^b f(x)\, dx
   \end{gather}
 }
 
@@ -693,7 +778,7 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 
 \maketest{quote}{}{
   A quotation goes here.
-  \lipsum[1][1-2]
+  \emph{\color{gray}\kant[1][1-2]}
 }
 
 \subsubsection*{verbatim}
@@ -727,10 +812,6 @@ A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim
 \end{test}
 
 
-
-\subsubsection*{some other environments}
-I'm not sure whether these go with this group, or somewhere else.
-
 \maketest{center}{
   center the contents
 }{
@@ -744,16 +825,6 @@ I'm not sure whether these go with this group, or somewhere else.
 \begin{center} % compare alignment
 environment
 \end{center}
-\makeoutertest{tikzpicture}{
-  often used for diagrams, but of course requires tikz
-}{
-  \break [\emph{no example here}]
-}
-\makeoutertest{tikzcd}{
-  another popular one, also requires extra packages
-}{
-  \break [\emph{no example here}]
-}
 
 \subsection{tablelike}
 
@@ -776,9 +847,16 @@ Explanation and examples from \url{https://latexref.xyz}.
   r3-c1 \> next field \> a \> this one has a longer heading
 }
 
+
+
+\subsection{unsupported}
+
+These environments are intentionally unsupported.
+The marks may or may not be placed as expected, depending on the surrounding environment(s).
+
 \makeoutertest{tabular}{
-  a table
-}{\\[1pc]
+  a table; wrap in another environment to position endmark
+}{
 \begin{tabular}{l|l}
   \textit{Player name}  &\textit{Career home runs}  \\
   \hline
@@ -788,13 +866,24 @@ Explanation and examples from \url{https://latexref.xyz}.
   Babe Ruth (repeat)  &714
 \end{tabular}
 }
+\begin{test}
+  \texttt{tabular}: 
+  a table in a \texttt{center}, with \verb|\qedabove| to manually position the endmark
+  \begin{center}
+    \begin{tabular}{l|l}
+      \textit{Player name}  &\textit{Career home runs}  \\
+      \hline
+      Hank Aaron  &755 \\
+      Babe Ruth   &714 \\
+      Hank Aaron (repeat)  &755 \\
+      Babe Ruth (repeat)  &714
+    \end{tabular}
+  \end{center}\qedabove[1.3]
+\end{test}
 
+Note: \verb|\qedabove| can mess up spacing of the following lines, such as this one.
+\emph{\color{gray}\kant[1][1-2]}
 
-
-\subsection{unsupported}
-
-These environments are intentionally unsupported.
-The marks may or may not be placed as expected, depending on the surrounding environment(s).
 
 \maketest{eqnarray}{
   not recommended, for many reasons documented in
@@ -827,6 +916,38 @@ The marks may or may not be placed as expected, depending on the surrounding env
  \right|
 \end{equation*}
 }
+
+\subsubsection*{tikz environments}
+If these are wrapped in other environments like \texttt{equation}, then they won't need direct support
+
+\makeoutertest{tikzpicture}{
+  often used for diagrams, but of course requires tikz\\
+}{
+  \hspace*{.7\textwidth}
+  \begin{tikzpicture}
+    \draw (0,0) -- ++(1,1) -- ++(1,-1);
+  \end{tikzpicture}
+}
+
+% doesn't work with our test macros
+\begin{test}
+  \texttt{tikzcd}:
+  another popular one, also requires extra packages\\
+  This is a \texttt{tikzcd} inside an \texttt{equation}.
+  \begin{equation}
+    \begin{tikzcd}
+      A \arrow[r, "\phi"] \arrow[d]
+      & B \arrow[d, "\psi"] \\
+      C \arrow[r, "\eta"]
+      & D
+    \end{tikzcd} 
+  \end{equation}
+\end{test}
+
+
+
+
+\clearpage
 \section{Other Tests}
 
 Here are tests of two things:
@@ -838,7 +959,8 @@ Here are tests of two things:
 \newcommand{\noqed}{\renewcommand{\qedsymbol}{}}
 
 \begin{test} 
-  \verb|\noqed| 
+  Use \verb|\par| and negative \verb|\vspace| to manually set endmark at bottom of environment.
+  Note: This will cause overlap with content, if the previous line is too long, so it should only be placed manually.
   \begin{equation*}
     \chi(x) =
     \left|              % vertical bar fence
@@ -847,28 +969,13 @@ Here are tests of two things:
         -d   &x-e &-f  \\
         -g   &-h  &x-i
       \end{array}
-    \right| \noqed 
+    \right|% \noqed 
   \end{equation*}
-
-\end{test}
-\begin{test} 
-  \verb|\noqed| followed by \verb|\qedprev|\\
-  Combining these could be a way to manually mark the bottom of a box.\\
-  Note: an \verb|\hfill| is required here.
-  \begin{equation*}
-    \chi(x) =
-    \left|              % vertical bar fence
-      \begin{array}{ccc}
-        x-a  &-b  &-c  \\
-        -d   &x-e &-f  \\
-        -g   &-h  &x-i
-      \end{array}
-    \right| \noqed 
-  \end{equation*}\pushQED{\hfill\qedsymbol}\qedprev[1.5]
+  \par\vspace{-1.3\baselineskip}~
 \end{test}
 
 Paragraph after environment, to check spacing.
-\lipsum[2][1-3]
+\emph{\color{gray}\kant[2][1-3]}
 
 \begin{test} (duplicate, with no extra commands, to check spacing)
   \begin{equation*}
@@ -879,16 +986,16 @@ Paragraph after environment, to check spacing.
         -d   &x-e &-f  \\
         -g   &-h  &x-i
       \end{array}
-    \right| %\noqed 
-  \end{equation*}%\pushQED{\hfill\qedsymbol}\qedprev[1.5]
+    \right|
+  \end{equation*}
 \end{test}
 
 Paragraph after environment, to check spacing.
-\lipsum[2][1-3]
+\emph{\color{gray}\kant[2][1-3]}
 
 
 \begin{test} 
-  \verb|\noqed| does not work here
+  \verb|\noqed| does not work here, at all
   \begin{align}
     x & = 2\\
     y & = 3\\
@@ -899,6 +1006,7 @@ Paragraph after environment, to check spacing.
       \text{other} & \text{case, for testing.}\noqed
     \end{cases} \noqed
   \end{align}\noqed
+  a line of text \noqed 
 \end{test}
 
 \begin{test} 
@@ -908,6 +1016,99 @@ Paragraph after environment, to check spacing.
     y & = 3\noqed
   \end{align}
 \end{test}
+
+\subsection{tikzpicture}
+
+Some tests of \texttt{tikzpicture} in equations.
+This is how I (NGJ) often make numbered commutative diagrams.
+
+
+\begin{test}
+  \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (0,0)
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}
+\end{test}
+\begin{test}
+  another \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (1,1)
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}[baseline={(1,1)}]
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}
+\end{test}
+\begin{test}
+  another \texttt{tikzpicture} in \texttt{equation}\\
+  baseline (1,1); use \verb|\par| and negative \verb|\vspace| to reposition endmark
+  \begin{equation}
+    \hspace*{.7\textwidth}
+    \begin{tikzpicture}[baseline={(1,1)}]
+      \draw (0,0) -- ++(1,1) -- ++(1,-1);
+    \end{tikzpicture}
+  \end{equation}\qedprev[1.3]
+\end{test}
+
+
+
+
+
+\clearpage
+\section{align and friends with tall lines}
+
+
+\maketest{align}{
+  with \texttt{cases}
+}{
+  \text{words to push this content to the right edge}\qquad\qquad x & = 2\\
+  y & =
+  \begin{cases}
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx \\
+    \int_a^b f(x)\,dx 
+  \end{cases}
+}
+Spacing test.
+\emph{\color{gray}\kant[3][1-3].}
+\begin{test} 
+  Similar to above, but manually reposition endmark with\\
+  \verb|  \par\vspace{-1.6\baselineskip}~|\\
+  after \verb|\end{align}|
+  \begin{align}
+    \text{words to push this content to the right edge}\qquad\qquad x & = 2\\
+    y & =
+        \begin{cases}
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx \\
+          \int_a^b f(x)\,dx 
+        \end{cases}
+  \end{align}\qedprev[1.6]\hspace{0.001pt}\par\vspace{.6\baselineskip}
+  % note: \par above and positive \vspace seem to be necessary
+  % but then next line is indented because of \par
+  What if there is another line of text?  Is the endmark placed above?
+\end{test}
+
+Spacing test.
+\emph{\color{gray}\kant[3][1-3].}
+
+Notes for the previous example.
+\begin{enumerate}
+\item Ending with \verb|\qedabove| also works.
+\item Ending with \verb|\qedhere| doesn't work; the endmark is on the baseline.
+\item Ending with \verb|\qedhere| (as in \verb|\qedprev|) followed by \verb|\hspace| \emph{does} work; the endmark appears after the fourth \texttt{cases} row.\\
+  It doesn't matter how much \texttt{hspace}, as long as it's a nonzero amount.
+  This is probably something to do with \texttt{vmode} v.s.~\texttt{hmode}, and if so then there is probably a better way to handle it.
+  That's beyond what I currently understand though.
+\item Spacing after the environment doesn't seem to be affected by the negative \texttt{vspace}, but lines \emph{inside} the environment are affected.
+\item Maybe the whole negative \texttt{vspace} idea is just not great; is there a better alternative?
+\end{enumerate}
 
 
 \end{document}
