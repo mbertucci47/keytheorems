@@ -3514,56 +3514,57 @@
       %% move the endmark check inside a function
       %% that we can force \maketag@@@ to use
       %%
-      \newdimen{\tagwidth}
-      \cs_new:Npn \g__keythms_thmmarks_maketagaaa #1
-      { %#1 = the argument for \maketag@@@
-        \settowidth{\tagwidth}{$#1$}%%  %% WM 17.10.2007
-        \hbox to \tagwidth{%
-          \hbox to \displaywidth{\m@th\normalfont#1%
-            \hss%\hss % from ntheorem; avoids underfull hbox
-            % second \hss not needed?
-            %
-            % check whether to place endmark
-            % \emk_check_whether_endmark
-            \cs_if_exist:cT
+      \dim_new:N \g__keythms_thmmarks_tagwidth_dim
+      \cs_new:Npn \__keythms_thmmarks_maketag@@@ #1
+        { % #1 = the argument for \maketag@@@
+          \hbox_set:Nn \l_tmpa_box { $#1$ }
+          \dim_set:Nn \g__keythms_thmmarks_tagwidth_dim { \box_wd:N \l_tmpa_box }
+          \hbox_to_wd:nn { \g__keythms_thmmarks_tagwidth_dim }
             {
-              keythms_thmmark
-              _ \int_use:N \g__keythms_thmmarks_absthm_int
-              _ \int_use:N \g__keythms_thmmarks_envwithin_int
+              \hbox_to_wd:nn { \displaywidth }
+                {
+                  \m@th \normalfont #1
+                  \hss%\hss % from ntheorem; avoids underfull hbox
+                  % second \hss not needed?
+                  \cs_if_exist:cT
+                    {
+                      keythms_thmmark
+                      _ \int_use:N \g__keythms_thmmarks_absthm_int
+                      _ \int_use:N \g__keythms_thmmarks_envwithin_int
+                    }
+                    { \qedhere }
+                }
+              \hss % from ntheorem; avoids overfull hbox
             }
-            { \qedhere }
-          }
-          \hss % from ntheorem; avoids overfull hbox
-        }%
-      }
-      \global\let\Old@maketag@@@=\maketag@@@ % save existing definition
-      \clist_map_inline:nn
-      {
-        align,
-        gather,
-        alignat,
-        flalign, % content overlaps endmark
-      }
-      {
-        \hook_gput_code:nnn {env/#1/end} { . }
-        {
-          \bool_if:NT \l__keythms_thmmarks_qedthm_bool
-          {
-            \int_gincr:N \g__keythms_thmmarks_envwithin_int
-            \legacy_if:nTF { tagsleft@ }
-            {
-              \global\let\maketag@@@=\g__keythms_thmmarks_maketagaaa
-              \AddToHookNext{env/#1/after}
-              { % reset the old definition
-                \global\let\maketag@@@=\Old@maketag@@@
-              }
-            }
-            {
-              \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
-            }
-          }
         }
-      }
+      \clist_map_inline:nn
+        {
+          align,
+          gather,
+          alignat,
+          flalign, % content overlaps endmark
+        }
+        {
+          \hook_gput_code:nnn {env/#1/end} { . }
+            {
+              \bool_if:NT \l__keythms_thmmarks_qedthm_bool
+                {
+                  \int_gincr:N \g__keythms_thmmarks_envwithin_int
+                  \legacy_if:nTF { tagsleft@ }
+                    {
+                      \cs_gset_eq:NN \keythms@orig@maketag@@@ \maketag@@@ % save existing definition
+                      \cs_gset_eq:NN \maketag@@@ \__keythms_thmmarks_maketag@@@
+                      \AddToHookNext{env/#1/after}
+                        { % reset the old definition
+                          \cs_gset_eq:NN \maketag@@@ \keythms@orig@maketag@@@
+                        }
+                    }
+                    {
+                      \msg_warning:nn { keytheorems } { thmmarks-numbered-eq-right }
+                    }
+                }
+            }
+        }
 
     % list environments
     \cs_new_protected:Npn \__keythms_thmmarks_listenv_setup:nn #1#2
