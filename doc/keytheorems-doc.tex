@@ -1618,6 +1618,33 @@ Code added using the hook keys \refKey{preheadhook}, etc.\@ is outermost, meanin
 Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
 \end{docCommand}
 
+
+\section{Theorem marks}
+
+First, decide what is default package behavior v.s. optional.
+One idea: enable for unnumbered environments by default; also enable automatically for numbered environments if leqno (ams?) is detected; options to enable numbered (if not automatic), disable numbered only, disable all.
+
+
+For theorems that are marked with \refKey{qed}, additional processing is needed to place the mark when the theorem ends with a display, a list or some other environment.
+
+
+... what do/don't we want to explain here??
+\begin{itemize}
+\item why this is needed; what happens without it; what \texttt{qedhere} does
+  \subitem note these marks are especially useful for plain style environments?
+\item how it works in theory (aux + two passes)
+\item how in works in practice (a bit about the algorithm?)
+  \subitem note that we have to work harder because \texttt{qedhere} is buggy?
+\item which environments are/aren't supported
+\item how to deal with unwanted placement (e.g., center of a \texttt{cases} environment?)
+\end{itemize}
+
+
+
+% This is the default behavior for proof environments, and the workaround is to manually place `\qedhere` commands inside the final environment.
+% Other environments can be given endmarks using the ams packages' `\qedsymbol`, and by default such endmarks have the same behavior.
+
+
 \section{Miscellaneous notes}
 
 \subsection{\cls{beamer} support}
