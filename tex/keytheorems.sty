@@ -3416,7 +3416,8 @@
         align*, % seems ok?
         alignat*, % mark not at right of line
         % also, flalign and flalign* have endmarks that hang into the right margin
-        flalign*,
+        % flalign,
+        % flalign*,
       }
       {
         \hook_gput_code:nnn {env/#1/end} { . }
@@ -3542,7 +3543,7 @@
           align,
           gather,
           alignat,
-          flalign, % content overlaps endmark
+          % flalign, % content overlaps endmark
         }
         {
           \hook_gput_code:nnn {env/#1/end} { . }
