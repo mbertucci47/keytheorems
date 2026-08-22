@@ -415,6 +415,32 @@ These settings can be changed by calling |siblings=false| (alias |sharenumbers=f
 Redefines \cs{qedsymbol} to be \meta{symbol}.
 \end{docKey}
 
+%%
+%% wrote some here; not sure the best way
+%% to convey the default depends on left
+%% v.s. right equation numbers.
+%%
+\begin{docKey}{auto-qed}
+  {\colOpt{=unnumbered\textbar all\textbar none}}
+  {default none, initially |unnumbered|}
+Alias \docAuxKey{thmmarks}. % maybe??
+Controls the automatic qed placement feature; see Section \ref{auto-qed}.
+The default option, |unnumbered| enables automatic qed placement only when the final inner environment has no equation number.
+Option |all| enables the feature for all (supported) environments, and |none| disables the feature.
+
+The default is |unnumbered| because qed marks are placed at right and therefore can conflict with right-justified equation numbers.
+\begin{notebox}
+NOTE: TODO this behavior is not yet implemented
+\end{notebox}
+If \pkg{keytheorems} detects that equation numbers are left-justified, then the default option changes to |all|.
+This occurs with the AMS document classes such as |amsart| and with the document option |leqno| for classes that support it.
+A user-supplied option for |auto-qed| always overrides these default behaviors.
+
+See subsection \ref{auto-qed-option-environments} for a complete list of final environments supported by the |unnumbered| and |all| options.  
+\end{docKey}
+
+
+
 \begin{docKey}{restate-counters}
   {=\marg{comma-list of counters}}
   {initially \ttbraces{equation}}
@@ -1619,30 +1645,94 @@ Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \ho
 \end{docCommand}
 
 
-\section{Theorem marks}
+\section{Automatic QED placement}
+\label{auto-qed}
 
-First, decide what is default package behavior v.s. optional.
-One idea: enable for unnumbered environments by default; also enable automatically for numbered environments if leqno (ams?) is detected; options to enable numbered (if not automatic), disable numbered only, disable all.
+When \LaTeX{} processes a proof or other environment with |\qedsymbol|, the default behavior puts the qed symbol at the end of a text line.
+However, the symbol is placed on a new blank line if the environment closes with a displayed equation, or list, or other full-width environment.
+This is because the end of a closing |enumerate| or other environment is finished before the end of the containing environment marked with |\qedsymbol|.
+
+The AMS classes introduce |\qedhere| to manually place the symbol earlier.  This has the drawbacks that (a) users must remember to add |\qedhere| when needed and (b) users must remember to \emph{remove} |\qedhere| if additional content is added.
+
+The \pkg{keytheorems} package implements automatic placement of the qed symbol, essentially by adding |\qedhere| automatically, wherever necessary, for environments marked with a \refKey{qed} symbol.
+(Note: the internal behavior of |\qedhere| is also patched in some cases.)
+Subsection \ref{auto-qed-implementation} below documents further implementation details.
+
+\begin{notebox}
+TODO: add some examples here % reminder: EXAMPLES!
+\end{notebox}
+
+The package option \refKey{auto-qed} controls this feature, with options |unnumbered|, |all|, and |none|.
+Subsection \ref{auto-qed-option-environments} documents which closing environments are included by each option.
+
+This is accomplished via the \hook{env/<env>/end} hook.
+Subsection \ref{auto-qed-implementation} documents further implementation details.
+
+\subsubsection*{Manual adjustment of automatic endmarks}
+
+\begin{notebox}
+  TODO: maybe some explanation here about manual adjustments for special cases.  E.g., extra linebreak to force moving endmark to new line.
+\end{notebox}
+
+\subsection{Environments supported by auto-qed}
+\label{auto-qed-option-environments}
+
+The following is a complete list of environments that are supported via the option \refKey{auto-qed}.
+For examples and further tests, see...
+\begin{notebox}
+  TODO: reference/link to tests document; also note that this document has a section about unsupported environments
+\end{notebox}
 
 
-For theorems that are marked with \refKey{qed}, additional processing is needed to place the mark when the theorem ends with a display, a list or some other environment.
+\begin{notebox}
+  FIXME: alignat* endmark is not right-aligned; fix if we can, or move it to ``unsupported''
+\end{notebox}
+
+\begin{description}
+\item[|unnumbered|]\ 
+  \begin{description}
+  \item[Displayed math:]
+    |equation*|,
+    |\[..\]|,
+    |multline*|,
+    |align*|,
+    |alignat*|,
+    |gather*|
+  \item[Lists:]
+    |enumerate|,
+    |itemize|,
+    |description|,
+  \item[Others:]
+    |quote|,
+    |center|,
+    |tabbing|,
+    |verbatim|
+  \end{description}
+\item[|all|]
+  This includes the |unnumbered| environments along with the following numbered math environments:
+  |equation|,
+  |multline|,
+  |align|,
+  |alignat|,
+  |gather|
+\end{description}
 
 
-... what do/don't we want to explain here??
-\begin{itemize}
-\item why this is needed; what happens without it; what \texttt{qedhere} does
-  \subitem note these marks are especially useful for plain style environments?
-\item how it works in theory (aux + two passes)
-\item how in works in practice (a bit about the algorithm?)
-  \subitem note that we have to work harder because \texttt{qedhere} is buggy?
-\item which environments are/aren't supported
-\item how to deal with unwanted placement (e.g., center of a \texttt{cases} environment?)
-\end{itemize}
 
+\subsection{Implementation}
+\label{auto-qed-implementation}
+\begin{notebox}
+  TODO: this whole subsection
+\end{notebox}
 
+... following ideas of |ntheorem|, using the hooks \hook{env/<env>/end}
 
-% This is the default behavior for proof environments, and the workaround is to manually place `\qedhere` commands inside the final environment.
-% Other environments can be given endmarks using the ams packages' `\qedsymbol`, and by default such endmarks have the same behavior.
+\subsubsection*{The idea} ...aux file; two passes
+
+\subsubsection*{The realization} ...different cases; |\mode_if_horizontal:TF|;  |\KeythmsDeclareEndmark|
+
+\subsubsection*{Patches to qedhere} ... e.g., |maketag@@@| 
+
 
 
 \section{Miscellaneous notes}
