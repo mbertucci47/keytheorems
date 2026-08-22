@@ -61,7 +61,35 @@
   }
 }
 
-
+%%
+%% multline experimental
+%%
+% \makeatletter
+%   \let\AMSDEFAULTmultline@qed\multline@qed
+%   \def\multline@qed{%
+% %    \relax
+% %    \ifmmode
+%       \ifinner \aftergroup\linebox@qed
+%       \else
+% %        \eqno
+% %        \let\eqno\relax \let\leqno\relax \let\veqno\relax
+%         \hbox{\hskip\multlinegap\qedsymbol}%
+%       \fi
+% %    \else
+% %       \aftergroup\linebox@qed
+% %    \fi
+%   }
+%   \expandafter\let\csname multline*@qed\endcsname\multline@qed
+%   %
+%   %% restore
+%   % \let\multline@qed\AMSDEFAULTmultline@qed
+%   % \expandafter\let\csname multline*@qed\endcsname\AMSDEFAULTmultline@qed
+% \makeatother
+\makeatletter
+\let\AMSDEFAULTmultline@qed\multline@qed
+\def\multline@qed{\aftergroup\linebox@qed}
+\expandafter\let\csname multline*@qed\endcsname\multline@qed
+\makeatother
 
 %%
 %% potential user commands
@@ -104,7 +132,7 @@
 
 
 
-\section{Other simple tests}
+\section{Tests with multiple or nested environments}
 
 These test multiple or nested boxes inside of theoremlike environments.
 
@@ -235,43 +263,7 @@ These test multiple or nested boxes inside of theoremlike environments.
   \end{enumerate}
 \end{note}
 
-\section{some other messy tests}
-\begin{theorem}
-regular text
-\end{theorem}
-
-\begin{theorem}
-  This ends in a display
-  \[
-    3^2 + 4^2 = 5^2.
-  \]
-\end{theorem}
-
-\begin{theorem}
-  This ends in a display
-  \[
-    3^2 + 4^2 = 5^2
-  \]
-  more text
-  \begin{align}
-    a&=b \\
-    c&=d
-  \end{align}
-%\[a=b\]
-\end{theorem}
-
-\begin{theorem}
-  This ends in a display
-  \[
-    3^2 + 4^2 = 5^2.
-  \]
-more text
-\begin{align*}
-a=b
-\end{align*}
-%\[a=b\]
-abc
-\end{theorem}
+\subsection{some other messy tests}
 
 \begin{theorem}
   This ends with
@@ -319,61 +311,6 @@ abc
   \end{enumerate}
   \end{enumerate}
 \end{theorem}
-
-\subsection{tests of nested theoremlike environments}
-
-\begin{theorem}
-regular text
-\begin{lemma}
-blub; lemma is not endmarked
-\end{lemma}
-\begin{lemma}
-abc
-\begin{equation*}
-abc
-\end{equation*}
-\begin{enumerate}
-\item abc
-\begin{itemize}
-\item blub
-\end{itemize}
-\item jhdgd
-\end{enumerate}
-\end{lemma}
-\end{theorem}
-
-\begin{theorem}
-regular text
-\begin{remark}
-blub; remark \emph{is} endmarked
-\end{remark}
-\end{theorem}
-
-
-\begin{theorem}
-regular text
-\begin{remark}
-blub; remark \emph{is} endmarked
-\end{remark}
-\begin{lemma}
-abc; lemma is not endmarked
-\begin{equation*}
-abc
-\end{equation*}
-\begin{enumerate}
-\item abc
-\begin{itemize}
-\item blub
-\end{itemize}
-\item jhdgd
-\end{enumerate}
-\end{lemma}
-\end{theorem}
-
-
-
-
-\clearpage
 
 \subsection{proof tests}
 
@@ -460,11 +397,70 @@ abc
   \end{enumerate}
 \end{proof}
 
+\section{Tests of nested theoremlike environments}
+Not officially supported, but sort of works
+
+\begin{theorem}
+  regular text
+  \begin{lemma}
+    blub; lemma is not endmarked
+  \end{lemma}
+  \begin{lemma}
+    abc
+    \begin{equation*}
+      abc
+    \end{equation*}
+    \begin{enumerate}
+    \item abc
+      \begin{itemize}
+      \item blub
+      \end{itemize}
+    \item jhdgd
+    \end{enumerate}
+  \end{lemma}
+\end{theorem}
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+\begin{theorem}
+  regular text
+  \begin{remark}
+    blub; remark \emph{is} endmarked
+  \end{remark}
+\end{theorem}
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+\begin{theorem}
+  regular text
+  \begin{remark}
+    blub; remark \emph{is} endmarked
+  \end{remark}
+  \begin{lemma}
+    abc; lemma is not endmarked
+    \begin{equation*}
+      abc
+    \end{equation*}
+    \begin{enumerate}
+    \item abc
+      \begin{itemize}
+      \item blub
+      \end{itemize}
+    \item jhdgd
+    \end{enumerate}
+  \end{lemma}
+\end{theorem}
+
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+
 \clearpage
 
-\section{Comprehensive test of endmarkable environments}
-
-[in progress] This section aims to have one simple example for every possible environment that could be endmarked, so that we can confirm support.
+\section{Math environments}
 
 Subsections are intended to group environment types according to how they are handled internally; revise as necessary.
 
@@ -485,7 +481,7 @@ They do not use horizontal alignment markers (\&).
 }{
   \int_a^b f(x)\, dx
 }
-\makeoutertest{[..]}{
+\makeoutertest{$\backslash$[..$\backslash$]}{
   The classic display math.
   Internally, amsmath redefines this as equation*
 }{
@@ -493,19 +489,11 @@ They do not use horizontal alignment markers (\&).
     \int_a^b f(x)\, dx
   \]
 }
-\makeoutertest{\$\$..\$\$}{
-  People still use this, but maybe we don't want to support it.
-  By default, it doesn't work well with \texttt{qedhere} (end mark not pushed to end of line).
-}{
-  $$ 
-    \int_a^b f(x)\, dx
-  $$
-}
 
 \maketest{multline}{
   a variation of equation, for long equations with linebreaks.
   The first line is aligned left, middle lines are centered, last line is aligned right.\\
-  Equation number is on the first line.
+  Equation number is on the first line; end mark is on the last line.
 }{
   a+b+c+d+e+f+ a+b+c+d+e+f\\
   +g+h+ g+h+ g+h+\\
@@ -520,24 +508,19 @@ They do not use horizontal alignment markers (\&).
   +i+j+k+l+m+n
   +i+j+k+l+m+n
 }
+\maketest{multline}{
+  a variation of equation, for long equations with linebreaks.
+  The first line is aligned left, middle lines are centered, last line is aligned right.\\
+  Equation number is on the first line; end mark is on the last line.
+}{
+  abc\\
+  dfg
+}
 
-\maketest{gather}{
-  a group of numbered equations with no horizontal alignment; each line is horizontally centered.\\
-}{
-  \int_a^b f(x)\, dx\\
-  \int_a^b f(x)g(x)h(x)\, dx
-}
-Note: currently \texttt{gather} is handled the same way as \texttt{align}.
-It's unclear (to me, NGJ) whether it should be grouped with the other ``alignlike'' environments for that reason.
-\maketest{gather*}{
-  unnumbered variant
-}{
-  \int_a^b f(x)\, dx\\
-  \int_a^b f(x)g(x)h(x)\, dx
-}
+
 
 \maketest{displaymath}{
-  This is an older environment, not one of the amsmath ones; the ams doc says it's functionally equivalent to equation*
+  This is an older environment, not one of the amsmath ones; the amsmath documentation says it's functionally equivalent to equation*
 }{
   \int_a^b f(x)\, dx
 }
@@ -600,63 +583,206 @@ They use horizontal alignment markers (\&).
   \end{alignat*}
 }
 
+\maketest{gather}{
+  a group of numbered equations with no horizontal alignment; each line is horizontally centered.\\
+}{
+  \int_a^b f(x)\, dx\\
+  \int_a^b f(x)g(x)h(x)\, dx
+}
+Note: internally, \texttt{gather} and \texttt{gather*} are handled the same way as \texttt{align}, with the other alignlike environments, even though \texttt{gather} doesn't use alignment markers (\&).
+\maketest{gather*}{
+  unnumbered variant
+}{
+  \int_a^b f(x)\, dx\\
+  \int_a^b f(x)g(x)h(x)\, dx
+}
+
+
+
+\section{Lists}
+
+\maketest{enumerate}{
+  items are counted
+}{
+\item top
+\item middle
+\item bottom
+}
+\maketest{itemize}{
+  items are not counted
+}{
+\item top
+\item middle
+\item bottom
+}
+\maketest{description}{
+  items have labels
+}{
+\item[The first one:] goes here
+\item[Another:] and this is the item content
+\item[The final one:] these are often used for defintions
+}
+\makeoutertest{list}{
+  This is the basic environment that others are derived from.
+}{
+  \begin{list}{}{}
+  \item first
+  \item middle
+  \item last
+  \end{list}
+}
+
+\subsection{verbatim}
+
+Internally, this is handled with the same code that handles lists (trivlist).
+Currently this only sort of works.
+The \verb|\end{verbatim}| must be separated by a space, but not a newline, from the contents.
+This could have to do with the \texttt{hmode} v.s. \texttt{vmode} checks in the thmmark code.
+
+% \begin{test} % manual, because argument expansion seems to get confused
+%   \texttt{verbatim}:
+%   Note that linebreaks are also treated verbatim.
+% \begin{verbatim}
+% Some verbatim symbols \ & $ etc. \end{verbatim}
+% \end{test}
+
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  Note that linebreaks are also treated verbatim.
+\begin{verbatim}
+Some verbatim symbols \ & $ etc.
+More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc.
+(The previous line intentionally runs off the page) \end{verbatim}
+\end{test}
+
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  (Another test)
+  If the last line is \emph{just a little} too long, it will push the endmark into the margin.
+\begin{verbatim}
+A123456789.B123456789.C123456789.D123456789.E123456789.F123456789 \end{verbatim}
+\end{test}
+\begin{test} % manual, because argument expansion seems to get confused
+  \texttt{verbatim}:
+  (Another test)
+  If the last line is \emph{a little more} too long, it will push the endmark down.
+\begin{verbatim}
+A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim}
+\end{test}
+
+
+\section{Other blocks}
+
+These other special cases are each handled separately.
+
+\maketest{quote}{}{
+  A quotation goes here.
+  \emph{\color{gray}\kant*[1][1-2]}
+}
+
+
+\maketest{center}{
+  center the contents
+}{
+  some centered text, or equation, or other content
+}
+Note: the final line is off-centered, to make room for the endmark.
+It is usually unnoticeable, except in cases with visually similar lines, such as the following.
+\maketest{center}{
+  center the contents
+}{
+  some centered text, or equation, or other content\\
+  some centered text, or equation, or other content\\
+  some centered text, or equation, or other content%
+  % \newdimen{\markwidth}%
+  % \settowidth{\markwidth}{ \qedsymbol}%
+  % \hspace*{-2\markwidth}% not quite right
+}
+
+In cases like the above, some manual adjustment is necessary.
+For example, some negative \verb|\hspace| for the width of the end mark.
+
+Alternatively, an extra line break can move the endmark to a new line.
+This is shown in the next example.
+\maketest{center}{
+  center the contents
+}{
+  some centered text, or equation, or other content\\
+  some centered text, or equation, or other content\\
+  some centered text, or equation, or other content\\~ % extra space necessary
+}
+
+\subsection{tabbing}
+
+See \href{https://mirrors.ctan.org/macros/latex/base/source2e.pdf}{source2e}: File 41 ltab.dtx: Tabbing, Tabular, and Array Environments.
+
+Explanation and examples from \url{https://latexref.xyz}.
+
+\maketest{tabbing}{
+  manually set and use tab stops
+}{
+  row1-col1\qquad \= row1-col2\qquad \= this one has a longer heading\qquad \= r1-c4 \\
+  row2-col1 \> row2-col3  \> . \> . \\
+  r3-c1 \> next field \> a \> b
+}
+\maketest{tabbing}{
+  manually set and use tab stops
+}{
+  row1-col1\qquad \= row1-col2\qquad \= this one has a longer heading\qquad \= r1-c4 \\
+  row2-col1 \> row2-col3  \> . \> . \\
+  r3-c1 \> next field \> a \> longer entry 012
+}
+Above: the final longer entry pushes the end mark down.
+
+
+
+\section{Unsupported}
+
+These environments are currently unsupported.
+The marks may or may not be placed as expected, depending on the surrounding environment(s).
+
+\subsection{Unsupported math environments}
+
+
+
+\makeoutertest{\$\$..\$\$}{
+  This syntax is still used for display math.
+  By default, it doesn't work well with \texttt{qedhere}; the end mark is not pushed to end of line.
+}{
+  $$ 
+    \int_a^b f(x)\, dx
+  $$
+}
+
+
+\maketest{eqnarray}{
+  not recommended, for many reasons documented in
+  \href{https://tug.org/TUGboat/tb33-1/tb103madsen.pdf}{Avoid \texttt{eqnarray}!} (TUGboat 33:1, 2012)
+}{
+  \int_a^b f(x)\, dx & = 1.
+}
+
+
 \maketest{flalign}{
   full length alignment; stretches to fill line, leaving space for equation numbers and endmark (if present)\\
+  Currently unsupported.  Manual placement of via \texttt{qedhere} works fine, but automatic placement with our alignlike code causes overlap of end mark with content.
 }{
   x&=y & X&=Y\\
   x'&=y' & X'&=Y'\\
   x+x'&=y+y' & X+X'&=Y+Y'% \qedhere %manual placement works correctly
 }
 \maketest{flalign*}{
-  unnumbered variant
+  unnumbered variant; as with the numbered variant, manual placement treats endmark correctly, but automatic does not\\
 }{
   x&=y & X&=Y\\
   x'&=y' & X'&=Y'\\
-  x+x'&=y+y' & X+X'&=Y+Y'
-}
-\subsection{inner math environments}
-These environments go inside other displayed math environments.\\
-Note: Maybe these should all be moved to the ``unsupported'' section, and their endmarks can be handled by the surrounding environments.
-
-\makeoutertest{split}{
-  for a \emph{single} equation split among multiple lines, like \texttt{multiline}, but with some alignment points.\\
-  This \texttt{split} is inside \texttt{equation}.
-}{
-  \begin{equation}
-    \begin{split}
-      H_c
-      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
-        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
-      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
-        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
-    \end{split}
-  \end{equation}
+  x+x'&=y+y' & X+X'&=Y+Y' %\qedhere
 }
 
-Note: The endmark is missing from the previous example, but not the next one.
-This seems like a bug.
 
-\makeoutertest{split}{
-  This \texttt{split} is inside \texttt{gather}.
-}{
-  \begin{gather}
-    % a + b = c\\
-    \begin{split}
-      H_c
-      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
-        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
-      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
-        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
-    \end{split}%\\
-    % \int_a^b f(x)\, dx
-  \end{gather}
-}
-
+\subsection{Math environments that go inside others}
 The width of the following environments is just the width of the content.
-Therefore, maybe they should \emph{not} be endmarkable? (I'm not sure.)
-Note: there are options to set their vertical alignment; maybe that is useful?
-
-Each of these is inside \texttt{equation}.
+Each of these examples is inside \texttt{equation}.
 Each takes an optional argument for vertical positioning (baseline); demonstrated just with the first one.
 
 \makeoutertest{gathered}{
@@ -729,168 +855,52 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 }
 
 \makeoutertest{dcases}{
-  This is a variant that the amsdocs mention, but is provided by the \texttt{mathtools} package.
+  This is a variant that the amsmath docs mention, but is provided by the \texttt{mathtools} package.
   It makes the case lines displaystyle instead of (the default) textstyle.
   So, maybe we don't want to support this directly (especially not if we decide not to make \texttt{cases} endmarkable in the first place).
 }{
   \break [\emph{no example here}]
 }
 
-\subsection{lists}
 
-\maketest{enumerate}{
-  items are counted
+% \subsection{inner math environments}
+% These environments go inside other displayed math environments.\\
+% They're not directly supported, because their end marks can be handled by the surrounding environments.
+
+\makeoutertest{split}{
+  for a \emph{single} equation split among multiple lines, like \texttt{multline}, but with some alignment points.\\
+  This \texttt{split} is inside \texttt{equation}.
+  Note: the end mark is missing.
 }{
-\item top
-\item middle
-\item bottom
+  \begin{equation}
+    \begin{split}
+      H_c
+      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+    \end{split}
+  \end{equation}
 }
-\maketest{itemize}{
-  items are not counted
+
+\makeoutertest{split}{
+  This \texttt{split} is inside \texttt{gather}, and the endmark is present.
 }{
-\item top
-\item middle
-\item bottom
+  \begin{gather}
+    % a + b = c\\
+    \begin{split}
+      H_c
+      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+    \end{split}%\\
+    % \int_a^b f(x)\, dx
+  \end{gather}
 }
-\maketest{description}{
-  items have labels
-}{
-\item[The first one:] goes here
-\item[Another:] and this is the item content
-\item[The final one:] these are often used for defintions
-}
-\makeoutertest{list}{
-  This is the basic environment that others are derived from.
-  Adding thmmark support for this might either (a) automatically give it to other lists or (b) make us confused because other environments use \texttt{list} in subtle ways (e.g., trivlists).\\
-  Update: I've added this, and it's fine; it doesn't change the others.  Furthermore, the hooks still have to be added for \texttt{itemize}, \texttt{enumerate}, and \texttt{description}; it's not enough to just set the hooks for \texttt{list}.
-}{
-  \begin{list}{}{}
-  \item first
-  \item middle
-  \item last
-  \end{list}
-}
+Note: The endmark is present in one \texttt{split} example, but not the other.
+This seems like a bug.
 
-
-\subsection{text blocks}
-
-(todo: quote, verbatim, other trivlist?)
-
-\maketest{quote}{}{
-  A quotation goes here.
-  \emph{\color{gray}\kant[1][1-2]}
-}
-
-\subsubsection*{verbatim}
-
-Currently this only sort of works.
-The \verb|\end{verbatim}| must be separated by a space, but not a newline, from the contents.
-This could have to do with the \texttt{hmode} v.s. \texttt{vmode} checks in the thmmark code.
-
-\begin{test} % manual, because argument expansion seems to get confused
-  \texttt{verbatim}:
-  Note that linebreaks are also treated verbatim.
-\begin{verbatim}
-Some verbatim symbols \ & $ etc.
-More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc. More verbatim symbols \ & $ etc.
-(The previous line intentionally runs off the page) \end{verbatim}
-\end{test}
-
-\begin{test} % manual, because argument expansion seems to get confused
-  \texttt{verbatim}:
-  (Another test)
-  If the last line is \emph{just a little} too long, it will push the endmark into the margin.
-\begin{verbatim}
-A123456789.B123456789.C123456789.D123456789.E123456789.F123456789 \end{verbatim}
-\end{test}
-\begin{test} % manual, because argument expansion seems to get confused
-  \texttt{verbatim}:
-  (Another test)
-  If the last line is \emph{a little more} too long, it will push the endmark down.
-\begin{verbatim}
-A123456789.B123456789.C123456789.D123456789.E123456789.F123456789. \end{verbatim}
-\end{test}
-
-
-\maketest{center}{
-  center the contents
-}{
-  some centered text, or equation, or other environment environment environme
-}
-\maketest{center}{
-  center the contents
-}{
-  some centered text, or equation, or other environment environment environment
-}
-\begin{center} % compare alignment
-environment
-\end{center}
-
-\subsection{tablelike}
-
-See \href{https://mirrors.ctan.org/macros/latex/base/source2e.pdf}{source2e}: File 41 ltab.dtx: Tabbing, Tabular, and Array Environments.
-
-Explanation and examples from \url{https://latexref.xyz}.
-
-\maketest{tabbing}{
-  manually set and use tab stops
-}{
-  row1-col1 \= row1-col2 \= this one has a longer heading  \= r1-c4 \\
-  row2-col1 \> row2-col3  \> . \> . \\
-  r3-c1 \> next field \> a \> b
-}
-\maketest{tabbing}{
-  manually set and use tab stops
-}{
-  row1-col1 \= row1-col2 \= this one has a longer heading  \= r1-c4 \\
-  row2-col1 \> row2-col3  \> . \> . \\
-  r3-c1 \> next field \> a \> this one has a longer heading
-}
-
-
-
-\subsection{unsupported}
-
-These environments are intentionally unsupported.
-The marks may or may not be placed as expected, depending on the surrounding environment(s).
-
-\makeoutertest{tabular}{
-  a table; wrap in another environment to position endmark
-}{
-\begin{tabular}{l|l}
-  \textit{Player name}  &\textit{Career home runs}  \\
-  \hline
-  Hank Aaron  &755 \\
-  Babe Ruth   &714 \\
-  Hank Aaron (repeat)  &755 \\
-  Babe Ruth (repeat)  &714
-\end{tabular}
-}
-\begin{test}
-  \texttt{tabular}: 
-  a table in a \texttt{center}, with \verb|\qedabove| to manually position the endmark
-  \begin{center}
-    \begin{tabular}{l|l}
-      \textit{Player name}  &\textit{Career home runs}  \\
-      \hline
-      Hank Aaron  &755 \\
-      Babe Ruth   &714 \\
-      Hank Aaron (repeat)  &755 \\
-      Babe Ruth (repeat)  &714
-    \end{tabular}
-  \end{center}\qedabove[1.3]
-\end{test}
-
-Note: \verb|\qedabove| can mess up spacing of the following lines, such as this one.
-\emph{\color{gray}\kant[1][1-2]}
-
-
-\maketest{eqnarray}{
-  not recommended, for many reasons documented in
-  \href{https://tug.org/TUGboat/tb33-1/tb103madsen.pdf}{Avoid \texttt{eqnarray}!} (TUGboat 33:1, 2012)
-}{
-  \int_a^b f(x)\, dx & = 1.
-}
 
 \makeoutertest{pmatrix}{
   other matrix environments are likewise not (directly) supported: \texttt{smallmatrix}, \texttt{bmatrix}, \texttt{Bmatrix}, \texttt{vmatrix}, and \texttt{Vmatrix}.
@@ -916,6 +926,50 @@ Note: \verb|\qedabove| can mess up spacing of the following lines, such as this 
  \right|
 \end{equation*}
 }
+
+
+
+
+
+
+\subsection*{Others}
+
+A few more examples that are often wrapped in other environments such as \texttt{center}.
+
+
+\subsubsection*{tabular}
+
+\makeoutertest{tabular}{
+  a table; wrap in another environment to position endmark
+}{
+\begin{tabular}{l|l}
+  \textit{Player name}  &\textit{Career home runs}  \\
+  \hline
+  Hank Aaron  &755 \\
+  Babe Ruth   &714 \\
+  Hank Aaron (repeat)  &755 \\
+  Babe Ruth (repeat)  &714
+\end{tabular}
+}
+\begin{test}
+  \texttt{tabular}: 
+  a table in a \texttt{center}, with experimental command \verb|\qedabove| to manually position the endmark
+  \begin{center}
+    \begin{tabular}{l|l}
+      \textit{Player name}  &\textit{Career home runs}  \\
+      \hline
+      Hank Aaron  &755 \\
+      Babe Ruth   &714 \\
+      Hank Aaron (repeat)  &755 \\
+      Babe Ruth (repeat)  &714
+    \end{tabular}
+  \end{center}\qedabove[1.3]
+\end{test}
+
+Note: \verb|\qedabove| can mess up spacing of the following lines, such as this one.
+\emph{\color{gray}\kant[1][1-2]}
+
+
 
 \subsubsection*{tikz environments}
 If these are wrapped in other environments like \texttt{equation}, then they won't need direct support
@@ -950,11 +1004,12 @@ If these are wrapped in other environments like \texttt{equation}, then they won
 \clearpage
 \section{Other Tests}
 
-Here are tests of two things:
+Here are experimental tests of two things:
 \begin{enumerate}
-\item a command to disable the thmmark for one box
-\item a command to put the thmmark on a previous line
+\item ways to disable the thmmark for one box and
+\item ways to put the thmmark on a previous line.
 \end{enumerate}
+These are buggy and incomplete.
 
 \newcommand{\noqed}{\renewcommand{\qedsymbol}{}}
 
@@ -1059,8 +1114,11 @@ This is how I (NGJ) often make numbered commutative diagrams.
 
 
 \clearpage
-\section{align and friends with tall lines}
+\section{Tall lines in align and friends}
 
+These tests demonstrate end mark placement when an \texttt{align} or similar environment has a very tall line.
+By default, the end mark is placed on the baseline, aligned with an equation number, if present.
+Some of these tests experiment with different ways to manually adjust the vertical alignment.
 
 \maketest{align}{
   with \texttt{cases}
@@ -1075,7 +1133,7 @@ This is how I (NGJ) often make numbered commutative diagrams.
   \end{cases}
 }
 Spacing test.
-\emph{\color{gray}\kant[3][1-3].}
+\emph{\color{gray}\kant[3][1-3]}
 \begin{test} 
   Similar to above, but manually reposition endmark with\\
   \verb|  \par\vspace{-1.6\baselineskip}~|\\
@@ -1096,7 +1154,7 @@ Spacing test.
 \end{test}
 
 Spacing test.
-\emph{\color{gray}\kant[3][1-3].}
+\emph{\color{gray}\kant[3][1-3]}
 
 Notes for the previous example.
 \begin{enumerate}
@@ -1109,6 +1167,5 @@ Notes for the previous example.
 \item Spacing after the environment doesn't seem to be affected by the negative \texttt{vspace}, but lines \emph{inside} the environment are affected.
 \item Maybe the whole negative \texttt{vspace} idea is just not great; is there a better alternative?
 \end{enumerate}
-
 
 \end{document}
