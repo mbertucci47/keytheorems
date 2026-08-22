@@ -421,22 +421,26 @@ Redefines \cs{qedsymbol} to be \meta{symbol}.
 %% v.s. right equation numbers.
 %%
 \begin{docKey}{auto-qed}
-  {\colOpt{=unnumbered\textbar all\textbar none}}
-  {default none, initially |unnumbered|}
+  {\colOpt{=nonmath\textbar unnumbered\textbar all\textbar none}}
+  {default |none|, initially |none|}
+\begin{notebox}
+NOTE: TODO this auto-qed option is not yet implemented
+\end{notebox}
 Alias \docAuxKey{thmmarks}. % maybe??
 Controls the automatic qed placement feature; see Section \ref{auto-qed}.
-The default option, |unnumbered| enables automatic qed placement only when the final inner environment has no equation number.
-Option |all| enables the feature for all (supported) environments, and |none| disables the feature.
+The default value, |none|, disables the feature.
+Value |nonmath| enables the feature for non-math environments, including lists and |center|.
+Value |unnumbered| enables the feature for the |nonmath| environments and also the unnumbered math environments such as |equation*|.
+Value |all| enables the feature for all (supported) environments, including numbered math environments such as |equation|.
+See subsection \ref{auto-qed-option-environments} for a complete list of final environments supported by the various option values.  
 
-The default is |unnumbered| because qed marks are placed at right and therefore can conflict with right-justified equation numbers.
+The option value |unnumbered| is available because qed marks are placed at right and therefore can conflict with right-justified equation numbers.
 \begin{notebox}
-NOTE: TODO this behavior is not yet implemented
+NOTE: I wrote the following earlier, and maybe it will be useful at some point if the default includes math environments.  For now, maybe delete it?
 \end{notebox}
-If \pkg{keytheorems} detects that equation numbers are left-justified, then the default option changes to |all|.
+If \pkg{keytheorems} detects that equation numbers are left-justified, then the default option changes from |unnumbered| to |all|.
 This occurs with the AMS document classes such as |amsart| and with the document option |leqno| for classes that support it.
-A user-supplied option for |auto-qed| always overrides these default behaviors.
-
-See subsection \ref{auto-qed-option-environments} for a complete list of final environments supported by the |unnumbered| and |all| options.  
+A user-supplied option for |auto-qed| always overrides these automatic behaviors.
 \end{docKey}
 
 
@@ -1662,16 +1666,19 @@ Subsection \ref{auto-qed-implementation} below documents further implementation 
 TODO: add some examples here % reminder: EXAMPLES!
 \end{notebox}
 
-The package option \refKey{auto-qed} controls this feature, with options |unnumbered|, |all|, and |none|.
+The package option \refKey{auto-qed} controls this feature, with possible values |none|, |nonmath|, |unnumbered|, and |all|.
 Subsection \ref{auto-qed-option-environments} documents which closing environments are included by each option.
-
-This is accomplished via the \hook{env/<env>/end} hook.
-Subsection \ref{auto-qed-implementation} documents further implementation details.
 
 \subsubsection*{Manual adjustment of automatic endmarks}
 
 \begin{notebox}
   TODO: maybe some explanation here about manual adjustments for special cases.  E.g., extra linebreak to force moving endmark to new line.
+\end{notebox}
+
+\subsubsection*{Adding support for additional environments}
+
+\begin{notebox}
+  TODO: maybe some information about this, if there is some user interface for it?
 \end{notebox}
 
 \subsection{Environments supported by auto-qed}
@@ -1689,26 +1696,29 @@ For examples and further tests, see...
 \end{notebox}
 
 \begin{description}
-\item[|unnumbered|]\ 
-  \begin{description}
-  \item[Displayed math:]
+\item [|none|:] No adjustments to default \LaTeX{} behavior for placement of qed end marks.
+\item [|nonmath|:] This includes two collections of non-math environments
+  \begin{itemize}
+  \item Lists:
+    |enumerate|,
+    |itemize|,
+    |description|,
+    |list|
+  \item Others:
+    |quote|,
+    |center|,
+    |tabbing|,
+    |verbatim|
+  \end{itemize}
+\item[|unnumbered|:]
+  This includes the |nonmath| environments, along with the following unnumbered math environments:
     |equation*|,
     |\[..\]|,
     |multline*|,
     |align*|,
     |alignat*|,
     |gather*|
-  \item[Lists:]
-    |enumerate|,
-    |itemize|,
-    |description|,
-  \item[Others:]
-    |quote|,
-    |center|,
-    |tabbing|,
-    |verbatim|
-  \end{description}
-\item[|all|]
+\item[|all|:]
   This includes the |unnumbered| environments along with the following numbered math environments:
   |equation|,
   |multline|,
