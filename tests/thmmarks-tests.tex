@@ -868,24 +868,6 @@ Each takes an optional argument for vertical positioning (baseline); demonstrate
 % They're not directly supported, because their end marks can be handled by the surrounding environments.
 
 \makeoutertest{split}{
-  This \texttt{split} is inside \texttt{gather}.
-}{
-  \begin{gather}
-    % a + b = c\\
-    \begin{split}
-      H_c
-      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
-        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
-      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
-        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
-    \end{split}%\\
-    % \int_a^b f(x)\, dx
-  \end{gather}
-}
-Note: The endmark is present in the previous example, but not the next one.
-This seems like a bug.
-
-\makeoutertest{split}{
   for a \emph{single} equation split among multiple lines, like \texttt{multline}, but with some alignment points.\\
   This \texttt{split} is inside \texttt{equation}.
   Note: the end mark is missing.
@@ -900,6 +882,24 @@ This seems like a bug.
     \end{split}
   \end{equation}
 }
+
+\makeoutertest{split}{
+  This \texttt{split} is inside \texttt{gather}, and the endmark is present.
+}{
+  \begin{gather}
+    % a + b = c\\
+    \begin{split}
+      H_c
+      &=\frac{1}{2n} \sum^n_{l=0}(-1)^{l}(n-{l})^{p-2}
+        \sum_{l _1+\dots+ l _p=l}\prod^p_{i=1} \binom{n_i}{l _i}\\
+      &\quad\cdot[(n-l )-(n_i-l _i)]^{n_i-l _i}\cdot
+        \Bigl[(n-l )^2-\sum^p_{j=1}(n_i-l _i)^2\Bigr].
+    \end{split}%\\
+    % \int_a^b f(x)\, dx
+  \end{gather}
+}
+Note: The endmark is present in one \texttt{split} example, but not the other.
+This seems like a bug.
 
 
 \makeoutertest{pmatrix}{
