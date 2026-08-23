@@ -421,26 +421,13 @@ Redefines \cs{qedsymbol} to be \meta{symbol}.
 %% v.s. right equation numbers.
 %%
 \begin{docKey}{auto-qed}
-  {\colOpt{=nonmath\textbar unnumbered\textbar all\textbar none}}
-  {default |all|, initially |none|}
+  {\colOpt{=false\textbar true}}
+  {default |true|, initially |false|}
 \begin{notebox}
 NOTE: TODO this auto-qed option is not yet implemented
 \end{notebox}
 Alias \docAuxKey{thmmarks}. % maybe??
 Controls the automatic qed placement feature; see Section \ref{auto-qed}.
-The initial value, |none|, disables the feature.
-Value |nonmath| enables the feature for non-math environments, including lists and |center|.
-Value |unnumbered| enables the feature for the |nonmath| environments and also the unnumbered math environments such as |equation*|.
-Value |all| enables the feature for all (supported) environments, including numbered math environments such as |equation|.
-See subsection \ref{auto-qed-option-environments} for a complete list of final environments supported by the various option values.  
-
-The option value |unnumbered| is available because qed marks are placed at right and therefore can conflict with right-justified equation numbers.
-\begin{notebox}
-NOTE: I wrote the following earlier, and maybe it will be useful at some point if the default includes math environments.  For now, maybe delete it?
-\end{notebox}
-If \pkg{keytheorems} detects that equation numbers are left-justified, then the default option changes from |unnumbered| to |all|.
-This occurs with the AMS document classes such as |amsart| and with the document option |leqno| for classes that support it.
-A user-supplied option for |auto-qed| always overrides these automatic behaviors.
 \end{docKey}
 
 
@@ -1651,6 +1638,11 @@ Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \ho
 
 \section{Automatic QED placement}
 \label{auto-qed}
+
+\begin{notebox}
+  TODO: update below after the possible options for auto-qed are decided
+\end{notebox}
+
 
 When \LaTeX{} processes a proof or other environment with |\qedsymbol|, the default behavior puts the qed symbol at the end of a text line.
 However, the symbol is placed on a new blank line if the environment closes with a displayed equation, or list, or other full-width environment.
