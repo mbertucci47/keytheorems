@@ -1736,6 +1736,28 @@ For examples and further tests, see...
 \subsubsection*{Patches to qedhere} ... e.g., |maketag@@@| 
 
 
+\subsection{Intended use and known limitations}
+
+The \refKey{auto-qed} functionality is recommended and supported with the following two assumptions:
+\begin{enumerate}
+\item Equation numbers are left-justified, as in the AMS document classes or with the |leqno| option for other document classes.
+\item Environments with qed end marks are not nested inside each other.  For example, if |remark| and |example| are both given end marks with \refKey{qed}, then an |example| does not occur inside a |remark| environment.
+\end{enumerate}
+When equation numbers are right-justified, or end marked environments are nested inside eachother, end marks that would overlap equation numbers or eachother are placed on successive blank lines.
+
+% \subsubsection*{Right equation numbers} When equation numbers are right-justified, then the qed end marks are pushed down to the line below rather than appearing on the same line either before or after the equation number.
+
+
+% \subsubsection*{Nested environments with qed end marks} If one environment with qed end marks is nested inside another, and is the final closing environment, then the two marks appear on successive lines, with the inner one first and the outer one second.
+
+% \begin{dispListing}
+% \begin{remark}
+%   Some explanatory text.
+%   \begin{example}
+%     An example.
+%   \end{example}
+% \end{remark}
+% \end{dispListing}
 
 \section{Miscellaneous notes}
 
