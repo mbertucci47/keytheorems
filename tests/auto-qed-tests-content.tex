@@ -1,7 +1,3 @@
-\documentclass[leqno]{article}
-%%
-%% test leqno
-%%
 \usepackage{amsmath} % for my editor's highlighting; loaded by thmmarks option
 \usepackage{amssymb}
 \usepackage{tikz} % for testing tikzpicture and tikzcd
@@ -60,36 +56,6 @@
     \end{#1}
   }
 }
-
-%%
-%% multline experimental
-%%
-% \makeatletter
-%   \let\AMSDEFAULTmultline@qed\multline@qed
-%   \def\multline@qed{%
-% %    \relax
-% %    \ifmmode
-%       \ifinner \aftergroup\linebox@qed
-%       \else
-% %        \eqno
-% %        \let\eqno\relax \let\leqno\relax \let\veqno\relax
-%         \hbox{\hskip\multlinegap\qedsymbol}%
-%       \fi
-% %    \else
-% %       \aftergroup\linebox@qed
-% %    \fi
-%   }
-%   \expandafter\let\csname multline*@qed\endcsname\multline@qed
-%   %
-%   %% restore
-%   % \let\multline@qed\AMSDEFAULTmultline@qed
-%   % \expandafter\let\csname multline*@qed\endcsname\AMSDEFAULTmultline@qed
-% \makeatother
-\makeatletter
-\let\AMSDEFAULTmultline@qed\multline@qed
-\def\multline@qed{\aftergroup\linebox@qed}
-\expandafter\let\csname multline*@qed\endcsname\multline@qed
-\makeatother
 
 %%
 %% potential user commands
