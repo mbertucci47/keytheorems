@@ -2,7 +2,7 @@
 \usepackage{amssymb}
 \usepackage{tikz} % for testing tikzpicture and tikzcd
 \usetikzlibrary{cd} % for testing tikzcd
-\usepackage[thmmarks]{keytheorems}
+\usepackage[auto-qed]{keytheorems}
 \usepackage{hyperref}
 \usepackage{kantlipsum} % for filler text, to check spacing
 
@@ -73,30 +73,36 @@
 \begin{document}
 
 \section{Basic tests}
+Tests of the three basic cases, as described in the package documentation.
+
 \begin{theorem}
   Case 1: Environment ends with simple text.
 \end{theorem}
 \begin{theorem}
-  Case 2: Environment ends with display
+  Case 2 (unnumbered): Environment ends with display
   \[
     1 + 1 = 2.
   \]
 \end{theorem}
 \begin{theorem}
-  Case 3: Environment ends with equationlike (numbered)
+  Case 2 (numbered): Environment ends with equationlike
   \begin{equation}
     1 + 1 = 2.
   \end{equation}
 \end{theorem}
 \begin{theorem}
-  Case 4: Environment ends with
+  Case 3 (list): Environment ends with
   \begin{itemize}
   \item a
   \item list.
   \end{itemize}
 \end{theorem}
-
-
+\begin{theorem}
+  Case 3 (block): Environment ends with a text block.
+  \begin{center}
+    For example, some centered text.
+  \end{center}
+\end{theorem}
 
 \section{Tests with multiple or nested environments}
 
@@ -111,7 +117,7 @@ These test multiple or nested boxes inside of theoremlike environments.
   and then the simple text.
 \end{remark}
 \begin{remark}
-  Case 2: Environment ends with display
+  Case 2 (numbered): Environment ends with display
   \begin{enumerate}
   \item but first
   \item a list
@@ -121,7 +127,7 @@ These test multiple or nested boxes inside of theoremlike environments.
   \]
 \end{remark}
 \begin{remark}
-  Case 3: Environment ends with align
+  Case 2 (unnumbered): Environment ends with align
   following
   \begin{itemize}
   \item a
@@ -141,7 +147,7 @@ These test multiple or nested boxes inside of theoremlike environments.
 \end{remark}
 
 \begin{remark}
-  Case 4: Environment ends with
+  Case 3 (list): Environment ends with
   \begin{itemize}
   \item a
   \item list.
@@ -154,7 +160,7 @@ These test multiple or nested boxes inside of theoremlike environments.
 \end{remark}
 
 \begin{note}
-  Case 4: Environment ends with
+  Case 3 (list): Environment ends with
   \begin{itemize}
   \item a
   \item list
@@ -227,6 +233,22 @@ These test multiple or nested boxes inside of theoremlike environments.
   \item and then
   \item a list.
   \end{enumerate}
+\end{note}
+
+
+\begin{note} 
+  First some text,
+  \begin{enumerate}
+  \item and then
+  \item a list.
+  \end{enumerate}
+  Then
+  \begin{center}
+    Centered text that ends with a display
+    \[
+      5^2 + 12^2 = 13^2.
+    \]
+  \end{center}
 \end{note}
 
 \subsection{some other messy tests}

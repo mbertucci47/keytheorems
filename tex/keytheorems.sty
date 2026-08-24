@@ -41,9 +41,10 @@
   }
 \keys_define:nn { keytheorems/usepackage }
   {
-    thmmarks          .bool_gset:N         = \g__keythms_thmmarks_bool,
-    thmmarks          .value_forbidden:n   = true,
-    thmmarks          .usage:n             = load,
+    thmmarks          .meta:n              = { auto-qed }, % alias
+    auto-qed          .bool_gset:N         = \g__keythms_thmmarks_bool,
+    auto-qed          .value_forbidden:n   = true,
+    auto-qed          .usage:n             = load,
     % all these are just saved to be called in \keytheoremset later
     auto-translate    .code:n              = \__keythms_saveglobalkey_optval:n { #1 },
     auto-translate    .usage:n             = load,
@@ -3367,10 +3368,16 @@
             \dim_compare:nNnF { \lastskip } > { 0pt }
               {
                 \__keythms_thmmarks_record:
+                \typeout{horiz~lastskip~positive:}
+                \typeout{~~\@currentlabel }
+                \typeout{~~\@currentHref }
               }
           }
           {
             \__keythms_thmmarks_record:
+            \typeout{non~horiz}
+            \typeout{~~\@currentlabel }
+            \typeout{~~\@currentHref }
           }
       }
 
@@ -3406,6 +3413,12 @@
         \__keythms_thmmarks_checkend:
       }
 
+    %%
+    %%  putting this here for now
+    %%
+    \def\multline@qed{\aftergroup\linebox@qed}
+    \expandafter\let\csname multline*@qed\endcsname\multline@qed
+      
     \clist_map_inline:nn
       { 
         equation*,
@@ -3472,7 +3485,7 @@
     \clist_map_inline:nn
       {
         equation,
-        multline, % mark not at right of line
+        multline,
         % displaymath, % apparently not needed?
         %% alignlike
         % gather, % below
