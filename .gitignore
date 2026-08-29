@@ -18,4 +18,4 @@
 *.unq
 doc/_minted-keytheorems-doc/
 tests/testfiles/*.pdf
-tests/latexmkrc
+latexmkrc
