@@ -5,9 +5,13 @@
 \usepackage[auto-qed]{keytheorems}
 \usepackage{hyperref}
 \usepackage{kantlipsum} % for filler text, to check spacing
+\newcommand{\kantgray}[2]{{\color{gray}\kant*[#1][#2]}}
 
 \newkeytheoremstyle{heartstyle}{
     qed=\ensuremath{\heartsuit}
+    }
+\newkeytheoremstyle{clubstyle}{
+    qed=\ensuremath{\clubsuit}
     }
 \newkeytheoremstyle{diamondstyle}{
     qed=\ensuremath{\diamond},
@@ -21,6 +25,10 @@
 \newkeytheorem{theorem}[
     style=heartstyle,
     parent=section,
+    ]
+\newkeytheorem{proposition}[
+    style=clubstyle,
+    parent=section
     ]
 \newkeytheorem{lemma}[ % not endmarked
     parent=section
@@ -385,68 +393,6 @@ abc
   \end{enumerate}
 \end{proof}
 
-\section{Tests of nested theoremlike environments}
-Not officially supported, but sort of works
-
-\begin{theorem}
-  regular text
-  \begin{lemma}
-    blub; lemma is not endmarked
-  \end{lemma}
-  \begin{lemma}
-    abc
-    \begin{equation*}
-      abc
-    \end{equation*}
-    \begin{enumerate}
-    \item abc
-      \begin{itemize}
-      \item blub
-      \end{itemize}
-    \item jhdgd
-    \end{enumerate}
-  \end{lemma}
-\end{theorem}
-
-Text following theorem environment.
-\emph{\color{gray}\kant*[1][1-2]}
-
-\begin{theorem}
-  regular text
-  \begin{remark}
-    blub; remark \emph{is} endmarked
-  \end{remark}
-\end{theorem}
-
-Text following theorem environment.
-\emph{\color{gray}\kant*[1][1-2]}
-
-\begin{theorem}
-  regular text
-  \begin{remark}
-    blub; remark \emph{is} endmarked
-  \end{remark}
-  \begin{lemma}
-    abc; lemma is not endmarked
-    \begin{equation*}
-      abc
-    \end{equation*}
-    \begin{enumerate}
-    \item abc
-      \begin{itemize}
-      \item blub
-      \end{itemize}
-    \item jhdgd
-    \end{enumerate}
-  \end{lemma}
-\end{theorem}
-
-
-Text following theorem environment.
-\emph{\color{gray}\kant*[1][1-2]}
-
-
-\clearpage
 
 \section{Math environments}
 
@@ -986,6 +932,97 @@ If these are wrapped in other environments like \texttt{equation}, then they won
   \end{equation}
 \end{test}
 
+
+\section{Tests of nested end marked environments}
+Nesting end marked environments inside eachother is not officially supported, but sort of works.
+End marks for successive closed environments are placed on new lines.
+
+\begin{theorem}
+  regular text
+  \begin{lemma}
+    blub; lemma is not endmarked
+  \end{lemma}
+  \begin{lemma}
+    abc
+    \begin{equation*}
+      abc
+    \end{equation*}
+    \begin{enumerate}
+    \item abc
+      \begin{itemize}
+      \item blub
+      \end{itemize}
+    \item jhdgd
+    \end{enumerate}
+  \end{lemma}
+\end{theorem}
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+\begin{theorem}
+  regular text
+  \begin{remark}
+    blub; remark \emph{is} endmarked
+  \end{remark}
+\end{theorem}
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+\begin{theorem}
+  regular text
+  \begin{remark}
+    blub; remark \emph{is} endmarked
+  \end{remark}
+  \begin{lemma}
+    abc; lemma is not endmarked
+    \begin{equation*}
+      abc
+    \end{equation*}
+    \begin{enumerate}
+    \item abc
+      \begin{itemize}
+      \item blub
+      \end{itemize}
+    \item jhdgd
+    \end{enumerate}
+  \end{lemma}
+\end{theorem}
+
+
+Text following theorem environment.
+\emph{\color{gray}\kant*[1][1-2]}
+
+
+ 
+Note: When a proof is nested inside another environment, as in the following test, its qed end mark changes to that of the containing environment.
+Here, environments are nested inside proofs nested inside other environments.
+
+
+
+\begin{theorem}\label{thm:glintro}
+  \kantgray{1}{1}\\
+  This proof is inside the theorem environment.
+  \begin{proof}
+    \kantgray{5}{1-2}
+    \begin{proposition}
+      This proposition is still inside the theorem proof.
+      \kantgray{5}{3}
+      \begin{proof}
+        This proposition proof is inside the proposition environment.
+        \kantgray{5}{4-6}
+        [End proposition proof; end proposition.]
+      \end{proof}
+    \end{proposition}
+    \kantgray{6}{1}
+    \begin{remark}
+      Remark still inside theorem proof.
+      \kantgray{6}{3}
+      [End remark; end theorem proof; end theorem.]
+    \end{remark}
+  \end{proof}
+\end{theorem}
 
 
 
