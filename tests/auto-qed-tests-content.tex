@@ -506,16 +506,8 @@ They use horizontal alignment markers (\&).
      & = y(0) y' && \text {by Axiom 1.}
   \end{alignat}
 }
-\makeoutertest{alignat*}{
-  unnumbered variant
-}{
-  \begin{alignat*}{2}
-    x& = y_1-y_2+y_3-y_5+y_8-\dots
-    &\qquad& \text{by (C)}\\
-     & = y'\circ y^* && \text{by (D)}\\
-     & = y(0) y' && \text {by Axiom 1.}
-  \end{alignat*}
-}
+
+Note: the unnumbered variant, \texttt{alignat*}, is currently unsupported.
 
 \maketest{gather}{
   a group of numbered equations with no horizontal alignment; each line is horizontally centered.\\
@@ -713,6 +705,19 @@ The marks may or may not be placed as expected, depending on the surrounding env
   x+x'&=y+y' & X+X'&=Y+Y' %\qedhere
 }
 
+\makeoutertest{alignat*}{
+  unnumbered variant of \texttt{alignat}\\
+  Currently unsupported.
+  Our methods for endmark placement of other environments do not work for \texttt{alignat*}.
+  We have not yet found an alternative.
+}{
+  \begin{alignat*}{2}
+    x& = y_1-y_2+y_3-y_5+y_8-\dots
+    &\qquad& \text{by (C)}\\
+     & = y'\circ y^* && \text{by (D)}\\
+     & = y(0) y' && \text {by Axiom 1.}
+  \end{alignat*}
+}
 
 \subsection{Math environments that go inside others}
 The width of the following environments is just the width of the content.
