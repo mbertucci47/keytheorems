@@ -115,7 +115,7 @@
 \usepackage{fontawesome5}
 \usepackage{longtable}
 \usepackage{booktabs}
-\usepackage{keytheorems}
+\usepackage[auto-qed]{keytheorems}
 \usepackage{zref-clever}
 \zcsetup{nameinlink=false}
 
@@ -414,6 +414,20 @@ These settings can be changed by calling |siblings=false| (alias |sharenumbers=f
   {initially \cs{openbox}}
 Redefines \cs{qedsymbol} to be \meta{symbol}.
 \end{docKey}
+
+%%
+%% wrote some here; not sure the best way
+%% to convey the default depends on left
+%% v.s. right equation numbers.
+%%
+\begin{docKey}{auto-qed}
+  {\colOpt{=false\textbar true}}
+  {default |true|, initially |false|}
+Alias \docAuxKey{thmmarks}. % maybe??
+Controls the automatic qed placement feature; see Section \ref{auto-qed}.
+\end{docKey}
+
+
 
 \begin{docKey}{restate-counters}
   {=\marg{comma-list of counters}}
@@ -1617,6 +1631,176 @@ This is the behavior of the \LaTeX{} kernel hooks that \pkg{keytheorems} uses un
 Code added using the hook keys \refKey{preheadhook}, etc.\@ is outermost, meaning executed first in \hook{prehead} and \hook{posthead} and last in \hook{prefoot} and \hook{postfoot}.
 Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
 \end{docCommand}
+
+
+\section{Automatic QED placement}
+\label{auto-qed}
+When \LaTeX{} processes a proof or other environment with |\qedsymbol|, the default behavior puts the qed symbol at the end of a text line.
+However, the symbol is placed on a new blank line if the environment closes with a displayed equation, or list, or other full-width environment.
+This is because the end of a closing |enumerate| or other environment is finished before the end of the containing environment marked with |\qedsymbol|.
+
+The AMS classes introduce |\qedhere| to manually place the symbol earlier.  This has the drawbacks that (a) users must remember to add |\qedhere| when needed and (b) users must remember to \emph{remove} |\qedhere| if additional content is added.
+
+The \refKey{auto-qed} feature of \pkg{keytheorems} implements automatic placement of the qed symbol, for environments marked with a \refKey{qed}.
+The feature works by
+\begin{enumerate}
+\item recording qed end mark positioning information in the aux file on each 
+compilation pass, and
+\item using that positioning information to insert commands similar to |\qedhere| where necessary.
+\end{enumerate}
+Subsection \ref{auto-qed-implementation} below documents further implementation details.
+
+Here are some examples showing output with the |auto-qed| feature enabled:
+the end mark is placed on the same line as the final closing content.
+The default \LaTeX{} behavior (|auto-qed=false|) would place the qed end marks on a blank line below the final closing math display or final list item.
+
+\begin{codepreamble}
+\newkeytheorem{example}[qed]
+\newkeytheorem{solution}[qed=$\clubsuit$]
+\end{codepreamble}
+
+\begin{keythmscode}[withpreamble]
+\begin{example}
+  A few comments, with the following equation:
+  \[
+    3^2 + 4^2 = 5^2. % auto-qed places end mark on this line
+  \]
+\end{example} % without auto-qed, the end mark is on a new blank line
+
+\begin{solution}
+  A few more comments, ending with
+  \begin{itemize}
+  \item an
+  \item itemized
+  \item list. % auto-qed places end mark on this line
+  \end{itemize}
+\end{solution} % without auto-qed, the end mark is on a new blank line
+\end{keythmscode}
+% Subsection \ref{auto-qed-option-environments} documents which closing environments are included by each option.
+
+% \subsubsection*{Manual adjustment of automatic endmarks}
+
+% \begin{notebox}
+%   TODO: maybe some explanation here about manual adjustments for special cases.  E.g., extra linebreak to force moving endmark to new line.
+% \end{notebox}
+
+% \subsubsection*{Adding support for additional environments}
+
+% \begin{notebox}
+%   TODO: maybe some information about this, if there is some user interface for it?
+% \end{notebox}
+
+\subsection{Environments supported by auto-qed}
+\label{auto-qed-option-environments}
+
+The final closing environments that are supported via the option \refKey{auto-qed} are listed below, organized by the final two cases from subsection \ref{auto-qed-implementation}.
+For examples and further tests, see 
+\href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/auto-qed-tests.pdf}{\texttt{auto-qed-tests.pdf}}
+\begin{notebox}
+  TODO: check reference/link to tests document; currently points to develop branch
+\end{notebox}
+
+\begin{description}
+\item[Case \ref{it:auto-qed-impl-2}: Math environments.]\ 
+  \begin{description}
+  \item[Unnumbered:]
+    |equation*|,
+    |\[..\]|,
+    |multline*|,
+    |align*|,
+    |gather*|
+  \item[Numbered:]
+    |equation|,
+    |multline|,
+    |align|,
+    |alignat|,
+    |gather|
+  \end{description}
+\item [Case \ref{it:auto-qed-impl-3}: Lists and text blocks.]\ 
+  \begin{description}
+  \item[Lists:]
+    |enumerate|,
+    |itemize|,
+    |description|,
+    |list|
+  \item[Others:]
+    |quote|,
+    |center|,
+    |tabbing|,
+    |verbatim|
+  \end{description}
+\end{description}
+
+
+\subsection{Implementation}
+\label{auto-qed-implementation}
+
+The \refKey{auto-qed} feature works using two compilation passes to write/read positioning information in the aux file.
+
+There are three cases for potential positions of qed end marks, depending on the final content of a marked environment.
+The cases are:
+\begin{enumerate}
+\item\label{it:auto-qed-impl-1} Final content is regular paragraph text.
+\item\label{it:auto-qed-impl-2} Final content is a math display\footnote{\pkg{ntheorem} splits this as two cases: unnumbered and numbered math}.
+\item\label{it:auto-qed-impl-3} Final content is a list item or a text block such as |center|.
+\end{enumerate}
+
+In the first case, \LaTeX{} automatically prints the qed end mark at the end of the text line.
+In the other two cases, \LaTeX{} has processed the |\end{..}| of the final content before knowing that a qed end mark is to be placed.
+This causes the mark to be placed on the following line.
+
+The \refKey{auto-qed} feature uses two compilation passes.
+During the first pass, each instance of the second two cases above is detected, with identifying information written to the aux file.
+Then, during the second pass, that aux file information is used to place qed end marks before the |\end{..}| of the final content.
+
+In principle, the qed end mark placement is done by inserting |\qedhere| just before the |\end{..}| of the final content.
+In practice, the inserted commands are variations of |\qedhere|, modified to correct buggy or irregular behavior in certain environments.
+The necessary commands are inserted with environment hooks---mostly \hook{env/<env>/end}, with some others used as necessary.
+
+
+% \subsubsection*{The realization} ...different cases; |\mode_if_horizontal:TF|;  |\KeythmsDeclareEndmark|
+
+% \subsubsection*{Patches to qedhere} ... e.g., |maketag@@@| 
+
+The two-pass idea described above for \refKey{auto-qed} is essentially that of the |thmmarks| option for \pkg{ntheorem}.
+The implementation here in \pkg{keytheorems} is updated for the current \LaTeX{} kernel and has slightly different behavior in certain final closing environments.
+See subsection \ref{auto-qed-limitations} for notes about some differences.
+
+\subsection{Intended use and known limitations}
+\label{auto-qed-limitations}
+
+The \refKey{auto-qed} functionality is recommended and supported with the following two assumptions:
+\begin{enumerate}
+\item Equation numbers are left-justified, as in the AMS document classes or with the |leqno| option for other document classes.
+\item Environments with qed end marks are not nested inside each other.  For example, if |remark| and |example| are both given end marks with \refKey{qed}, then an |example| does not occur inside a |remark| environment.
+\end{enumerate}
+When equation numbers are right-justified, or end marked environments are nested inside each other, end marks that would overlap with equation numbers or with each other are placed on successive blank lines.
+In some situations, these can occur across page breaks.
+
+% \subsubsection*{Right equation numbers} When equation numbers are right-justified, then the qed end marks are pushed down to the line below rather than appearing on the same line either before or after the equation number.
+
+
+% \subsubsection*{Nested environments with qed end marks} If one environment with qed end marks is nested inside another, and is the final closing environment, then the two marks appear on successive lines, with the inner one first and the outer one second.
+
+% \begin{dispListing}
+% \begin{remark}
+%   Some explanatory text.
+%   \begin{example}
+%     An example.
+%   \end{example}
+% \end{remark}
+% \end{dispListing}
+
+Separately from the above, there are some intentional differences between \pkg{ntheorem}[|thmmarks|] and \pkg{keytheorems}[|auto-qed|].
+\begin{enumerate}
+\item \pkg{ntheorem}[|thmmarks|] handles right equation numbers by repositioning the equation numbers (either left or up) to make space for the following end mark.
+  As noted above, \pkg{keytheorems} |auto-qed| places the qed end mark on a following blank line instead.
+\item \pkg{ntheorem}[|thmmarks|] prioritizes placing qed end marks along the bottom edge of their containing box.
+  This can lead to irregular positioning of the marks for the same content, depending on whether the containing environment is |equation|, |align|, or some other math environment.
+  In contrast, \pkg{keytheorems}[|auto-qed|] prioritizes placing qed end marks on the baseline of their containing box.
+  So, such marks are vertically aligned with (left) equation numbers, generally appearing vertically centered.
+\end{enumerate}
+
 
 \section{Miscellaneous notes}
 

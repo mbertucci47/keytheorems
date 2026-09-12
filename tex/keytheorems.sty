@@ -41,9 +41,10 @@
   }
 \keys_define:nn { keytheorems/usepackage }
   {
-    thmmarks          .bool_gset:N         = \g__keythms_thmmarks_bool,
-    thmmarks          .value_forbidden:n   = true,
-    thmmarks          .usage:n             = load,
+    thmmarks          .meta:n              = { auto-qed }, % alias
+    auto-qed          .bool_gset:N         = \g__keythms_thmmarks_bool,
+    auto-qed          .value_forbidden:n   = true,
+    auto-qed          .usage:n             = load,
     % all these are just saved to be called in \keytheoremset later
     auto-translate    .code:n              = \__keythms_saveglobalkey_optval:n { #1 },
     auto-translate    .usage:n             = load,
@@ -3406,17 +3407,24 @@
         \__keythms_thmmarks_checkend:
       }
 
+    %%
+    %%  putting this here for now
+    %%
+    \def\multline@qed{\aftergroup\linebox@qed}
+    \expandafter\let\csname multline*@qed\endcsname\multline@qed
+      
     \clist_map_inline:nn
       { 
         equation*,
-        multline*, % mark not at right of line
+        multline*,
         gather*, % mark not at right of line
         % displaymath, % apparently not needed?
         %% alignlike
         align*, % seems ok?
-        alignat*, % mark not at right of line
+        % alignat*, % mark not at right of line
         % also, flalign and flalign* have endmarks that hang into the right margin
-        flalign*,
+        % flalign,
+        % flalign*,
       }
       {
         \hook_gput_code:nnn {env/#1/end} { . }
@@ -3471,7 +3479,7 @@
     \clist_map_inline:nn
       {
         equation,
-        multline, % mark not at right of line
+        multline,
         % displaymath, % apparently not needed?
         %% alignlike
         % gather, % below
@@ -3542,7 +3550,7 @@
           align,
           gather,
           alignat,
-          flalign, % content overlaps endmark
+          % flalign, % content overlaps endmark
         }
         {
           \hook_gput_code:nnn {env/#1/end} { . }
