@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [v0.4.0]
+- add `auto-qed` option (alias `thmmarks`) for automatic QED placement;
+  meant to emulate ntheorem's `thmmarks` option
+
 ## [v0.3.7]
 - adapt support for tagged PDF with June 2026 LaTeX release
 
@@ -123,6 +127,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.4.0]: https://github.com/mbertucci47/keytheorems/compare/v0.3.7...v0.4.0
 [v0.3.7]: https://github.com/mbertucci47/keytheorems/compare/v0.3.6...v0.3.7
 [v0.3.6]: https://github.com/mbertucci47/keytheorems/compare/v0.3.5...v0.3.6
 [v0.3.5]: https://github.com/mbertucci47/keytheorems/compare/v0.3.4...v0.3.5

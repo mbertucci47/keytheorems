@@ -115,7 +115,7 @@
 \usepackage{fontawesome5}
 \usepackage{longtable}
 \usepackage{booktabs}
-\usepackage{keytheorems}
+\usepackage[auto-qed]{keytheorems}
 \usepackage{zref-clever}
 \zcsetup{nameinlink=false}
 
@@ -296,6 +296,7 @@
   }%
 }
 \makeatother
+
 \makeindex
 
 \begin{document}
@@ -315,14 +316,14 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 \section{Dependencies}
 
 The package depends on the \pkg{amsthm}, \pkg{refcount}, and \pkg{translations} packages.
-The \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package.
+The \refKey{auto-qed} option requires \pkg{amsmath}, the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package.
 A \LaTeX{} kernel no older than 2025-06-01 is required.
     
 \section{Global options}
 
 \begin{docCommand}{keytheoremset}
   {\marg{options}}
-Every key in this section can be given as an option to \cs{usepackage} or in \cs{keytheoremset}, with the exception that \refKey{continues-code} can only be used in the latter.
+Every key in this section can be given as an option to \cs{usepackage} or in \cs{keytheoremset}, with the exceptions that \refKey{auto-qed} must be given as a package option and \refKey{continues-code} can only be used in \cs{keytheoremset}.
 \end{docCommand}
 
 \subsection{Compatibility options}
@@ -376,7 +377,7 @@ These texts can be manually customized with the \refKey{title} and \refKey{conti
 
 \begin{docKey}[][before upper=\TCBdescnewline]{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
+  {initially\\ \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
 The code used to typeset the note produced by the \refKey{continues} key.
 If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}.
 Currently (likely inaccurate!) translations exist for several European languages.
@@ -395,6 +396,8 @@ The predefined theorems are
 If your language does not have translations, please feel free to open a GitHub pull request.
 
 These theorems are provided at the end of the preamble (specifically, in the \hook{begindocument} hook) with \refCom{providekeytheorem} so will not overwrite user-defined environments with the same name.
+Thus, a user can safely call, e.g., |\newkeytheorem{theorem}[...]| in the preamble.
+
 By default, the predefined theorems share a counter and do not have a parent counter.
 These settings can be changed by calling |siblings=false| (alias |sharenumbers=false|) and/or |parent=|\meta{counter}, respectively, in \meta{options}.
 
@@ -413,6 +416,14 @@ These settings can be changed by calling |siblings=false| (alias |sharenumbers=f
   {=\meta{symbol}}
   {initially \cs{openbox}}
 Redefines \cs{qedsymbol} to be \meta{symbol}.
+\end{docKey}
+
+\begin{docKey}{auto-qed}
+  {}
+  {initially unset}
+Alias \docAuxKey{thmmarks}.
+Controls the automatic QED placement feature; see Section \ref{auto-qed}.
+Must be given as a package option since it requires \pkg{amsmath} is loaded \emph{before} \pkg{amsthm}.
 \end{docKey}
 
 \begin{docKey}{restate-counters}
@@ -1065,7 +1076,8 @@ For completeness, also provided are \cs{providekeytheoremstyle} and \cs{declarek
 \subsection{Predefined styles}
 \label{predefsty}
 
-\pkg{amsthm} defines the styles |plain|, |definition|, and |remark|. These, along with a |legacy2e| style meant to emulate the style of the kernel \cs{newtheorem}, are supported in both the \refKey{style} theorem key and the \refKey{inherit-style} style key.
+\pkg{amsthm} defines the styles |plain|, |definition|, and |remark|.
+These, along with a |legacy2e| style meant to emulate the style of the kernel \cs{newtheorem}, are supported in both the \refKey{style} theorem key and the \refKey{inherit-style} style key.
 The initial values changed by each style are described below.
 \begin{itemize}
   \item \docValue*{plain}: This is the default.
@@ -1618,6 +1630,180 @@ Code added using the hook keys \refKey{preheadhook}, etc.\@ is outermost, meanin
 Furthermore, if present, the \refKey{qed} symbol is placed \emph{before} the \hook{prefoot} hook.
 \end{docCommand}
 
+
+\section{Automatic QED placement}
+\label{auto-qed}
+When \LaTeX{} processes a proof or other environment with |\qed|, the default behavior puts the QED symbol at the end of a text line.
+However, the symbol is placed on a new blank line if the environment closes with a displayed equation, or list, or other full-width environment.
+This is because the end of a closing |enumerate| or other environment is finished before the end of the containing environment marked with the |\qed|.
+
+The AMS classes introduce |\qedhere| to manually place the symbol earlier.
+This has the drawbacks that (a) users must remember to add |\qedhere| when needed and (b) users must remember to \emph{remove} |\qedhere| if additional content is added.
+
+The \refKey{auto-qed} feature of \pkg{keytheorems} implements automatic placement of the QED symbol, for environments marked with a \refKey{qed}.
+The feature works by
+\begin{enumerate}
+\item recording QED end mark positioning information in the aux file on each 
+compilation pass, and
+\item using that positioning information to insert commands similar to |\qedhere| where necessary.
+\end{enumerate}
+Subsection \ref{auto-qed-implementation} below documents further implementation details.
+
+Here are some examples showing output with the |auto-qed| feature enabled:
+the QED end mark is placed on the same line as the final closing content.
+The default \LaTeX{} behavior would place the QED end marks on a blank line below the final closing math display or final list item.
+
+\begin{codepreamble}
+\newkeytheorem{example}[qed]
+\newkeytheorem{solution}[qed=$\clubsuit$]
+\end{codepreamble}
+
+\begin{keythmscode}[withpreamble]
+\begin{example}
+  A few comments, with the following equation:
+  \[
+    3^2 + 4^2 = 5^2. % auto-qed places QED end mark on this line
+  \]
+\end{example} % without auto-qed, the QED end mark is on a new blank line
+
+\begin{solution}
+  A few more comments, ending with
+  \begin{itemize}
+  \item an
+  \item itemized
+  \item list. % auto-qed places QED end mark on this line
+  \end{itemize}
+\end{solution} % without auto-qed, the QED end mark is on a new blank line
+\end{keythmscode}
+% Subsection \ref{auto-qed-option-environments} documents which closing environments are included by each option.
+
+% \subsubsection*{Manual adjustment of automatic endmarks}
+
+% \begin{notebox}
+%   TODO: maybe some explanation here about manual adjustments for special cases.  E.g., extra linebreak to force moving endmark to new line.
+% \end{notebox}
+
+% \subsubsection*{Adding support for additional environments}
+
+% \begin{notebox}
+%   TODO: maybe some information about this, if there is some user interface for it?
+% \end{notebox}
+
+\subsection{Environments supported by \texttt{auto-qed}}
+\label{auto-qed-option-environments}
+
+The final closing environments that are supported via the option \refKey{auto-qed} are listed below, organized by the final two cases from subsection \ref{auto-qed-implementation}.
+For examples and further tests, see 
+\href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/auto-qed-tests.pdf}{\texttt{auto-qed-tests.pdf}}.
+
+\begin{description}
+\item[Case \ref{it:auto-qed-impl-2}: Math environments.]\ 
+  \begin{description}
+  \item[Unnumbered:]
+    |equation*|,
+    |\[...\]|,
+    |multline*|,
+    |align*|,
+    |gather*|
+  \item[Numbered:]
+    |equation|,
+    |multline|,
+    |align|,
+    |alignat|,
+    |gather|
+  \end{description}
+\item [Case \ref{it:auto-qed-impl-3}: Lists and text blocks.]\ 
+  \begin{description}
+  \item[Lists:]
+    |enumerate|,
+    |itemize|,
+    |description|,
+    |list|
+  \item[Others:]
+    |quote|,
+    |quotation|,
+    |center|,
+    |tabbing|,
+    |verbatim|
+  \end{description}
+\end{description}
+Environments currently \emph{not} supported include
+  |alignat*|,
+  |flalign|,
+  and |flalign*|.
+Code contributions for these environments and others are welcome.
+
+\subsection{Implementation}
+\label{auto-qed-implementation}
+
+The \refKey{auto-qed} feature works using two compilation passes to write/read positioning information in the aux file.
+
+There are three cases for potential positions of QED end marks, depending on the final content of a marked environment.
+The cases are:
+\begin{enumerate}
+\item\label{it:auto-qed-impl-1} Final content is regular paragraph text.
+\item\label{it:auto-qed-impl-2} Final content is a math display\footnote{\pkg{ntheorem} splits this as two cases: unnumbered and numbered math.}.
+\item\label{it:auto-qed-impl-3} Final content is a list item or a text block such as |center|.
+\end{enumerate}
+
+In the first case, \LaTeX{} automatically prints the QED end mark at the end of the text line.
+In the other two cases, \LaTeX{} has processed the |\end{...}| of the final content before knowing that a QED end mark is to be placed.
+This causes the mark to be placed on the following line.
+
+The \refKey{auto-qed} feature uses two compilation passes.
+During the first pass, each instance of the second two cases above is detected, with identifying information written to the aux file.
+Then, during the second pass, that aux file information is used to place QED end marks before the |\end{...}| of the final content.
+
+In principle, the QED end mark placement is done by inserting |\qedhere| just before the |\end{...}| of the final content.
+In practice, the inserted commands are variations of |\qedhere|, modified to correct buggy or irregular behavior in certain environments.
+The necessary commands are inserted with environment hooks---mostly \hook{env/\meta{env}/end}, with some others used as necessary.
+
+
+% \subsubsection*{The realization} ...different cases; |\mode_if_horizontal:TF|;  |\KeythmsDeclareEndmark|
+
+% \subsubsection*{Patches to qedhere} ... e.g., |maketag@@@| 
+
+The two-pass idea described above for \refKey{auto-qed} is essentially that of the |thmmarks| option for \pkg{ntheorem}.
+The implementation here in \pkg{keytheorems} is updated for the current \LaTeX{} kernel and has slightly different behavior in certain final closing environments.
+See subsection \ref{auto-qed-limitations} for notes about some differences.
+
+\subsection{Intended use and known limitations}
+\label{auto-qed-limitations}
+
+The \refKey{auto-qed} functionality is recommended and supported with the following two assumptions:
+\begin{enumerate}
+\item Equation numbers are left-justified, as in the AMS document classes or with the |leqno| option for other document classes.
+\item Environments with QED end marks are not nested inside each other.
+For example, if |remark| and |example| are both given QED end marks with \refKey{qed}, then an |example| does not occur inside a |remark| environment.
+\end{enumerate}
+When equation numbers are right-justified, or QED end marked environments are nested inside each other, QED end marks that would overlap with equation numbers or with each other are placed on successive blank lines.
+In some situations, these can occur across page breaks.
+
+% \subsubsection*{Right equation numbers} When equation numbers are right-justified, then the QED end marks are pushed down to the line below rather than appearing on the same line either before or after the equation number.
+
+
+% \subsubsection*{Nested environments with QED end marks} If one environment with QED end marks is nested inside another, and is the final closing environment, then the two marks appear on successive lines, with the inner one first and the outer one second.
+
+% \begin{dispListing}
+% \begin{remark}
+%   Some explanatory text.
+%   \begin{example}
+%     An example.
+%   \end{example}
+% \end{remark}
+% \end{dispListing}
+
+Separately from the above, there are some intentional differences between \pkg{ntheorem} (|thmmarks|) and \pkg{keytheorems} (|auto-qed|).
+\begin{enumerate}
+\item \pkg{ntheorem} handles right equation numbers by repositioning the equation numbers (either left or up) to make space for the following QED end mark.
+  As noted above, \pkg{keytheorems} places the QED end mark on a following blank line instead.
+\item \pkg{ntheorem} prioritizes placing QED end marks along the bottom edge of their containing box.
+  This can lead to irregular positioning of the marks for the same content, depending on whether the containing environment is |equation|, |align|, or some other math environment.
+  In contrast, \pkg{keytheorems} prioritizes placing QED end marks on the baseline of their containing box.
+  So, such marks are vertically aligned with (left) equation numbers, generally appearing vertically centered.
+\end{enumerate}
+
+
 \section{Miscellaneous notes}
 
 \subsection{\cls{beamer} support}
@@ -1770,7 +1956,8 @@ Inside theorem environments and in all theorem hooks, you have access to the the
       doc parameter=\ \marg{name} \marg{restate counters} \marg{body text},
     },
   }
-These are the commands called by \refCom{getkeytheorem} when restating stored theorems. They can be useful for customizing the behavior of the list of theorems with a printed body; see \refCom{keythms_listof_listcmd:nnnnnnn}.
+These are the commands called by \refCom{getkeytheorem} when restating stored theorems.
+They can be useful for customizing the behavior of the list of theorems with a printed body; see \refCom{keythms_listof_listcmd:nnnnnnn}.
 \end{docCommands}
 
 \begin{docCommand}{keythms_listof_listcmd:nnnnnnn}
@@ -1779,7 +1966,8 @@ These are the commands called by \refCom{getkeytheorem} when restating stored th
     \hspace*{1cm}%
     \marg{restate counters} \marg{keys} \marg{body text}%
   }
-This is the command that controls how theorems are printed in the list of theorems. See \url{https://tex.stackexchange.com/a/747257/208544} for a concrete use-case in tandem with \refCom{keythms_getthm_theorem:nnnnn}.  
+This is the command that controls how theorems are printed in the list of theorems.
+See \url{https://tex.stackexchange.com/a/747257/208544} for a concrete use-case in tandem with \refCom{keythms_getthm_theorem:nnnnn}.
 \end{docCommand}
 
 \begin{docKeys}[doc no index,color key=black]
