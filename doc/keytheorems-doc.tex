@@ -1643,14 +1643,14 @@ This has the drawbacks that (a) users must remember to add |\qedhere| when neede
 The \refKey{auto-qed} feature of \pkg{keytheorems} implements automatic placement of the QED symbol, for environments marked with a \refKey{qed}.
 The feature works by
 \begin{enumerate}
-\item recording qed end mark positioning information in the aux file on each 
+\item recording QED end mark positioning information in the aux file on each 
 compilation pass, and
 \item using that positioning information to insert commands similar to |\qedhere| where necessary.
 \end{enumerate}
 Subsection \ref{auto-qed-implementation} below documents further implementation details.
 
 Here are some examples showing output with the |auto-qed| feature enabled:
-the end mark is placed on the same line as the final closing content.
+the QED end mark is placed on the same line as the final closing content.
 The default \LaTeX{} behavior would place the QED end marks on a blank line below the final closing math display or final list item.
 
 \begin{codepreamble}
@@ -1662,18 +1662,18 @@ The default \LaTeX{} behavior would place the QED end marks on a blank line belo
 \begin{example}
   A few comments, with the following equation:
   \[
-    3^2 + 4^2 = 5^2. % auto-qed places end mark on this line
+    3^2 + 4^2 = 5^2. % auto-qed places QED end mark on this line
   \]
-\end{example} % without auto-qed, the end mark is on a new blank line
+\end{example} % without auto-qed, the QED end mark is on a new blank line
 
 \begin{solution}
   A few more comments, ending with
   \begin{itemize}
   \item an
   \item itemized
-  \item list. % auto-qed places end mark on this line
+  \item list. % auto-qed places QED end mark on this line
   \end{itemize}
-\end{solution} % without auto-qed, the end mark is on a new blank line
+\end{solution} % without auto-qed, the QED end mark is on a new blank line
 \end{keythmscode}
 % Subsection \ref{auto-qed-option-environments} documents which closing environments are included by each option.
 
@@ -1774,9 +1774,9 @@ The \refKey{auto-qed} functionality is recommended and supported with the follow
 \begin{enumerate}
 \item Equation numbers are left-justified, as in the AMS document classes or with the |leqno| option for other document classes.
 \item Environments with QED end marks are not nested inside each other.
-For example, if |remark| and |example| are both given end marks with \refKey{qed}, then an |example| does not occur inside a |remark| environment.
+For example, if |remark| and |example| are both given QED end marks with \refKey{qed}, then an |example| does not occur inside a |remark| environment.
 \end{enumerate}
-When equation numbers are right-justified, or end marked environments are nested inside each other, end marks that would overlap with equation numbers or with each other are placed on successive blank lines.
+When equation numbers are right-justified, or QED end marked environments are nested inside each other, QED end marks that would overlap with equation numbers or with each other are placed on successive blank lines.
 In some situations, these can occur across page breaks.
 
 % \subsubsection*{Right equation numbers} When equation numbers are right-justified, then the QED end marks are pushed down to the line below rather than appearing on the same line either before or after the equation number.
@@ -1795,7 +1795,7 @@ In some situations, these can occur across page breaks.
 
 Separately from the above, there are some intentional differences between \pkg{ntheorem} (|thmmarks|) and \pkg{keytheorems} (|auto-qed|).
 \begin{enumerate}
-\item \pkg{ntheorem} handles right equation numbers by repositioning the equation numbers (either left or up) to make space for the following end mark.
+\item \pkg{ntheorem} handles right equation numbers by repositioning the equation numbers (either left or up) to make space for the following QED end mark.
   As noted above, \pkg{keytheorems} places the QED end mark on a following blank line instead.
 \item \pkg{ntheorem} prioritizes placing QED end marks along the bottom edge of their containing box.
   This can lead to irregular positioning of the marks for the same content, depending on whether the containing environment is |equation|, |align|, or some other math environment.

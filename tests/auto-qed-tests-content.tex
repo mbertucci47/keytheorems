@@ -564,10 +564,20 @@ Note: internally, \texttt{gather} and \texttt{gather*} are handled the same way 
 These other special cases are each handled separately.
 
 \maketest{quote}{}{
-  A quotation goes here.
+  A quote goes here.
   \kantgray{1}{1}
+
+  The \texttt{article} document class handles paragraphing in \texttt{quote} and \texttt{quotation} slightly differently.
+  They are the same in the \texttt{amsart} document class.
 }
 
+\maketest{quotation}{}{
+  A quotation goes here.
+  \kantgray{1}{1}
+
+  The \texttt{article} document class handles paragraphing in \texttt{quote} and \texttt{quotation} slightly differently.
+  They are the same in the \texttt{amsart} document class.
+}
 
 \maketest{center}{
   center the contents
