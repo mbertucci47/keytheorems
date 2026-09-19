@@ -288,13 +288,18 @@
       \,\kvtcb@text@pageshort\,\pageref*{#1:#4}}%
     \fi}}%
 }
-\newcommand{\TCBdescnewline}{%
-  \def\tcb@doc@do@description{%
-    \ifx\kvtcb@doc@description\@empty\else\tcblower\raggedleft\strut
-    \\[1ex]% added
-    (\kvtcb@doc@description)\strut\fi%
-  }%
-}
+\usepackage{xpatch}
+\ExplSyntaxOn
+\newcommand{\TCBkeydescnewline@aux}{ % for some reason tcolorbox does not use \tcb@doc@do@description for keys
+  \xpatchcmd{\__tcobox_doc_head_key:}
+    {( \tl_use:N \g__tcobox_doc_description_tl}
+    {\\[1ex] ( \tl_use:N \g__tcobox_doc_description_tl}
+    {}{}
+  }
+\ExplSyntaxOff
+
+% xpatch needs proper catcodes
+\newcommand{\TCBkeydescnewline}{\ExplSyntaxOn\TCBkeydescnewline@aux\ExplSyntaxOff}
 \makeatother
 
 \makeindex
@@ -375,9 +380,9 @@ If |false|, \pkg{keytheorems} does not automatically translate the title text us
 These texts can be manually customized with the \refKey{title} and \refKey{continues-code} keys, respectively.
 \end{docKey}
 
-\begin{docKey}[][before upper=\TCBdescnewline]{continues-code}
+\begin{docKey}[][before upper=\TCBkeydescnewline]{continues-code}
   {=\meta{code with \textup{\texttt{\#1}}}}
-  {initially\\ \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
+  {initially \cs{GetTranslation}\ttbraces{keythms\string_continues}\cs{pageref}\ttbraces{\#1}}
 The code used to typeset the note produced by the \refKey{continues} key.
 If English or an unknown language is used, defaults to \texttt{continuing from p.}\cs{,}\cs{pageref}\ttbraces{\#1}.
 Currently (likely inaccurate!) translations exist for several European languages.
@@ -841,14 +846,14 @@ Some more text.
 
 \end{docKey}
 
-\begin{docKey}[][before upper=\TCBdescnewline]{refname}
+\begin{docKey}[][before upper=\TCBkeydescnewline]{refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \cs{text\string_lowercase:n} \marg{display name}}
 If a single string, then the name used by \pkg{hyperref}'s \cs{autoref}, \pkg{cleveref}'s \cs{cref}, and \pkg{zref-clever}'s \cs{zcref}.
 If two strings separated by a comma, then the second string is the plural form used by \cs{cref} and \cs{zcref}.
 \end{docKey}
 
-\begin{docKey}[][before upper=\TCBdescnewline]{Refname}
+\begin{docKey}[][before upper=\TCBkeydescnewline]{Refname}
   {=\meta{ref name} \textrm{or} \brackets{\meta{singular name},\meta{plural name}}}
   {initially \cs{text\string_titlecase\string_first:n} \marg{display name}}
 Same as \refKey{refname} but for \docAuxCommand{Autoref}, \cs{Cref}, and \cs{zcref} with any of its capitalizing options.
@@ -1115,7 +1120,7 @@ Note, however, that the declarations in the \refKey{numberfont} and \refKey{note
 By default, the number is typeset in upright shape and the note in both upright shape and medium weight.
 \end{docKey}
 
-\begin{docKey}[][before upper=\TCBdescnewline]{headformat}
+\begin{docKey}[][before upper=\TCBkeydescnewline]{headformat}
   {=\docValue{margin}\textbar\docValue{swapnumber}\textbar\meta{code using \cs{NAME}, \cs{NUMBER}, and \cs{NOTE}\,}}
   {initially \cs{NAME}\cs{\textvisiblespace}\cs{NUMBER}\cs{NOTE}}
 Alias \docAuxKey{headstyle}.
