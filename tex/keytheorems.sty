@@ -2,8 +2,8 @@
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
 \NeedsTeXFormat{LaTeX2e}[2025-06-01]
-\def\@keythms@date{2026-09-17}
-\def\@keythms@version{0.4.0}
+\def\@keythms@date{2026-09-20}
+\def\@keythms@version{0.4.1dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -3409,9 +3409,9 @@
         \__keythms_thmmarks_checkend:
       }
 
-    %%
-    %%  putting this here for now
-    %%
+    % latex-lab-testphase-block.sty does not define \linebox@qed
+    % see https://github.com/latex3/tagging-project/issues/1609
+    \providecommand\linebox@qed{\hfil\hbox{\qedsymbol}\hfilneg}
     \def\multline@qed{\aftergroup\linebox@qed}
     \expandafter\let\csname multline*@qed\endcsname\multline@qed
       

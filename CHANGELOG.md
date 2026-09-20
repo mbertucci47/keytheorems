@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [v0.4.1dev]
+- provide temporary definition of `\linebox@qed`; partial fix for
+  [\#68](https://github.com/mbertucci47/keytheorems/issues/68)
+
 ## [v0.4.0]
 - add `auto-qed` option (alias `thmmarks`) for automatic QED placement;
   meant to emulate ntheorem's `thmmarks` option
