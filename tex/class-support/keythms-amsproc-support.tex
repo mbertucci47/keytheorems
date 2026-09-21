@@ -6,13 +6,15 @@
 
 \tl_use:N \c__keythms_support_AMSshared_tl
 
-\prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+\__keythms_thmstyle_adjustdefaults:n
   {
     headfont   = \scshape,
     headindent = \parindent,
   }
 
-% redefine inherit-style=remark
-\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl { bodyfont = \normalfont }
+% redefine styles with new defaults
+\keythms_thmstyle_declarestyle:nn { plain } { }
+\keythms_thmstyle_declarestyle:nn { definition } { bodyfont=\normalfont }
+\keythms_thmstyle_declarestyle:nn { remark } { bodyfont=\normalfont }
 
 \file_input_stop:

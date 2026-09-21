@@ -439,7 +439,8 @@
   {
     \keythms_thmstyle_thmname:n { #1 \__keythms_thmuse_aftername: }
     \keythms_thmstyle_thmnumber:n
-      { ~
+      {
+        \/ ~ % need italic correction to get identical output to amsthm
         \group_begin:
         \exp_not:V \l__keythms_thmstyle_numberfont_tl
         #2
@@ -457,31 +458,6 @@
         \group_end:
         \__keythms_thmuse_afternotebraces:
       }
-  }
-
-\prop_gset_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
-  { % support files may overwrite these defaults
-    bodyfont      = \itshape,
-    headfont      = \bfseries,
-    headindent    = 0pt,
-    headpunct     = {.},
-    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
-    notebraces    = {(}{)},
-    notefont      = \fontseries\mddefault\upshape,
-    noteseparator = {~},
-    numberfont    = \upshape,
-    postheadspace = 5pt plus 1pt minus 1pt,
-    spaceabove    = {}, % empty means default (works for AMS classes too)
-    spacebelow    = {}, % empty means default (works for AMS classes too)
-  }
-\hook_gput_code:nnn { package/keytheorems/after } { . }
-  { % need to defer to wait for support files
-    \keys_precompile:neN { keytheorems/thmstyle }
-      { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
-      \l__keythms_thmstyle_defaultkeys_tl
-    % define legacy2e style
-    \keythms_thmstyle_declarestyle:nn { legacy2e }
-      { notefont=\bfseries, headpunct= }
   }
 
 % conditional that will be redefined later if new block code loaded
@@ -587,18 +563,50 @@
     \cs_undefine:N \NOTE
   }
 
-% set up plain, definition, and remark for inherit-style
-\tl_new:N \g__keythms_thmstyle_plain_metakeys_tl
-\tl_new:N \g__keythms_thmstyle_definition_metakeys_tl
-\tl_new:N \g__keythms_thmstyle_remark_metakeys_tl
-\tl_gset:Nn \g__keythms_thmstyle_definition_metakeys_tl { bodyfont=\normalfont }
-\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
+\cs_new_protected:Npn \__keythms_thmstyle_adjustdefaults:n #1
   {
-    bodyfont   = \normalfont,
-    headfont   = \itshape,
-    spaceabove = 0.5\topsep,
-    spacebelow = 0.5\topsep,
+    \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop { #1 }
+    \keys_precompile:neN { keytheorems/thmstyle }
+      { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
+      \l__keythms_thmstyle_defaultkeys_tl
   }
+\__keythms_thmstyle_adjustdefaults:n
+  { % support files may overwrite these defaults
+    bodyfont      = \itshape,
+    headfont      = \bfseries,
+    headindent    = 0pt,
+    headpunct     = {.},
+    headstyle     = \keythms_thmstyle_headcmd_default:nnn{#1}{#2}{#3},
+    notebraces    = {(}{)},
+    notefont      = \fontseries\mddefault\upshape,
+    noteseparator = {~},
+    numberfont    = \upshape,
+    postheadspace = 5pt plus 1pt minus 1pt,
+    spaceabove    = {}, % empty means default (works for AMS classes too)
+    spacebelow    = {}, % empty means default (works for AMS classes too)
+  }
+
+% separate this off for reuse later
+\cs_new_protected:Npn \__keythms_thmstyle_definedefaultstyles:
+  {
+    \keythms_thmstyle_declarestyle:nn { plain } { }
+    \keythms_thmstyle_declarestyle:nn { definition } { bodyfont=\normalfont }
+    \keythms_thmstyle_declarestyle:nn { remark }
+      {
+        bodyfont   = \normalfont,
+        headfont   = \itshape,
+        spaceabove = 0.5\topsep,
+        spacebelow = 0.5\topsep,
+      }
+    \keythms_thmstyle_declarestyle:nn { legacy2e }
+      {
+        notefont=\bfseries,
+        headpunct=,
+      }
+  }
+
+% define styles (possibly overwritten in support files)
+\__keythms_thmstyle_definedefaultstyles:
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Defining Theorems %%%
@@ -888,11 +896,6 @@
 \@onlypreamble \renewkeytheorem
 \@onlypreamble \providekeytheorem
 \@onlypreamble \declarekeytheorem
-
-% to prevent error when plain, remark, or definition style used
-\tl_new:N \l__keythms_thmstyle_plain_savedthmkeys_tl
-\tl_new:N \l__keythms_thmstyle_remark_savedthmkeys_tl
-\tl_new:N \l__keythms_thmstyle_definition_savedthmkeys_tl
 
 % to be redefined as \l__block_thmstyle_tl if new block code loaded
 \tl_new:N \l__keythms_thm_thestyle_tl
@@ -3798,6 +3801,8 @@
                 \keys_precompile:neN { keytheorems/thmstyle }
                   { \prop_to_keyval:N \g__keythms_thmstyle_defaultkeys_prop }
                   \l__keythms_thmstyle_defaultkeys_tl
+                % need to define defaults again with new values
+                \__keythms_thmstyle_definedefaultstyles:
               }
           }
       }

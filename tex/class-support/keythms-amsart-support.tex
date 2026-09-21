@@ -6,11 +6,11 @@
 
 \tl_use:N \c__keythms_support_AMSshared_tl
 
-% redefine inherit-style=remark
-\tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
+% redefine styles with new defaults
+\keythms_thmstyle_declarestyle:nn { remark }
   {
-    bodyfont      = \normalfont,
-    headfont      = \itshape,
+    bodyfont = \normalfont,
+    headfont = \itshape,
   }
 
 \bool_case:n
@@ -18,7 +18,7 @@
     { \__keythms_if_classloaded_p:n { acmart } }
       {
         \keytheoremset{overload} % since acmart predefines several theorems at begindocument
-        \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+        \__keythms_thmstyle_adjustdefaults:n
           {
             bodyfont      = \@acmplainbodyfont,
             headfont      = \@acmplainheadfont,
@@ -26,9 +26,8 @@
             notefont      = \@acmplainnotefont,
             postheadspace = .5em,
           }
-        \tl_new:N \g__keythms_thmstyle_acmplain_metakeys_tl
-        \tl_new:N \g__keythms_thmstyle_acmdefinition_metakeys_tl
-        \tl_gset:Nn \g__keythms_thmstyle_acmdefinition_metakeys_tl
+        \keythms_thmstyle_declarestyle:nn { acmplain } { }
+        \keythms_thmstyle_declarestyle:nn { acmdefinition }
           {
             bodyfont   = \@acmdefinitionbodyfont,
             headindent = \@acmdefinitionindent,
@@ -38,7 +37,7 @@
       }
     { \__keythms_if_classloaded_p:n { aomart } }
       {
-        \prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+        \__keythms_thmstyle_adjustdefaults:n
           {
             bodyfont      = \sishape,
             headfont      = \scshape,
@@ -48,7 +47,9 @@
             spaceabove    = 0.5\linespacing,
             spacebelow    = 0.5\linespacing,
           }
-        \tl_gset:Nn \g__keythms_thmstyle_definition_metakeys_tl
+        % redefine styles with new defaults
+        \keythms_thmstyle_declarestyle:nn { plain } { }
+        \keythms_thmstyle_declarestyle:nn { definition }
           {
             bodyfont      = \upshape,
             headfont      = \sishape,
@@ -58,7 +59,7 @@
             spaceabove    = 0.5\linespacing,
             spacebelow    = 0.5\linespacing,
           }
-        \tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
+        \keythms_thmstyle_declarestyle:nn { remark }
           {
             bodyfont      = \upshape,
             headfont      = \sishape,
