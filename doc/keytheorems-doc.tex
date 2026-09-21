@@ -557,6 +557,36 @@ Don't confuse your readers by changing the numbering without good reason.
 \end{theorem}
 \end{keythmscode}
 
+\begin{docKeys}[
+  doc parameter = {=\meta{code}},
+  doc description = initially unset,
+  ]
+  {
+    { doc name = after-name },
+    { doc name = after-number },
+    { doc name = after-note },
+    { doc name = after-notebraces },
+  }
+On rare occasions, you may want to inject some code in the theorem heading, e.g., a footnote.
+These keys allow for this without affecting the theorem's appearance when referenced or in \refCom{listofkeytheorems} (cf.\ \refKey{manual-num}).
+The keys should behave as expected with |headformat=margin| or |swapnumber|, as well as custom |headformat|s using \cs{NAME}, \cs{NUMBER}, and \cs{NOTE}.
+
+\begin{keythmscode}[]
+\begin{swapnumberthm}[
+  after-name=\footnote{This came after the name\dots},
+  after-number=\footnote{\dots and this after the number.},
+  after-note=\footnote{This is inside the note braces\dots},
+  after-notebraces=\footnote{\dots and this is outside.},
+  label=fnthm,
+  note=Here is a note,
+  ]
+Some theorem text
+\end{swapnumberthm}
+Reference is unchanged: \zcref{fnthm}.
+\end{keythmscode}
+
+\end{docKeys}
+
 \end{docKey}
 \begin{docKey}{continues}
   {\sarg=\meta{label name}}

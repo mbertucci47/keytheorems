@@ -320,10 +320,17 @@
       {
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn
           {
-            \makebox[0pt][r]{
-              \keythms_thmstyle_thmnumber:n {
-                \group_begin: \exp_not:V \l__keythms_thmstyle_numberfont_tl
-                ##2 ~ \group_end: }
+            \makebox[0pt][r]
+              {
+                \keythms_thmstyle_thmnumber:n
+                  {
+                    \group_begin:
+                    \exp_not:V \l__keythms_thmstyle_numberfont_tl
+                    ##2
+                    \group_end:
+                    \__keythms_thmuse_afternumber:
+                    \c_space_token
+                  }
               }
             \NAME\NOTE
           }
@@ -332,9 +339,15 @@
       {
         \cs_set:Nn \keythms_thmstyle_headcmd:nnn
           {
-            \keythms_thmstyle_thmnumber:n {
-              \group_begin: \exp_not:V \l__keythms_thmstyle_numberfont_tl
-              ##2 ~ \group_end: }
+            \keythms_thmstyle_thmnumber:n
+              {
+                \group_begin:
+                \exp_not:V \l__keythms_thmstyle_numberfont_tl
+                ##2
+                \group_end:
+                \__keythms_thmuse_afternumber:
+                \c_space_token
+              }
               \NAME\NOTE
           }
       },
@@ -414,23 +427,35 @@
 \cs_new_protected:Nn \keythms_thmstyle_thmname:n { \thmname{#1} }
 \cs_new_protected:Nn \keythms_thmstyle_thmnumber:n { \thmnumber{#1} }
 \cs_new_protected:Nn \keythms_thmstyle_thmnote:n { \thmnote{#1} }
-
+\cs_new_protected:Npn \__keythms_thmuse_aftername:
+  { \tl_use:N \l__keythms_thmuse_aftername_tl }
+\cs_new_protected:Npn \__keythms_thmuse_afternote:
+  { \tl_use:N \l__keythms_thmuse_afternote_tl }
+\cs_new_protected:Npn \__keythms_thmuse_afternotebraces:
+  { \tl_use:N \l__keythms_thmuse_afternotebraces_tl }
+\cs_new_protected:Npn \__keythms_thmuse_afternumber:
+  { \tl_use:N \l__keythms_thmuse_afternumber_tl }
 \cs_new:Npn \keythms_thmstyle_headcmd_default:nnn #1#2#3
   {
-    \keythms_thmstyle_thmname:n { #1 }
+    \keythms_thmstyle_thmname:n { #1 \__keythms_thmuse_aftername: }
     \keythms_thmstyle_thmnumber:n
       { ~
         \group_begin:
         \exp_not:V \l__keythms_thmstyle_numberfont_tl
         #2
         \group_end:
+        \__keythms_thmuse_afternumber:
       }
     \keythms_thmstyle_thmnote:n
       { \exp_not:V \l__keythms_thmstyle_noteseparator_tl
         \group_begin: % group so notefont doesn't affect headpunct
         \exp_not:V \l__keythms_thmstyle_notefont_tl
-        \l__keythms_thmstyle_lnotebrace_tl #3 \l__keythms_thmstyle_rnotebrace_tl
+        \l__keythms_thmstyle_lnotebrace_tl
+        #3
+        \__keythms_thmuse_afternote:
+        \l__keythms_thmstyle_rnotebrace_tl
         \group_end:
+        \__keythms_thmuse_afternotebraces:
       }
   }
 
@@ -499,7 +524,8 @@
 % ^ allows \thmnote, etc. to work in headstyle; hope no bad side effects!
 \cs_new_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
   { % user is in charge of spacing with \NAME and \NUMBER (thmtools compat...)
-    \cs_set:Npn \NAME { \keythms_thmstyle_thmname:n { ####1 } }
+    \cs_set:Npn \NAME
+      { \keythms_thmstyle_thmname:n { ####1 \__keythms_thmuse_aftername: } }
     \cs_set:Npn \NUMBER
       {
         \keythms_thmstyle_thmnumber:n
@@ -508,6 +534,7 @@
             \exp_not:V \l__keythms_thmstyle_numberfont_tl
             ####2
             \group_end:
+            \__keythms_thmuse_afternumber:
           }
       }
     \cs_set:Npn \NOTE
@@ -518,8 +545,10 @@
             \exp_not:V \l__keythms_thmstyle_notefont_tl
             \l__keythms_thmstyle_lnotebrace_tl
             ####3
+            \__keythms_thmuse_afternote:
             \l__keythms_thmstyle_rnotebrace_tl
             \group_end:
+            \__keythms_thmuse_afternotebraces:
           }
       }
     \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
@@ -1381,6 +1410,10 @@
 
 \keys_define:nn { keytheorems/thmuse }
   {
+    after-name .tl_set:N = \l__keythms_thmuse_aftername_tl,
+    after-note .tl_set:N = \l__keythms_thmuse_afternote_tl,
+    after-notebraces .tl_set:N = \l__keythms_thmuse_afternotebraces_tl,
+    after-number .tl_set:N = \l__keythms_thmuse_afternumber_tl,
     continues  .tl_set:N = \l__keythms_thmuse_contlabel_tl,
     continues* .code:n   =
       {
@@ -1437,6 +1470,10 @@
 
 \keys_precompile:nnN { keytheorems/thmuse }
   { % this is needed in case of nested theorems
+    after-name={},
+    after-note={},
+    after-notebraces={},
+    after-number={},
     continues={},
     label={},
     listhack=false,
