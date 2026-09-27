@@ -3,6 +3,8 @@
 ## [v0.4.1dev]
 - provide temporary definition of `\linebox@qed`; partial fix for
   [\#68](https://github.com/mbertucci47/keytheorems/issues/68)
+- fix infinite loop with `overload` (also called by `thmtools-compat`) and
+  tagging code ([\#71](https://github.com/mbertucci47/keytheorems/issues/71))
 
 ## [v0.4.0]
 - add `auto-qed` option (alias `thmmarks`) for automatic QED placement;

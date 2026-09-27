@@ -1249,7 +1249,7 @@
 \cs_new_eq:NN \__keythms_theoremstyle:n \theoremstyle
 \cs_generate_variant:Nn \__keythms_theoremstyle:n { V }
 
-\cs_new_eq:NN \__keythms_thm_new:w \newtheorem
+\NewCommandCopy \__keythms_thm_new:w \newtheorem
 
 \cs_new_protected:Npn \__keythms_thm_new_numbered:nn #1#2
   { \__keythms_thm_new:w { #1 } { #2 } }
