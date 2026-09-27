@@ -963,19 +963,19 @@
       {
         \bool_if:NTF \l__keythms_thm_numbered_bool
           {
-            \tl_if_empty:NTF \l__keythms_thm_parent_tl
+            \tl_if_empty:NTF \l__keythms_thm_sibling_tl
               {
-                \tl_if_empty:NTF \l__keythms_thm_sibling_tl
+                \tl_if_empty:NTF \l__keythms_thm_parent_tl
                   {
                     \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \__keythms_thm_siblingcode:n { #1 }
+                    \__keythms_thm_new_parent:nVV { #1 }
+                      \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
                   }
               }
-              {
-                \__keythms_thm_new_parent:nVV { #1 }
-                  \l__keythms_thm_name_tl \l__keythms_thm_parent_tl
+              { % if both parent and sibling given, sibling wins
+                \__keythms_thm_siblingcode:n { #1 }
               }
           }
           {
