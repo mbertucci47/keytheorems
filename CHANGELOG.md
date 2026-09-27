@@ -1,6 +1,6 @@
 # Changelog for keytheorems package
 
-## [v0.4.1dev]
+## [v0.4.1]
 - provide temporary definition of `\linebox@qed`; partial fix for
   [\#68](https://github.com/mbertucci47/keytheorems/issues/68)
 - fix infinite loop with `overload` (also called by `thmtools-compat`) and
@@ -135,6 +135,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.4.1]: https://github.com/mbertucci47/keytheorems/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/mbertucci47/keytheorems/compare/v0.3.7...v0.4.0
 [v0.3.7]: https://github.com/mbertucci47/keytheorems/compare/v0.3.6...v0.3.7
 [v0.3.6]: https://github.com/mbertucci47/keytheorems/compare/v0.3.5...v0.3.6
