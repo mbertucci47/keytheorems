@@ -3348,7 +3348,7 @@
     \int_new:N \g__keythms_thmmarks_absthm_int
     \int_new:N \g__keythms_thmmarks_envwithin_int
     \tl_new:N \l__keythms_thmmarks_markcode_tl
-    
+
     \cs_set_protected:Npn \KeythmsDeclareEndmark #1#2
       {
         \cs_gset:cpn { keythms_thmmark_#1_#2 }
@@ -3363,7 +3363,7 @@
               { \int_use:N \g__keythms_thmmarks_envwithin_int }
           }
       }
-    
+
     \cs_new_protected:Npn \__keythms_thmmarks_checkend:
       {
         \mode_if_horizontal:TF
@@ -3415,7 +3415,7 @@
     \providecommand\linebox@qed{\hfil\hbox{\qedsymbol}\hfilneg}
     \def\multline@qed{\aftergroup\linebox@qed}
     \expandafter\let\csname multline*@qed\endcsname\multline@qed
-      
+
     \clist_map_inline:nn
       { 
         equation*,
@@ -3870,6 +3870,23 @@
                 \str_set:Nn \l__keythms_tagging_headformat_str { unknown }
                 \tl_set_eq:NN \l__keythms_tagging_headcmd_tl \l_keys_value_tl
               },
+            % \newline in 8th arg of \newtheoremstyle not yet supported so we
+            % add temporary support code here
+            break .code:n =
+              {
+                \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
+                  { \l_keys_key_str }
+              },
+          }
+        \bool_new:N \l__keythms_tagging_break_bool
+        \keys_define:nn { keytheorems/thm }
+          {
+            break .code:n =
+              {
+                \addtotheoremhook[ \l__keythms_thm_envname_tl ]{ posthead }
+                  { \bool_set_true:N \l__keythms_tagging_break_bool }
+              },
+            break .value_forbidden:n = true,
           }
         \cs_set_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
           {
@@ -3940,6 +3957,25 @@
             \keys_precompile:nVc { keytheorems/thm }
               \l__keythms_thmstyle_savedkeys_clist
               { l__keythms_thmstyle_#1_savedthmkeys_tl }
+          }
+        % need to redefine for now to check for break bool; see #76
+        \cs_set_protected:Npn \__keythms_thm_posthead_code:n #1
+          { % #1 = theorem name
+            \hook_use:n { keytheorems/#1/posthead }
+            \hook_use:n { keytheorems/allthms/posthead }
+            \tl_if_empty:NF \l__keythms_thmuse_label_tl
+              {
+                \label{ \l__keythms_thmuse_label_tl }
+                \__keythms_thmuse_recordnote:
+              }
+            \bool_if:NT \l__keythms_tagging_break_bool { \mbox{} \\* } % <-- ADDED
+            \bool_if:NT \l__keythms_thmuse_listhack_bool
+              { % straight from thm-amsthm.sty
+                \leavevmode
+                \vspace{-\baselineskip}%
+                \par
+                \everypar{\setbox\z@\lastbox\everypar{}}%
+              }
           }
       }
       {
