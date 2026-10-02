@@ -885,6 +885,8 @@ Both \pkg{cleveref} and \pkg{zref-clever} define default reference names for som
 For technical reasons, unless explicit values for \refKey{refname} and \refKey{Refname} are given, \pkg{keytheorems} does not try to change these defaults at all in the case of \pkg{cleveref} and only the singular name in the case of \pkg{zref-clever}.
 The easiest way to get exactly the output you want is to just explicitly set \refKey{refname} and \refKey{Refname}.
 
+If you know you always want \cs{cref} or \cs{zcref} to produce capitalized reference names, you can use the \pkg{cleveref} package option |capitalize| or, with \pkg{zref-clever}, |\zcsetup{S}| in the preamble.
+
 \begin{notebox}
 The \refPkg{cleveref} package has not been updated since 2018 and contains several incompatibilities with the \LaTeX{} kernel.
 These are often patched by the \LaTeX{} team, but further incompatibilities are likely to arise with each future update.
