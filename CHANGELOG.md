@@ -2,11 +2,11 @@
 
 ## [v0.4.2]
 - fix `\renewkeytheorem` and `\declarekeytheorem` with `\DocumentMetadata`
-  ([\#74][https://github.com/mbertucci47/keytheorems/issues/74])
+  ([\#74](https://github.com/mbertucci47/keytheorems/issues/74))
 - add code for `break` style key with `\DocumentMetadata`
-  ([\#76][https://github.com/mbertucci47/keytheorems/issues/76])
+  ([\#76](https://github.com/mbertucci47/keytheorems/issues/76))
 - document how to always capitalize refnames
-  ([\#42][https://github.com/mbertucci47/keytheorems/issues/42])
+  ([\#42](https://github.com/mbertucci47/keytheorems/issues/42))
 
 ## [v0.4.1]
 - provide temporary definition of `\linebox@qed`; partial fix for
