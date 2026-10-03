@@ -1,9 +1,9 @@
 % Maintained by Matthew Bertucci, 2024-present
 % Please report all issues and feature requests at https://github.com/mbertucci47/keytheorems
 % This work is licensed under the LPPL version 1.3c or later: https://www.latex-project.org/lppl.txt
-\NeedsTeXFormat{LaTeX2e}[2025-06-01]
+\NeedsTeXFormat{LaTeX2e}[2026-06-01]
 \def\@keythms@date{2026-10-02}
-\def\@keythms@version{0.4.2}
+\def\@keythms@version{0.4.3dev}
 \ProvidesExplPackage{keytheorems}{\@keythms@date}{\@keythms@version}
   {l3keys interface to amsthm}
 
@@ -214,6 +214,7 @@
 %%% Declare Variables %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+\box_new:N \l__keythms_tmpa_box
 \clist_new:N \l__keythms_tmpa_clist
 \iow_new:N \g__keythms_tmpa_iow
 \seq_new:N \l__keythms_tmpa_seq
@@ -350,7 +351,7 @@
           { \msg_error:nnn { keytheorems } { inherit-thmstyle-undefined } { #1 } }
       },
     inherit-style .value_required:n = true,
-    notebraces    .code:n   = \exp_after:wN \__keythms_thmstyle_setbraces:nn #1,
+    notebraces    .code:n   = \exp_after:w \__keythms_thmstyle_setbraces:nn #1,
     notebraces    .value_required:n = true,
     notefont      .tl_set:N = \l__keythms_thmstyle_notefont_tl,
     notefont      .value_required:n = true,
@@ -943,7 +944,8 @@
                     \__keythms_thm_new_numbered:nV { #1 } \l__keythms_thm_name_tl
                   }
                   {
-                    \__keythms_thm_siblingcode:n { #1 }
+                    \__keythms_thm_new_sibling:nVV { #1 }
+                      \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
                   }
               }
               {
@@ -975,7 +977,8 @@
                   }
               }
               { % if both parent and sibling given, sibling wins
-                \__keythms_thm_siblingcode:n { #1 }
+                \__keythms_thm_new_sibling:nVV { #1 }
+                  \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
               }
           }
           {
@@ -1190,20 +1193,20 @@
 
 \cs_new_protected:Npn \__keythms_thm_storedeferred@thm@head:n #1
   {
-    \cs_set:Npn \__keythms_thm_tcbtemphead: { \normalfont #1 }
+    \cs_set_protected:Npn \__keythms_thm_tcbtemphead: { \normalfont #1 }
     \ignorespaces
   }
 \cs_new_protected:Npn \__keythms_thm_qedcode:nn #1#2
   { % #1 = name, #2 = symbol
     \tl_gput_right:cn { g__keythms_thm_postheadfromkeys_#1_tl }
       {
-        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set_protected:Npn \qedsymbol { #2 } }
         \pushQED{\qed}
       }
     \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
     \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
       {
-        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+        \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set_protected:Npn \qedsymbol { #2 } }
         \popQED
       }
   }
@@ -1273,24 +1276,6 @@
   { \__keythms_thm_new:w { #1 } [ #3 ] { #2 } }
 \cs_generate_variant:Nn \__keythms_thm_new_sibling:nnn { nV, nVV }
 
-% new enough kernels don't need aliascnt
-\cs_if_exist:NTF \newcounteralias
-  {
-    \cs_set_protected:Npn \__keythms_thm_siblingcode:n #1
-      { % don't need aliascnt with 2026 dev formats
-        \__keythms_thm_new_sibling:nVV { #1 }
-          \l__keythms_thm_name_tl \l__keythms_thm_sibling_tl
-      }
-  }
-  {
-    \RequirePackage{aliascnt}
-    \cs_new_protected:Npn \__keythms_thm_siblingcode:n #1
-      {
-        \exp_args:NnV \newaliascnt { #1 } \l__keythms_thm_sibling_tl
-        \__keythms_thm_new_sibling:nVn { #1 } \l__keythms_thm_name_tl { #1 }
-        \aliascntresetthe { #1 }
-      }
-  }
 \cs_new_protected:Npn \__keythms_thm_new_uuwithparent:nnn #1#2#3
   {
     \cs_undefine:c { keythms_orig_nonumber_#1 } % for renew, declare
@@ -1326,7 +1311,7 @@
   {
     \IfPackageLoadedTF { nameref }
       { % only need to record short-note if nameref loaded
-        \cs_new:Npn \__keythms_thmuse_recordnote:
+        \cs_new_protected:Npn \__keythms_thmuse_recordnote:
           {
             \tl_if_empty:NF \l__keythms_thmuse_shortnote_tl
               {
@@ -1343,7 +1328,7 @@
       {
         \property_new:nnnn { keytheorems/recordednote } { now } { }
           { \l__keythms_thmuse_note_tl }
-        \cs_new:Npn \__keythms_thmuse_recordnote:
+        \cs_new_protected:Npn \__keythms_thmuse_recordnote:
           {
             \clist_clear:N \l__keythms_tmpa_clist
             \tl_if_empty:NF \l__keythms_thmuse_note_tl
@@ -1578,19 +1563,19 @@
                 \cs_if_exist:cF
                   { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                   {
-                    \cs_new:cpe
+                    \cs_new_protected:cpe
                       { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                       {
                         \exp_not:N \keythms_getthm_theorem:nnnnn
                         \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
                       }
-                    \cs_new:cpe
+                    \cs_new_protected:cpe
                       { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
                       {
                         \exp_not:N \keythms_getthm_body:nnn
                         \exp_args:No \exp_not:o
                           {
-                            \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
+                            \exp_after:w \__keythms_use_i_iii_v_braced:nnnnn
                               \g__keythms_thmuse_temprestatedata_tl
                           }
                       }
@@ -1601,13 +1586,13 @@
                 \cs_if_exist:cF
                   { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
                   {
-                    \cs_new:cpe
+                    \cs_new_protected:cpe
                       { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
                       {
                         \exp_not:N \__keythms_getthmreversed_theorem:nnn
                         \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
                       }
-                    \cs_new:cpn
+                    \cs_new_protected:cpn
                       { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
                       {
                         \textbf{??}
@@ -1870,7 +1855,7 @@
             \msg_error:nnn { keytheorems } { stored-tag-taken } { #1 }
           }
           {
-            \cs_gset:cpn { __keythms_getthm_#1_theorem }
+            \cs_gset_protected:cpn { __keythms_getthm_#1_theorem }
               {
                 \__keythms_getthmreversed_theorem:nnn { #2 } { #3 } { #4 }
               }
@@ -2017,13 +2002,13 @@
     \cs_if_exist:cF
       { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
       {
-        \cs_new:cpe
+        \cs_new_protected:cpe
           { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
           {
             \exp_not:N \keythms_getthm_body:nnn
             \exp_args:No \exp_not:o
               {
-                \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
+                \exp_after:w \__keythms_use_i_iii_v_braced:nnnnn
                   \g__keythms_thmuse_temprestatedata_tl
               }
           }
@@ -2406,7 +2391,7 @@
     unknown      .code:n      = {} % do nothing with unknown keys
   }
 
-\cs_new:Npn \__keythms_listof_printnote:
+\cs_new_protected:Npn \__keythms_listof_printnote:
   {
     \tl_if_empty:NTF \l__keythms_listofheading_shortnote_tl
       {
@@ -2418,7 +2403,7 @@
       }
   }
 
-\cs_new:Npn \keythms_listof_listcmd:nnnnnnn #1#2#3#4#5#6#7
+\cs_new_protected:Npn \keythms_listof_listcmd:nnnnnnn #1#2#3#4#5#6#7
   { % #1=name, #2=number, #3=Href, #4=page, #5=restate counters, #6=keys, #7=body
     \contentsline{ #1 }
       {
@@ -3386,13 +3371,13 @@
             \bool_set_true:N \l__keythms_thmmarks_qedthm_bool
             \int_gincr:N \g__keythms_thmmarks_absthm_int
             \int_gset:Nn \g__keythms_thmmarks_envwithin_int { 0 }
-            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set_protected:Npn \qedsymbol { #2 } }
             \pushQED{\qed}
           }
         \tl_gclear_new:c { g__keythms_thm_QEDprefoot_#1_tl }
         \tl_gset:cn { g__keythms_thm_QEDprefoot_#1_tl }
           {
-            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set:Npn \qedsymbol { #2 } }
+            \tl_if_eq:nnF { #2 } { \qedsymbol } { \cs_set_protected:Npn \qedsymbol { #2 } }
             \__keythms_thmmarks_checkend:
             \popQED
           }
@@ -3485,12 +3470,12 @@
       %% move the endmark check inside a function
       %% that we can force \maketag@@@ to use
       %%
-      \dim_new:N \g__keythms_thmmarks_tagwidth_dim
-      \cs_new:Npn \__keythms_thmmarks_maketag@@@ #1
+      \dim_new:N \l__keythms_thmmarks_tagwidth_dim
+      \cs_new_protected:Npn \__keythms_thmmarks_maketag@@@ #1
         { % #1 = the argument for \maketag@@@
-          \hbox_set:Nn \l_tmpa_box { $#1$ }
-          \dim_set:Nn \g__keythms_thmmarks_tagwidth_dim { \box_wd:N \l_tmpa_box }
-          \hbox_to_wd:nn { \g__keythms_thmmarks_tagwidth_dim }
+          \hbox_set:Nn \l__keythms_tmpa_box { $#1$ }
+          \dim_set:Nn \l__keythms_thmmarks_tagwidth_dim { \box_wd:N \l__keythms_tmpa_box }
+          \hbox_to_wd:nn { \l__keythms_thmmarks_tagwidth_dim }
             {
               \hbox_to_wd:nn { \displaywidth }
                 {
@@ -3596,8 +3581,8 @@
         % shifts content left
         \unskip
         \hfil
-        \hbox_set:Nn \l_tmpa_box { \quad\qedsymbol }
-        \makebox[\box_wd:N \l_tmpa_box][r]{\qedhere}
+        \hbox_set:Nn \l__keythms_tmpa_box { \quad\qedsymbol }
+        \makebox[\box_wd:N \l__keythms_tmpa_box][r]{\qedhere}
         \hfilneg
         \hspace{0pt}
         \par
@@ -3622,9 +3607,9 @@
                 %%
                 \unskip
                 \`
-                \hbox_set:Nn \l_tmpa_box { \qedsymbol }
+                \hbox_set:Nn \l__keythms_tmpa_box { \qedsymbol }
                 \dim_compare:nNnT % line + \quad + qedsymbol
-                  { \box_wd:N \@curline + 1em + \box_wd:N \l_tmpa_box }
+                  { \box_wd:N \@curline + 1em + \box_wd:N \l__keythms_tmpa_box }
                   >
                   { \linewidth }
                   { \\ \` }
@@ -3710,7 +3695,7 @@
         \__keythms_listof_twocolreset:
         \group_end:
       }
-    \cs_new:Npn \__keythms_listof_ams_tocline:
+    \cs_new_protected:Npn \__keythms_listof_ams_tocline:
       {
         \@tocline{ 0 }{ 3pt plus 2pt }{ \l__keythms_listof_indent_dim }
           { \l__keythms_listof_numwidth_dim }{ }
@@ -3825,175 +3810,154 @@
               },
           }
       }
-    \IfFormatAtLeastTF { 2026-06-01 }
+    \tl_set:Nn \l__keythms_thm_thestyle_tl { \l__block_thmstyle_tl }
+    \prg_set_conditional:Npnn \__keythms_thmstyle_if_free:n #1 { T, F, TF }
+      { % block code uses templates, not th@<name>
+        \IfInstanceExistsTF { thmstyle } { #1 }
+          { \prg_return_false: } { \prg_return_true: }
+      }
+    \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
       {
-        \tl_set:Nn \l__keythms_thm_thestyle_tl { \l__block_thmstyle_tl }
-        \prg_set_conditional:Npnn \__keythms_thmstyle_if_free:n #1 { T, F, TF }
-          { % block code uses templates, not th@<name>
-            \IfInstanceExistsTF { thmstyle } { #1 }
-              { \prg_return_false: } { \prg_return_true: }
-          }
-        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
+        \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
           {
-            \tl_gput_right:ce { g__keythms_thm_preheadfromkeys_#1_tl }
+            \exp_not:N \EditInstance { block }
+              { thm- \l__block_thmstyle_tl -1 }
               {
-                \exp_not:N \EditInstance { block }
-                  { thm- \l__block_thmstyle_tl -1 }
-                  {
-                    left-margin=#2,
-                    right-margin=#3,
-                  }
-                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
-                \exp_not:N \EditInstance { block }
-                  { std-list-1 }
-                  { right-margin=0pt }
+                left-margin=#2,
+                right-margin=#3,
               }
-          }
-        \str_new:N \l__keythms_tagging_headformat_str
-        \tl_new:N \l__keythms_tagging_headcmd_tl
-        \msg_new:nnn { keytheorems } { headformat-tagging }
-          {
-            'headformat'~is~not~yet~fully~supported~with~tagging~\msg_line_context:.
-          }
-        \keys_define:nn { keytheorems/thmstyle }
-          {
-            headstyle / margin .code:n =
-              {
-                \str_set:Nn \l__keythms_tagging_headformat_str { margin }
-              },
-            headstyle / swapnumber .code:n =
-              {
-                \str_set:Nn \l__keythms_tagging_headformat_str { swapnumber }
-              },
-            headstyle / unknown .code:n =
-              {
-                \str_set:Nn \l__keythms_tagging_headformat_str { unknown }
-                \tl_set_eq:NN \l__keythms_tagging_headcmd_tl \l_keys_value_tl
-              },
-            % \newline in 8th arg of \newtheoremstyle not yet supported so we
-            % add temporary support code here
-            break .code:n =
-              {
-                \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
-                  { \l_keys_key_str }
-              },
-          }
-        \bool_new:N \l__keythms_tagging_break_bool
-        \keys_define:nn { keytheorems/thm }
-          {
-            break .code:n =
-              {
-                \addtotheoremhook[ \l__keythms_thm_envname_tl ]{ posthead }
-                  { \bool_set_true:N \l__keythms_tagging_break_bool }
-              },
-            break .value_forbidden:n = true,
-          }
-        \cs_set_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
-          {
-            \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
-            \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
-            \str_clear:N \l__keythms_tagging_headformat_str
-            \keys_set:nn { keytheorems/thmstyle } { #2 }
-            \DeclareInstanceCopy{thmstyle}{#1}{plain}
-            \EditInstance{thmstyle}{#1}
-              {
-                body-decls:V    = \l__keythms_thmstyle_bodyfont_tl,
-                before-hspace:V = \l__keythms_thmstyle_headindent_tl,
-                caption-decls:V = \l__keythms_thmstyle_headfont_tl,
-                punct:V         = \l__keythms_thmstyle_headpunct_tl,
-                after-hspace:V  = \l__keythms_thmstyle_postheadspace_tl,
-                note-decls:V    = \l__keythms_thmstyle_notefont_tl,
-                note-format:e   =
-                  {
-                    \exp_not:V \l__keythms_thmstyle_lnotebrace_tl
-                    ##1
-                    \exp_not:V \l__keythms_thmstyle_rnotebrace_tl
-                  },
-                separator:V     = \l__keythms_thmstyle_noteseparator_tl,
-                number-decls:V  = \l__keythms_thmstyle_numberfont_tl,
-              }
-            \str_case:NnF \l__keythms_tagging_headformat_str
-              {
-                { } { } % default empty case
-                { margin }
-                  {
-                    \EditInstance{thmstyle}{#1}
-                      {
-                        order = {number,title,separator,note,punct},
-                        number-format =
-                          {
-                            \makebox[0pt][r]{##1 ~ }
-                          },
-                      }
-                  }
-                { swapnumber }
-                  {
-                    \EditInstance{thmstyle}{#1}
-                      { order={number,separator,title,separator,note,punct} }
-                  }
-              }
-              { % for now, give warning if other value used
-                \msg_warning:nn { keytheorems } { headformat-tagging }
-              }
-            \DeclareInstanceCopy{block}{thm-#1-1}{thm-plain-1}
-            \EditInstance{block}{thm-#1-1}
-              {
-                begin-vspace:e =
-                  {
-                    \tl_if_empty:VTF \l__keythms_thmstyle_spaceabove_tl
-                      { \newtheoremstyle@vspace@default } { \l__keythms_thmstyle_spaceabove_tl }
-                  },
-                end-vspace:e =
-                  {
-                    \tl_if_empty:VTF \l__keythms_thmstyle_spacebelow_tl
-                      { \newtheoremstyle@vspace@default } { \l__keythms_thmstyle_spacebelow_tl }
-                  },
-              }
-            \DeclareInstanceCopy{block}{thm-#1-2}{thm-#1-1}
-            % Define inherit-style key
-            \tl_gclear_new:c { g__keythms_thmstyle_#1_metakeys_tl }
-            \tl_gset:cn { g__keythms_thmstyle_#1_metakeys_tl } { #2 }
-            \tl_clear_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl }
-            \keys_precompile:nVc { keytheorems/thm }
-              \l__keythms_thmstyle_savedkeys_clist
-              { l__keythms_thmstyle_#1_savedthmkeys_tl }
-          }
-        % need to redefine for now to check for break bool; see #76
-        \cs_set_protected:Npn \__keythms_thm_posthead_code:n #1
-          { % #1 = theorem name
-            \hook_use:n { keytheorems/#1/posthead }
-            \hook_use:n { keytheorems/allthms/posthead }
-            \tl_if_empty:NF \l__keythms_thmuse_label_tl
-              {
-                \label{ \l__keythms_thmuse_label_tl }
-                \__keythms_thmuse_recordnote:
-              }
-            \bool_if:NT \l__keythms_tagging_break_bool { \mbox{} \\* } % <-- ADDED
-            \bool_if:NT \l__keythms_thmuse_listhack_bool
-              { % straight from thm-amsthm.sty
-                \leavevmode
-                \vspace{-\baselineskip}%
-                \par
-                \everypar{\setbox\z@\lastbox\everypar{}}%
-              }
+            % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
+            \exp_not:N \EditInstance { block }
+              { std-list-1 }
+              { right-margin=0pt }
           }
       }
+    \str_new:N \l__keythms_tagging_headformat_str
+    \tl_new:N \l__keythms_tagging_headcmd_tl
+    \msg_new:nnn { keytheorems } { headformat-tagging }
       {
-        \cs_set_protected:Npn \__keythms_thm_margincode:nnn #1#2#3
-          { % tagging code does not define theorems with lists
-            \tl_gput_right:cn { g__keythms_thm_preheadfromkeys_#1_tl }
+        'headformat'~is~not~yet~fully~supported~with~tagging~\msg_line_context:.
+      }
+    \keys_define:nn { keytheorems/thmstyle }
+      {
+        headstyle / margin .code:n =
+          {
+            \str_set:Nn \l__keythms_tagging_headformat_str { margin }
+          },
+        headstyle / swapnumber .code:n =
+          {
+            \str_set:Nn \l__keythms_tagging_headformat_str { swapnumber }
+          },
+        headstyle / unknown .code:n =
+          {
+            \str_set:Nn \l__keythms_tagging_headformat_str { unknown }
+            \tl_set_eq:NN \l__keythms_tagging_headcmd_tl \l_keys_value_tl
+          },
+        % \newline in 8th arg of \newtheoremstyle not yet supported so we
+        % add temporary support code here
+        break .code:n =
+          {
+            \clist_put_right:No \l__keythms_thmstyle_savedkeys_clist
+              { \l_keys_key_str }
+          },
+      }
+    \bool_new:N \l__keythms_tagging_break_bool
+    \keys_define:nn { keytheorems/thm }
+      {
+        break .code:n =
+          {
+            \addtotheoremhook[ \l__keythms_thm_envname_tl ]{ posthead }
+              { \bool_set_true:N \l__keythms_tagging_break_bool }
+          },
+        break .value_forbidden:n = true,
+      }
+    \cs_set_protected:Npn \keythms_thmstyle_declarestyle:nn #1#2
+      {
+        \clist_clear:N \l__keythms_thmstyle_savedkeys_clist
+        \tl_use:N \l__keythms_thmstyle_defaultkeys_tl
+        \str_clear:N \l__keythms_tagging_headformat_str
+        \keys_set:nn { keytheorems/thmstyle } { #2 }
+        \DeclareInstanceCopy{thmstyle}{#1}{plain}
+        \EditInstance{thmstyle}{#1}
+          {
+            body-decls:V    = \l__keythms_thmstyle_bodyfont_tl,
+            before-hspace:V = \l__keythms_thmstyle_headindent_tl,
+            caption-decls:V = \l__keythms_thmstyle_headfont_tl,
+            punct:V         = \l__keythms_thmstyle_headpunct_tl,
+            after-hspace:V  = \l__keythms_thmstyle_postheadspace_tl,
+            note-decls:V    = \l__keythms_thmstyle_notefont_tl,
+            note-format:e   =
               {
-                \EditInstance { block }
-                  { theoremblock-0 }
+                \exp_not:V \l__keythms_thmstyle_lnotebrace_tl
+                ##1
+                \exp_not:V \l__keythms_thmstyle_rnotebrace_tl
+              },
+            separator:V     = \l__keythms_thmstyle_noteseparator_tl,
+            number-decls:V  = \l__keythms_thmstyle_numberfont_tl,
+          }
+        \str_case:NnF \l__keythms_tagging_headformat_str
+          {
+            { } { } % default empty case
+            { margin }
+              {
+                \EditInstance{thmstyle}{#1}
                   {
-                    left-margin=#2,
-                    right-margin=#3,
+                    order = {number,title,separator,note,punct},
+                    number-format =
+                      {
+                        \makebox[0pt][r]{##1 ~ }
+                      },
                   }
-                % hack until https://github.com/latex3/tagging-project/issues/755 is fixed
-                \EditInstance { block }
-                  { listblock-1 }
-                  { right-margin=0pt }
               }
+            { swapnumber }
+              {
+                \EditInstance{thmstyle}{#1}
+                  { order={number,separator,title,separator,note,punct} }
+              }
+          }
+          { % for now, give warning if other value used
+            \msg_warning:nn { keytheorems } { headformat-tagging }
+          }
+        \DeclareInstanceCopy{block}{thm-#1-1}{thm-plain-1}
+        \EditInstance{block}{thm-#1-1}
+          {
+            begin-vspace:e =
+              {
+                \tl_if_empty:VTF \l__keythms_thmstyle_spaceabove_tl
+                  { \newtheoremstyle@vspace@default } { \l__keythms_thmstyle_spaceabove_tl }
+              },
+            end-vspace:e =
+              {
+                \tl_if_empty:VTF \l__keythms_thmstyle_spacebelow_tl
+                  { \newtheoremstyle@vspace@default } { \l__keythms_thmstyle_spacebelow_tl }
+              },
+          }
+        \DeclareInstanceCopy{block}{thm-#1-2}{thm-#1-1}
+        % Define inherit-style key
+        \tl_gclear_new:c { g__keythms_thmstyle_#1_metakeys_tl }
+        \tl_gset:cn { g__keythms_thmstyle_#1_metakeys_tl } { #2 }
+        \tl_clear_new:c { l__keythms_thmstyle_#1_savedthmkeys_tl }
+        \keys_precompile:nVc { keytheorems/thm }
+          \l__keythms_thmstyle_savedkeys_clist
+          { l__keythms_thmstyle_#1_savedthmkeys_tl }
+      }
+    % need to redefine for now to check for break bool; see #76
+    \cs_set_protected:Npn \__keythms_thm_posthead_code:n #1
+      { % #1 = theorem name
+        \hook_use:n { keytheorems/#1/posthead }
+        \hook_use:n { keytheorems/allthms/posthead }
+        \tl_if_empty:NF \l__keythms_thmuse_label_tl
+          {
+            \label{ \l__keythms_thmuse_label_tl }
+            \__keythms_thmuse_recordnote:
+          }
+        \bool_if:NT \l__keythms_tagging_break_bool { \mbox{} \\* } % <-- ADDED
+        \bool_if:NT \l__keythms_thmuse_listhack_bool
+          { % straight from thm-amsthm.sty
+            \leavevmode
+            \vspace{-\baselineskip}%
+            \par
+            \everypar{\setbox\z@\lastbox\everypar{}}%
           }
       }
   }

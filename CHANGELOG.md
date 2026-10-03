@@ -1,5 +1,9 @@
 # Changelog for keytheorems package
 
+## [v0.4.3dev]
+- make required LaTeX version 2026-06-01
+- small code improvements (thanks expltools!)
+
 ## [v0.4.2]
 - fix `\renewkeytheorem` and `\declarekeytheorem` with `\DocumentMetadata`
   ([\#74](https://github.com/mbertucci47/keytheorems/issues/74))
@@ -143,6 +147,7 @@
 ## 0.1.0 - 2024-09-04
 - First release
 
+[v0.4.3dev]: https://github.com/mbertucci47/keytheorems/compare/v0.4.2...HEAD
 [v0.4.2]: https://github.com/mbertucci47/keytheorems/compare/v0.4.1...v0.4.2
 [v0.4.1]: https://github.com/mbertucci47/keytheorems/compare/v0.4.0...v0.4.1
 [v0.4.0]: https://github.com/mbertucci47/keytheorems/compare/v0.3.7...v0.4.0
