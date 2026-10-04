@@ -2166,7 +2166,7 @@
     no-title            .initial:n  = false,
     no-toc              .bool_set:N = \l__keythms_listof_notoc_bool,
     no-toc              .initial:n  = false, % false does not mean "to-toc" for standard classes
-    note-code           .cs_set:Np  = \__keythms_listof_notecmd:n #1,
+    note-code           .cs_set_protected:Np = \__keythms_listof_notecmd:n #1,
     note-code           .initial:n  = { ~ (#1) },
     note-code           .value_required:n = true,
     numwidth            .dim_set:N  = \l__keythms_listof_numwidth_dim,
@@ -2220,7 +2220,7 @@
     title               .tl_set:N   = \l__keythms_listof_title_tl,
     title               .initial:n  = \GetTranslation{keythms_listof_title},
     title               .value_required:n = true,
-    title-code          .cs_set:Np  = \__keythms_listof_titlecmd:n #1,
+    title-code          .cs_set_protected:Np = \__keythms_listof_titlecmd:n #1,
     title-code          .value_required:n = true,
   }
 

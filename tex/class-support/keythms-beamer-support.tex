@@ -282,19 +282,19 @@
               \cs_if_exist:cF
                 { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                 {
-                  \cs_new:cpe
+                  \cs_new_protected:cpe
                     { __keythms_getthm_ \l__keythms_thmuse_store_tl _theorem }
                     {
                       \exp_not:N \keythms_getthm_theorem:nnnnn
                       \exp_not:o { \g__keythms_thmuse_temprestatedata_tl }
                     }
-                  \cs_new:cpe
+                  \cs_new_protected:cpe
                     { __keythms_getthm_ \l__keythms_thmuse_store_tl _body }
                     {
                       \exp_not:N \keythms_getthm_body:nnn
                       \exp_args:No \exp_not:o
                         {
-                          \exp_after:wN \__keythms_use_i_iii_v_braced:nnnnn
+                          \exp_after:w \__keythms_use_i_iii_v_braced:nnnnn
                             \g__keythms_thmuse_temprestatedata_tl
                         }
                     }
@@ -305,13 +305,13 @@
               \cs_if_exist:cF
                 { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
                 {
-                  \cs_new:cpe
+                  \cs_new_protected:cpe
                     { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _theorem }
                     {
                       \exp_not:N \__keythms_getthmreversed_theorem:nnn
                       \exp_not:o { \g__keythms_thmuse_temprestatedatareversed_tl }
                     }
-                  \cs_new:cpn
+                  \cs_new_protected:cpn
                     { __keythms_getthm_ \l__keythms_thmuse_storereversed_tl _body }
                     {
                       \textbf{??}
