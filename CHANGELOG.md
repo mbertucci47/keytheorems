@@ -3,6 +3,7 @@
 ## [v0.4.3dev]
 - make required LaTeX version 2026-06-01
 - small code improvements (thanks expltools!)
+- add warning if thlist file changes with rerunfilecheck
 
 ## [v0.4.2]
 - fix `\renewkeytheorem` and `\declarekeytheorem` with `\DocumentMetadata`

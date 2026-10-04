@@ -84,6 +84,7 @@
   }
 \RequirePackage{amsthm} % ams classes have way of ignoring this
 \RequirePackage{refcount}
+\RequirePackage{rerunfilecheck}
 \RequirePackage{translations}
 
 %%%%%%%%%%%%%%%%%%%%%%
@@ -2517,6 +2518,9 @@
         \legacy_if:nT { @filesw }
           {
             \iow_new:N \tf@thlist
+            \RerunFileCheck { \c_sys_jobname_str.thlist }
+              { \iow_close:N \tf@thlist } % rerun warning if thlist file changes
+              { Rerun~LaTeX~to~get~restated~theorems~right }
             \iow_open:Nn \tf@thlist { \c_sys_jobname_str.thlist }
           }
       }
