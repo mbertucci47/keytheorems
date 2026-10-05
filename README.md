@@ -83,13 +83,11 @@ Some of the code is a direct translation from thmtools but a few things are chan
   \declaretheoremstyle[spaceabove=20pt]{mythmsty}
   \declaretheorem[style=mythmsty]{mythm}
   ```
-  
   is different from just
-  
   ```tex
   \declaretheorem{mythm}
   ```
-  
+
   as in the former, `bodyfont` is `\normalfont`, not the default `\itshape`.
   This package keeps the defaults unless a key is specifically given.
 - There is no `restatable(*)` environment except with package option `thmtools-compat`. Use the
@@ -147,7 +145,7 @@ keytheorems provides the `no-title` key.
 
 \listofkeytheorems[ignoreall,show=axiom]
 \listofkeytheorems[ignoreall,show=theorem,no-title]
-     
+
 \begin{axiom}
 some axiom
 \end{axiom}
@@ -536,7 +534,7 @@ text
 
 \end{document}
 ```
- 
+
 ## Notes/issues on thmtools, not on Github
 
 ### continues with unless unique and restate

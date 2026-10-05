@@ -214,7 +214,7 @@
     },
   docexample/.append style={boxrule=0pt,arc=0pt,after app={\noindent}}
   }
-  
+
 \makeatletter % code from muzimuzhi (https://github.com/T-F-S/tcolorbox/issues/298)
 \tcbset{
   before verbatim write app/.code={%
@@ -323,7 +323,7 @@ Several issues encountered with \pkg{thmtools} are avoided (see the README for a
 The package depends on the \pkg{amsthm}, \pkg{refcount}, \pkg{rerunfilecheck}, and \pkg{translations} packages.
 The \refKey{auto-qed} option requires \pkg{amsmath}, the \refKey{tcolorbox} and \refKey{tcolorbox-no-titlebar} keys require \pkg{tcolorbox}, and the \refKey[numbered=unless-unique]{numbered} key requires the \pkg{unique} package (part of the \pkg{thmtools} bundle).
 A \LaTeX{} kernel no older than 2026-06-01 is required; releases compatible with older kernels can be found on the GitHub \href{https://github.com/mbertucci47/keytheorems/releases}{releases page}.
-    
+
 \section{Global options}
 
 \begin{docCommand}{keytheoremset}
@@ -410,7 +410,7 @@ These settings can be changed by calling |siblings=false| (alias |sharenumbers=f
 \usepackage[
   predefined={parent=section}
   ]{keytheorems}
-  
+
 % or equivalently
 \usepackage{keytheorems}
 \keytheoremset{predefined={parent=section}}
@@ -1385,7 +1385,7 @@ Environments in \meta{comma-list} are filtered out from the list of theorems.
   {initially unset}
 Applies \refKey{ignore} to all theorems.
 This is usually followed by the keys \refKey{show}, \refKey{onlynamed}, and/or \refKey{onlynumbered}.
- 
+
 \begin{keythmscode}
 \listofkeytheorems[ignoreall,show=theorem]
 \listofkeytheorems[
@@ -1651,7 +1651,7 @@ This has the drawbacks that (a) users must remember to add |\qedhere| when neede
 The \refKey{auto-qed} feature of \pkg{keytheorems} implements automatic placement of the QED symbol, for environments marked with a \refKey{qed}.
 The feature works by
 \begin{enumerate}
-\item recording QED end mark positioning information in the aux file on each 
+\item recording QED end mark positioning information in the aux file on each
 compilation pass, and
 \item using that positioning information to insert commands similar to |\qedhere| where necessary.
 \end{enumerate}
@@ -1701,7 +1701,7 @@ The default \LaTeX{} behavior would place the QED end marks on a blank line belo
 \label{auto-qed-option-environments}
 
 The final closing environments that are supported via the option \refKey{auto-qed} are listed below, organized by the final two cases from subsection \ref{auto-qed-implementation}.
-For examples and further tests, see 
+For examples and further tests, see
 \href{https://github.com/mbertucci47/keytheorems/blob/develop/tests/auto-qed-tests.pdf}{\texttt{auto-qed-tests.pdf}}.
 
 \begin{description}
@@ -1769,7 +1769,7 @@ The necessary commands are inserted with environment hooks---mostly \hook{env/\m
 
 % \subsubsection*{The realization} ...different cases; |\mode_if_horizontal:TF|;  |\KeythmsDeclareEndmark|
 
-% \subsubsection*{Patches to qedhere} ... e.g., |maketag@@@| 
+% \subsubsection*{Patches to qedhere} ... e.g., |maketag@@@|
 
 The two-pass idea described above for \refKey{auto-qed} is essentially that of the |thmmarks| option for \pkg{ntheorem}.
 The implementation here in \pkg{keytheorems} is updated for the current \LaTeX{} kernel and has slightly different behavior in certain final closing environments.
@@ -1912,7 +1912,7 @@ Here is a complete example.
 \begin{dispListing*}{breakable}
 % mainfile.tex
 \documentclass{article}
-\usepackage{keytheorems} 
+\usepackage{keytheorems}
 \usepackage{subfiles}
 
 \externaltheorems[main:]{mainfile}
