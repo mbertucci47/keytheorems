@@ -597,7 +597,7 @@
       }
   }
 \cs_new_protected:Npn \__keythms_thm_setrefnames:n #1
-  { 
+  {
     \quark_if_no_value:NTF \l__keythms_thm_pluralrefname_tl
       {
         \quark_if_no_value:NF \l__keythms_thm_refname_tl
@@ -752,7 +752,7 @@
     numbered / false .code:n  = \bool_set_false:N \l__keythms_thm_numbered_bool,
     numbered / no    .meta:n  = { numbered = false },
     numbered / true  .code:n  = \bool_set_true:N \l__keythms_thm_numbered_bool,
-    numbered / unless-unique .code:n = 
+    numbered / unless-unique .code:n =
       {
         \bool_set_true:N \l__keythms_thm_unlessunique_bool
       },
@@ -920,7 +920,7 @@
       {
         % use e so \text_titlecase called only once per theorem definition,
         % not each time the theorem is used
-        \tl_set:Ne \l__keythms_thm_name_tl 
+        \tl_set:Ne \l__keythms_thm_name_tl
           { \text_titlecase_first:n { #1 } }
       }
     % associate formatted name with envname in prop list
@@ -1078,7 +1078,7 @@
                 % need to revert some adjustments \list makes (any more?)
                 \int_gdecr:N \@listdepth % avoid changing format of inner lists
                 \dim_set_eq:NN \listparindent \l__keythms_thm_currparindent_dim
-                \dim_set_eq:NN \parsep \l__keythms_thm_currparskip_dim  
+                \dim_set_eq:NN \parsep \l__keythms_thm_currparskip_dim
               }
           }
       }
@@ -1897,7 +1897,7 @@
     \cs_set_eq:NN \property_record:nn \use_none:nn
     \cs_set_eq:NN \setuniqmark \use_none:n % work with numbered=unless-unique
     \cs_set_eq:NN \index \@gobble@som % see ltsect.dtx
-    \cs_set_eq:NN \glossary \@gobble@om % see ltsect.dtx 
+    \cs_set_eq:NN \glossary \@gobble@om % see ltsect.dtx
     % QUESTION: also disable \hyper@@anchor? \MakeLinkTarget?
   }
 
@@ -2161,7 +2161,7 @@
     indent              .value_required:n = true,
     no-chapter-skip     .bool_set:N = \l__keythms_listof_nochapskip_bool,
     no-chapter-skip     .initial:n  = false,
-    no-continues        .bool_set:N = \l__keythms_listof_nocont_bool, 
+    no-continues        .bool_set:N = \l__keythms_listof_nocont_bool,
     no-continues        .initial:n  = false,
     no-title            .bool_set:N = \l__keythms_listof_notitle_bool,
     no-title            .initial:n  = false,
@@ -2196,7 +2196,7 @@
           }
       },
     print-body          .value_forbidden:n = true,
-    seq                 .code:n     = 
+    seq                 .code:n     =
       {
         \hook_gput_code:nnn { begindocument } { keytheorems }
           { \keythms_listof_showseq:n { #1 } }
@@ -2354,7 +2354,7 @@
           }
       }
   }
-  
+
 % Seems unnecessary to repeat all this for reading the keyvals from file.
 % In thmtools they just hook the "thmitem" definition into the theorem declaration.
 %% NOTE ON ABOVE: this gives more flexibility to define different kinds of lists.
@@ -3406,7 +3406,7 @@
     \expandafter\let\csname multline*@qed\endcsname\multline@qed
 
     \clist_map_inline:nn
-      { 
+      {
         equation*,
         multline*,
         gather*, % mark not at right of line
