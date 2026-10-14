@@ -12,6 +12,7 @@ mfware
 # Dependencies for keytheorems
 amsmath
 amscls
+ltxcmds
 refcount
 rerunfilecheck
 translations
