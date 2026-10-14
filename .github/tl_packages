@@ -12,9 +12,9 @@ mfware
 # Dependencies for keytheorems and their dependencies
 amsmath
 amscls
+graphics
 iftex
 infwarerr
-keyval
 kvoptions
 kvsetkeys
 ltxcmds
