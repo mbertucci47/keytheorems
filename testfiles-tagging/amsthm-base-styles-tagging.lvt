@@ -1,0 +1,41 @@
+\input{regression-test.tex}
+\DocumentMetadata{tagging=on}
+\documentclass{article}
+
+\usepackage{amsthm}
+
+\newtheorem{theorem}{Theorem}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+
+\START
+\showoutput
+\begin{theorem}
+text
+\end{theorem}
+\begin{remark}
+text
+\end{remark}
+\begin{definition}
+text
+\end{definition}
+
+between
+\begin{theorem}[a note]
+text
+\end{theorem}
+between
+\begin{remark}[a note]
+text
+\end{remark}
+between
+\begin{definition}[a note]
+text
+\end{definition}
+between
+
+\end{document}

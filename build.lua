@@ -6,7 +6,8 @@ module = "keytheorems"
 version = "2026-10-02 v0.4.3dev"
 
 checkengines = {"pdftex"}
-checkruns = 2
+checkruns = 3
+checkconfigs = {"build", "config-tagging"}
 recordstatus = true
 installfiles = {"tex/keytheorems.sty"}
 
@@ -19,7 +20,7 @@ installfiles = {"tex/keytheorems.sty"}
 packtdszip = false
 docfiles = {"doc"}
 sourcefiles = {"tex"}
-textfiles ={"CHANGELOG.md","README.md"}
+textfiles = {"CHANGELOG.md","README.md"}
 excludefiles = {"*.aux","*.hd","*.idx","*.ilg","*.ind","*.listing","*.log",
                 "*.synctex.gz","*.tcbtemp","*.thlist","*.toc","*.minted"}
 
@@ -43,7 +44,7 @@ uploadconfig = {
  email = "saints4774@gmail.com",
  update = true ,
  -- announcement = announce[version],
- description  = [[
+ description = [[
   A key-value interface to [amsthm](https://www.ctan.org/pkg/amsthm) using the [L3](https://www.ctan.org/pkg/l3kernel) programming layer, implementing most of the functionality provided by [thmtools](https://www.ctan.org/pkg/thmtools).
   Several issues encountered with thmtools are avoided (see the README for a list) and several new features are added.
  ]]
