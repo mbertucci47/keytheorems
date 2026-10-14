@@ -2,7 +2,7 @@
 
 A LaTeX package to use [`amsthm`](https://www.ctan.org/pkg/amsthm)
 with a key-value interface.
-Provides all of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools) (and a lot more!) but written in expl3.
+Provides all of the functionality of [`thmtools`](https://www.ctan.org/pkg/thmtools) (and a lot more!) but written with the [L3](https://www.ctan.org/pkg/l3kernel) programming layer.
 If you find a bug please open an issue or pull request.
 
 The package is maintained by Matthew Bertucci.

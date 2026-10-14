@@ -19,3 +19,5 @@
 doc/_minted-keytheorems-doc/
 tests/testfiles/*.pdf
 latexmkrc
+build
+*-ctan.zip

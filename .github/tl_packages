@@ -1,0 +1,98 @@
+# The test framework itself
+l3build
+#
+# Required to build formats
+latex-bin
+tex
+#
+# Assuming a 'basic' font set up, metafont is required to avoid
+# warnings with some packages and errors with others
+metafont
+mfware
+# Dependencies for keytheorems
+amsmath
+amsthm
+refcount
+rerunfilecheck
+translations
+thmtools
+# ^ thmtools for unique; working on removing this dependency
+#
+# Dependencies for tests and typesetting
+# alphalph
+# babel-catalan
+# babel-english
+# babel-french
+# babel-italian
+# babel-german
+# babel-portuges
+# babel-polish
+# babel-spanish
+# beamer
+# booktabs
+# cancel
+# caption
+# carlisle
+# cbfonts
+# cellspace
+# cjk-ko
+# cm-super
+# collcell
+# colortbl
+# csquotes
+# datatool
+# dehyph-exptl
+# dvips
+# ec
+# enumitem
+# epstopdf-pkg
+# fancyvrb
+# fixmath
+# fourier
+# hologo
+# hypdoc
+# hyphen-catalan
+# hyphen-english
+# hyphen-french
+# hyphen-italian
+# hyphen-german
+# hyphen-portuguese
+# hyphen-polish
+# hyphen-spanish
+# kerkis
+# koma-script
+# latex-lab
+# libertine
+# lua-unicode-math
+# lualatex-math
+# luamml
+# luatexbase
+# luatexko
+# makeindex
+# mathastext
+# mathpazo
+# multirow
+# natbib
+# opensans
+# pdfmanagement
+# pgfplots
+# pict2e
+# psnfss
+# realscripts
+# revtex
+# sansmath
+# show-pdf-tags
+# soulpos
+# steinmetz
+# tabularray
+# tex-gyre
+# tex-gyre-math
+# textcase
+# threeparttable
+# tracklang
+# translations
+# txfonts
+# underscore
+# xfrac
+# xtab
+# zref

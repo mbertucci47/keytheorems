@@ -1,0 +1,5 @@
+[files]
+
+[default.extend-words]
+  Mesures = "Mesures" # BIPM
+  BA = "BA" # "02BA
