@@ -24,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
       # We need Ghostscript for XeTeX tests.
-      - run: sudo apt-get update && sudo apt-get install ghostscript
+      # - run: sudo apt-get update && sudo apt-get install ghostscript
       - name: Install TeX Live
         uses: zauguin/install-texlive@v4
         with:
@@ -33,6 +33,15 @@ jobs:
           package_file: .github/tl_packages
       - name: Run l3build
         run: l3build check -q -S
+      # Now we create the artifacts for the logs of failed tests
+      - name: Archive failed test output
+        if: ${{ always() }}
+        uses: zauguin/l3build-failure-artifacts@v1
+        with:
+      #    path: tagging-status/build
+          name: ${{ env.artifact_name }}
+          # Decide how long to keep the test output artifact:
+          retention-days: 3
 #  docs:
 #    runs-on: ubuntu-latest
 #    steps:
