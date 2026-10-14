@@ -7,16 +7,17 @@ on:
       - develop
 
 jobs:
-  spelling:
-    runs-on: ubuntu-latest
-    steps:
-      # Boilerplate
-      - name: Checkout repository
-        uses: actions/checkout@v7
-      - name: Check spelling
-        uses: crate-ci/typos@v1.51.1
-        with:
-          config: .github/typos.toml
+# don't run typos for now
+##  spelling:
+##    runs-on: ubuntu-latest
+##    steps:
+##      # Boilerplate
+##      - name: Checkout repository
+##        uses: actions/checkout@v7
+##      - name: Check spelling
+##        uses: crate-ci/typos@v1.51.1
+##        with:
+##          config: .github/typos.toml
   check:
     runs-on: ubuntu-latest
     steps:

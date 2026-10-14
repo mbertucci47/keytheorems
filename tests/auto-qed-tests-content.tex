@@ -181,7 +181,7 @@ These test multiple or nested boxes inside of theoremlike environments.
     \item a nested list
     \end{enumerate}
   \item but the outer list has
-  \item the final item 
+  \item the final item
   \end{itemize}
 \end{note}
 
@@ -230,13 +230,13 @@ These test multiple or nested boxes inside of theoremlike environments.
   \end{itemize}
   Then there is some text at the end
 \end{note}
-\begin{note} 
+\begin{note}
   First an align
   \begin{align}
     a^2 + b^2 & = c^2\\
     3^2 + 4^2 & = 5^2
   \end{align}
-  Then some text, 
+  Then some text,
   \begin{enumerate}
   \item and then
   \item a list.
@@ -244,7 +244,7 @@ These test multiple or nested boxes inside of theoremlike environments.
 \end{note}
 
 
-\begin{note} 
+\begin{note}
   First some text,
   \begin{enumerate}
   \item and then
@@ -546,7 +546,7 @@ Note: internally, \texttt{gather} and \texttt{gather*} are handled the same way 
 }{
 \item[The first one:] goes here
 \item[Another:] and this is the item content
-\item[The final one:] these are often used for defintions
+\item[The final one:] these are often used for definitions
 }
 \makeoutertest{list}{
   This is the basic environment that others are derived from.
@@ -685,7 +685,7 @@ The marks may or may not be placed as expected, depending on the surrounding env
   This syntax is still used for display math.
   By default, it doesn't work well with \texttt{qedhere}; the end mark is not pushed to end of line.
 }{
-  $$ 
+  $$
     \int_a^b f(x)\, dx
   $$
 }
@@ -901,7 +901,7 @@ A few more examples that are often wrapped in other environments such as \texttt
 \end{tabular}
 }
 \begin{test}
-  \texttt{tabular}: 
+  \texttt{tabular}:
   a table in a \texttt{center}, with experimental command \verb|\qedabove| to manually position the endmark
   \begin{center}
     \begin{tabular}{l|l}
@@ -943,7 +943,7 @@ If these are wrapped in other environments like \texttt{equation}, then they won
       & B \arrow[d, "\psi"] \\
       C \arrow[r, "\eta"]
       & D
-    \end{tikzcd} 
+    \end{tikzcd}
   \end{equation}
 \end{test}
 
@@ -1009,7 +1009,7 @@ Text following theorem environment.
 Text following theorem environment.
 \kantgray{6}{1-2}
 
- 
+
 Note: When a proof is nested inside another environment, as in the following test, its qed end mark changes to that of the containing environment.
 Here, environments are nested inside proofs nested inside other environments.
 
@@ -1063,7 +1063,7 @@ These are buggy and incomplete.
 
 \newcommand{\noqed}{\renewcommand{\qedsymbol}{}}
 
-\begin{test} 
+\begin{test}
   Use \verb|\par| and negative \verb|\vspace| to manually set endmark at bottom of environment.
   Note: This will cause overlap with content, if the previous line is too long, so it should only be placed manually.
   \begin{equation*}
@@ -1074,7 +1074,7 @@ These are buggy and incomplete.
         -d   &x-e &-f  \\
         -g   &-h  &x-i
       \end{array}
-    \right|% \noqed 
+    \right|% \noqed
   \end{equation*}
   \par\vspace{-1.3\baselineskip}~
 \end{test}
@@ -1099,7 +1099,7 @@ Paragraph after environment, to check spacing.
 \kantgray{2}{1-2}
 
 
-\begin{test} 
+\begin{test}
   \verb|\noqed| does not work here, at all
   \begin{align}
     x & = 2\\
@@ -1114,7 +1114,7 @@ Paragraph after environment, to check spacing.
   a line of text \noqed 
 \end{test}
 
-\begin{test} 
+\begin{test}
   \verb|\noqed| does not work here
   \begin{align}
     x & = 2\\
@@ -1242,12 +1242,12 @@ Some of these tests experiment with different ways to manually adjust the vertic
     \int_a^b f(x)\,dx \\
     \int_a^b f(x)\,dx \\
     \int_a^b f(x)\,dx \\
-    \int_a^b f(x)\,dx 
+    \int_a^b f(x)\,dx
   \end{cases}
 }
 Spacing test.
 \kantgray{3}{1-2}
-\begin{test} 
+\begin{test}
   Similar to above, but manually reposition endmark with\\
   \verb|  \par\vspace{-1.6\baselineskip}~|\\
   after \verb|\end{align}|
@@ -1258,7 +1258,7 @@ Spacing test.
           \int_a^b f(x)\,dx \\
           \int_a^b f(x)\,dx \\
           \int_a^b f(x)\,dx \\
-          \int_a^b f(x)\,dx 
+          \int_a^b f(x)\,dx
         \end{cases}
   \end{align}\qedprev[1.6]\hspace{0.001pt}\par\vspace{.6\baselineskip}
   % note: \par above and positive \vspace seem to be necessary
