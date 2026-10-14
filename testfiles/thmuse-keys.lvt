@@ -1,0 +1,69 @@
+\input{regression-test.tex}
+\documentclass{article}
+
+\usepackage{keytheorems}
+\usepackage{hyperref}
+
+\newkeytheorem{theorem}
+\begin{document}
+
+\START
+\showoutput
+
+\listofkeytheorems
+
+\getkeytheorem{rktest}
+
+\getkeytheorem{abc}
+
+\begin{theorem}[note=Some note]
+text
+\end{theorem}
+
+\begin{theorem}[short-note=A short note]
+text
+\end{theorem}
+
+\begin{theorem}[label=foo,note=Gobbldeywobbly]
+text
+\end{theorem}
+
+\begin{theorem}[manual-num=\textmusicalnote]
+text
+\end{theorem}
+
+\begin{theorem}[continues=foo]
+text
+\end{theorem}
+
+\begin{theorem}[continues*=foo]
+text
+\end{theorem}
+
+\begin{theorem}[store=baz]
+text \textbf{blub}
+
+more blub
+\end{theorem}
+
+\begin{theorem}[store*=abc]
+text \textbf{blub}
+
+more blub
+\end{theorem}
+
+\begin{theorem}[
+store=rktest,
+note=Original,
+restate-keys={note=Restated},
+]
+Wow, yet another theorem.
+\end{theorem}
+
+\begin{theorem}[ignore=true]
+text
+\end{theorem}
+
+\ref{foo}
+
+\end{document}

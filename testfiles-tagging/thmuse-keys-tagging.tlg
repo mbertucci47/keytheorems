@@ -1,0 +1,1812 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+(thmuse-keys-tagging.thlist)
+\tf@thlist=\write...
+Completed box being shipped out [1]
+\vbox(633.0+0.0)x407.0, direction TLT
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\hbox(0.0+0.0)x0.0, direction TLT
+..\kern-72.26999
+..\vbox(0.0+0.0)x0.0, glue set 72.26999fil, direction TLT
+...\kern-72.26999
+...\hbox(0.0+0.0)x0.0, direction TLT
+....\pdfliteral page <lua data reference ...>
+....\latelua0{ltx.__pdf.backend_ThisPage_gpush(tex.count["g_shipout_readonly_int"])}
+....\glue 0.0 plus 1.0fil minus 1.0fil
+...\glue 0.0 plus 1.0fil minus 1.0fil
+.\vbox(0.0+0.0)x0.0, glue set - 14.99626fil, direction TLT
+..\kern0.0
+..\kern16.0
+..\kern-1.00374
+..\hbox(0.0+0.0)x0.0, glue set - 60.99626fil, direction TLT
+...\kern0.0
+...\kern62.0
+...\kern-1.00374
+...\pdfdest name{page.1} xyz
+...\pdfdest name{page.1} xyz
+...\penalty 10000
+...\glue 0.0 plus 1.0fil minus 1.0fil
+..\glue 0.0 plus 1.0fil minus 1.0fil
+.\glue(\lineskip) 0.0
+.\vbox(633.0+0.0)x407.0, direction TLT
+..\glue 16.0
+..\vbox(617.0+0.0)x345.0, shifted 62.0, direction TLT
+...\vbox(12.0+0.0)x345.0, glue set 12.0fil, direction TLT
+....\glue 0.0 plus 1.0fil
+....\pdflinkstate 1
+....\hbox(0.0+0.0)x345.0, direction TLT
+.....\hbox(0.0+0.0)x345.0, direction TLT
+....\pdflinkstate 0
+...\glue 25.0
+...\glue(\lineskip) 0.0
+...\vbox(550.0+0.0)x345.0, glue set 145.99141fil, direction TLT
+....\write-{}
+....\pdfdest name{Doc-Start} xyz
+....\pdfdest name{Doc-Start} xyz
+....\glue(\topskip) 0.0
+....\hbox(10.08+0.0864)x345.0, glue set 224.5297fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x0.0, direction TLT
+......\penalty 10000
+......\hbox(0.0+0.0)x0.0, direction TLT
+.......\hbox(0.0+0.0)x0.0, shifted -18.0, direction TLT
+........\pdfdest name{section*.1} xyz
+........\pdfdest name{section*.1} xyz
+........\penalty 10000
+......\kern0.0
+......\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/14.4 L
+.....\TU/lmr/bx/n/14.4 i
+.....\TU/lmr/bx/n/14.4 s
+.....\TU/lmr/bx/n/14.4 t
+.....\TU/lmr/bx/n/14.4  
+.....\glue(\spaceskip) 0.0 plus 2.7 minus 1.8
+.....\TU/lmr/bx/n/14.4 o
+.....\TU/lmr/bx/n/14.4 f
+.....\TU/lmr/bx/n/14.4  
+.....\glue(\spaceskip) 0.0 plus 2.7 minus 1.8
+.....\TU/lmr/bx/n/14.4 T
+.....\TU/lmr/bx/n/14.4 h
+.....\TU/lmr/bx/n/14.4 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/14.4 -
+.....\TU/lmr/bx/n/14.4 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/14.4 -
+.....\TU/lmr/bx/n/14.4 r
+.....\TU/lmr/bx/n/14.4 e
+.....\TU/lmr/bx/n/14.4 m
+.....\TU/lmr/bx/n/14.4 s
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty 10000
+....\glue 9.913 plus 0.86198
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.9736
+....\hbox(6.94+0.11)x345.0, glue set 252.58994fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 1} action struct name{theorem.1} goto name{theorem.1}
+.....\hbox(6.66+0.0)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.39
+....\hbox(7.5+2.5)x345.0, glue set 195.92993fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 2} action struct name{theorem.2} goto name{theorem.2}
+.....\hbox(6.66+0.0)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 2
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 S
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.0
+....\hbox(7.5+2.5)x345.0, glue set 186.11993fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 3} action struct name{theorem.3} goto name{theorem.3}
+.....\hbox(6.66+0.22)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 3
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 A
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.66331 minus 1.1111
+.....\TU/lmr/m/n/10 s
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.0
+....\hbox(7.5+2.5)x345.0, glue set 168.32994fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 4} action struct name{theorem.4} goto name{theorem.4}
+.....\hbox(6.77+0.0)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 4
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 G
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 b
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 b
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 d
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 y
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 w
+.....\kern-0.28 (font)
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 b
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 b
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 y
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.55
+....\hbox(6.95+0.29)x345.0, glue set 252.58994fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 5} action struct name{theorem.manualnum.1} goto name{theorem.manualnum.1}
+.....\hbox(6.95+0.29)x23.00003, glue set 16.89003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 ♪
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.21
+....\hbox(7.5+2.5)x345.0, glue set 153.93292fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 6} action struct name{theorem.continues.1} goto name{theorem.continues.1}
+.....\hbox(6.77+0.0)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 4
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 c
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 u
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 g
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 f
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 p
+.....\TU/lmr/m/n/10 .
+.....\kern1.66702
+.....\TU/lmr/m/n/10 1
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.0
+....\hbox(7.5+2.5)x345.0, glue set 153.93292fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 7} action struct name{theorem.continues.2} goto name{theorem.continues.2}
+.....\hbox(6.77+0.0)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 4
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 c
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 u
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 g
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 f
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 p
+.....\TU/lmr/m/n/10 .
+.....\kern1.66702
+.....\TU/lmr/m/n/10 1
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.56
+....\hbox(6.94+0.22)x345.0, glue set 252.58994fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 8} action struct name{theorem.5} goto name{theorem.5}
+.....\hbox(6.66+0.22)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 5
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\glue 0.0 plus 0.2
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.28
+....\hbox(7.5+2.5)x345.0, glue set 205.87994fill, direction TLT
+.....\glue(\leftskip) 38.00003
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\hbox(0.0+0.0)x0.0, direction TLT
+.....\penalty 10000
+.....\glue -38.00003
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 9} action struct name{theorem.6} goto name{theorem.6}
+.....\hbox(6.66+0.22)x23.00003, glue set 18.00003fil, direction TLT
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 6
+......\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 T
+.....\TU/lmr/m/n/10 h
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 O
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 g
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 a
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 )
+.....\pdfendlink
+.....\penalty 10000
+.....\penalty 10000
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\leaders 0.0 plus 1.0fill
+......\hbox(1.06+0.0)x7.77988, direction TLT
+.......\mathon
+.......\kern2.49994 (italic)
+.......\hbox(1.06+0.0)x2.78, direction TLT
+........\TU/lmr/m/n/10 .
+.......\kern2.49994 (italic)
+.......\mathoff
+.....\penalty 10000
+.....\penalty 10000
+.....\hbox(6.66+0.0)x15.50003, glue set 10.50003fil, direction TLT
+......\glue 0.0 plus 1.0fil
+......\pdfliteral page <lua data reference ...>
+......\pdfliteral page <lua data reference ...>
+......\TU/lmr/m/n/10 1
+......\kern-1.0
+......\kern1.0
+.....\penalty 10000
+.....\glue(\parfillskip) -25.50003
+.....\glue(\rightskip) 25.50003
+....\penalty -51
+....\glue 8.0 plus 3.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.restate.1} xyz
+....\pdfdest name{theorem.restate.1} xyz
+....\penalty 10000
+....\glue -8.0 plus -3.0 minus -4.0
+....\glue 8.0 plus 3.0 minus 4.0
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.0
+....\hbox(7.5+2.5)x345.0, glue set 114.2599fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 6
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 R
+.....\TU/lmr/m/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 s
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 a
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 d
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 W
+.....\kern-0.77 (font)
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 w
+.....\TU/lmr/m/it/10 ,
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 2.23749 minus 0.95465
+.....\TU/lmr/m/it/10 y
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 a
+.....\TU/lmr/m/it/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 h
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 r
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 h
+.....\TU/lmr/m/it/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+......= \kern-0.51 (font)
+.....\TU/lmr/m/it/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+.....\TU/lmr/m/it/10 r
+.....\kern-0.51 (font)
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 m
+.....\TU/lmr/m/it/10 .
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -10.5 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 2.5
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.1} xyz
+....\pdfdest name{theorem.1} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{1}{theorem.1}{1}{ {equation}= {0}}{store*=abc}{text \textbf {blub} \par more blub}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.55
+....\hbox(6.95+0.11)x345.0, glue set 242.94994fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 1
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/bx/it/10 b
+.....\TU/lmr/bx/it/10 l
+.....\TU/lmr/bx/it/10 u
+.....\TU/lmr/bx/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.95
+....\hbox(6.94+0.11)x345.0, glue set 287.69fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 m
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 r
+.....\kern-0.51 (font)
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 b
+.....\TU/lmr/m/it/10 l
+.....\TU/lmr/m/it/10 u
+.....\TU/lmr/m/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -8.11 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 0.11
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.2} xyz
+....\pdfdest name{theorem.2} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{2}{theorem.2}{1}{}{note=Some note}{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.39
+....\hbox(7.5+2.5)x345.0, glue set 209.18996fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 2
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 S
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -10.5 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 2.5
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.3} xyz
+....\pdfdest name{theorem.3} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{3}{theorem.3}{1}{}{short-note=A short note}{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.56
+....\hbox(6.94+0.11)x345.0, glue set 266.34998fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 3
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -8.11 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 0.11
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.4} xyz
+....\pdfdest name{theorem.4} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\newlabel{foo}{{4}{\thepage }{}{theorem.4}{}}}
+....\penalty 10000
+....\penalty 10000
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{4}{theorem.4}{1}{}{label=foo,note=Gobbldeywobbly}{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.39
+....\hbox(7.5+2.5)x345.0, glue set 181.58997fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 4
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 G
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 b
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 b
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 d
+.....\TU/lmr/m/n/10 e
+.....\TU/lmr/m/n/10 y
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 w
+.....\kern-0.28 (font)
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 b
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 b
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 y
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -10.5 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 2.5
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.manualnum.1} xyz
+....\pdfdest name{theorem.manualnum.1} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{\textmusicalnote }{theorem.manualnum.1}{1}{}{manual-num=\textmusicalnote }{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.55
+....\hbox(6.95+0.36)x345.0, glue set 265.06995fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 ♪
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -8.36 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 0.36
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.continues.1} xyz
+....\pdfdest name{theorem.continues.1} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{4}{theorem.continues.1}{1}{}{continues=foo}{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.14
+....\hbox(7.5+2.5)x345.0, glue set 167.19295fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 4
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 c
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 u
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 g
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 f
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 p
+.....\TU/lmr/m/n/10 .
+.....\kern1.66702
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 10} action struct name{theorem.4} goto name{theorem.4}
+.....\TU/lmr/m/n/10 1
+.....\pdfendlink
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -10.5 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 2.5
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.continues.2} xyz
+....\pdfdest name{theorem.continues.2} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{4}{theorem.continues.2}{1}{}{continues*=foo}{}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.0
+....\hbox(7.5+2.5)x345.0, glue set 167.19295fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 4
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 c
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 t
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+......= \kern-0.28 (font)
+.....\TU/lmr/m/n/10 u
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 g
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 f
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 o
+.....\TU/lmr/m/n/10 m
+.....\TU/lmr/m/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+.....\TU/lmr/m/n/10 p
+.....\TU/lmr/m/n/10 .
+.....\kern1.66702
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 11} action struct name{theorem.4} goto name{theorem.4}
+.....\TU/lmr/m/n/10 1
+.....\pdfendlink
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -10.5 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 2.5
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.5} xyz
+....\pdfdest name{theorem.5} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{5}{theorem.5}{1}{ {equation}= {0}}{store=baz}{text \textbf {blub} \par more blub}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.55
+....\hbox(6.95+0.11)x345.0, glue set 242.94994fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 5
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/bx/it/10 b
+.....\TU/lmr/bx/it/10 l
+.....\TU/lmr/bx/it/10 u
+.....\TU/lmr/bx/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.95
+....\hbox(6.94+0.11)x345.0, glue set 287.69fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 m
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 r
+.....\kern-0.51 (font)
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 b
+.....\TU/lmr/m/it/10 l
+.....\TU/lmr/m/it/10 u
+.....\TU/lmr/m/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -8.11 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 0.11
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.restate.2} xyz
+....\pdfdest name{theorem.restate.2} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheoremReversed{abc}{theorem}{store*=abc}{text \textbf {blub} \par more blub}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.94
+....\hbox(6.95+0.11)x345.0, glue set 242.94994fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 1
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 x
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/bx/it/10 b
+.....\TU/lmr/bx/it/10 l
+.....\TU/lmr/bx/it/10 u
+.....\TU/lmr/bx/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.95
+....\hbox(6.94+0.11)x345.0, glue set 287.69fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 m
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 r
+.....\kern-0.51 (font)
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 b
+.....\TU/lmr/m/it/10 l
+.....\TU/lmr/m/it/10 u
+.....\TU/lmr/m/it/10 b
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue -8.11 plus -2.0 minus -4.0
+....\penalty -51
+....\glue 0.11
+....\glue 8.0 plus 2.0 minus 4.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\pdfdest name{theorem.6} xyz
+....\pdfdest name{theorem.6} xyz
+....\penalty 10000
+....\glue -8.0 plus -2.0 minus -4.0
+....\glue 8.0 plus 2.0 minus 4.0
+....\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{6}{theorem.6}{1}{ {equation}= {0}}{ store=rktest, note=Original, restate-keys={note=Restated}, }{Wow, yet another theorem.}}}}
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 4.39
+....\hbox(7.5+2.5)x345.0, glue set 117.17992fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\glue 0.0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 T
+.....\TU/lmr/bx/n/10 h
+.....\TU/lmr/bx/n/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/bx/n/10 -
+.....\TU/lmr/bx/n/10 r
+.....\TU/lmr/bx/n/10 e
+.....\TU/lmr/bx/n/10 m
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/bx/n/10 6
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue(\spaceskip) 0.0 plus 1.915 minus 1.27667
+.....\TU/lmr/m/n/10 (
+.....\TU/lmr/m/n/10 O
+.....\TU/lmr/m/n/10 r
+.....\TU/lmr/m/n/10 i
+.....\TU/lmr/m/n/10 g
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 i
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/n/10 -
+.....\TU/lmr/m/n/10 n
+.....\TU/lmr/m/n/10 a
+.....\TU/lmr/m/n/10 l
+.....\TU/lmr/m/n/10 )
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10 .
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/bx/n/10  
+.....\glue 1.17 plus 1.0 minus 1.0
+.....\penalty 0
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/it/10 W
+.....\kern-0.77 (font)
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 w
+.....\TU/lmr/m/it/10 ,
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 2.23749 minus 0.95465
+.....\TU/lmr/m/it/10 y
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 a
+.....\TU/lmr/m/it/10 n
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+.....\TU/lmr/m/it/10 o
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 h
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 r
+.....\TU/lmr/m/it/10  
+.....\glue(\spaceskip) 0.0 plus 1.79 minus 1.19333
+.....\TU/lmr/m/it/10 t
+.....\TU/lmr/m/it/10 h
+.....\TU/lmr/m/it/10 e
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+......= \kern-0.51 (font)
+.....\TU/lmr/m/it/10 o
+.....\discretionary (penalty 50)
+......< \TU/lmr/m/it/10 -
+.....\TU/lmr/m/it/10 r
+.....\kern-0.51 (font)
+.....\TU/lmr/m/it/10 e
+.....\TU/lmr/m/it/10 m
+.....\TU/lmr/m/it/10 .
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\penalty -51
+....\glue 8.0 plus 2.0 minus 4.0
+....\glue(\parskip) 0.0 plus 1.0
+....\glue(\parskip) 0.0
+....\glue(\baselineskip) 2.73
+....\hbox(6.77+0.0)x345.0, glue set 325.0fil, direction TLT
+.....\localpar
+......\localinterlinepenalty=0
+......\localbrokenpenalty=0
+......\localleftbox=null
+......\localrightbox=null
+.....\hbox(0.0+0.0)x15.0, direction TLT
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\pdfstartlink(*+*)x* attr{/Border [0 0 1] /H /I /C [0.701176 0.4 0.414118]  /LTEX_position /isolated/StructParent 12} action struct name{theorem.4} goto name{theorem.4}
+.....\TU/lmr/m/n/10 4
+.....\pdfendlink
+.....\penalty 10000
+.....\glue(\parfillskip) 0.0 plus 1.0fil
+.....\glue(\rightskip) 0.0
+....\glue 0.0 plus 1.0fil
+....\glue 0.0
+....\glue 0.0 plus 0.0001fil
+...\pdfliteral page <lua data reference ...>
+...\pdfliteral page <lua data reference ...>
+...\pdflinkstate 1
+...\glue(\baselineskip) 23.34
+...\hbox(6.66+0.0)x345.0, direction TLT
+....\hbox(6.66+0.0)x345.0, glue set 170.0fil, direction TLT
+.....\glue 0.0 plus 1.0fil
+.....\pdfliteral page <lua data reference ...>
+.....\pdfliteral page <lua data reference ...>
+.....\TU/lmr/m/n/10 1
+.....\glue 0.0 plus 1.0fil
+...\pdfliteral page <lua data reference ...>
+...\pdfliteral page <lua data reference ...>
+...\pdflinkstate 0
+.\kern0.0
+.\kern0.0
+.\kern-633.0
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\kern633.0
+.\pdfliteral page <lua data reference ...>
+<<latex-list-css.html>><<latex-align-css.html>> (thmuse-keys-tagging.aux)
+Package rerunfilecheck Info: File `thmuse-keys-tagging.thlist' has not changed.
+(rerunfilecheck)             Checksum: E4D623D6F30624EA0118FD5C077A183D;965.
+Package tagpdf Info: Finalizing the tagging structure:
+(tagpdf)             Writing out ~110 structure objects
+(tagpdf)             with ~126 'MC' leaf nodes.
+(tagpdf)             Be patient if there are lots of objects!
+Package tagpdf Info: writing ParentTree
+Package tagpdf Info: writing IDTree
+Package tagpdf Info: writing RoleMap
+Package tagpdf Info: writing ClassMap
+Package tagpdf Info: writing NameSpaces
+Package tagpdf Info: writing StructElems
+Package tagpdf Info: writing Root
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0
+Compilation 3 of test file completed with exit status 0
+Compilation 4 of test file completed with exit status 0
