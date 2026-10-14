@@ -1,0 +1,38 @@
+\input{regression-test.tex}
+\documentclass{article}
+
+\usepackage{keytheorems}
+
+\newkeytheorem{theorem}[style=plain]
+\newkeytheorem{remark}[style=remark]
+\newkeytheorem{definition}[style=definition]
+
+\begin{document}
+
+\START
+\showoutput
+\begin{theorem}
+text
+\end{theorem}
+\begin{remark}
+text
+\end{remark}
+\begin{definition}
+text
+\end{definition}
+
+between
+\begin{theorem}[a note]
+text
+\end{theorem}
+between
+\begin{remark}[a note]
+text
+\end{remark}
+between
+\begin{definition}[a note]
+text
+\end{definition}
+between
+
+\end{document}

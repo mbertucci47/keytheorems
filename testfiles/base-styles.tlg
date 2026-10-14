@@ -1,0 +1,302 @@
+This is a generated file for the l3build validation system.
+Don't change this file in any respect.
+Completed box being shipped out [1]
+\vbox(633.0+0.0)x407.0
+.\glue 16.0
+.\vbox(617.0+0.0)x345.0, shifted 62.0
+..\vbox(12.0+0.0)x345.0, glue set 12.0fil
+...\glue 0.0 plus 1.0fil
+...\hbox(0.0+0.0)x345.0
+....\hbox(0.0+0.0)x345.0
+..\glue 25.0
+..\glue(\lineskip) 0.0
+..\vbox(550.0+0.0)x345.0, glue set 367.9607fil
+...\write-{}
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{1}{theorem.1}{1}{}{}{}}}}
+...\glue(\topskip) 3.05556
+...\hbox(6.94444+0.0)x345.0, glue set 266.3393fil
+....\OT1/cmr/bx/n/10 T
+....\OT1/cmr/bx/n/10 h
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 o
+....\OT1/cmr/bx/n/10 r
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 m
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/bx/n/10 1
+....\kern 0.0
+....\OT1/cmr/bx/n/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/it/10 t
+....\OT1/cmr/m/it/10 e
+....\OT1/cmr/m/it/10 x
+....\OT1/cmr/m/it/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\glue -8.0 plus -2.0 minus -4.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{remark}{1}{remark.1}{1}{}{}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 5.05556
+...\hbox(6.94444+0.0)x345.0, glue set 276.29053fil
+....\OT1/cmr/m/it/10 R
+....\kern-0.51112
+....\OT1/cmr/m/it/10 e
+....\OT1/cmr/m/it/10 m
+....\OT1/cmr/m/it/10 a
+....\OT1/cmr/m/it/10 r
+....\OT1/cmr/m/it/10 k
+....\kern 1.07637
+....\glue 3.57774 plus 1.53333 minus 1.0222
+....\OT1/cmr/m/n/10 1
+....\OT1/cmr/m/it/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 x
+....\OT1/cmr/m/n/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 4.0 plus 1.0 minus 2.0
+...\glue -4.0 plus -1.0 minus -2.0
+...\penalty -51
+...\glue 4.0 plus 1.0 minus 2.0
+...\glue -4.0 plus -1.0 minus -2.0
+...\glue 8.0 plus 2.0 minus 4.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{definition}{1}{definition.1}{1}{}{}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 5.05556
+...\hbox(6.94444+0.0)x345.0, glue set 259.85445fil
+....\OT1/cmr/bx/n/10 D
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 ^^L (ligature fi)
+....\OT1/cmr/bx/n/10 n
+....\OT1/cmr/bx/n/10 i
+....\OT1/cmr/bx/n/10 t
+....\OT1/cmr/bx/n/10 i
+....\OT1/cmr/bx/n/10 o
+....\OT1/cmr/bx/n/10 n
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/bx/n/10 1
+....\kern 0.0
+....\OT1/cmr/bx/n/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 x
+....\OT1/cmr/m/n/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 5.05556
+...\hbox(6.94444+0.0)x345.0, glue set 294.72218fil
+....\hbox(0.0+0.0)x15.0
+....\OT1/cmr/m/n/10 b
+....\kern0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 t
+....\kern-0.27779
+....\OT1/cmr/m/n/10 w
+....\kern-0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 n
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{2}{theorem.2}{1}{}{note={a note}}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 4.5
+...\hbox(7.5+2.5)x345.0, glue set 227.5059fil
+....\OT1/cmr/bx/n/10 T
+....\OT1/cmr/bx/n/10 h
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 o
+....\OT1/cmr/bx/n/10 r
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 m
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/bx/n/10 2
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/m/n/10 (
+....\OT1/cmr/m/n/10 a
+....\glue 3.33333 plus 1.66666 minus 1.11111
+....\OT1/cmr/m/n/10 n
+....\OT1/cmr/m/n/10 o
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 )
+....\OT1/cmr/bx/n/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/it/10 t
+....\OT1/cmr/m/it/10 e
+....\OT1/cmr/m/it/10 x
+....\OT1/cmr/m/it/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 2.55556
+...\hbox(6.94444+0.0)x345.0, glue set 294.72218fil
+....\hbox(0.0+0.0)x15.0
+....\OT1/cmr/m/n/10 b
+....\kern0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 t
+....\kern-0.27779
+....\OT1/cmr/m/n/10 w
+....\kern-0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 n
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 4.0 plus 1.0 minus 2.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{remark}{2}{remark.2}{1}{}{note={a note}}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 4.5
+...\hbox(7.5+2.5)x345.0, glue set 237.7127fil
+....\OT1/cmr/m/it/10 R
+....\kern-0.51112
+....\OT1/cmr/m/it/10 e
+....\OT1/cmr/m/it/10 m
+....\OT1/cmr/m/it/10 a
+....\OT1/cmr/m/it/10 r
+....\OT1/cmr/m/it/10 k
+....\kern 1.07637
+....\glue 3.57774 plus 1.53333 minus 1.0222
+....\OT1/cmr/m/n/10 2
+....\glue 3.57774 plus 1.53333 minus 1.0222
+....\OT1/cmr/m/n/10 (
+....\OT1/cmr/m/n/10 a
+....\glue 3.33333 plus 1.66666 minus 1.11111
+....\OT1/cmr/m/n/10 n
+....\OT1/cmr/m/n/10 o
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 )
+....\OT1/cmr/m/it/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 x
+....\OT1/cmr/m/n/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 4.0 plus 1.0 minus 2.0
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 2.55556
+...\hbox(6.94444+0.0)x345.0, glue set 294.72218fil
+....\hbox(0.0+0.0)x15.0
+....\OT1/cmr/m/n/10 b
+....\kern0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 t
+....\kern-0.27779
+....\OT1/cmr/m/n/10 w
+....\kern-0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 n
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{definition}{2}{definition.2}{1}{}{note={a note}}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 4.5
+...\hbox(7.5+2.5)x345.0, glue set 221.02106fil
+....\OT1/cmr/bx/n/10 D
+....\OT1/cmr/bx/n/10 e
+....\OT1/cmr/bx/n/10 ^^L (ligature fi)
+....\OT1/cmr/bx/n/10 n
+....\OT1/cmr/bx/n/10 i
+....\OT1/cmr/bx/n/10 t
+....\OT1/cmr/bx/n/10 i
+....\OT1/cmr/bx/n/10 o
+....\OT1/cmr/bx/n/10 n
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/bx/n/10 2
+....\kern 0.0
+....\glue 3.83331 plus 1.91666 minus 1.27777
+....\OT1/cmr/m/n/10 (
+....\OT1/cmr/m/n/10 a
+....\glue 3.33333 plus 1.66666 minus 1.11111
+....\OT1/cmr/m/n/10 n
+....\OT1/cmr/m/n/10 o
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 )
+....\OT1/cmr/bx/n/10 .
+....\glue 5.0 plus 1.0 minus 1.0
+....\OT1/cmr/m/n/10 t
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 x
+....\OT1/cmr/m/n/10 t
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\penalty -51
+...\glue 8.0 plus 2.0 minus 4.0
+...\glue(\parskip) 0.0 plus 1.0
+...\glue(\parskip) 0.0
+...\glue(\baselineskip) 2.55556
+...\hbox(6.94444+0.0)x345.0, glue set 294.72218fil
+....\hbox(0.0+0.0)x15.0
+....\OT1/cmr/m/n/10 b
+....\kern0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 t
+....\kern-0.27779
+....\OT1/cmr/m/n/10 w
+....\kern-0.27779
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 e
+....\OT1/cmr/m/n/10 n
+....\penalty 10000
+....\glue(\parfillskip) 0.0 plus 1.0fil
+....\glue(\rightskip) 0.0
+...\glue 0.0 plus 1.0fil
+...\glue 0.0
+...\glue 0.0 plus 0.0001fil
+..\glue(\baselineskip) 23.55556
+..\hbox(6.44444+0.0)x345.0
+...\hbox(6.44444+0.0)x345.0, glue set 170.0fil
+....\glue 0.0 plus 1.0fil
+....\OT1/cmr/m/n/10 1
+....\glue 0.0 plus 1.0fil
+(base-styles.aux)
+***************
+Compilation 1 of test file completed with exit status 0
+Compilation 2 of test file completed with exit status 0
