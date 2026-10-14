@@ -11,7 +11,7 @@ metafont
 mfware
 # Dependencies for keytheorems
 amsmath
-amsthm
+amscls
 refcount
 rerunfilecheck
 translations
