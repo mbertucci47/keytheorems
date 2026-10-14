@@ -8,7 +8,7 @@ version = "2026-10-02 v0.4.3dev"
 checkengines = {"pdftex"}
 checkruns = 2
 recordstatus = true
-installfiles = {"keytheorems.sty"}
+installfiles = {"tex/keytheorems.sty"}
 
 ---- We handle typesetting the doc independently
 -- maxprintline = 10000
