@@ -12,13 +12,17 @@ mfware
 # Dependencies for keytheorems
 amsmath
 amscls
+iftex
 infwarerr
+kvoptions
 ltxcmds
+pdftexcmds
 refcount
 rerunfilecheck
 translations
 thmtools
 # ^ thmtools for unique; working on removing this dependency
+uniquecounter
 #
 # Dependencies for tests and typesetting
 # alphalph
