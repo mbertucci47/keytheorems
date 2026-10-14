@@ -29,4 +29,5 @@ thmtools
 uniquecounter
 #
 # Dependencies for tests and typesetting
+hyperref
 latex-lab
