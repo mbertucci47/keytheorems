@@ -9,12 +9,14 @@ tex
 # warnings with some packages and errors with others
 metafont
 mfware
-# Dependencies for keytheorems
+# Dependencies for keytheorems and their dependencies
 amsmath
 amscls
 iftex
 infwarerr
+keyval
 kvoptions
+kvsetkeys
 ltxcmds
 pdftexcmds
 refcount
