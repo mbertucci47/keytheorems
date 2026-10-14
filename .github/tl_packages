@@ -13,6 +13,7 @@ mfware
 amsmath
 amscls
 bigintcalc
+etoolbox
 graphics
 iftex
 infwarerr
