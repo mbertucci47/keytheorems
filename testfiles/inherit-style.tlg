@@ -101,7 +101,7 @@ Completed box being shipped out [1]
 ....\glue 0.0 plus 1.0fil
 ....\OT1/cmr/m/n/10 1
 ....\glue 0.0 plus 1.0fil
-(keythms_inherit-style.aux)
+(inherit-style.aux)
 ***************
 Compilation 1 of test file completed with exit status 0
 Compilation 2 of test file completed with exit status 0
