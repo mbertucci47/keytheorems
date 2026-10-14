@@ -325,7 +325,7 @@ Completed box being shipped out [1]
 .....\glue -38.00008
 .....\pdfstartlink(*+*)x* attr{/Border[0 0 1]/H/I/C[1 0 0]} action goto name{theorem.continues.1}
 .....\hbox(6.44444+0.0)x23.00006, glue set 18.00005fil
-......\OT1/cmr/m/n/10 3
+......\OT1/cmr/m/n/10 4
 ......\glue 0.0 plus 1.0fil
 .....\OT1/cmr/m/n/10 T
 .....\OT1/cmr/m/n/10 h
@@ -390,7 +390,7 @@ Completed box being shipped out [1]
 .....\glue -38.00008
 .....\pdfstartlink(*+*)x* attr{/Border[0 0 1]/H/I/C[1 0 0]} action goto name{theorem.continues.2}
 .....\hbox(6.44444+0.0)x23.00006, glue set 18.00005fil
-......\OT1/cmr/m/n/10 3
+......\OT1/cmr/m/n/10 4
 ......\glue 0.0 plus 1.0fil
 .....\OT1/cmr/m/n/10 T
 .....\OT1/cmr/m/n/10 h
@@ -511,9 +511,9 @@ Completed box being shipped out [1]
 .....\hbox(0.0+0.0)x0.0
 .....\penalty 10000
 .....\glue -38.00008
-.....\pdfstartlink(*+*)x* attr{/Border[0 0 1]/H/I/C[1 0 0]} action goto name{theorem.7}
+.....\pdfstartlink(*+*)x* attr{/Border[0 0 1]/H/I/C[1 0 0]} action goto name{theorem.6}
 .....\hbox(6.44444+0.0)x23.00006, glue set 18.00005fil
-......\OT1/cmr/m/n/10 7
+......\OT1/cmr/m/n/10 6
 ......\glue 0.0 plus 1.0fil
 .....\OT1/cmr/m/n/10 T
 .....\OT1/cmr/m/n/10 h
@@ -573,7 +573,7 @@ Completed box being shipped out [1]
 .....\OT1/cmr/bx/n/10 m
 .....\kern 0.0
 .....\glue 3.83331 plus 1.91666 minus 1.27777
-.....\OT1/cmr/bx/n/10 7
+.....\OT1/cmr/bx/n/10 6
 .....\kern 0.0
 .....\glue 3.83331 plus 1.91666 minus 1.27777
 .....\OT1/cmr/m/n/10 (
@@ -1215,12 +1215,10 @@ Completed box being shipped out [1]
 (thmuse-keys.aux)
 Package rerunfilecheck Info: File `thmuse-keys.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
-Package rerunfilecheck Warning: File `thmuse-keys.thlist' has changed.
-(rerunfilecheck)                Rerun LaTeX to get restated theorems right.
-Package rerunfilecheck Info: Checksums for `thmuse-keys.thlist':
-(rerunfilecheck)             Before: 9D29A375B436972A09F3A465BFD4C0E1;965
-(rerunfilecheck)             After:  E4D623D6F30624EA0118FD5C077A183D;965.
+Package rerunfilecheck Info: File `thmuse-keys.thlist' has not changed.
+(rerunfilecheck)             Checksum: E4D623D6F30624EA0118FD5C077A183D;965.
 ***************
 Compilation 1 of test file completed with exit status 0
 Compilation 2 of test file completed with exit status 0
 Compilation 3 of test file completed with exit status 0
+Compilation 4 of test file completed with exit status 0

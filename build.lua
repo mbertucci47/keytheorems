@@ -6,11 +6,11 @@ module = "keytheorems"
 version = "2026-10-02 v0.4.3dev"
 
 checkengines = {"pdftex"}
-checkruns = 3
+checkruns = 4
 checkconfigs = {"build", "config-tagging"}
 recordstatus = true
 installfiles = {"tex/keytheorems.sty"}
-
+auxfiles = {"*.aux","*.lof","*.lot","*.toc","*.thlist","*.unq"}
 ---- We handle typesetting the doc independently
 -- maxprintline = 10000
 -- typesetruns = 4
