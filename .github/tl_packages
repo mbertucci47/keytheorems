@@ -12,6 +12,7 @@ mfware
 # Dependencies for keytheorems and their dependencies
 amsmath
 amscls
+bigintcalc
 graphics
 iftex
 infwarerr
