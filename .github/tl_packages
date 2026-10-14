@@ -29,7 +29,8 @@ thmtools
 uniquecounter
 #
 # Dependencies for tests and typesetting
-amsfonts 
+amsfonts
 cm-super
+ec
 hyperref
 latex-lab
