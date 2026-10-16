@@ -1,0 +1,23 @@
+\input{regression-test.tex}
+\documentclass{article}
+\usepackage{keytheorems}
+
+\newcommand{\marginthmtext}{%
+We need some text to show off theorems with margins. }
+\newkeytheorem{quotethm}[name=Quote Theorem,margin=1cm]
+\newkeytheorem{indentedthm}[name=Indented Theorem,leftmargin=1cm]
+
+\begin{document}
+
+\START
+\showoutput
+\marginthmtext\marginthmtext\marginthmtext
+\begin{quotethm}
+\marginthmtext\marginthmtext\marginthmtext
+\end{quotethm}
+\marginthmtext\marginthmtext\marginthmtext
+\begin{indentedthm}
+\marginthmtext\marginthmtext\marginthmtext
+\end{indentedthm}
+
+\end{document}

@@ -1,0 +1,36 @@
+\input{regression-test.tex}
+\documentclass{book}
+
+\counterwithout*{section}{chapter}
+\usepackage{keytheorems}
+\usepackage{kantlipsum}
+\newkeytheorem{theorem}[
+name=Theorem, parent=chapter
+]
+\renewkeytheorem{theorem}[
+name=Theorem, parent=section
+]
+
+\begin{document}
+
+\START
+\showoutput
+\chapter{TEST}
+\section{TESTSEC}
+\begin{theorem}
+\kant[1][1]
+\end{theorem}
+\section{TESTSEC}
+\begin{theorem}
+\kant[1][1]
+\end{theorem}
+
+\chapter{TEST}
+\begin{theorem}
+\kant[1][1]
+\end{theorem}
+\begin{theorem}
+\kant[1][1]
+\end{theorem}
+
+\end{document}

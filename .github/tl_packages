@@ -28,9 +28,10 @@ thmtools
 # ^ thmtools for unique; working on removing this dependency
 uniquecounter
 #
-# Dependencies for tests and typesetting
+# Dependencies for tests
 amsfonts
 cm-super
 ec
 hyperref
+kantlipsum
 latex-lab
