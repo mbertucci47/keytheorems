@@ -1,5 +1,15 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
+============================================================
+TEST 1: Show PDF Tags
+============================================================
+-------- inherit-style-tagging.xml (start) ---------
+<PDF version="1.7">
+ <StructTreeRoot>
+ </StructTreeRoot>
+</PDF>
+-------- inherit-style-tagging.xml (end) -----------
+============================================================
 Completed box being shipped out [1]
 \vbox(633.0+0.0)x407.0, direction TLT
 .\glue 16.0

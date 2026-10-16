@@ -67,4 +67,5 @@ text
 
 \ref{foo}
 
+\SHOWPDFTAGS
 \end{document}
