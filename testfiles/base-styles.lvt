@@ -1,4 +1,7 @@
 \input{regression-test.tex}
+\ExplSyntaxOn
+\debug_on:n { all }
+\ExplSyntaxOff
 \documentclass{article}
 
 \usepackage{keytheorems}
