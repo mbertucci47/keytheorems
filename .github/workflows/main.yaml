@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch:
 
 jobs:
 # don't run typos for now
