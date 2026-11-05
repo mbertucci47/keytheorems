@@ -1,28 +1,107 @@
 This is a generated file for the l3build validation system.
 Don't change this file in any respect.
+LaTeX template Info: Declaring instance 'thm-style1-1' of type block on line ....
+LaTeX template Info: Declaring instance 'std-list-1' of type block on line ....
+LaTeX template Info: Declaring instance 'thm-style2-1' of type block on line ....
+LaTeX template Info: Declaring instance 'std-list-1' of type block on line ....
 ============================================================
 TEST 1: Show PDF Tags
 ============================================================
 -------- inherit-style-tagging.xml (start) ---------
-<PDF version="1.7">
+<PDF version="2.0">
  <StructTreeRoot>
+  <Document xmlns="http://iso.org/pdf2/ssn"
+     id="ID.002"
+    >
+   <theorem-like xmlns="https://www.latex-project.org/ns/dflt"
+      id="ID.006"
+      rolemaps-to="Sect"
+     >
+    <Caption xmlns="http://iso.org/pdf2/ssn"
+       id="ID.007"
+      >
+     <?MarkedContent page="1" ?>Theorem  
+     <Lbl xmlns="http://iso.org/pdf2/ssn"
+        id="ID.008"
+       >
+      <?MarkedContent page="1" ?>1
+     </Lbl>
+     <?MarkedContent page="1" ?>.
+    </Caption>
+    <semantic-para xmlns="https://www.latex-project.org/ns/dflt"
+       id="ID.009"
+       rolemaps-to="Part"
+      >
+     <text-block xmlns="https://www.latex-project.org/ns/dflt"
+        id="ID.010"
+        xmlns:Layout="http://iso.org/pdf/ssn/Layout"
+        Layout:TextAlign="Justify"
+        rolemaps-to="P"
+       >
+      <?MarkedContent page="1" ?>text
+     </text-block>
+    </semantic-para>
+   </theorem-like>
+   <theorem-like xmlns="https://www.latex-project.org/ns/dflt"
+      id="ID.011"
+      rolemaps-to="Sect"
+     >
+    <Caption xmlns="http://iso.org/pdf2/ssn"
+       id="ID.012"
+      >
+     <?MarkedContent page="1" ?>Lemma  
+     <Lbl xmlns="http://iso.org/pdf2/ssn"
+        id="ID.013"
+       >
+      <?MarkedContent page="1" ?>1
+     </Lbl>
+     <?MarkedContent page="1" ?>.
+    </Caption>
+    <semantic-para xmlns="https://www.latex-project.org/ns/dflt"
+       id="ID.014"
+       rolemaps-to="Part"
+      >
+     <text-block xmlns="https://www.latex-project.org/ns/dflt"
+        id="ID.015"
+        xmlns:Layout="http://iso.org/pdf/ssn/Layout"
+        Layout:TextAlign="Justify"
+        rolemaps-to="P"
+       >
+      <?MarkedContent page="1" ?>text
+     </text-block>
+    </semantic-para>
+   </theorem-like>
+  </Document>
  </StructTreeRoot>
 </PDF>
 -------- inherit-style-tagging.xml (end) -----------
 ============================================================
 Completed box being shipped out [1]
 \vbox(633.0+0.0)x407.0, direction TLT
+.\hbox(0.0+0.0)x0.0, direction TLT
+..\kern-72.26999
+..\vbox(0.0+0.0)x0.0, glue set 72.26999fil, direction TLT
+...\kern-72.26999
+...\pdfliteral page <lua data reference ...>
+...\pdflinkstate -3
+...\hbox(0.0+0.0)x0.0, direction TLT
+....\latelua0{ltx.__pdf.backend_ThisPage_gpush(tex.count["g_shipout_readonly_int"])}
+....\glue 0.0 plus 1.0fil minus 1.0fil
+...\glue 0.0 plus 1.0fil minus 1.0fil
 .\glue 16.0
 .\vbox(617.0+0.0)x345.0, shifted 62.0, direction TLT
 ..\vbox(12.0+0.0)x345.0, glue set 12.0fil, direction TLT
 ...\glue 0.0 plus 1.0fil
+...\pdflinkstate 1
 ...\hbox(0.0+0.0)x345.0, direction TLT
 ....\hbox(0.0+0.0)x345.0, direction TLT
+...\pdflinkstate 0
 ..\glue 25.0
 ..\glue(\lineskip) 0.0
 ..\vbox(550.0+0.0)x345.0, glue set 511.83533fil, direction TLT
 ...\write-{}
-...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{1}{theorem.1}{1}{}{}{}}}}
+...\latelua0{}
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{theorem}{1}{target*.1}{1}{}{}{}}}}
 ...\glue(\topskip) 3.06
 ...\hbox(6.94+0.11)x288.0945, glue set 201.38661fill, shifted 56.9055, direction TLT
 ....\localpar
@@ -30,6 +109,9 @@ Completed box being shipped out [1]
 .....\localbrokenpenalty=0
 .....\localleftbox=null
 .....\localrightbox=null
+....\glue 0.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 T
 ....\TU/lmss/m/n/10 h
 ....\TU/lmss/m/n/10 e
@@ -42,10 +124,23 @@ Completed box being shipped out [1]
 ....\TU/lmss/m/n/10 r
 ....\TU/lmss/m/n/10 e
 ....\TU/lmss/m/n/10 m
-....\glue(\spaceskip) 3.33 plus 1.665 minus 1.11
+....\TU/lmss/m/n/10  
+....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+....\TU/lmss/m/n/10  
+....\glue -3.33
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 1
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 .
-....\glue 5.0 plus 1.0 minus 1.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\TU/lmss/m/n/10  
+....\glue 1.67 plus 1.0 minus 1.0
+....\penalty 0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmr/m/it/10 t
 ....\TU/lmr/m/it/10 e
 ....\TU/lmr/m/it/10 x
@@ -74,8 +169,14 @@ Completed box being shipped out [1]
 ...\penalty -51
 ...\glue 0.11
 ...\glue 8.0 plus 2.0 minus 4.0
-...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{lemma}{1}{lemma.1}{1}{}{}{}}}}
-...\glue(\parskip) 0.0
+...\pdfliteral page <lua data reference ...>
+...\pdfliteral page <lua data reference ...>
+...\latelua0{}
+...\penalty 10000
+...\glue -8.0 plus -2.0 minus -4.0
+...\glue 8.0 plus 2.0 minus 4.0
+...\write1{\exp_not:n {\@writefile{thlist}{\KeyThmsSavedTheorem{lemma}{1}{target*.2}{1}{}{}{}}}}
+...\glue(\parskip) 0.0 plus 1.0
 ...\glue(\parskip) 0.0
 ...\glue(\baselineskip) 4.95
 ...\hbox(6.94+0.11)x288.0945, glue set 206.15663fill, shifted 56.9055, direction TLT
@@ -84,15 +185,31 @@ Completed box being shipped out [1]
 .....\localbrokenpenalty=0
 .....\localleftbox=null
 .....\localrightbox=null
+....\glue 0.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 L
 ....\TU/lmss/m/n/10 e
 ....\TU/lmss/m/n/10 m
 ....\TU/lmss/m/n/10 m
 ....\TU/lmss/m/n/10 a
-....\glue(\spaceskip) 3.33 plus 1.665 minus 1.11
+....\TU/lmss/m/n/10  
+....\glue(\spaceskip) 0.0 plus 1.665 minus 1.11
+....\TU/lmss/m/n/10  
+....\glue -3.33
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 1
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmss/m/n/10 .
-....\glue 5.0 plus 1.0 minus 1.0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
+....\TU/lmss/m/n/10  
+....\glue 1.67 plus 1.0 minus 1.0
+....\penalty 0
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmr/m/n/10 t
 ....\TU/lmr/m/n/10 e
 ....\TU/lmr/m/n/10 x
@@ -120,13 +237,37 @@ Completed box being shipped out [1]
 ...\glue 0.0 plus 1.0fil
 ...\glue 0.0
 ...\glue 0.0 plus 0.0001fil
+..\pdfliteral page <lua data reference ...>
+..\pdfliteral page <lua data reference ...>
+..\pdflinkstate 1
 ..\glue(\baselineskip) 23.34
 ..\hbox(6.66+0.0)x345.0, direction TLT
 ...\hbox(6.66+0.0)x345.0, glue set 170.0fil, direction TLT
 ....\glue 0.0 plus 1.0fil
+....\pdfliteral page <lua data reference ...>
+....\pdfliteral page <lua data reference ...>
 ....\TU/lmr/m/n/10 1
 ....\glue 0.0 plus 1.0fil
-(inherit-style-tagging.aux)
+..\pdfliteral page <lua data reference ...>
+..\pdfliteral page <lua data reference ...>
+..\pdflinkstate 0
+.\kern0.0
+.\kern-633.0
+.\hbox(0.0+0.0)x0.0, direction TLT
+.\kern633.0
+.\pdfliteral page <lua data reference ...>
+<<latex-list-css.html>><<latex-align-css.html>> (inherit-style-tagging.aux)
+Package tagpdf Info: Finalizing the tagging structure:
+(tagpdf)             Writing out ~15 structure objects
+(tagpdf)             with ~10 'MC' leaf nodes.
+(tagpdf)             Be patient if there are lots of objects!
+Package tagpdf Info: writing ParentTree
+Package tagpdf Info: writing IDTree
+Package tagpdf Info: writing RoleMap
+Package tagpdf Info: writing ClassMap
+Package tagpdf Info: writing NameSpaces
+Package tagpdf Info: writing StructElems
+Package tagpdf Info: writing Root
 ***************
 Compilation 1 of test file completed with exit status 0
 Compilation 2 of test file completed with exit status 0
