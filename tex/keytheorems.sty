@@ -313,7 +313,7 @@
     headfont      .value_required:n = true,
     headformat    .meta:n   = { headstyle = {#1} }, % extra braces are necessary! Otherwise breaks if #1 contains comma
     headformat    .value_required:n = true,
-    headindent    .tl_set:N = \l__keythms_thmstyle_headindent_tl,
+    headindent    .dim_set:N = \l__keythms_thmstyle_headindent_dim,
     headindent    .value_required:n = true,
     headpunct     .tl_set:N = \l__keythms_thmstyle_headpunct_tl,
     headpunct     .value_required:n = true,
@@ -362,10 +362,34 @@
     numberfont    .value_required:n = true,
     postheadspace .tl_set:N = \l__keythms_thmstyle_postheadspace_tl,
     postheadspace .value_required:n = true,
+    postheadspace .append_method:n  =
+      {
+        \tl_if_eq:VnF \l__keythms_thmstyle_postheadspace_tl { \newline }
+          {
+            \tl_set:Ne \l__keythms_thmstyle_postheadspace_tl
+              {
+                \skip_eval:n { \l__keythms_thmstyle_postheadspace_tl + #1 }
+              }
+          }
+      },
     spaceabove    .tl_set:N = \l__keythms_thmstyle_spaceabove_tl,
     spaceabove    .value_required:n = true,
+    spaceabove    .append_method:n  =
+      {
+        \tl_set:Ne \l__keythms_thmstyle_spaceabove_tl
+          {
+            \skip_eval:n { \l__keythms_thmstyle_spaceabove_tl + #1 }
+          }
+      },
     spacebelow    .tl_set:N = \l__keythms_thmstyle_spacebelow_tl,
     spacebelow    .value_required:n = true,
+    spacebelow    .append_method:n  =
+      {
+        \tl_set:Ne \l__keythms_thmstyle_spacebelow_tl
+          {
+            \skip_eval:n { \l__keythms_thmstyle_spacebelow_tl + #1 }
+          }
+      },
     % thm keys that are saved for later
     counter-format        .code:n = \__keythms_thmstyle_savethmkey_reqval:n { #1 },
     counter-format        .value_required:n = true,
@@ -448,8 +472,8 @@
     noteseparator = {~},
     numberfont    = \upshape,
     postheadspace = 5pt plus 1pt minus 1pt,
-    spaceabove    = {}, % empty means default (works for AMS classes too)
-    spacebelow    = {}, % empty means default (works for AMS classes too)
+    spaceabove    = \topsep,
+    spacebelow    = \topsep,
   }
 \hook_gput_code:nnn { package/keytheorems/after } { . }
   { % need to defer to wait for support files
@@ -531,7 +555,7 @@
       \l__keythms_thmstyle_spaceabove_tl
       \l__keythms_thmstyle_spacebelow_tl
       \l__keythms_thmstyle_bodyfont_tl
-      \l__keythms_thmstyle_headindent_tl
+      \l__keythms_thmstyle_headindent_dim
       \l__keythms_thmstyle_headfont_tl
       \l__keythms_thmstyle_headpunct_tl
       \l__keythms_thmstyle_postheadspace_tl
@@ -3885,7 +3909,7 @@
         \EditInstance{thmstyle}{#1}
           {
             body-decls:V    = \l__keythms_thmstyle_bodyfont_tl,
-            before-hspace:V = \l__keythms_thmstyle_headindent_tl,
+            before-hspace:V = \l__keythms_thmstyle_headindent_dim,
             caption-decls:V = \l__keythms_thmstyle_headfont_tl,
             punct:V         = \l__keythms_thmstyle_headpunct_tl,
             after-hspace:V  = \l__keythms_thmstyle_postheadspace_tl,

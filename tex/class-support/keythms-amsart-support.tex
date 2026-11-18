@@ -6,11 +6,17 @@
 
 \tl_use:N \c__keythms_support_AMSshared_tl
 
+\prop_gput_from_keyval:Nn \g__keythms_thmstyle_defaultkeys_prop
+  {
+    spaceabove = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+    spacebelow = .5\baselineskip plus .2\baselineskip minus .2\baselineskip,
+  }
+
 % redefine inherit-style=remark
 \tl_gset:Nn \g__keythms_thmstyle_remark_metakeys_tl
   {
-    bodyfont      = \normalfont,
-    headfont      = \itshape,
+    bodyfont = \normalfont,
+    headfont = \itshape,
   }
 
 \bool_case:n
