@@ -35,7 +35,7 @@ jobs:
           package_file: .github/tl_packages
           nightly: '*-dev'
       - name: Run l3build
-        run: l3build check -S --show-log-on-error
+        run: l3build check -S --dev --show-log-on-error
       # Now we create the artifacts for the logs of failed tests
       - name: Archive failed test output
         if: ${{ always() }}
