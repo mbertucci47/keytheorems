@@ -9,6 +9,7 @@ checkengines = {"pdftex"}
 checkruns = 4
 checkconfigs = {"build", "config-tagging"}
 recordstatus = true
+checksuppfiles = {"texmf.cnf"}
 installfiles = {"tex/keytheorems.sty"}
 auxfiles = {"*.aux","*.lof","*.lot","*.toc","*.thlist","*.unq"}
 ---- We handle typesetting the doc independently
