@@ -11,10 +11,8 @@ checkconfigs = {"build", "config-tagging"}
 recordstatus = true
 checksuppfiles = {"texmf.cnf"}
 
-if options["dev"] then
-  specialformats["latex-dev"] = specialformats["latex-dev"] or
-    {luatex = {binary="luahbtex",format = "lualatex-nightly"}}
-end
+specialformats["latex-dev"] = specialformats["latex-dev"] or
+  {luatex = {binary="luahbtex",format = "lualatex-nightly"}}
 
 installfiles = {"tex/keytheorems.sty"}
 auxfiles = {"*.aux","*.lof","*.lot","*.toc","*.thlist","*.unq"}
