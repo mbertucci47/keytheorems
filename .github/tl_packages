@@ -36,3 +36,6 @@ hyperref
 kantlipsum
 latex-lab
 show-pdf-tags
+
+# nightly
+l3kernel-nightly
