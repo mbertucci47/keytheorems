@@ -34,6 +34,7 @@ jobs:
           # different workflows.
           package_file: .github/tl_packages
           nightly: '*-nightly'
+          cache: false
       - name: Run l3build
         run: l3build check -S --dev --show-log-on-error
       # Now we create the artifacts for the logs of failed tests
