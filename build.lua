@@ -10,6 +10,7 @@ checkruns = 4
 checkconfigs = {"build", "config-tagging"}
 recordstatus = true
 
+checksuppfiles = {"texmf.cnf"}
 specialformats = specialformats or {}
 specialformats["latex-dev"] = specialformats["latex-dev"] or
   {
