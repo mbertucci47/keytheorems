@@ -14,8 +14,8 @@ checksuppfiles = {"texmf.cnf"}
 specialformats = specialformats or {}
 specialformats["latex-dev"] = specialformats["latex-dev"] or
   {
-    luatex = {binary="luahbtex",format = "lualatex-nightly"},
-    pdftex = {binary="pdftex",format = "pdflatex-nightly"},
+    luatex = {binary="luahbtex",format="lualatex-nightly"},
+    pdftex = {binary="pdftex",format="pdflatex-nightly"},
   }
 
 installfiles = {"tex/keytheorems.sty"}
