@@ -38,13 +38,13 @@ latex-lab
 show-pdf-tags
 
 # nightly
-l3kernel-nightly
-l3packages-nightly
-latex-amsmath-nightly
-latex-base-nightly
-latex-bin-nightly
-latex-firstaid-nightly
-latex-graphics-nightly
-latex-lab-nightly
-latex-tools-nightly
-luamml-nightly
+l3kernel-dev
+l3packages-dev
+latex-amsmath-dev
+latex-base-dev
+latex-bin-dev
+latex-firstaid-dev
+latex-graphics-dev
+latex-lab-dev
+latex-tools-dev
+luamml-dev
