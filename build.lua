@@ -9,10 +9,13 @@ checkengines = {"pdftex"}
 checkruns = 4
 checkconfigs = {"build", "config-tagging"}
 recordstatus = true
-checksuppfiles = {"texmf.cnf"}
 
+specialformats = specialformats or {}
 specialformats["latex-dev"] = specialformats["latex-dev"] or
-  {luatex = {binary="luahbtex",format = "lualatex-nightly"}}
+  {
+    luatex = {binary="luahbtex",format = "lualatex-nightly"},
+    pdftex = {binary="pdftex",format = "pdflatex-nightly"},
+  }
 
 installfiles = {"tex/keytheorems.sty"}
 auxfiles = {"*.aux","*.lof","*.lot","*.toc","*.thlist","*.unq"}
