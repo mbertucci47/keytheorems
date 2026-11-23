@@ -33,6 +33,7 @@ jobs:
           # List the required TeX Live packages in a separate file to allow reuse in
           # different workflows.
           package_file: .github/tl_packages
+          nightly:
       - name: Run l3build
         run: l3build check -S --show-log-on-error
       # Now we create the artifacts for the logs of failed tests
