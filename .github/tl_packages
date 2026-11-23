@@ -39,3 +39,12 @@ show-pdf-tags
 
 # nightly
 l3kernel-nightly
+l3packages-nightly
+latex-amsmath-nightly
+latex-base-nightly
+latex-bin-nightly
+latex-firstaid-nightly
+latex-graphics-nightly
+latex-lab-nightly
+latex-tools-nightly
+luamml-nightly
