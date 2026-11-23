@@ -26,7 +26,7 @@ text
 
 between
 \begin{theorem}[a note]
-text
+tex
 \end{theorem}
 between
 \begin{remark}[a note]
